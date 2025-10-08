@@ -1,0 +1,41 @@
+services:
+  # server:
+  #   build:
+  #     context: ../..
+  #     dockerfile: docker/local/Dockerfile
+  #   container_name: ${PROJECT}-server
+  #   ports:
+  #     - ${PORT}:${PORT}
+  #   volumes:
+  #     - ../../:/usr/src/app
+  #   env_file:
+  #     - ../../.env
+  #   depends_on:
+  #     - postgres
+  #     - redis-stack
+  #   restart: always
+
+  postgres:
+    image: postgres:16.2
+    container_name: ${PROJECT}-postgres
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ../db:/docker-entrypoint-initdb.d
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+
+  redis-stack:
+    image: redis/redis-stack
+    container_name: ${PROJECT}-redis
+    ports:
+      - ${REDIS_PORT}:${REDIS_PORT}
+    volumes:
+      - redis_data:/data
+    restart: on-failure
+
+volumes:
+  db_data:
+  redis_data:

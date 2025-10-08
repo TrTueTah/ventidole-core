@@ -1,0 +1,42 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:functional/external-recommended",
+    "plugin:functional/recommended",
+    "plugin:functional/stylistic",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["prettier", "functional", "@typescript-eslint"],
+  "parserOptions": { "project": "tsconfig.json" },
+  "rules": {
+    "prettier/prettier": "error",
+    "functional/prefer-readonly-type": "off",
+    "functional/no-conditional-statement": "off",
+    "functional/no-try-statement": "off",
+    "@typescript-eslint/prefer-readonly-parameter-types": "off",
+    "functional/no-let": "off",
+    "functional/no-loop-statement": "off",
+    "functional/functional-parameters": "off",
+    "functional/no-expression-statement": "off",
+    "functional/no-return-void": "off",
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "no-param-reassign": "off",
+    "functional/immutable-data": "off",
+    "@typescript-eslint/no-unsafe-argument": "off",
+    "functional/no-mixed-type": "off",
+    "functional/no-class": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "typescript-eslint/no-unsafe-member-access":"off",
+    "@typescript-eslint/no-unsafe-call":"off",
+    "@typescript-eslint/no-unsafe-member-access": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "functional/no-throw-statement": "off",
+    "@typescript-eslint/no-unsafe-return": "off",
+    "@typescript-eslint/restrict-plus-operands":"off"
+  }
+}

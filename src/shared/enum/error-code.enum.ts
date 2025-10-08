@@ -1,0 +1,30 @@
+export enum ErrorCode {
+  ValidationFailed = "validation_failed",
+  Unauthenticated = "unauthenticated",
+  Unauthorized = "unauthorized",
+  HttpError = "http_error",
+  UnknownError = "unknown_error",
+  TokenExpired = "token_expired",
+  InvalidToken = "invalid_token",
+  NotAnyRecipient = "not_any_recipient",
+  SendMailFailed = "send_mail_failed",
+  ConsumerNotFound = "consumer_not_found",
+  ConsumerFailed = "consumer_failed",
+  ProcessFailed = "process_failed",
+  OtpAlreadyExist = "otp_already_exist",
+  OtpSpam = "otp_spam",
+  OtpExpired = "otp_expired",
+  OtpIncorrect = "otp_incorrect",
+  InvalidDecodeToken = "invalid_decode_token",
+  InvalidTokenIssuer = "invalid_token_issuer",
+  VerificationNotFound = "VerificationNotFound",
+  VerificationSessionExpired = "VerificationSessionExpired",
+  AccountNotFound = "AccountNotFound",
+  ExistedEmail = "ExistedEmail",
+  ExistedPhoneNumber = "ExistedPhoneNumber",
+  InvalidEmailOrPassword = "InvalidEmailOrPassword",
+  InvalidTokenSecret = "InvalidTokenSecret",
+}
+
+const ErrorCodeSet = new Set(Object.values(ErrorCode));
+export const isErrorCode = (value: string): value is ErrorCode => ErrorCodeSet.has(value as ErrorCode);
