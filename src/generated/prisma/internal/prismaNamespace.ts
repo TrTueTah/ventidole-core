@@ -683,7 +683,8 @@ export const AccountScalarFieldEnum = {
   password: 'password',
   role: 'role',
   deviceToken: 'deviceToken',
-  isDeleted: 'isDeleted'
+  isDeleted: 'isDeleted',
+  isOnline: 'isOnline'
 } as const
 
 export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
@@ -698,10 +699,10 @@ export const VerificationScalarFieldEnum = {
   type: 'type',
   token: 'token',
   expiresAt: 'expiresAt',
-  email: 'email',
-  confirmedAt: 'confirmedAt',
   accountId: 'accountId',
-  usedAt: 'usedAt'
+  usedAt: 'usedAt',
+  confirmedAt: 'confirmedAt',
+  email: 'email'
 } as const
 
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]

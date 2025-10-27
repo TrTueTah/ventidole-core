@@ -46,6 +46,7 @@ export type AccountMinAggregateOutputType = {
   role: $Enums.Role | null
   deviceToken: string | null
   isDeleted: boolean | null
+  isOnline: boolean | null
 }
 
 export type AccountMaxAggregateOutputType = {
@@ -61,6 +62,7 @@ export type AccountMaxAggregateOutputType = {
   role: $Enums.Role | null
   deviceToken: string | null
   isDeleted: boolean | null
+  isOnline: boolean | null
 }
 
 export type AccountCountAggregateOutputType = {
@@ -76,6 +78,7 @@ export type AccountCountAggregateOutputType = {
   role: number
   deviceToken: number
   isDeleted: number
+  isOnline: number
   _all: number
 }
 
@@ -101,6 +104,7 @@ export type AccountMinAggregateInputType = {
   role?: true
   deviceToken?: true
   isDeleted?: true
+  isOnline?: true
 }
 
 export type AccountMaxAggregateInputType = {
@@ -116,6 +120,7 @@ export type AccountMaxAggregateInputType = {
   role?: true
   deviceToken?: true
   isDeleted?: true
+  isOnline?: true
 }
 
 export type AccountCountAggregateInputType = {
@@ -131,6 +136,7 @@ export type AccountCountAggregateInputType = {
   role?: true
   deviceToken?: true
   isDeleted?: true
+  isOnline?: true
   _all?: true
 }
 
@@ -233,6 +239,7 @@ export type AccountGroupByOutputType = {
   role: $Enums.Role
   deviceToken: string | null
   isDeleted: boolean
+  isOnline: boolean
   _count: AccountCountAggregateOutputType | null
   _avg: AccountAvgAggregateOutputType | null
   _sum: AccountSumAggregateOutputType | null
@@ -271,8 +278,9 @@ export type AccountWhereInput = {
   role?: Prisma.EnumRoleFilter<"Account"> | $Enums.Role
   deviceToken?: Prisma.StringNullableFilter<"Account"> | string | null
   isDeleted?: Prisma.BoolFilter<"Account"> | boolean
-  verifications?: Prisma.VerificationListRelationFilter
+  isOnline?: Prisma.BoolFilter<"Account"> | boolean
   social_accounts?: Prisma.SocialAccountListRelationFilter
+  verifications?: Prisma.VerificationListRelationFilter
 }
 
 export type AccountOrderByWithRelationInput = {
@@ -288,8 +296,9 @@ export type AccountOrderByWithRelationInput = {
   role?: Prisma.SortOrder
   deviceToken?: Prisma.SortOrderInput | Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
-  verifications?: Prisma.VerificationOrderByRelationAggregateInput
+  isOnline?: Prisma.SortOrder
   social_accounts?: Prisma.SocialAccountOrderByRelationAggregateInput
+  verifications?: Prisma.VerificationOrderByRelationAggregateInput
 }
 
 export type AccountWhereUniqueInput = Prisma.AtLeast<{
@@ -308,8 +317,9 @@ export type AccountWhereUniqueInput = Prisma.AtLeast<{
   role?: Prisma.EnumRoleFilter<"Account"> | $Enums.Role
   deviceToken?: Prisma.StringNullableFilter<"Account"> | string | null
   isDeleted?: Prisma.BoolFilter<"Account"> | boolean
-  verifications?: Prisma.VerificationListRelationFilter
+  isOnline?: Prisma.BoolFilter<"Account"> | boolean
   social_accounts?: Prisma.SocialAccountListRelationFilter
+  verifications?: Prisma.VerificationListRelationFilter
 }, "id" | "email">
 
 export type AccountOrderByWithAggregationInput = {
@@ -325,6 +335,7 @@ export type AccountOrderByWithAggregationInput = {
   role?: Prisma.SortOrder
   deviceToken?: Prisma.SortOrderInput | Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
+  isOnline?: Prisma.SortOrder
   _count?: Prisma.AccountCountOrderByAggregateInput
   _avg?: Prisma.AccountAvgOrderByAggregateInput
   _max?: Prisma.AccountMaxOrderByAggregateInput
@@ -348,6 +359,7 @@ export type AccountScalarWhereWithAggregatesInput = {
   role?: Prisma.EnumRoleWithAggregatesFilter<"Account"> | $Enums.Role
   deviceToken?: Prisma.StringNullableWithAggregatesFilter<"Account"> | string | null
   isDeleted?: Prisma.BoolWithAggregatesFilter<"Account"> | boolean
+  isOnline?: Prisma.BoolWithAggregatesFilter<"Account"> | boolean
 }
 
 export type AccountCreateInput = {
@@ -363,8 +375,9 @@ export type AccountCreateInput = {
   role: $Enums.Role
   deviceToken?: string | null
   isDeleted?: boolean
-  verifications?: Prisma.VerificationCreateNestedManyWithoutAccountInput
+  isOnline?: boolean
   social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutAccountInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUncheckedCreateInput = {
@@ -380,8 +393,9 @@ export type AccountUncheckedCreateInput = {
   role: $Enums.Role
   deviceToken?: string | null
   isDeleted?: boolean
-  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutAccountInput
+  isOnline?: boolean
   social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutAccountInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutAccountInput
 }
 
 export type AccountUpdateInput = {
@@ -397,8 +411,9 @@ export type AccountUpdateInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  verifications?: Prisma.VerificationUpdateManyWithoutAccountNestedInput
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   social_accounts?: Prisma.SocialAccountUpdateManyWithoutAccountNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountUncheckedUpdateInput = {
@@ -414,8 +429,9 @@ export type AccountUncheckedUpdateInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutAccountNestedInput
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutAccountNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutAccountNestedInput
 }
 
 export type AccountCreateManyInput = {
@@ -431,6 +447,7 @@ export type AccountCreateManyInput = {
   role: $Enums.Role
   deviceToken?: string | null
   isDeleted?: boolean
+  isOnline?: boolean
 }
 
 export type AccountUpdateManyMutationInput = {
@@ -446,6 +463,7 @@ export type AccountUpdateManyMutationInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type AccountUncheckedUpdateManyInput = {
@@ -461,6 +479,7 @@ export type AccountUncheckedUpdateManyInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type AccountCountOrderByAggregateInput = {
@@ -476,6 +495,7 @@ export type AccountCountOrderByAggregateInput = {
   role?: Prisma.SortOrder
   deviceToken?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
+  isOnline?: Prisma.SortOrder
 }
 
 export type AccountAvgOrderByAggregateInput = {
@@ -495,6 +515,7 @@ export type AccountMaxOrderByAggregateInput = {
   role?: Prisma.SortOrder
   deviceToken?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
+  isOnline?: Prisma.SortOrder
 }
 
 export type AccountMinOrderByAggregateInput = {
@@ -510,6 +531,7 @@ export type AccountMinOrderByAggregateInput = {
   role?: Prisma.SortOrder
   deviceToken?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
+  isOnline?: Prisma.SortOrder
 }
 
 export type AccountSumOrderByAggregateInput = {
@@ -597,6 +619,7 @@ export type AccountCreateWithoutVerificationsInput = {
   role: $Enums.Role
   deviceToken?: string | null
   isDeleted?: boolean
+  isOnline?: boolean
   social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutAccountInput
 }
 
@@ -613,6 +636,7 @@ export type AccountUncheckedCreateWithoutVerificationsInput = {
   role: $Enums.Role
   deviceToken?: string | null
   isDeleted?: boolean
+  isOnline?: boolean
   social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutAccountInput
 }
 
@@ -645,6 +669,7 @@ export type AccountUpdateWithoutVerificationsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   social_accounts?: Prisma.SocialAccountUpdateManyWithoutAccountNestedInput
 }
 
@@ -661,6 +686,7 @@ export type AccountUncheckedUpdateWithoutVerificationsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutAccountNestedInput
 }
 
@@ -677,6 +703,7 @@ export type AccountCreateWithoutSocial_accountsInput = {
   role: $Enums.Role
   deviceToken?: string | null
   isDeleted?: boolean
+  isOnline?: boolean
   verifications?: Prisma.VerificationCreateNestedManyWithoutAccountInput
 }
 
@@ -693,6 +720,7 @@ export type AccountUncheckedCreateWithoutSocial_accountsInput = {
   role: $Enums.Role
   deviceToken?: string | null
   isDeleted?: boolean
+  isOnline?: boolean
   verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutAccountInput
 }
 
@@ -725,6 +753,7 @@ export type AccountUpdateWithoutSocial_accountsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifications?: Prisma.VerificationUpdateManyWithoutAccountNestedInput
 }
 
@@ -741,6 +770,7 @@ export type AccountUncheckedUpdateWithoutSocial_accountsInput = {
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutAccountNestedInput
 }
 
@@ -750,13 +780,13 @@ export type AccountUncheckedUpdateWithoutSocial_accountsInput = {
  */
 
 export type AccountCountOutputType = {
-  verifications: number
   social_accounts: number
+  verifications: number
 }
 
 export type AccountCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  verifications?: boolean | AccountCountOutputTypeCountVerificationsArgs
   social_accounts?: boolean | AccountCountOutputTypeCountSocial_accountsArgs
+  verifications?: boolean | AccountCountOutputTypeCountVerificationsArgs
 }
 
 /**
@@ -772,15 +802,15 @@ export type AccountCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exte
 /**
  * AccountCountOutputType without action
  */
-export type AccountCountOutputTypeCountVerificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.VerificationWhereInput
+export type AccountCountOutputTypeCountSocial_accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SocialAccountWhereInput
 }
 
 /**
  * AccountCountOutputType without action
  */
-export type AccountCountOutputTypeCountSocial_accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.SocialAccountWhereInput
+export type AccountCountOutputTypeCountVerificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VerificationWhereInput
 }
 
 
@@ -797,8 +827,9 @@ export type AccountSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   role?: boolean
   deviceToken?: boolean
   isDeleted?: boolean
-  verifications?: boolean | Prisma.Account$verificationsArgs<ExtArgs>
+  isOnline?: boolean
   social_accounts?: boolean | Prisma.Account$social_accountsArgs<ExtArgs>
+  verifications?: boolean | Prisma.Account$verificationsArgs<ExtArgs>
   _count?: boolean | Prisma.AccountCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["account"]>
 
@@ -815,6 +846,7 @@ export type AccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   role?: boolean
   deviceToken?: boolean
   isDeleted?: boolean
+  isOnline?: boolean
 }, ExtArgs["result"]["account"]>
 
 export type AccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -830,6 +862,7 @@ export type AccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   role?: boolean
   deviceToken?: boolean
   isDeleted?: boolean
+  isOnline?: boolean
 }, ExtArgs["result"]["account"]>
 
 export type AccountSelectScalar = {
@@ -845,12 +878,13 @@ export type AccountSelectScalar = {
   role?: boolean
   deviceToken?: boolean
   isDeleted?: boolean
+  isOnline?: boolean
 }
 
-export type AccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "name" | "email" | "phoneNumber" | "password" | "role" | "deviceToken" | "isDeleted", ExtArgs["result"]["account"]>
+export type AccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "name" | "email" | "phoneNumber" | "password" | "role" | "deviceToken" | "isDeleted" | "isOnline", ExtArgs["result"]["account"]>
 export type AccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  verifications?: boolean | Prisma.Account$verificationsArgs<ExtArgs>
   social_accounts?: boolean | Prisma.Account$social_accountsArgs<ExtArgs>
+  verifications?: boolean | Prisma.Account$verificationsArgs<ExtArgs>
   _count?: boolean | Prisma.AccountCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type AccountIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -859,8 +893,8 @@ export type AccountIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
 export type $AccountPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Account"
   objects: {
-    verifications: Prisma.$VerificationPayload<ExtArgs>[]
     social_accounts: Prisma.$SocialAccountPayload<ExtArgs>[]
+    verifications: Prisma.$VerificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -875,6 +909,7 @@ export type $AccountPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     role: $Enums.Role
     deviceToken: string | null
     isDeleted: boolean
+    isOnline: boolean
   }, ExtArgs["result"]["account"]>
   composites: {}
 }
@@ -1269,8 +1304,8 @@ readonly fields: AccountFieldRefs;
  */
 export interface Prisma__AccountClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  verifications<T extends Prisma.Account$verificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$verificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   social_accounts<T extends Prisma.Account$social_accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$social_accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SocialAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  verifications<T extends Prisma.Account$verificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Account$verificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1312,6 +1347,7 @@ export interface AccountFieldRefs {
   readonly role: Prisma.FieldRef<"Account", 'Role'>
   readonly deviceToken: Prisma.FieldRef<"Account", 'String'>
   readonly isDeleted: Prisma.FieldRef<"Account", 'Boolean'>
+  readonly isOnline: Prisma.FieldRef<"Account", 'Boolean'>
 }
     
 
@@ -1700,30 +1736,6 @@ export type AccountDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
 }
 
 /**
- * Account.verifications
- */
-export type Account$verificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Verification
-   */
-  select?: Prisma.VerificationSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Verification
-   */
-  omit?: Prisma.VerificationOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.VerificationInclude<ExtArgs> | null
-  where?: Prisma.VerificationWhereInput
-  orderBy?: Prisma.VerificationOrderByWithRelationInput | Prisma.VerificationOrderByWithRelationInput[]
-  cursor?: Prisma.VerificationWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.VerificationScalarFieldEnum | Prisma.VerificationScalarFieldEnum[]
-}
-
-/**
  * Account.social_accounts
  */
 export type Account$social_accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1745,6 +1757,30 @@ export type Account$social_accountsArgs<ExtArgs extends runtime.Types.Extensions
   take?: number
   skip?: number
   distinct?: Prisma.SocialAccountScalarFieldEnum | Prisma.SocialAccountScalarFieldEnum[]
+}
+
+/**
+ * Account.verifications
+ */
+export type Account$verificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Verification
+   */
+  select?: Prisma.VerificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Verification
+   */
+  omit?: Prisma.VerificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VerificationInclude<ExtArgs> | null
+  where?: Prisma.VerificationWhereInput
+  orderBy?: Prisma.VerificationOrderByWithRelationInput | Prisma.VerificationOrderByWithRelationInput[]
+  cursor?: Prisma.VerificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VerificationScalarFieldEnum | Prisma.VerificationScalarFieldEnum[]
 }
 
 /**

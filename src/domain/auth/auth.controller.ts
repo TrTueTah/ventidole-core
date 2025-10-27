@@ -1,6 +1,6 @@
 import { ApiBodyCustom, ApiExtraModelsCustom, ApiResponseCustom } from "@core/decorator/doc.decorator";
 import { Body, Controller, Post } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { ApiBody, ApiTags } from "@nestjs/swagger";
 import { ApiVersion } from "@shared/enum/api-version.enum";
 import { AuthService } from "./auth.service";
 import { SignInResponse } from "./response/sign-in.response";
@@ -22,36 +22,42 @@ export class AuthController {
 
   @Post('sign-in')
   @ApiResponseCustom(SignInResponse)
+  @ApiBody({ type: SignInRequest })
   signIn(@Body() request: SignInRequest) {
     return this.authService.signIn(request);
   }
 
   @Post('sign-up')
   @ApiResponseCustom(SignInResponse)
+  @ApiBody({ type: SignUpRequest })
   signUp(@Body() request: SignUpRequest) {
     return this.authService.signUp(request);
   }
 
   @Post('send-verification')
   @ApiResponseCustom(VerificationCodeResponse)
+  @ApiBody({ type: SendVerificationRequest })
   sendVerification(@Body() request: SendVerificationRequest) {
     return this.authService.sendVerification(request);
   }
 
   @Post('confirm-verification')
   @ApiResponseCustom(ConfirmVerificationResponse)
+  @ApiBody({ type: ConfirmVerificationRequest })
   confirmVerification(@Body() request: ConfirmVerificationRequest) {
     return this.authService.confirmVerification(request);
   }
 
   @Post('refresh-token')
   @ApiResponseCustom(SignInResponse)
+  @ApiBody({ type: RefreshTokenRequest })
   refreshNewToken(@Body() request: RefreshTokenRequest) {
     return this.authService.refreshNewToken(request);
   }
 
   @Post('reset-password')
   @ApiResponseCustom()
+  @ApiBody({ type: ResetPasswordRequest })
   resetPassword(@Body() request: ResetPasswordRequest) {
     return this.authService.resetPassword(request);
   }

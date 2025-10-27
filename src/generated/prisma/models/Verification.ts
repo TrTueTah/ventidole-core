@@ -42,10 +42,10 @@ export type VerificationMinAggregateOutputType = {
   type: $Enums.VerificationType | null
   token: string | null
   expiresAt: Date | null
-  email: string | null
-  confirmedAt: Date | null
   accountId: string | null
   usedAt: Date | null
+  confirmedAt: Date | null
+  email: string | null
 }
 
 export type VerificationMaxAggregateOutputType = {
@@ -57,10 +57,10 @@ export type VerificationMaxAggregateOutputType = {
   type: $Enums.VerificationType | null
   token: string | null
   expiresAt: Date | null
-  email: string | null
-  confirmedAt: Date | null
   accountId: string | null
   usedAt: Date | null
+  confirmedAt: Date | null
+  email: string | null
 }
 
 export type VerificationCountAggregateOutputType = {
@@ -72,10 +72,10 @@ export type VerificationCountAggregateOutputType = {
   type: number
   token: number
   expiresAt: number
-  email: number
-  confirmedAt: number
   accountId: number
   usedAt: number
+  confirmedAt: number
+  email: number
   _all: number
 }
 
@@ -97,10 +97,10 @@ export type VerificationMinAggregateInputType = {
   type?: true
   token?: true
   expiresAt?: true
-  email?: true
-  confirmedAt?: true
   accountId?: true
   usedAt?: true
+  confirmedAt?: true
+  email?: true
 }
 
 export type VerificationMaxAggregateInputType = {
@@ -112,10 +112,10 @@ export type VerificationMaxAggregateInputType = {
   type?: true
   token?: true
   expiresAt?: true
-  email?: true
-  confirmedAt?: true
   accountId?: true
   usedAt?: true
+  confirmedAt?: true
+  email?: true
 }
 
 export type VerificationCountAggregateInputType = {
@@ -127,10 +127,10 @@ export type VerificationCountAggregateInputType = {
   type?: true
   token?: true
   expiresAt?: true
-  email?: true
-  confirmedAt?: true
   accountId?: true
   usedAt?: true
+  confirmedAt?: true
+  email?: true
   _all?: true
 }
 
@@ -229,10 +229,10 @@ export type VerificationGroupByOutputType = {
   type: $Enums.VerificationType
   token: string
   expiresAt: Date
-  email: string | null
-  confirmedAt: Date | null
   accountId: string | null
   usedAt: Date | null
+  confirmedAt: Date | null
+  email: string | null
   _count: VerificationCountAggregateOutputType | null
   _avg: VerificationAvgAggregateOutputType | null
   _sum: VerificationSumAggregateOutputType | null
@@ -267,10 +267,10 @@ export type VerificationWhereInput = {
   type?: Prisma.EnumVerificationTypeFilter<"Verification"> | $Enums.VerificationType
   token?: Prisma.StringFilter<"Verification"> | string
   expiresAt?: Prisma.DateTimeFilter<"Verification"> | Date | string
-  email?: Prisma.StringNullableFilter<"Verification"> | string | null
-  confirmedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
   accountId?: Prisma.StringNullableFilter<"Verification"> | string | null
   usedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
+  confirmedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
+  email?: Prisma.StringNullableFilter<"Verification"> | string | null
   account?: Prisma.XOR<Prisma.AccountNullableScalarRelationFilter, Prisma.AccountWhereInput> | null
 }
 
@@ -283,10 +283,10 @@ export type VerificationOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   token?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  email?: Prisma.SortOrderInput | Prisma.SortOrder
-  confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   accountId?: Prisma.SortOrderInput | Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   account?: Prisma.AccountOrderByWithRelationInput
 }
 
@@ -302,10 +302,10 @@ export type VerificationWhereUniqueInput = Prisma.AtLeast<{
   version?: Prisma.IntFilter<"Verification"> | number
   type?: Prisma.EnumVerificationTypeFilter<"Verification"> | $Enums.VerificationType
   expiresAt?: Prisma.DateTimeFilter<"Verification"> | Date | string
-  email?: Prisma.StringNullableFilter<"Verification"> | string | null
-  confirmedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
   accountId?: Prisma.StringNullableFilter<"Verification"> | string | null
   usedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
+  confirmedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
+  email?: Prisma.StringNullableFilter<"Verification"> | string | null
   account?: Prisma.XOR<Prisma.AccountNullableScalarRelationFilter, Prisma.AccountWhereInput> | null
 }, "id" | "token">
 
@@ -318,10 +318,10 @@ export type VerificationOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   token?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  email?: Prisma.SortOrderInput | Prisma.SortOrder
-  confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   accountId?: Prisma.SortOrderInput | Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.VerificationCountOrderByAggregateInput
   _avg?: Prisma.VerificationAvgOrderByAggregateInput
   _max?: Prisma.VerificationMaxOrderByAggregateInput
@@ -341,10 +341,10 @@ export type VerificationScalarWhereWithAggregatesInput = {
   type?: Prisma.EnumVerificationTypeWithAggregatesFilter<"Verification"> | $Enums.VerificationType
   token?: Prisma.StringWithAggregatesFilter<"Verification"> | string
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"Verification"> | Date | string
-  email?: Prisma.StringNullableWithAggregatesFilter<"Verification"> | string | null
-  confirmedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Verification"> | Date | string | null
   accountId?: Prisma.StringNullableWithAggregatesFilter<"Verification"> | string | null
   usedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Verification"> | Date | string | null
+  confirmedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Verification"> | Date | string | null
+  email?: Prisma.StringNullableWithAggregatesFilter<"Verification"> | string | null
 }
 
 export type VerificationCreateInput = {
@@ -356,9 +356,9 @@ export type VerificationCreateInput = {
   type: $Enums.VerificationType
   token: string
   expiresAt: Date | string
-  email?: string | null
-  confirmedAt?: Date | string | null
   usedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  email?: string | null
   account?: Prisma.AccountCreateNestedOneWithoutVerificationsInput
 }
 
@@ -371,10 +371,10 @@ export type VerificationUncheckedCreateInput = {
   type: $Enums.VerificationType
   token: string
   expiresAt: Date | string
-  email?: string | null
-  confirmedAt?: Date | string | null
   accountId?: string | null
   usedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  email?: string | null
 }
 
 export type VerificationUpdateInput = {
@@ -386,9 +386,9 @@ export type VerificationUpdateInput = {
   type?: Prisma.EnumVerificationTypeFieldUpdateOperationsInput | $Enums.VerificationType
   token?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   account?: Prisma.AccountUpdateOneWithoutVerificationsNestedInput
 }
 
@@ -401,10 +401,10 @@ export type VerificationUncheckedUpdateInput = {
   type?: Prisma.EnumVerificationTypeFieldUpdateOperationsInput | $Enums.VerificationType
   token?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type VerificationCreateManyInput = {
@@ -416,10 +416,10 @@ export type VerificationCreateManyInput = {
   type: $Enums.VerificationType
   token: string
   expiresAt: Date | string
-  email?: string | null
-  confirmedAt?: Date | string | null
   accountId?: string | null
   usedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  email?: string | null
 }
 
 export type VerificationUpdateManyMutationInput = {
@@ -431,9 +431,9 @@ export type VerificationUpdateManyMutationInput = {
   type?: Prisma.EnumVerificationTypeFieldUpdateOperationsInput | $Enums.VerificationType
   token?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type VerificationUncheckedUpdateManyInput = {
@@ -445,10 +445,10 @@ export type VerificationUncheckedUpdateManyInput = {
   type?: Prisma.EnumVerificationTypeFieldUpdateOperationsInput | $Enums.VerificationType
   token?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type VerificationListRelationFilter = {
@@ -470,10 +470,10 @@ export type VerificationCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   token?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  confirmedAt?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
+  confirmedAt?: Prisma.SortOrder
+  email?: Prisma.SortOrder
 }
 
 export type VerificationAvgOrderByAggregateInput = {
@@ -489,10 +489,10 @@ export type VerificationMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   token?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  confirmedAt?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
+  confirmedAt?: Prisma.SortOrder
+  email?: Prisma.SortOrder
 }
 
 export type VerificationMinOrderByAggregateInput = {
@@ -504,10 +504,10 @@ export type VerificationMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   token?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  email?: Prisma.SortOrder
-  confirmedAt?: Prisma.SortOrder
   accountId?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
+  confirmedAt?: Prisma.SortOrder
+  email?: Prisma.SortOrder
 }
 
 export type VerificationSumOrderByAggregateInput = {
@@ -573,9 +573,9 @@ export type VerificationCreateWithoutAccountInput = {
   type: $Enums.VerificationType
   token: string
   expiresAt: Date | string
-  email?: string | null
-  confirmedAt?: Date | string | null
   usedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  email?: string | null
 }
 
 export type VerificationUncheckedCreateWithoutAccountInput = {
@@ -587,9 +587,9 @@ export type VerificationUncheckedCreateWithoutAccountInput = {
   type: $Enums.VerificationType
   token: string
   expiresAt: Date | string
-  email?: string | null
-  confirmedAt?: Date | string | null
   usedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  email?: string | null
 }
 
 export type VerificationCreateOrConnectWithoutAccountInput = {
@@ -630,10 +630,10 @@ export type VerificationScalarWhereInput = {
   type?: Prisma.EnumVerificationTypeFilter<"Verification"> | $Enums.VerificationType
   token?: Prisma.StringFilter<"Verification"> | string
   expiresAt?: Prisma.DateTimeFilter<"Verification"> | Date | string
-  email?: Prisma.StringNullableFilter<"Verification"> | string | null
-  confirmedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
   accountId?: Prisma.StringNullableFilter<"Verification"> | string | null
   usedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
+  confirmedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
+  email?: Prisma.StringNullableFilter<"Verification"> | string | null
 }
 
 export type VerificationCreateManyAccountInput = {
@@ -645,9 +645,9 @@ export type VerificationCreateManyAccountInput = {
   type: $Enums.VerificationType
   token: string
   expiresAt: Date | string
-  email?: string | null
-  confirmedAt?: Date | string | null
   usedAt?: Date | string | null
+  confirmedAt?: Date | string | null
+  email?: string | null
 }
 
 export type VerificationUpdateWithoutAccountInput = {
@@ -659,9 +659,9 @@ export type VerificationUpdateWithoutAccountInput = {
   type?: Prisma.EnumVerificationTypeFieldUpdateOperationsInput | $Enums.VerificationType
   token?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type VerificationUncheckedUpdateWithoutAccountInput = {
@@ -673,9 +673,9 @@ export type VerificationUncheckedUpdateWithoutAccountInput = {
   type?: Prisma.EnumVerificationTypeFieldUpdateOperationsInput | $Enums.VerificationType
   token?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type VerificationUncheckedUpdateManyWithoutAccountInput = {
@@ -687,9 +687,9 @@ export type VerificationUncheckedUpdateManyWithoutAccountInput = {
   type?: Prisma.EnumVerificationTypeFieldUpdateOperationsInput | $Enums.VerificationType
   token?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -703,10 +703,10 @@ export type VerificationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   type?: boolean
   token?: boolean
   expiresAt?: boolean
-  email?: boolean
-  confirmedAt?: boolean
   accountId?: boolean
   usedAt?: boolean
+  confirmedAt?: boolean
+  email?: boolean
   account?: boolean | Prisma.Verification$accountArgs<ExtArgs>
 }, ExtArgs["result"]["verification"]>
 
@@ -719,10 +719,10 @@ export type VerificationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   type?: boolean
   token?: boolean
   expiresAt?: boolean
-  email?: boolean
-  confirmedAt?: boolean
   accountId?: boolean
   usedAt?: boolean
+  confirmedAt?: boolean
+  email?: boolean
   account?: boolean | Prisma.Verification$accountArgs<ExtArgs>
 }, ExtArgs["result"]["verification"]>
 
@@ -735,10 +735,10 @@ export type VerificationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   type?: boolean
   token?: boolean
   expiresAt?: boolean
-  email?: boolean
-  confirmedAt?: boolean
   accountId?: boolean
   usedAt?: boolean
+  confirmedAt?: boolean
+  email?: boolean
   account?: boolean | Prisma.Verification$accountArgs<ExtArgs>
 }, ExtArgs["result"]["verification"]>
 
@@ -751,13 +751,13 @@ export type VerificationSelectScalar = {
   type?: boolean
   token?: boolean
   expiresAt?: boolean
-  email?: boolean
-  confirmedAt?: boolean
   accountId?: boolean
   usedAt?: boolean
+  confirmedAt?: boolean
+  email?: boolean
 }
 
-export type VerificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "type" | "token" | "expiresAt" | "email" | "confirmedAt" | "accountId" | "usedAt", ExtArgs["result"]["verification"]>
+export type VerificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "type" | "token" | "expiresAt" | "accountId" | "usedAt" | "confirmedAt" | "email", ExtArgs["result"]["verification"]>
 export type VerificationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   account?: boolean | Prisma.Verification$accountArgs<ExtArgs>
 }
@@ -782,10 +782,10 @@ export type $VerificationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     type: $Enums.VerificationType
     token: string
     expiresAt: Date
-    email: string | null
-    confirmedAt: Date | null
     accountId: string | null
     usedAt: Date | null
+    confirmedAt: Date | null
+    email: string | null
   }, ExtArgs["result"]["verification"]>
   composites: {}
 }
@@ -1218,10 +1218,10 @@ export interface VerificationFieldRefs {
   readonly type: Prisma.FieldRef<"Verification", 'VerificationType'>
   readonly token: Prisma.FieldRef<"Verification", 'String'>
   readonly expiresAt: Prisma.FieldRef<"Verification", 'DateTime'>
-  readonly email: Prisma.FieldRef<"Verification", 'String'>
-  readonly confirmedAt: Prisma.FieldRef<"Verification", 'DateTime'>
   readonly accountId: Prisma.FieldRef<"Verification", 'String'>
   readonly usedAt: Prisma.FieldRef<"Verification", 'DateTime'>
+  readonly confirmedAt: Prisma.FieldRef<"Verification", 'DateTime'>
+  readonly email: Prisma.FieldRef<"Verification", 'String'>
 }
     
 

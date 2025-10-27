@@ -1,0 +1,832 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/auth/sign-in": {
+      "post": {
+        "operationId": "AuthController_signIn",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "HTTP status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/SignInResponse",
+                      "description": "Response data"
+                    },
+                    "error": {
+                      "type": "null",
+                      "example": null,
+                      "description": "Error information (null on success)"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "description": "Error code (optional)"
+                    }
+                  },
+                  "required": [
+                    "statusCode",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Authenticate"
+        ]
+      }
+    },
+    "/auth/sign-up": {
+      "post": {
+        "operationId": "AuthController_signUp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignUpRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "HTTP status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/SignInResponse",
+                      "description": "Response data"
+                    },
+                    "error": {
+                      "type": "null",
+                      "example": null,
+                      "description": "Error information (null on success)"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "description": "Error code (optional)"
+                    }
+                  },
+                  "required": [
+                    "statusCode",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Authenticate"
+        ]
+      }
+    },
+    "/auth/send-verification": {
+      "post": {
+        "operationId": "AuthController_sendVerification",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "HTTP status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/VerificationCodeResponse",
+                      "description": "Response data"
+                    },
+                    "error": {
+                      "type": "null",
+                      "example": null,
+                      "description": "Error information (null on success)"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "description": "Error code (optional)"
+                    }
+                  },
+                  "required": [
+                    "statusCode",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Authenticate"
+        ]
+      }
+    },
+    "/auth/confirm-verification": {
+      "post": {
+        "operationId": "AuthController_confirmVerification",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConfirmVerificationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "HTTP status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/ConfirmVerificationResponse",
+                      "description": "Response data"
+                    },
+                    "error": {
+                      "type": "null",
+                      "example": null,
+                      "description": "Error information (null on success)"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "description": "Error code (optional)"
+                    }
+                  },
+                  "required": [
+                    "statusCode",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Authenticate"
+        ]
+      }
+    },
+    "/auth/refresh-token": {
+      "post": {
+        "operationId": "AuthController_refreshNewToken",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "HTTP status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/SignInResponse",
+                      "description": "Response data"
+                    },
+                    "error": {
+                      "type": "null",
+                      "example": null,
+                      "description": "Error information (null on success)"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "description": "Error code (optional)"
+                    }
+                  },
+                  "required": [
+                    "statusCode",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Authenticate"
+        ]
+      }
+    },
+    "/auth/reset-password": {
+      "post": {
+        "operationId": "AuthController_resetPassword",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "HTTP status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "type": "null",
+                      "example": null,
+                      "description": "No data returned"
+                    },
+                    "error": {
+                      "type": "null",
+                      "example": null,
+                      "description": "Error information (null on success)"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "description": "Error code (optional)"
+                    }
+                  },
+                  "required": [
+                    "statusCode",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Authenticate"
+        ]
+      }
+    },
+    "/user/update-status": {
+      "post": {
+        "operationId": "UserController_updateStatus",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStatusRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "HTTP status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "type": "null",
+                      "example": null,
+                      "description": "No data returned"
+                    },
+                    "error": {
+                      "type": "null",
+                      "example": null,
+                      "description": "Error information (null on success)"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "description": "Error code (optional)"
+                    }
+                  },
+                  "required": [
+                    "statusCode",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "User"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "API Docs",
+    "description": "Custom Swagger UI in NestJS",
+    "version": "1",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "BaseResponse": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "enum": [
+              100,
+              101,
+              102,
+              103,
+              200,
+              201,
+              202,
+              203,
+              204,
+              205,
+              206,
+              207,
+              208,
+              210,
+              300,
+              301,
+              302,
+              303,
+              304,
+              307,
+              308,
+              400,
+              401,
+              402,
+              403,
+              404,
+              405,
+              406,
+              407,
+              408,
+              409,
+              410,
+              411,
+              412,
+              413,
+              414,
+              415,
+              416,
+              417,
+              418,
+              421,
+              422,
+              423,
+              424,
+              428,
+              429,
+              456,
+              500,
+              501,
+              502,
+              503,
+              504,
+              505,
+              507,
+              508
+            ],
+            "example": 200,
+            "description": "HTTP status code"
+          },
+          "message": {
+            "type": "string",
+            "example": "OK",
+            "description": "Response message"
+          },
+          "data": {
+            "type": "object",
+            "description": "Response data (null if no data)",
+            "nullable": true
+          },
+          "error": {
+            "type": "object",
+            "description": "Error information (null on success)"
+          },
+          "errorCode": {
+            "type": "string",
+            "enum": [
+              "validation_failed",
+              "unauthenticated",
+              "unauthorized",
+              "http_error",
+              "unknown_error",
+              "token_expired",
+              "invalid_token",
+              "not_any_recipient",
+              "send_mail_failed",
+              "consumer_not_found",
+              "consumer_failed",
+              "process_failed",
+              "otp_already_exist",
+              "otp_spam",
+              "otp_expired",
+              "otp_incorrect",
+              "invalid_decode_token",
+              "invalid_token_issuer",
+              "VerificationNotFound",
+              "VerificationSessionExpired",
+              "AccountNotFound",
+              "ExistedEmail",
+              "ExistedPhoneNumber",
+              "InvalidEmailOrPassword",
+              "InvalidTokenSecret"
+            ],
+            "description": "Error code (optional)"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message"
+        ]
+      },
+      "SignInResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1",
+            "description": "User ID"
+          },
+          "role": {
+            "type": "string",
+            "example": "FAN",
+            "description": "User role",
+            "enum": [
+              "FAN",
+              "ADMIN",
+              "IDOL"
+            ]
+          },
+          "accessToken": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+            "description": "JWT access token"
+          },
+          "refreshToken": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+            "description": "JWT refresh token"
+          }
+        },
+        "required": [
+          "id",
+          "role",
+          "accessToken",
+          "refreshToken"
+        ]
+      },
+      "VerificationCodeResponse": {
+        "type": "object",
+        "properties": {
+          "waitSeconds": {
+            "type": "number",
+            "description": "Wait time in seconds",
+            "example": 60
+          },
+          "expireAt": {
+            "type": "number",
+            "description": "Expired at verification timestamp",
+            "example": 1740412406898
+          }
+        },
+        "required": [
+          "waitSeconds",
+          "expireAt"
+        ]
+      },
+      "ConfirmVerificationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "1",
+            "description": "User ID"
+          },
+          "name": {
+            "type": "string",
+            "example": "Leon",
+            "description": "User name",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "example": "example@gmail.com",
+            "description": "User email"
+          },
+          "role": {
+            "type": "string",
+            "example": "FAN",
+            "description": "User role",
+            "enum": [
+              "FAN",
+              "ADMIN",
+              "IDOL"
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "role"
+        ]
+      },
+      "SignInRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "example@gmail.com",
+            "description": "Your email"
+          },
+          "password": {
+            "type": "string",
+            "example": "Password@123456",
+            "description": "Your password"
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "SignUpRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "example@gmail.com",
+            "description": "Your email"
+          },
+          "password": {
+            "type": "string",
+            "example": "Password@123456",
+            "description": "Your password"
+          },
+          "name": {
+            "type": "string",
+            "example": "John Doe",
+            "description": "Your full name"
+          },
+          "phoneNumber": {
+            "type": "string",
+            "example": "+1234567890",
+            "description": "Your phone number"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "name",
+          "phoneNumber"
+        ]
+      },
+      "SendVerificationRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "user@example.com",
+            "description": "Your email address"
+          },
+          "verificationType": {
+            "type": "string",
+            "enum": [
+              "FIND_EMAIL",
+              "RESET_PASSWORD",
+              "REGISTER_ACCOUNT",
+              "UPDATE_PROFILE"
+            ],
+            "description": "Verification behavior",
+            "example": "REGISTER_ACCOUNT"
+          }
+        },
+        "required": [
+          "email",
+          "verificationType"
+        ]
+      },
+      "ConfirmVerificationRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "example@gmail.com",
+            "description": "Your email address"
+          },
+          "code": {
+            "type": "string",
+            "description": "Your verification code",
+            "example": "0303"
+          },
+          "verificationType": {
+            "type": "string",
+            "enum": [
+              "FIND_EMAIL",
+              "RESET_PASSWORD",
+              "REGISTER_ACCOUNT",
+              "UPDATE_PROFILE"
+            ],
+            "description": "Verification type",
+            "example": "FIND_EMAIL"
+          }
+        },
+        "required": [
+          "email",
+          "code",
+          "verificationType"
+        ]
+      },
+      "RefreshTokenRequest": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Your access token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4ODUwMjM0NSwiZXhwIjoxNjg4NTg4NzQ1fQ.7mXhKfXlqH3p0nO2b8jv8XzF1Zz5Y9bX5tF8vZ6xQ"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "Your refresh token",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4ODUwMjM0NSwiZXhwIjoxNjg4NTg4NzQ1fQ.7mXhKfXlqH3p0nO2b8jv8XzF1Zz5Y9bX5tF8vZ6xQ"
+          }
+        },
+        "required": [
+          "token",
+          "refreshToken"
+        ]
+      },
+      "ResetPasswordRequest": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "example": "Password@123456",
+            "description": "Your new password"
+          },
+          "email": {
+            "type": "string",
+            "example": "example@gmail.com",
+            "description": "Your email address"
+          }
+        },
+        "required": [
+          "password",
+          "email"
+        ]
+      },
+      "UpdateStatusRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "example": "123e4567",
+            "description": "User ID"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive"
+            ],
+            "description": "User status",
+            "example": "active"
+          }
+        },
+        "required": [
+          "userId",
+          "status"
+        ]
+      }
+    }
+  }
+}

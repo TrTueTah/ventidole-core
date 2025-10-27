@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -15,54 +9,40 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// NOTE: Prisma doesn't support inheritance, but you should copy these fields
-// to every model in your database for consistency:
-//
-// id        String   @id @default(cuid())
-// isActive  Boolean  @default(true)
-// createdAt DateTime @default(now())
-// updatedAt DateTime @updatedAt
-// version   Int      @default(0)
-//
-// The version field is useful for optimistic locking to prevent concurrent update conflicts
 model Account {
-  id        String   @id @default(cuid())
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  version   Int      @default(0)
-
-  name        String? @db.VarChar(255)
-  email       String  @unique(map: "accounts_email_unique_partial") @db.VarChar(255)
-  phoneNumber String? @db.VarChar(255)
-  password    String  @db.VarChar(255)
-  role        Role
-  deviceToken String? @db.VarChar(255)
-  isDeleted   Boolean @default(false) @map("is_deleted")
-
-  verifications   Verification[]
+  id              String          @id @default(cuid())
+  isActive        Boolean         @default(true)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  version         Int             @default(0)
+  name            String?         @db.VarChar(255)
+  email           String          @unique(map: "accounts_email_unique_partial") @db.VarChar(255)
+  phoneNumber     String?         @db.VarChar(255)
+  password        String          @db.VarChar(255)
+  role            Role
+  deviceToken     String?         @db.VarChar(255)
+  isDeleted       Boolean         @default(false) @map("is_deleted")
+  isOnline        Boolean         @default(false) @map("is_online")
   social_accounts SocialAccount[]
+  verifications   Verification[]
+
   @@map("accounts")
 }
 
 model Verification {
-  // Base entity fields - copy these to all models
-  id        String   @id @default(cuid())
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  version   Int      @default(0)
-
+  id          String           @id @default(cuid())
+  isActive    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  version     Int              @default(0)
   type        VerificationType
   token       String           @unique
   expiresAt   DateTime         @map("expires_at")
-  email       String?          @db.VarChar(255)
+  accountId   String?          @map("accountId")
+  usedAt      DateTime?        @map("used_at")
   confirmedAt DateTime?        @map("confirmed_at")
-
-  accountId String?  @map("accountId")
-  account   Account? @relation(fields: [accountId], references: [id], onDelete: Cascade)
-
-  usedAt DateTime? @map("used_at")
+  email       String?          @db.VarChar(255)
+  account     Account?         @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
   @@index([token])
   @@index([accountId])
@@ -71,18 +51,15 @@ model Verification {
 }
 
 model SocialAccount {
-  // Base entity fields - copy these to all models
-  id        String   @id @default(cuid())
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  version   Int      @default(0)
-
+  id         String                @id @default(cuid())
+  isActive   Boolean               @default(true)
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+  version    Int                   @default(0)
   provider   SocialAccountProvider
   providerId String                @map("provider_id")
-
-  accountId String  @map("user_id")
-  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId  String                @map("user_id")
+  account    Account               @relation(fields: [accountId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerId])
   @@index([accountId])
