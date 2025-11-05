@@ -1,41 +1,25 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import * as admin from 'firebase-admin';
 import { ServiceAccount } from 'firebase-admin';
+import { ENVIRONMENT } from '@core/config/env.config';
 
 @Injectable()
 export class FirebaseService implements OnModuleInit {
   private readonly logger = new Logger(FirebaseService.name);
   private firebaseApp: admin.app.App;
 
-  constructor(private configService: ConfigService) {}
-
   async onModuleInit() {
     try {
-      // Option 1: Using service account JSON file path
-      const serviceAccountPath = this.configService.get<string>('FIREBASE_SERVICE_ACCOUNT_PATH');
-      
-      // Option 2: Using service account JSON object from env
-      const serviceAccountJson = this.configService.get<string>('FIREBASE_SERVICE_ACCOUNT_JSON');
-
-      let credential: admin.credential.Credential;
-
-      if (serviceAccountJson) {
-        // Parse JSON from environment variable
-        const serviceAccount: ServiceAccount = JSON.parse(serviceAccountJson);
-        credential = admin.credential.cert(serviceAccount);
-      } else if (serviceAccountPath) {
-        // Load from file path
-        credential = admin.credential.cert(serviceAccountPath);
-      } else {
-        // Use application default credentials (works in GCP environments)
-        credential = admin.credential.applicationDefault();
+      const serviceAccount = {
+        projectId: ENVIRONMENT.FIREBASE_PROJECT_ID,
+        privateKey: ENVIRONMENT.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+        clientEmail: ENVIRONMENT.FIREBASE_CLIENT_EMAIL,
       }
 
       this.firebaseApp = admin.initializeApp({
-        credential,
-        databaseURL: this.configService.get<string>('FIREBASE_DATABASE_URL'),
-        storageBucket: this.configService.get<string>('FIREBASE_STORAGE_BUCKET'),
+        credential: admin.credential.cert(serviceAccount),
+        // databaseURL: ENVIRONMENT.FIREBASE_DATABASE_URL,
+        // storageBucket: ENVIRONMENT.FIREBASE_STORAGE_BUCKET,
       });
 
       this.logger.log('[FIREBASE] Initialized successfully');

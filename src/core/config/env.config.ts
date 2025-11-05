@@ -101,6 +101,15 @@ class EnvironmentVariable {
   @IsNumber()
   @IsNotEmpty()
   JWT_EXPIRED: number;
+
+  @IsString()
+  FIREBASE_PROJECT_ID: string;
+
+  @IsString()
+  FIREBASE_PRIVATE_KEY: string;
+
+  @IsString()
+  FIREBASE_CLIENT_EMAIL: string;
 }
 
 export const ENVIRONMENT = {} as EnvironmentVariable;

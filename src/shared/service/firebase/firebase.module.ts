@@ -1,10 +1,19 @@
 import { Module, Global } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { FirebaseService } from './firebase.service';
 
+/**
+ * Firebase Module - Global module for Firebase services
+ * 
+ * Provides:
+ * - Firestore (real-time database)
+ * - Firebase Authentication
+ * - Firebase Cloud Messaging (push notifications)
+ * - Firebase Storage (file uploads)
+ * 
+ * Configuration via ENVIRONMENT from @core/config/env.config
+ */
 @Global()
 @Module({
-  imports: [ConfigModule],
   providers: [FirebaseService],
   exports: [FirebaseService],
 })

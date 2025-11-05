@@ -1,9 +1,9 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/auth/sign-in": {
+    "/v1/auth/sign-in": {
       "post": {
-        "operationId": "AuthController_signIn",
+        "operationId": "AuthController_signIn_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -62,9 +62,9 @@
         ]
       }
     },
-    "/auth/sign-up": {
+    "/v1/auth/sign-up": {
       "post": {
-        "operationId": "AuthController_signUp",
+        "operationId": "AuthController_signUp_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -123,9 +123,9 @@
         ]
       }
     },
-    "/auth/send-verification": {
+    "/v1/auth/send-verification": {
       "post": {
-        "operationId": "AuthController_sendVerification",
+        "operationId": "AuthController_sendVerification_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -184,9 +184,9 @@
         ]
       }
     },
-    "/auth/confirm-verification": {
+    "/v1/auth/confirm-verification": {
       "post": {
-        "operationId": "AuthController_confirmVerification",
+        "operationId": "AuthController_confirmVerification_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -245,9 +245,9 @@
         ]
       }
     },
-    "/auth/refresh-token": {
+    "/v1/auth/refresh-token": {
       "post": {
-        "operationId": "AuthController_refreshNewToken",
+        "operationId": "AuthController_refreshNewToken_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -306,9 +306,9 @@
         ]
       }
     },
-    "/auth/reset-password": {
+    "/v1/auth/reset-password": {
       "post": {
-        "operationId": "AuthController_resetPassword",
+        "operationId": "AuthController_resetPassword_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -368,9 +368,9 @@
         ]
       }
     },
-    "/user/update-status": {
+    "/v1/user/update-status": {
       "post": {
-        "operationId": "UserController_updateStatus",
+        "operationId": "UserController_updateStatus_v1",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -432,6 +432,72 @@
         ],
         "tags": [
           "User"
+        ]
+      }
+    },
+    "/v1/post": {
+      "post": {
+        "operationId": "PostController_createPost_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePostRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "statusCode": {
+                      "type": "number",
+                      "example": 200,
+                      "description": "HTTP status code"
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "OK",
+                      "description": "Response message"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/CreatePostResponse",
+                      "description": "Response data"
+                    },
+                    "error": {
+                      "type": "null",
+                      "example": null,
+                      "description": "Error information (null on success)"
+                    },
+                    "errorCode": {
+                      "type": "string",
+                      "description": "Error code (optional)"
+                    }
+                  },
+                  "required": [
+                    "statusCode",
+                    "message",
+                    "data"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "Post"
         ]
       }
     }
@@ -825,6 +891,68 @@
         "required": [
           "userId",
           "status"
+        ]
+      },
+      "CreatePostRequest": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Post content/caption",
+            "example": "Beautiful sunset at the beach! 🌅 #nature #sunset",
+            "maxLength": 2000
+          },
+          "mediaUrls": {
+            "description": "Media URLs (images/videos)",
+            "example": [
+              "https://storage.googleapis.com/bucket/image1.jpg"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "hashtags": {
+            "description": "Hashtags",
+            "example": [
+              "nature",
+              "sunset",
+              "photography"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mentions": {
+            "description": "Mentioned user IDs",
+            "example": [
+              "user-id-1",
+              "user-id-2"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "location": {
+            "type": "string",
+            "description": "Location/place name",
+            "example": "Santa Monica Beach, CA"
+          },
+          "visibility": {
+            "type": "string",
+            "description": "Post visibility",
+            "enum": [
+              "public",
+              "followers",
+              "private"
+            ],
+            "example": "public"
+          }
+        },
+        "required": [
+          "content"
         ]
       }
     }
