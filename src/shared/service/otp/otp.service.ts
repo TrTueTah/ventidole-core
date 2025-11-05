@@ -8,7 +8,7 @@ import { CustomError } from "@shared/helper/error";
 import { ErrorCode } from "@shared/enum/error-code.enum";
 import moment from "moment";
 import { PrismaService } from "../prisma/prisma.service";
-import { VerificationType } from "src/generated/prisma/enums";
+import { VerificationType } from "src/db/prisma/enums";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()

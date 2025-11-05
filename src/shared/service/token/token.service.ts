@@ -6,7 +6,7 @@ import { TokenIssuer } from "@shared/enum/token.enum";
 import { CustomError } from "@shared/helper/error";
 import { IJwtPayload } from "@shared/interface/jwt-payload.interface";
 import md5 from "md5";
-import { AccountModel } from "src/generated/prisma/models";
+import { AccountModel } from "src/db/prisma/models";
 
 @Injectable()
 export class TokenService {

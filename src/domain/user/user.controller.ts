@@ -5,7 +5,7 @@ import { ApiVersion } from "@shared/enum/api-version.enum";
 import { userResponses } from "./response/index.response";
 import { UserService } from "./user.service";
 import { UpdateStatusRequest } from "./request/update-status.request";
-import { Role } from "@database/prisma/enums";
+import { Role } from "src/db/prisma/enums";
 import { Roles } from "@core/decorator/role.decorator";
 
 @ApiBearerAuth()

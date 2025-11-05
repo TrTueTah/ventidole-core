@@ -11,7 +11,7 @@ import { RedisService } from "@shared/service/redis/redis.service";
 import { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { PrismaService } from "../prisma/prisma.service";
-import { AccountModel } from "src/generated/prisma/models";
+import { AccountModel } from "src/db/prisma/models";
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, TokenStrategyKey.Jwt) {
   constructor(

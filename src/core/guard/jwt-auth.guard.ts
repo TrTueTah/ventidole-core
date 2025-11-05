@@ -8,7 +8,7 @@ import { ErrorCode } from "@shared/enum/error-code.enum";
 import { TokenStrategyKey } from "@shared/enum/token.enum";
 import { IRequest } from "@shared/interface/request.interface";
 import { JsonWebTokenError, TokenExpiredError } from "jsonwebtoken";
-import { Role } from "src/generated/prisma/enums";
+import { Role } from "src/db/prisma/enums";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard(TokenStrategyKey.Jwt) {

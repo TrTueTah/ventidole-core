@@ -23,8 +23,8 @@ import { VerificationCodeResponse } from "./response/verification-code.response"
 import { ConfirmVerificationResponse } from "./response/confirm-verification.response";
 import { IJwtDecoded } from "@shared/interface/jwt-payload.interface";
 import { TokenIssuer } from "@shared/enum/token.enum";
-import { VerificationType } from "src/generated/prisma/enums";
-import { AccountModel } from "src/generated/prisma/models";
+import { VerificationType } from "src/db/prisma/enums";
+import { AccountModel } from "src/db/prisma/models";
 
 @Injectable()
 export class AuthService {

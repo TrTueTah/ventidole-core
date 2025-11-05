@@ -1,5 +1,5 @@
 import { TokenIssuer } from "@shared/enum/token.enum";
-import { Role } from "src/generated/prisma/enums";
+import { Role } from "src/db/prisma/enums";
 
 export interface IJwtPayload {
   sub: string;
