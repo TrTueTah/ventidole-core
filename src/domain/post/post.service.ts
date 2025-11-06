@@ -4,8 +4,6 @@ import { FirebaseService } from '@shared/service/firebase/firebase.service';
 import { CreatePostRequest, PostVisibility } from './request/create-post.request';
 import { CreatePostResponse } from './response/create-post.response';
 import * as admin from 'firebase-admin';
-import { CustomError } from '@shared/helper/error';
-import { ErrorCode } from '@shared/enum/error-code.enum';
 import { IRequest } from '@shared/interface/request.interface';
 import { getCollection } from '@shared/helper/get-collection';
 
@@ -109,7 +107,6 @@ export class PostService {
         hashtags: body.hashtags || [],
         mentions: body.mentions || [],
         location: body.location,
-        visibility: body.visibility || PostVisibility.PUBLIC,
         createdAt: new Date(),
         counters: {
           likesCount: 0,

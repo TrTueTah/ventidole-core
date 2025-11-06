@@ -19,7 +19,7 @@ export class FirebaseService implements OnModuleInit {
       this.firebaseApp = admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
         // databaseURL: ENVIRONMENT.FIREBASE_DATABASE_URL,
-        // storageBucket: ENVIRONMENT.FIREBASE_STORAGE_BUCKET,
+        storageBucket: `${ENVIRONMENT.FIREBASE_PROJECT_ID}.firebasestorage.app`,
       });
 
       this.logger.log('[FIREBASE] Initialized successfully');

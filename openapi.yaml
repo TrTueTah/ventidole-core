@@ -1,0 +1,1239 @@
+openapi: 3.0.0
+paths:
+  /v1/file/upload:
+    post:
+      operationId: FileController_uploadFile_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UploadFileRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UploadFileResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: &ref_0
+        - &ref_2
+          bearer: []
+      tags: &ref_1
+        - File
+  /v1/file/upload-multiple:
+    post:
+      operationId: FileController_uploadMultipleFiles_v1
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UploadFileResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: *ref_0
+      tags: *ref_1
+  /v1/file/delete:
+    delete:
+      operationId: FileController_deleteFile_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteFileRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: 'null'
+                    example: null
+                    description: No data returned
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: *ref_0
+      tags: *ref_1
+  /v1/file/url:
+    get:
+      operationId: FileController_getFileUrl_v1
+      parameters:
+        - name: filePath
+          required: true
+          in: query
+          description: Path to the file in storage
+          schema:
+            example: posts/my-file-uuid.jpg
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/GetFileUrlResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: *ref_0
+      tags: *ref_1
+  /v1/file/signed-url:
+    get:
+      operationId: FileController_getSignedUrl_v1
+      parameters:
+        - name: filePath
+          required: true
+          in: query
+          description: Path to the file in storage
+          schema:
+            example: posts/my-file-uuid.jpg
+            type: string
+        - name: expiresInMinutes
+          required: true
+          in: query
+          description: Expiration time in minutes
+          schema:
+            default: 60
+            example: 60
+            type: number
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/GetSignedUrlResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: *ref_0
+      tags: *ref_1
+  /v1/file/exists:
+    get:
+      operationId: FileController_fileExists_v1
+      parameters:
+        - name: filePath
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: 'null'
+                    example: null
+                    description: No data returned
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: *ref_0
+      tags: *ref_1
+  /v1/file/metadata:
+    get:
+      operationId: FileController_getFileMetadata_v1
+      parameters:
+        - name: filePath
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File metadata retrieved successfully
+      security:
+        - *ref_2
+        - bearer: []
+      summary: Get file metadata
+      tags: *ref_1
+  /v1/file/list:
+    get:
+      operationId: FileController_listFiles_v1
+      parameters:
+        - name: folder
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: 'null'
+                    example: null
+                    description: No data returned
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: *ref_0
+      tags: *ref_1
+  /v1/file/folder:
+    delete:
+      operationId: FileController_deleteFolder_v1
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: 'null'
+                    example: null
+                    description: No data returned
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: *ref_0
+      tags: *ref_1
+  /v1/auth/sign-in:
+    post:
+      operationId: AuthController_signIn_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/SignInResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      tags: &ref_3
+        - Authenticate
+  /v1/auth/sign-up:
+    post:
+      operationId: AuthController_signUp_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/SignInResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      tags: *ref_3
+  /v1/auth/send-verification:
+    post:
+      operationId: AuthController_sendVerification_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendVerificationRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/VerificationCodeResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      tags: *ref_3
+  /v1/auth/confirm-verification:
+    post:
+      operationId: AuthController_confirmVerification_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmVerificationRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/ConfirmVerificationResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      tags: *ref_3
+  /v1/auth/refresh-token:
+    post:
+      operationId: AuthController_refreshNewToken_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/SignInResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      tags: *ref_3
+  /v1/auth/reset-password:
+    post:
+      operationId: AuthController_resetPassword_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetPasswordRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: 'null'
+                    example: null
+                    description: No data returned
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      tags: *ref_3
+  /v1/user/update-status:
+    post:
+      operationId: UserController_updateStatus_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStatusRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: 'null'
+                    example: null
+                    description: No data returned
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security:
+        - bearer: []
+      tags:
+        - User
+  /v1/post:
+    post:
+      operationId: PostController_createPost_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/CreatePostResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security:
+        - bearer: []
+      tags:
+        - Post
+info:
+  title: API Docs
+  description: Custom Swagger UI in NestJS
+  version: '1'
+  contact: {}
+tags: []
+servers: []
+components:
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+  schemas:
+    BaseResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          enum:
+            - 100
+            - 101
+            - 102
+            - 103
+            - 200
+            - 201
+            - 202
+            - 203
+            - 204
+            - 205
+            - 206
+            - 207
+            - 208
+            - 210
+            - 300
+            - 301
+            - 302
+            - 303
+            - 304
+            - 307
+            - 308
+            - 400
+            - 401
+            - 402
+            - 403
+            - 404
+            - 405
+            - 406
+            - 407
+            - 408
+            - 409
+            - 410
+            - 411
+            - 412
+            - 413
+            - 414
+            - 415
+            - 416
+            - 417
+            - 418
+            - 421
+            - 422
+            - 423
+            - 424
+            - 428
+            - 429
+            - 456
+            - 500
+            - 501
+            - 502
+            - 503
+            - 504
+            - 505
+            - 507
+            - 508
+          example: 200
+          description: HTTP status code
+        message:
+          type: string
+          example: OK
+          description: Response message
+        data:
+          type: object
+          description: Response data (null if no data)
+          nullable: true
+        error:
+          type: object
+          description: Error information (null on success)
+        errorCode:
+          type: string
+          enum:
+            - validation_failed
+            - unauthenticated
+            - unauthorized
+            - http_error
+            - unknown_error
+            - token_expired
+            - invalid_token
+            - not_any_recipient
+            - send_mail_failed
+            - consumer_not_found
+            - consumer_failed
+            - process_failed
+            - otp_already_exist
+            - otp_spam
+            - otp_expired
+            - otp_incorrect
+            - invalid_decode_token
+            - invalid_token_issuer
+            - VerificationNotFound
+            - VerificationSessionExpired
+            - AccountNotFound
+            - ExistedEmail
+            - ExistedPhoneNumber
+            - InvalidEmailOrPassword
+            - InvalidTokenSecret
+            - FileNotFound
+            - FileTooLarge
+            - InvalidFileType
+            - InvalidFileName
+          description: Error code (optional)
+      required:
+        - statusCode
+        - message
+    UploadFileResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Public URL of the uploaded file
+          example: https://storage.googleapis.com/my-bucket/posts/file-uuid.jpg
+        fileName:
+          type: string
+          description: Name of the uploaded file
+          example: file-uuid.jpg
+        filePath:
+          type: string
+          description: Full path of the file in storage
+          example: posts/file-uuid.jpg
+        size:
+          type: number
+          description: Size of the file in bytes
+          example: 102400
+        mimeType:
+          type: string
+          description: MIME type of the file
+          example: image/jpeg
+        uploadedAt:
+          format: date-time
+          type: string
+          description: Upload timestamp
+          example: '2025-11-06T08:00:00.000Z'
+      required:
+        - url
+        - fileName
+        - filePath
+        - size
+        - mimeType
+        - uploadedAt
+    GetFileUrlResponse:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Public URL of the file
+          example: https://storage.googleapis.com/my-bucket/posts/file-uuid.jpg
+      required:
+        - url
+    GetSignedUrlResponse:
+      type: object
+      properties:
+        signedUrl:
+          type: string
+          description: Signed URL for temporary access
+          example: >-
+            https://storage.googleapis.com/my-bucket/posts/file-uuid.jpg?X-Goog-Algorithm=...
+        expiresAt:
+          format: date-time
+          type: string
+          description: Expiration time of the signed URL
+          example: '2025-11-06T09:00:00.000Z'
+      required:
+        - signedUrl
+        - expiresAt
+    UploadFileRequest:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          description: File to upload
+        folder:
+          type: string
+          enum:
+            - profiles
+            - posts
+            - attachments
+            - documents
+            - thumbnails
+            - temp
+          description: Folder to upload the file to
+          example: posts
+        customFileName:
+          type: string
+          description: Custom file name (optional)
+          example: my-custom-name
+      required:
+        - file
+        - folder
+        - customFileName
+    DeleteFileRequest:
+      type: object
+      properties:
+        filePath:
+          type: string
+          description: Path to the file in storage
+          example: posts/my-file-uuid.jpg
+      required:
+        - filePath
+    SignInResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+          description: User ID
+        role:
+          type: string
+          example: FAN
+          description: User role
+          enum:
+            - FAN
+            - ADMIN
+            - IDOL
+        accessToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          description: JWT access token
+        refreshToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          description: JWT refresh token
+      required:
+        - id
+        - role
+        - accessToken
+        - refreshToken
+    VerificationCodeResponse:
+      type: object
+      properties:
+        waitSeconds:
+          type: number
+          description: Wait time in seconds
+          example: 60
+        expireAt:
+          type: number
+          description: Expired at verification timestamp
+          example: 1740412406898
+      required:
+        - waitSeconds
+        - expireAt
+    ConfirmVerificationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: '1'
+          description: User ID
+        name:
+          type: string
+          example: Leon
+          description: User name
+          nullable: true
+        email:
+          type: string
+          example: example@gmail.com
+          description: User email
+        role:
+          type: string
+          example: FAN
+          description: User role
+          enum:
+            - FAN
+            - ADMIN
+            - IDOL
+      required:
+        - id
+        - email
+        - role
+    SignInRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: example@gmail.com
+          description: Your email
+        password:
+          type: string
+          example: Password@123456
+          description: Your password
+      required:
+        - email
+        - password
+    SignUpRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: example@gmail.com
+          description: Your email
+        password:
+          type: string
+          example: Password@123456
+          description: Your password
+        name:
+          type: string
+          example: John Doe
+          description: Your full name
+        phoneNumber:
+          type: string
+          example: '+1234567890'
+          description: Your phone number
+      required:
+        - email
+        - password
+        - name
+        - phoneNumber
+    SendVerificationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@example.com
+          description: Your email address
+        verificationType:
+          type: string
+          enum:
+            - FIND_EMAIL
+            - RESET_PASSWORD
+            - REGISTER_ACCOUNT
+            - UPDATE_PROFILE
+          description: Verification behavior
+          example: REGISTER_ACCOUNT
+      required:
+        - email
+        - verificationType
+    ConfirmVerificationRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: example@gmail.com
+          description: Your email address
+        code:
+          type: string
+          description: Your verification code
+          example: '0303'
+        verificationType:
+          type: string
+          enum:
+            - FIND_EMAIL
+            - RESET_PASSWORD
+            - REGISTER_ACCOUNT
+            - UPDATE_PROFILE
+          description: Verification type
+          example: FIND_EMAIL
+      required:
+        - email
+        - code
+        - verificationType
+    RefreshTokenRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Your access token
+          example: >-
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4ODUwMjM0NSwiZXhwIjoxNjg4NTg4NzQ1fQ.7mXhKfXlqH3p0nO2b8jv8XzF1Zz5Y9bX5tF8vZ6xQ
+        refreshToken:
+          type: string
+          description: Your refresh token
+          example: >-
+            eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY4ODUwMjM0NSwiZXhwIjoxNjg4NTg4NzQ1fQ.7mXhKfXlqH3p0nO2b8jv8XzF1Zz5Y9bX5tF8vZ6xQ
+      required:
+        - token
+        - refreshToken
+    ResetPasswordRequest:
+      type: object
+      properties:
+        password:
+          type: string
+          example: Password@123456
+          description: Your new password
+        email:
+          type: string
+          example: example@gmail.com
+          description: Your email address
+      required:
+        - password
+        - email
+    UpdateStatusRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: '123e4567'
+          description: User ID
+        status:
+          type: string
+          enum:
+            - active
+            - inactive
+          description: User status
+          example: active
+      required:
+        - userId
+        - status
+    CreatePostResponse:
+      type: object
+      properties:
+        postId:
+          type: string
+          description: Post ID
+          example: post-clx123abc
+        userId:
+          type: string
+          description: User ID who created the post
+          example: user-123
+        username:
+          type: string
+          description: Username of the author
+          example: johndoe
+        displayName:
+          type: string
+          description: Display name of the author
+          example: John Doe
+        userAvatar:
+          type: string
+          description: User avatar URL
+          example: https://storage.googleapis.com/bucket/avatars/user-123.jpg
+        content:
+          type: string
+          description: Post content
+          example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
+        mediaUrls:
+          description: Media URLs
+          example:
+            - https://storage.googleapis.com/bucket/image1.jpg
+          type: array
+          items:
+            type: string
+        hashtags:
+          description: Hashtags
+          example:
+            - nature
+            - sunset
+          type: array
+          items:
+            type: string
+        mentions:
+          description: Mentioned user IDs
+          example:
+            - user-id-1
+          type: array
+          items:
+            type: string
+        location:
+          type: string
+          description: Location
+          example: Santa Monica Beach, CA
+        createdAt:
+          type: string
+          description: Creation timestamp
+          example: '2025-11-05T10:30:00Z'
+        counters:
+          type: object
+          description: Counters
+          example:
+            likesCount: 0
+            commentsCount: 0
+            sharesCount: 0
+      required:
+        - postId
+        - userId
+        - username
+        - displayName
+        - userAvatar
+        - content
+        - mediaUrls
+        - hashtags
+        - mentions
+        - location
+        - createdAt
+        - counters
+    CreatePostRequest:
+      type: object
+      properties:
+        content:
+          type: string
+          description: Post content/caption
+          example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
+          maxLength: 2000
+        mediaUrls:
+          description: Media URLs (images/videos)
+          example:
+            - https://storage.googleapis.com/bucket/image1.jpg
+          type: array
+          items:
+            type: string
+        hashtags:
+          description: Hashtags
+          example:
+            - nature
+            - sunset
+            - photography
+          type: array
+          items:
+            type: string
+        mentions:
+          description: Mentioned user IDs
+          example:
+            - user-id-1
+            - user-id-2
+          type: array
+          items:
+            type: string
+        location:
+          type: string
+          description: Location/place name
+          example: Santa Monica Beach, CA
+        visibility:
+          type: string
+          description: Post visibility
+          enum:
+            - public
+            - followers
+            - private
+          example: public
+      required:
+        - content
+        - mediaUrls
+        - hashtags
+        - location
+        - visibility

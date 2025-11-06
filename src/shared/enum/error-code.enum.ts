@@ -24,6 +24,10 @@ export enum ErrorCode {
   ExistedPhoneNumber = "ExistedPhoneNumber",
   InvalidEmailOrPassword = "InvalidEmailOrPassword",
   InvalidTokenSecret = "InvalidTokenSecret",
+  FileNotFound = "FileNotFound",
+  FileTooLarge = "FileTooLarge",
+  InvalidFileType = "InvalidFileType",
+  InvalidFileName = "InvalidFileName",
 }
 
 const ErrorCodeSet = new Set(Object.values(ErrorCode));

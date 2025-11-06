@@ -91,6 +91,14 @@ class EnvironmentVariable {
 
   @IsString()
   @IsNotEmpty()
+  REDIS_USER: string;
+
+  @IsString()
+  @IsNotEmpty()
+  REDIS_PASSWORD: string;
+
+  @IsString()
+  @IsNotEmpty()
   JWT_SECRET: string;
 
   @IsString()

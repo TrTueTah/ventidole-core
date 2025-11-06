@@ -18,7 +18,7 @@ export class CreatePostRequest {
   @MaxLength(2000)
   content: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'Media URLs (images/videos)',
     example: ['https://storage.googleapis.com/bucket/image1.jpg'],
     type: [String],
@@ -28,7 +28,7 @@ export class CreatePostRequest {
   @IsOptional()
   mediaUrls?: string[];
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'Hashtags',
     example: ['nature', 'sunset', 'photography'],
     type: [String],
@@ -48,7 +48,7 @@ export class CreatePostRequest {
   @IsOptional()
   mentions?: string[];
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'Location/place name',
     example: 'Santa Monica Beach, CA',
   })
@@ -56,7 +56,7 @@ export class CreatePostRequest {
   @IsOptional()
   location?: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'Post visibility',
     enum: PostVisibility,
     example: PostVisibility.PUBLIC,

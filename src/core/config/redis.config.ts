@@ -41,6 +41,8 @@ export const initRedisConfig = (): RedisOptions => {
   return {
     host: ENVIRONMENT.REDIS_HOST,
     port: ENVIRONMENT.REDIS_PORT,
+    username: ENVIRONMENT.REDIS_USER,
+    password: ENVIRONMENT.REDIS_PASSWORD,
     showFriendlyErrorStack: true,
     commandTimeout: 1000,
     retryStrategy: (times) => {

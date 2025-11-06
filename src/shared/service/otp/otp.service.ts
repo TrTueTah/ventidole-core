@@ -39,7 +39,6 @@ export class OtpService {
     let currentLimit = 0;
     const otpKey = this.getOtpKey(email, type);
     const otpLimitKey = `${RedisKey.OtpLimit}${email}`;
-    console.log('redis', this.redis);
     try {
       const [lastSent, lastLimit] = await Promise.all([
         this.redis.get<string>(otpKey),

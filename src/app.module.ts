@@ -6,12 +6,14 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { QueueModule } from "@shared/service/queue/queue.module";
 import { RedisModule } from "@shared/service/redis/redis.module";
+import { FileModule } from "@domain/file/file.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot(initEnvironmentConfig()),
     RedisModule,
     QueueModule,
+    FileModule,
     AuthModule,
     UserModule,
     PostModule

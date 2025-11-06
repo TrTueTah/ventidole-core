@@ -11,9 +11,9 @@ import { Role } from "src/db/prisma/enums";
 import { IRequest } from "@shared/interface/request.interface";
 
 @ApiBearerAuth()
+@Roles(Role.FAN, Role.IDOL, Role.ADMIN)
 @ApiTags('Post')
 @ApiExtraModelsCustom(...postResponses)
-@Roles(Role.FAN, Role.IDOL, Role.ADMIN)
 @Controller({ path: 'post', version: ApiVersion.V1 })
 export class PostController {
   constructor(private readonly postService: PostService) {}
@@ -24,7 +24,7 @@ export class PostController {
   createPost(
     @Body() body: CreatePostRequest,
     @Req() request: IRequest
-  ): Promise<CreatePostResponse> {
+  ) {
     return this.postService.createPost(body, request);
   }
 }
