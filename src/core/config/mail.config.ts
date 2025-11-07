@@ -19,7 +19,9 @@ export const initMailConfig = (): MailerOptions => ({
   },
   template: {
     dir: `${cwd()}/src/shared/service/mail/templates`,
-    adapter: new HandlebarsAdapter(),
+    adapter: new HandlebarsAdapter(undefined, {
+      inlineCssEnabled: false,
+    }),
     options: {
       strict: true,
     },
