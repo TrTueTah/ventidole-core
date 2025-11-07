@@ -8,8 +8,6 @@ services:
       - ${PORT}:${PORT}
     env_file:
       - ../../.env
-    depends_on:
-      - redis-stack
     restart: always
 
 #   redis-stack:
