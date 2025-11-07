@@ -10,8 +10,6 @@ COPY prisma ./prisma
 
 RUN npm install
 
-RUN npm install @css-inline/css-inline-linux-x64-musl
-
 COPY . .
 
 RUN npx prisma generate
