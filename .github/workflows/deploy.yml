@@ -58,7 +58,7 @@ jobs:
           port: ${{ secrets.GCP_SSH_PORT || 22 }}
           script: |
             # Navigate to application directory
-            cd ${{ secrets.GCP_APP_DIR || '~/ventidole-core' }}
+            cd /home/trantanh227/ventidole-core
             
             # Pull latest code (to get updated docker-compose.yml if needed)
             git pull origin main || true
