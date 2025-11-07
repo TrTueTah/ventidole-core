@@ -73,7 +73,7 @@ jobs:
             docker-compose -f docker/prod/docker-compose.yaml down || true
             
             # Start new containers with latest image
-            docker-compose -f docker/prod/docker-compose.yaml up -d
+            docker-compose --env-file /home/trantanh227/ventidole-core/.env up -d
             
             # Clean up old images
             docker image prune -af --filter "until=24h" || true
