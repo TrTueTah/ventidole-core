@@ -79,10 +79,10 @@ jobs:
             docker image prune -af --filter "until=24h" || true
             
             # Show running containers
-            docker-compose -f docker/prod/docker-compose.yaml ps
+            docker-compose --env-file /home/trantanh227/ventidole-core/.env -f docker/prod/docker-compose.yaml ps
             
             # Show logs (last 50 lines)
-            docker-compose -f docker/prod/docker-compose.yaml logs --tail=50
+            docker-compose --env-file /home/trantanh227/ventidole-core/.env -f docker/prod/docker-compose.yaml logs --tail=50
 
       - name: Deployment Status
         if: success()
