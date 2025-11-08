@@ -23,35 +23,59 @@ jobs:
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: ${{ secrets.GCP_SSH_PORT || 22 }}
           script: |
+            set -e  # Exit on error
+            
             echo "🚀 Starting deployment on GCP..."
+            echo "================================================"
 
             # Navigate to application directory
-            cd /home/trantanh227/ventidole-core
+            APP_DIR="${{ secrets.GCP_APP_DIR }}"
+            if [ -z "$APP_DIR" ]; then
+              APP_DIR="/home/trantanh227/ventidole-core"
+            fi
+            
+            echo "📁 Navigating to: $APP_DIR"
+            cd "$APP_DIR"
 
             # Pull the latest source code
+            echo "⬇️  Pulling latest code from main branch..."
             git fetch origin main
             git reset --hard origin/main
+            echo "✅ Code updated to commit: $(git rev-parse --short HEAD)"
 
-            # Load environment variables
-            source .env || true
-
-            # Stop and remove old containers if any
+            # Stop and remove old containers
+            echo "🛑 Stopping existing containers..."
             docker-compose -f docker/prod/docker-compose.yaml down || true
 
             # Build new Docker images directly on VM
+            echo "🏗️  Building Docker images (this may take a few minutes)..."
             docker-compose -f docker/prod/docker-compose.yaml build --no-cache
 
             # Start containers
+            echo "🚀 Starting containers..."
             docker-compose -f docker/prod/docker-compose.yaml up -d
 
-            # Clean up old/unused images and containers
-            docker system prune -af --volumes || true
+            # Wait for containers to be healthy
+            echo "⏳ Waiting for containers to start..."
+            sleep 10
 
             # Show running containers
+            echo "================================================"
+            echo "📦 Running containers:"
             docker-compose -f docker/prod/docker-compose.yaml ps
 
             # Show recent logs
+            echo "================================================"
+            echo "📋 Recent logs (last 50 lines):"
             docker-compose -f docker/prod/docker-compose.yaml logs --tail=50
+
+            # Clean up dangling images only (not volumes)
+            echo "================================================"
+            echo "🧹 Cleaning up unused Docker images..."
+            docker image prune -f || true
+            
+            echo "================================================"
+            echo "✅ Deployment completed successfully!"
 
       - name: Deployment Status
         if: success()
