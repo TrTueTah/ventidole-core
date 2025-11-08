@@ -68,7 +68,7 @@ jobs:
             echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
             
             # Pull latest image
-            docker pull ${{ env.DOCKER_IMAGE_NAME }}:latest
+            docker-compose --env-file /home/trantanh227/ventidole-core/.env -f docker/prod/docker-compose.yaml pull  
             
             # Stop and remove old containers
             docker-compose --env-file /home/trantanh227/ventidole-core/.env -f docker/prod/docker-compose.yaml down || true
