@@ -26,7 +26,21 @@ async function bootstrap() {
       },
     });
 
-    app.use(helmet());
+    // Configure Helmet with appropriate settings for HTTP/HTTPS
+    app.use(
+      helmet({
+        contentSecurityPolicy: {
+          directives: {
+            defaultSrc: ["'self'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", 'data:', 'https:'],
+          },
+        },
+        crossOriginOpenerPolicy: false, // Disable for non-HTTPS environments
+        crossOriginEmbedderPolicy: false, // Disable for non-HTTPS environments
+      }),
+    );
     app.use(compression());
     app.use(cookieParser(ENVIRONMENT.COOKIE_SECRET));
     app.use(bodyParser.json({ limit: '1mb' }));
