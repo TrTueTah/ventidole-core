@@ -39,6 +39,8 @@ async function bootstrap() {
         },
         crossOriginOpenerPolicy: false, // Disable for non-HTTPS environments
         crossOriginEmbedderPolicy: false, // Disable for non-HTTPS environments
+        hsts: false, // Disable HTTP Strict Transport Security for HTTP
+        originAgentCluster: false, // Disable Origin-Agent-Cluster header
       }),
     );
     app.use(compression());
