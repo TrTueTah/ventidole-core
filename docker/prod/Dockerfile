@@ -4,20 +4,29 @@ ENV FORCE_COLOR=1
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+# Copy file yarn
+COPY package.json yarn.lock ./
 
+# Copy Prisma schema
 COPY prisma ./prisma
 
-RUN npm cache clean --force
+# Cài dependencies với Yarn
+RUN yarn install --frozen-lockfile
 
-RUN npm install
+# Cài devDependencies riêng (nếu cần)
+RUN yarn add --dev @swc/cli @swc/core
 
-RUN npm install --save-dev @swc/cli @swc/core
+# Cài optional package
+RUN yarn add @css-inline/css-inline-linux-x64-musl
 
-RUN npm install @css-inline/css-inline-linux-x64-musl
-
+# Copy toàn bộ source code
 COPY . .
 
-RUN npm run build
+# Build app
+RUN yarn build
 
+# Expose port (nếu cần)
+EXPOSE 3000
+
+# Start app
 CMD ["node", "dist/main.js"]
