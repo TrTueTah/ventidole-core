@@ -51,15 +51,15 @@ jobs:
 
             # Stop existing containers
             echo "🛑 Stopping existing containers..."
-            sudo docker-compose --env-file .env -f docker/prod/docker-compose.yaml down || true
+            sudo docker compose --env-file .env -f docker/prod/docker-compose.yaml down || true
 
             # Build Docker images with npm cache clean
             echo "🏗️ Building Docker images..."
-            sudo docker-compose --env-file .env -f docker/prod/docker-compose.yaml build --no-cache
+            sudo docker compose --env-file .env -f docker/prod/docker-compose.yaml build --no-cache
 
             # Start containers
             echo "🚀 Starting containers..."
-            sudo docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
+            sudo docker compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
             # Wait a few seconds for containers
             echo "⏳ Waiting for containers to start..."
@@ -68,12 +68,12 @@ jobs:
             # Show running containers
             echo "================================================"
             echo "📦 Running containers:"
-            sudo docker-compose --env-file .env -f docker/prod/docker-compose.yaml ps
+            sudo docker compose --env-file .env -f docker/prod/docker-compose.yaml ps
 
             # Show last 50 lines logs
             echo "================================================"
             echo "📋 Recent logs:"
-            sudo docker-compose --env-file .env -f docker/prod/docker-compose.yaml logs --tail=50
+            sudo docker compose --env-file .env -f docker/prod/docker-compose.yaml logs --tail=50
 
             # Clean dangling images
             echo "================================================"

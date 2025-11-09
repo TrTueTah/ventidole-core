@@ -12,6 +12,9 @@ RUN npm cache clean --force
 
 RUN npm install
 
+RUN npm i --save-dev @swc/cli @swc/core
+
+
 RUN npm install @css-inline/css-inline-linux-x64-musl
 
 COPY . .
