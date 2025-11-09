@@ -4,12 +4,16 @@ services:
       context: ../..
       dockerfile: docker/prod/Dockerfile
     container_name: ${PROJECT}-server
-    ports:
-      - ${PORT}:${PORT}
+    # Port exposed only within Docker network
+    # nginx gateway will handle external traffic on 8080/8443
+    # Uncomment below if you want to access directly without nginx
+    # ports:
+    #   - ${PORT}:${PORT}
     env_file:
       - ../../.env
     restart: always
 
+  # Uncomment to enable Redis (if needed)
 #   redis-stack:
 #     image: redis/redis-stack
 #     container_name: ${PROJECT}-redis
@@ -20,18 +24,29 @@ services:
 #       - redis_data:/data
 #     restart: on-failure
 
-#   gateway:
-#     image: nginx:alpine
-#     container_name: ${PROJECT}-gateway
-#     ports:
-#       - "80:80"
-#       - "443:443"
-#     volumes:
-#       - ../../config.d/nginx/nginx.conf:/etc/nginx/nginx.conf
-#       - ../../config.d/nginx/default.prod.conf:/etc/nginx/conf.d/default.conf
-#       - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
-#       - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
-#     restart: always
+  # HTTPS Gateway with Nginx + Let's Encrypt SSL
+  # nginx listens on 443 inside container, mapped to port 8080 on host
+  # Access via: https://api.ventidole.xyz/docs (GCP routes 443 → 8080)
+  # Prerequisites:
+  #   1. Domain api.ventidole.xyz pointing to your server ✓
+  #   2. Get SSL certificate: sudo certbot certonly --standalone -d api.ventidole.xyz
+  #   3. Configure GCP to route port 443 traffic to 8080
+  #   4. Uncomment this section and restart
+  gateway:
+    image: nginx:alpine
+    container_name: ${PROJECT}-gateway
+    ports:
+      - "8080:443"  # Maps external 8080 to internal 443 (HTTPS)
+      - "8081:80"   # Maps external 8081 to internal 80 (HTTP) - optional
+    volumes:
+      - ../../config.d/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../../config.d/nginx/default.prod.conf:/etc/nginx/conf.d/default.conf:ro
+      - /etc/letsencrypt/live:/etc/letsencrypt/live:ro
+      - /etc/letsencrypt/archive:/etc/letsencrypt/archive:ro
+    depends_on:
+      - server
+    restart: always
 
+# Uncomment if using Redis
 # volumes:
 #   redis_data:
