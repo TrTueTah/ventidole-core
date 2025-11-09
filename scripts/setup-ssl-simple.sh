@@ -106,7 +106,7 @@ echo "=========================================="
 echo "🚀 Starting containers with HTTPS..."
 echo "=========================================="
 cd ${PROJECT_DIR}
-docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
+docker compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 echo "✅ Done"
 echo ""
 
