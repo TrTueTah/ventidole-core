@@ -33,7 +33,7 @@ echo ""
 
 # Stop containers
 echo "⏹️  Stopping containers..."
-docker-compose -f docker/prod/docker-compose.yaml down 2>/dev/null || true
+docker compose -f docker/prod/docker-compose.yaml down 2>/dev/null || true
 echo "✅ Done"
 echo ""
 
