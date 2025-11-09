@@ -8,6 +8,8 @@ COPY package*.json ./
 
 COPY prisma ./prisma
 
+RUN npm cache clean --force
+
 RUN npm install
 
 RUN npm install @css-inline/css-inline-linux-x64-musl
