@@ -1,22 +1,21 @@
-FROM node:22-bullseye
+FROM node:22-alpine
+
+ENV FORCE_COLOR=1
 
 WORKDIR /usr/src/app
 
-# Copy dependency files
-COPY package.json yarn.lock ./
+COPY package*.json ./
+
 COPY prisma ./prisma
 
-# Cài Yarn thủ công để tránh lỗi Corepack network
-RUN npm install -g yarn@1.22.22
+RUN npm cache clean --force
 
-# Cài dependencies
-RUN yarn install --frozen-lockfile --network-timeout 300000
+RUN npm install
 
-# Copy toàn bộ source
+RUN npm install @css-inline/css-inline-linux-x64-musl
+
 COPY . .
 
-# Build app
-RUN yarn build
+RUN npm run build
 
-EXPOSE 8080
 CMD ["node", "dist/main.js"]
