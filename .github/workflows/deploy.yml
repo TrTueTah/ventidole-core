@@ -10,7 +10,7 @@ jobs:
   deploy:
     name: Build and Deploy on GCP Server
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,8 +23,8 @@ jobs:
           key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
           port: ${{ secrets.GCP_SSH_PORT || 22 }}
           script: |
-            set -e  # Exit on error
-            
+            set -e  # Exit immediately if a command fails
+
             echo "🚀 Starting deployment on GCP..."
             echo "================================================"
 
@@ -33,55 +33,53 @@ jobs:
             if [ -z "$APP_DIR" ]; then
               APP_DIR="/home/trantanh227/ventidole-core"
             fi
-            
             echo "📁 Navigating to: $APP_DIR"
             cd "$APP_DIR"
 
-            # Pull the latest source code
-            echo "⬇️  Pulling latest code from main branch..."
+            # Pull the latest code
+            echo "⬇️ Pulling latest code from main branch..."
             git fetch origin main
             git reset --hard origin/main
             echo "✅ Code updated to commit: $(git rev-parse --short HEAD)"
 
-            # Check if .env file exists
+            # Check for .env
             if [ ! -f .env ]; then
-              echo "❌ Error: .env file not found!"
-              echo "Please create a .env file in $APP_DIR"
+              echo "❌ .env file not found! Please create it in $APP_DIR"
               exit 1
             fi
             echo "✅ Found .env file"
 
-            # Stop and remove old containers
+            # Stop existing containers
             echo "🛑 Stopping existing containers..."
-            docker-compose --env-file .env -f docker/prod/docker-compose.yaml down || true
+            sudo docker-compose --env-file .env -f docker/prod/docker-compose.yaml down || true
 
-            # Build new Docker images directly on VM
-            echo "🏗️  Building Docker images (this may take a few minutes)..."
-            docker-compose --env-file .env -f docker/prod/docker-compose.yaml build --no-cache
+            # Build Docker images with npm cache clean
+            echo "🏗️ Building Docker images..."
+            sudo docker-compose --env-file .env -f docker/prod/docker-compose.yaml build --no-cache
 
             # Start containers
             echo "🚀 Starting containers..."
-            docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
+            sudo docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
-            # Wait for containers to be healthy
+            # Wait a few seconds for containers
             echo "⏳ Waiting for containers to start..."
             sleep 10
 
             # Show running containers
             echo "================================================"
             echo "📦 Running containers:"
-            docker-compose --env-file .env -f docker/prod/docker-compose.yaml ps
+            sudo docker-compose --env-file .env -f docker/prod/docker-compose.yaml ps
 
-            # Show recent logs
+            # Show last 50 lines logs
             echo "================================================"
-            echo "📋 Recent logs (last 50 lines):"
-            docker-compose --env-file .env -f docker/prod/docker-compose.yaml logs --tail=50
+            echo "📋 Recent logs:"
+            sudo docker-compose --env-file .env -f docker/prod/docker-compose.yaml logs --tail=50
 
-            # Clean up dangling images only (not volumes)
+            # Clean dangling images
             echo "================================================"
             echo "🧹 Cleaning up unused Docker images..."
-            docker image prune -f || true
-            
+            sudo docker image prune -f || true
+
             echo "================================================"
             echo "✅ Deployment completed successfully!"
 
