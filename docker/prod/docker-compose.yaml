@@ -4,34 +4,9 @@ services:
       context: ../..
       dockerfile: docker/prod/Dockerfile
     container_name: ${PROJECT}-server
-    # Port exposed only within Docker network
-    # nginx gateway will handle external traffic on 8080/8443
-    # Uncomment below if you want to access directly without nginx
-    # ports:
-    #   - ${PORT}:${PORT}
     env_file:
       - ../../.env
     restart: always
-
-  # Uncomment to enable Redis (if needed)
-#   redis-stack:
-#     image: redis/redis-stack
-#     container_name: ${PROJECT}-redis
-#     ports:
-#       - ${REDIS_PORT}:${REDIS_PORT}
-#       - "8001:8001"
-#     volumes:
-#       - redis_data:/data
-#     restart: on-failure
-
-  # HTTPS Gateway with Nginx + Let's Encrypt SSL
-  # nginx listens on 443 inside container, mapped to port 8080 on host
-  # Access via: https://api.ventidole.xyz/docs (GCP routes 443 → 8080)
-  # Prerequisites:
-  #   1. Domain api.ventidole.xyz pointing to your server ✓
-  #   2. Get SSL certificate: sudo certbot certonly --standalone -d api.ventidole.xyz
-  #   3. Configure GCP to route port 443 traffic to 8080
-  #   4. Uncomment this section and restart
   gateway:
     image: nginx:alpine
     container_name: ${PROJECT}-gateway
@@ -46,7 +21,3 @@ services:
     depends_on:
       - server
     restart: always
-
-# Uncomment if using Redis
-# volumes:
-#   redis_data:
