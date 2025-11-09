@@ -17,7 +17,7 @@ RUN yarn install --frozen-lockfile
 RUN yarn add --dev @swc/cli @swc/core
 
 # Cài optional package
-RUN yarn add @css-inline/css-inline-linux-x64-musl
+# RUN yarn add @css-inline/css-inline-linux-x64-musl
 
 # Copy toàn bộ source code
 COPY . .
