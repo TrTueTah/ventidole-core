@@ -3,13 +3,13 @@
 ## 🎯 What You Want
 
 Access your API with clean URLs:
-- ✅ `https://api.ventidole.xyz/docs`
-- ❌ NOT `https://api.ventidole.xyz:8080/docs`
+- ✅ `https://api-prod.ventidole.xyz/docs`
+- ❌ NOT `https://api-prod.ventidole.xyz:8080/docs`
 
 ## 🏗️ How It Works
 
 ```
-Browser → https://api.ventidole.xyz:443 (standard HTTPS)
+Browser → https://api-prod.ventidole.xyz:443 (standard HTTPS)
             ↓
          GCP Firewall (allows port 443)
             ↓
@@ -74,7 +74,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 # Get certificate
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --email your-email@ventidole.xyz \
     --agree-tos
 ```
@@ -89,18 +89,18 @@ docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
 ```bash
 # Should work without port number!
-curl -I https://api.ventidole.xyz
+curl -I https://api-prod.ventidole.xyz
 
 # In browser
-https://api.ventidole.xyz/docs
+https://api-prod.ventidole.xyz/docs
 ```
 
 ## ✅ Result
 
 Your API accessible at:
-- 🌐 `https://api.ventidole.xyz`
-- 📚 `https://api.ventidole.xyz/docs`
-- 🔌 `https://api.ventidole.xyz/v1/...`
+- 🌐 `https://api-prod.ventidole.xyz`
+- 📚 `https://api-prod.ventidole.xyz/docs`
+- 🔌 `https://api-prod.ventidole.xyz/v1/...`
 
 **No port numbers!** Clean and professional URLs! 🎉
 
@@ -112,7 +112,7 @@ Your API accessible at:
 | **Docker** | Maps container 443 → host 8080 |
 | **iptables** | Forwards external 443 → 8080 |
 | **GCP Firewall** | Allows port 443 |
-| **SSL Certificate** | For api.ventidole.xyz |
+| **SSL Certificate** | For api-prod.ventidole.xyz |
 
 ## 🔍 Verify Setup
 
@@ -124,10 +124,10 @@ sudo iptables -t nat -L PREROUTING -n | grep 443
 sudo netstat -tulpn | grep 8080
 
 # Test HTTPS (should work)
-curl -I https://api.ventidole.xyz
+curl -I https://api-prod.ventidole.xyz
 
 # Test with port (should also work)
-curl -I https://api.ventidole.xyz:8080
+curl -I https://api-prod.ventidole.xyz:8080
 ```
 
 ## 📚 Documentation

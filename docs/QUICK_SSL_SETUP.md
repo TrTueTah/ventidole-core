@@ -67,7 +67,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 # 3. Get certificate (DNS-01 method)
 sudo certbot certonly --manual \
     --preferred-challenges dns \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --agree-tos \
     --email your-email@example.com
 
@@ -80,7 +80,7 @@ sudo certbot certonly --manual \
 # 5. Wait 2 minutes, then press Enter
 
 # 6. Verify certificates exist
-sudo ls -la /etc/letsencrypt/live/api.ventidole.xyz/
+sudo ls -la /etc/letsencrypt/live/api-prod.ventidole.xyz/
 # Should show: fullchain.pem, privkey.pem, cert.pem, chain.pem
 
 # 7. Open firewall
@@ -90,7 +90,7 @@ gcloud compute firewall-rules create allow-https --allow tcp:443 --source-ranges
 docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
 # 9. Test
-curl -I https://api.ventidole.xyz
+curl -I https://api-prod.ventidole.xyz
 ```
 
 ---
@@ -117,7 +117,7 @@ Your DNSSEC is still broken, so:
 When certbot shows:
 
 ```
-_acme-challenge.api.ventidole.xyz.
+_acme-challenge.api-prod.ventidole.xyz.
 Value: xxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
@@ -133,7 +133,7 @@ Value: xxxxxxxxxxxxxxxxxxxxxxxxxxx
 ### Verify before pressing Enter:
 
 ```bash
-dig _acme-challenge.api.ventidole.xyz TXT +short
+dig _acme-challenge.api-prod.ventidole.xyz TXT +short
 # Should show the value you added
 ```
 
@@ -166,13 +166,13 @@ docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 After certbot succeeds, check:
 
 ```bash
-sudo ls -la /etc/letsencrypt/live/api.ventidole.xyz/
+sudo ls -la /etc/letsencrypt/live/api-prod.ventidole.xyz/
 
 # Expected output:
-# -rw-r--r-- cert.pem -> ../../archive/api.ventidole.xyz/cert1.pem
-# -rw-r--r-- chain.pem -> ../../archive/api.ventidole.xyz/chain1.pem
-# -rw-r--r-- fullchain.pem -> ../../archive/api.ventidole.xyz/fullchain1.pem
-# -rw-r--r-- privkey.pem -> ../../archive/api.ventidole.xyz/privkey1.pem
+# -rw-r--r-- cert.pem -> ../../archive/api-prod.ventidole.xyz/cert1.pem
+# -rw-r--r-- chain.pem -> ../../archive/api-prod.ventidole.xyz/chain1.pem
+# -rw-r--r-- fullchain.pem -> ../../archive/api-prod.ventidole.xyz/fullchain1.pem
+# -rw-r--r-- privkey.pem -> ../../archive/api-prod.ventidole.xyz/privkey1.pem
 ```
 
 All 4 files must exist! ✅
@@ -205,11 +205,11 @@ docker ps
 # Should show: ventidole-gateway, ventidole-server
 
 # Check HTTPS works
-curl -I https://api.ventidole.xyz
+curl -I https://api-prod.ventidole.xyz
 # Should show: HTTP/2 200 OK
 
 # Check Swagger
-# Open browser: https://api.ventidole.xyz/docs
+# Open browser: https://api-prod.ventidole.xyz/docs
 ```
 
 ---
@@ -235,7 +235,7 @@ docker logs ventidole-server
 
 ```bash
 # Verify certificates exist
-sudo ls /etc/letsencrypt/live/api.ventidole.xyz/
+sudo ls /etc/letsencrypt/live/api-prod.ventidole.xyz/
 
 # Check firewall
 gcloud compute firewall-rules list | grep 443

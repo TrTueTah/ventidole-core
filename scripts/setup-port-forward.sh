@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Port Forwarding Setup: Route 443 → 8080
-# This allows accessing https://api.ventidole.xyz (port 443) 
+# This allows accessing https://api-prod.ventidole.xyz (port 443) 
 # while nginx listens on port 8080
 
 set -e
@@ -93,7 +93,7 @@ echo "  • IP forwarding enabled"
 echo "  • iptables rules persistent across reboots"
 echo ""
 echo "What this means:"
-echo "  • Users access: https://api.ventidole.xyz (port 443)"
+echo "  • Users access: https://api-prod.ventidole.xyz (port 443)"
 echo "  • Traffic forwarded to: port 8080"
 echo "  • nginx container serves on: port 8080"
 echo ""
@@ -103,13 +103,13 @@ echo "     gcloud compute firewall-rules create allow-https --allow tcp:443"
 echo ""
 echo "  2. Get SSL certificate:"
 echo "     cd /home/trantanh227/ventidole-core"
-echo "     sudo certbot certonly --standalone -d api.ventidole.xyz"
+echo "     sudo certbot certonly --standalone -d api-prod.ventidole.xyz"
 echo ""
 echo "  3. Start Docker containers:"
 echo "     docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d"
 echo ""
 echo "  4. Test access:"
-echo "     curl -I https://api.ventidole.xyz"
-echo "     Open browser: https://api.ventidole.xyz/docs"
+echo "     curl -I https://api-prod.ventidole.xyz"
+echo "     Open browser: https://api-prod.ventidole.xyz/docs"
 echo ""
 echo "✅ Done!"

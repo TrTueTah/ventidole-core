@@ -6,7 +6,7 @@
 set -e
 
 PROJECT_DIR="/home/trantanh227/ventidole-core"
-DOMAIN="api.ventidole.xyz"
+DOMAIN="api-prod.ventidole.xyz"
 EMAIL="trantanh227@gmail.com"  # Change this to your email if needed
 
 echo "🚀 Starting SSL Setup for ${DOMAIN}..."
@@ -79,7 +79,7 @@ if [[ $CHOICE == "1" ]]; then
     echo "      - Value: (paste the value shown by certbot)"
     echo "      - TTL: 300"
     echo "   3. Wait 2 minutes for DNS propagation"
-    echo "   4. Verify with: dig _acme-challenge.api.ventidole.xyz TXT +short"
+    echo "   4. Verify with: dig _acme-challenge.api-prod.ventidole.xyz TXT +short"
     echo "   5. Press Enter in certbot when ready"
     echo ""
     read -p "Press Enter when you understand the above steps..."

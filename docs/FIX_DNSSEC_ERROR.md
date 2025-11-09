@@ -3,13 +3,13 @@
 ## 🐛 Error
 
 ```
-DNS problem: looking up CAA for api.ventidole.xyz: 
+DNS problem: looking up CAA for api-prod.ventidole.xyz: 
 DNSSEC: Bogus: validation failure
 ```
 
 ## 🔍 What This Means
 
-Your domain `api.ventidole.xyz` has DNSSEC issues. Let's Encrypt cannot verify domain ownership due to DNSSEC validation failure.
+Your domain `api-prod.ventidole.xyz` has DNSSEC issues. Let's Encrypt cannot verify domain ownership due to DNSSEC validation failure.
 
 ## ✅ Solutions
 
@@ -66,7 +66,7 @@ sudo chmod 600 /root/.secrets/certbot/cloudflare.ini
 sudo certbot certonly \
     --dns-cloudflare \
     --dns-cloudflare-credentials /root/.secrets/certbot/cloudflare.ini \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --email your-email@ventidole.xyz \
     --agree-tos
 ```
@@ -82,7 +82,7 @@ docker-compose -f /home/trantanh227/ventidole-core/docker/prod/docker-compose.ya
 
 # Get certificate
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --preferred-challenges http \
     --email your-email@ventidole.xyz \
     --agree-tos \
@@ -95,20 +95,20 @@ Before retrying certbot, verify DNS is working:
 
 ```bash
 # Check if domain resolves
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 # Should return your server IP
 
 # Check DNSSEC status
-dig api.ventidole.xyz +dnssec
+dig api-prod.ventidole.xyz +dnssec
 # Look for "ad" flag (authenticated data)
 
 # Check CAA records
-dig api.ventidole.xyz CAA
+dig api-prod.ventidole.xyz CAA
 # Should be empty or allow letsencrypt.org
 
 # Check from different DNS
-dig @8.8.8.8 api.ventidole.xyz +short
-dig @1.1.1.1 api.ventidole.xyz +short
+dig @8.8.8.8 api-prod.ventidole.xyz +short
+dig @1.1.1.1 api-prod.ventidole.xyz +short
 ```
 
 ## 🔧 Step-by-Step Fix (Recommended)
@@ -124,7 +124,7 @@ dig @1.1.1.1 api.ventidole.xyz +short
 
 ```bash
 # Wait 5-10 minutes, then check
-dig api.ventidole.xyz +dnssec
+dig api-prod.ventidole.xyz +dnssec
 
 # Should not show "ad" flag anymore
 ```
@@ -133,12 +133,12 @@ dig api.ventidole.xyz +dnssec
 
 ```bash
 # Check resolution
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 # Should return: 35.193.66.111 (or your server IP)
 
 # Check from different locations
-dig @8.8.8.8 api.ventidole.xyz +short
-dig @1.1.1.1 api.ventidole.xyz +short
+dig @8.8.8.8 api-prod.ventidole.xyz +short
+dig @1.1.1.1 api-prod.ventidole.xyz +short
 ```
 
 ### Step 4: Retry Certbot
@@ -150,7 +150,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 # Try getting certificate again
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --preferred-challenges http \
     --email your-email@ventidole.xyz \
     --agree-tos \
@@ -198,19 +198,19 @@ Wait 5 minutes, then retry certbot.
 
 ```bash
 # Check DNSSEC validation
-dig api.ventidole.xyz +dnssec
+dig api-prod.ventidole.xyz +dnssec
 
 # Check from Google DNS
-dig @8.8.8.8 api.ventidole.xyz +dnssec
+dig @8.8.8.8 api-prod.ventidole.xyz +dnssec
 
 # Detailed DNSSEC check
-delv api.ventidole.xyz @8.8.8.8
+delv api-prod.ventidole.xyz @8.8.8.8
 
 # Check parent domain
 dig ventidole.xyz DS
 
 # Check CAA records
-dig api.ventidole.xyz CAA +short
+dig api-prod.ventidole.xyz CAA +short
 ```
 
 ## 🆘 Still Not Working?
@@ -220,7 +220,7 @@ dig api.ventidole.xyz CAA +short
 ```bash
 sudo certbot certonly --standalone \
     --staging \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --email your-email@ventidole.xyz \
     --agree-tos
 ```
@@ -232,7 +232,7 @@ If staging works, the issue is with your DNS/DNSSEC.
 Test if it's a network issue:
 ```bash
 # From another server or your local machine
-curl http://api.ventidole.xyz/.well-known/acme-challenge/test
+curl http://api-prod.ventidole.xyz/.well-known/acme-challenge/test
 ```
 
 ### Option C: Contact your DNS provider
@@ -260,8 +260,8 @@ Provide them with the error message and ask them to:
 
 After disabling DNSSEC:
 
-- [ ] DNS resolves correctly: `dig api.ventidole.xyz +short`
-- [ ] No DNSSEC validation: `dig api.ventidole.xyz +dnssec` (no "ad" flag)
+- [ ] DNS resolves correctly: `dig api-prod.ventidole.xyz +short`
+- [ ] No DNSSEC validation: `dig api-prod.ventidole.xyz +dnssec` (no "ad" flag)
 - [ ] Port 80 is free: `sudo netstat -tulpn | grep :80`
 - [ ] Docker containers stopped
 - [ ] Retry certbot

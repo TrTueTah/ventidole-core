@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOMAIN="api.ventidole.xyz"
+DOMAIN="api-prod.ventidole.xyz"
 EXPECTED_IP="34.136.155.195"
 
 echo "=========================================="

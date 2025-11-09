@@ -62,11 +62,11 @@ First, verify DNS is working:
 
 ```bash
 # Check DNS resolution
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 # Should return: 35.193.66.111
 
 # Check DNSSEC is disabled
-dig api.ventidole.xyz +dnssec
+dig api-prod.ventidole.xyz +dnssec
 # Should show: status: NOERROR (NOT SERVFAIL)
 # Should NOT have "ad" flag in flags
 ```
@@ -80,7 +80,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 # Get certificate via HTTP-01
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --preferred-challenges http \
     --email your-email@example.com \
     --agree-tos \
@@ -93,7 +93,7 @@ sudo certbot certonly --standalone \
 # Get certificate via DNS-01
 sudo certbot certonly --manual \
     --preferred-challenges dns \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --agree-tos \
     --email your-email@example.com
 ```
@@ -105,7 +105,7 @@ sudo certbot certonly --manual \
    - Name: `_acme-challenge.api`
    - Value: `(value from certbot)`
    - TTL: `300`
-3. Verify: `dig _acme-challenge.api.ventidole.xyz TXT +short`
+3. Verify: `dig _acme-challenge.api-prod.ventidole.xyz TXT +short`
 4. Wait 2 minutes for DNS propagation
 5. Press Enter in certbot
 6. Certificate issued! ✅
@@ -140,7 +140,7 @@ sudo chmod 600 ~/.secrets/certbot/cloudflare.ini
 sudo certbot certonly \
     --dns-cloudflare \
     --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --email your-email@example.com \
     --agree-tos \
     --non-interactive
@@ -152,7 +152,7 @@ sudo certbot certonly \
 
 ```bash
 # Check certificate files
-sudo ls -la /etc/letsencrypt/live/api.ventidole.xyz/
+sudo ls -la /etc/letsencrypt/live/api-prod.ventidole.xyz/
 
 # Should show:
 # - cert.pem (certificate)
@@ -173,7 +173,7 @@ docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 docker-compose -f docker/prod/docker-compose.yaml logs -f gateway
 
 # Test HTTPS
-curl -I https://api.ventidole.xyz
+curl -I https://api-prod.ventidole.xyz
 ```
 
 ## 🔍 Verify DNSSEC Status Before Starting
@@ -182,7 +182,7 @@ Before attempting certificate generation, check DNSSEC:
 
 ```bash
 # From your local machine
-dig api.ventidole.xyz +dnssec
+dig api-prod.ventidole.xyz +dnssec
 ```
 
 **✅ DNSSEC is FIXED if you see:**
@@ -191,7 +191,7 @@ dig api.ventidole.xyz +dnssec
               ^^^ NO "ad" flag
 
 ;; ANSWER SECTION:
-api.ventidole.xyz.      3600    IN      A       35.193.66.111
+api-prod.ventidole.xyz.      3600    IN      A       35.193.66.111
                                         ^^^ NO RRSIG record
 ```
 
@@ -247,7 +247,7 @@ gcloud compute firewall-rules create allow-http \
 # Use staging server (doesn't count against rate limits)
 sudo certbot certonly --standalone \
     --staging \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --agree-tos \
     --email your-email@example.com
 
@@ -277,12 +277,12 @@ sudo bash scripts/clean-certbot.sh
 
 ### Get certificate (HTTP):
 ```bash
-sudo certbot certonly --standalone -d api.ventidole.xyz --agree-tos --email your-email@example.com
+sudo certbot certonly --standalone -d api-prod.ventidole.xyz --agree-tos --email your-email@example.com
 ```
 
 ### Get certificate (DNS):
 ```bash
-sudo certbot certonly --manual --preferred-challenges dns -d api.ventidole.xyz --agree-tos --email your-email@example.com
+sudo certbot certonly --manual --preferred-challenges dns -d api-prod.ventidole.xyz --agree-tos --email your-email@example.com
 ```
 
 ### Start application:
@@ -293,7 +293,7 @@ docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
 ### Test:
 ```bash
-curl -I https://api.ventidole.xyz
+curl -I https://api-prod.ventidole.xyz
 ```
 
 ---

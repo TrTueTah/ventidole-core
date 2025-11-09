@@ -20,7 +20,7 @@ Detail: Incorrect TXT record "zWtz2U71sBzC99JJigPDKN17ghwSbV62eVbgd2PhcLg" found
 ### Step 1: Delete ALL _acme-challenge TXT records
 
 Go to your DNS provider and **delete all TXT records** for:
-- `_acme-challenge.api.ventidole.xyz`
+- `_acme-challenge.api-prod.ventidole.xyz`
 - `_acme-challenge.api`
 
 **Important**: Make sure they're completely removed, not just edited!
@@ -29,7 +29,7 @@ Go to your DNS provider and **delete all TXT records** for:
 
 ```bash
 # On your server or local machine
-dig _acme-challenge.api.ventidole.xyz TXT +short
+dig _acme-challenge.api-prod.ventidole.xyz TXT +short
 
 # Should return NOTHING (empty result)
 # If you still see old values, wait 2-3 more minutes
@@ -48,7 +48,7 @@ sudo rm -rf /var/log/letsencrypt/*
 # Try again with manual challenge
 sudo certbot certonly --manual \
     --preferred-challenges dns \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --agree-tos \
     --email your-email@example.com
 ```
@@ -59,7 +59,7 @@ Certbot will show something like:
 
 ```
 Please deploy a DNS TXT record under the name:
-_acme-challenge.api.ventidole.xyz.
+_acme-challenge.api-prod.ventidole.xyz.
 
 with the following value:
 ABC123XYZ456... (NEW VALUE - different from before!)
@@ -125,7 +125,7 @@ sudo rm -rf /var/log/letsencrypt/*
 # 4. Start fresh
 sudo certbot certonly --manual \
     --preferred-challenges dns \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --agree-tos \
     --email your-email@example.com
 
@@ -154,12 +154,12 @@ TTL: Auto
 **Google Cloud DNS:**
 ```bash
 # Delete old records first
-gcloud dns record-sets delete _acme-challenge.api.ventidole.xyz. \
+gcloud dns record-sets delete _acme-challenge.api-prod.ventidole.xyz. \
     --type=TXT \
     --zone=your-zone-name
 
 # Add new record
-gcloud dns record-sets create _acme-challenge.api.ventidole.xyz. \
+gcloud dns record-sets create _acme-challenge.api-prod.ventidole.xyz. \
     --type=TXT \
     --ttl=300 \
     --rrdatas="(paste value from certbot)" \
@@ -182,7 +182,7 @@ TTL: 1 min or Automatic
 **Fix**: Delete ALL `_acme-challenge.api` TXT records before adding new one
 
 ### Mistake 2: Adding record to wrong domain
-**Fix**: Add to `_acme-challenge.api.ventidole.xyz` NOT `ventidole.xyz`
+**Fix**: Add to `_acme-challenge.api-prod.ventidole.xyz` NOT `ventidole.xyz`
 
 ### Mistake 3: Pressing Enter too quickly
 **Fix**: Wait until verification script confirms record is propagated
@@ -229,7 +229,7 @@ sudo chmod 600 ~/.secrets/certbot/cloudflare.ini
 sudo certbot certonly \
     --dns-cloudflare \
     --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --agree-tos \
     --email your-email@example.com
 ```

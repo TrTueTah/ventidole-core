@@ -2,7 +2,7 @@
 
 ## 🎯 Goal
 
-Access your API as: `https://api.ventidole.xyz/docs` (clean URL)  
+Access your API as: `https://api-prod.ventidole.xyz/docs` (clean URL)  
 But have the server listen on port 8080.
 
 ## 🏗️ Architecture
@@ -10,7 +10,7 @@ But have the server listen on port 8080.
 ```
 User Browser                    GCP Server
      │                               │
-     │  https://api.ventidole.xyz   │
+     │  https://api-prod.ventidole.xyz   │
      │  (port 443 - standard)        │
      └──────────────────────────────►│ Port 8080
                                      │   ↓
@@ -35,7 +35,7 @@ Use GCP's load balancer or port forwarding to route 443 → 8080.
    - Backend: Your VM on port 8080
 
 2. **Update DNS**:
-   - Point `api.ventidole.xyz` to the Load Balancer IP
+   - Point `api-prod.ventidole.xyz` to the Load Balancer IP
 
 3. **Keep docker-compose as configured**:
    ```yaml
@@ -138,7 +138,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 # Get certificate (uses port 80 by default)
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --email your-email@ventidole.xyz \
     --agree-tos
 ```
@@ -157,15 +157,15 @@ docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
 ```bash
 # Test from server
-curl -I https://api.ventidole.xyz
+curl -I https://api-prod.ventidole.xyz
 
 # Test from browser
-https://api.ventidole.xyz/docs
+https://api-prod.ventidole.xyz/docs
 ```
 
 ## ✅ How It Works
 
-1. User accesses: `https://api.ventidole.xyz` (port 443, standard HTTPS)
+1. User accesses: `https://api-prod.ventidole.xyz` (port 443, standard HTTPS)
 2. GCP firewall allows port 443
 3. iptables redirects port 443 → 8080
 4. Docker routes 8080 → container port 443
@@ -181,7 +181,7 @@ https://api.ventidole.xyz/docs
 sudo iptables -t nat -L -n -v | grep 443
 
 # Test port 443 is open
-telnet api.ventidole.xyz 443
+telnet api-prod.ventidole.xyz 443
 
 # Check what's listening on port 8080
 sudo netstat -tulpn | grep 8080
@@ -189,9 +189,9 @@ sudo netstat -tulpn | grep 8080
 
 ## 🎯 Final URLs
 
-- **HTTPS**: `https://api.ventidole.xyz` ✅
-- **Swagger**: `https://api.ventidole.xyz/docs` ✅
-- **API**: `https://api.ventidole.xyz/v1/...` ✅
+- **HTTPS**: `https://api-prod.ventidole.xyz` ✅
+- **Swagger**: `https://api-prod.ventidole.xyz/docs` ✅
+- **API**: `https://api-prod.ventidole.xyz/v1/...` ✅
 
 No port number needed! 🎉
 

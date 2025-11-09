@@ -3,8 +3,8 @@
 # DNS TXT Record Verification Helper
 # Use this to verify your TXT record before pressing Enter in certbot
 
-DOMAIN="api.ventidole.xyz"
-CHALLENGE_DOMAIN="_acme-challenge.api.ventidole.xyz"
+DOMAIN="api-prod.ventidole.xyz"
+CHALLENGE_DOMAIN="_acme-challenge.api-prod.ventidole.xyz"
 
 echo "=========================================="
 echo "🔍 DNS TXT Record Verification"

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# SSL Certificate Setup Script for api.ventidole.xyz
+# SSL Certificate Setup Script for api-prod.ventidole.xyz
 # This script automates the SSL certificate acquisition process
 
 set -e  # Exit on error
 
-echo "🔐 SSL Certificate Setup for api.ventidole.xyz"
+echo "🔐 SSL Certificate Setup for api-prod.ventidole.xyz"
 echo "================================================"
 echo ""
 
@@ -16,7 +16,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Configuration
-DOMAIN="api.ventidole.xyz"
+DOMAIN="api-prod.ventidole.xyz"
 HTTP_PORT="80"
 APP_DIR="/home/trantanh227/ventidole-core"
 EMAIL=""

@@ -6,7 +6,7 @@
 set -e
 
 PROJECT_DIR="/home/trantanh227/ventidole-core"
-DOMAIN="api.ventidole.xyz"
+DOMAIN="api-prod.ventidole.xyz"
 EMAIL="trantanh227@gmail.com"
 
 echo "=========================================="
@@ -51,7 +51,7 @@ echo "   • Name: _acme-challenge.api"
 echo "   • Value: (paste the value certbot shows)"
 echo "   • TTL: 300"
 echo ""
-echo "3. Verify with: dig _acme-challenge.api.ventidole.xyz TXT +short"
+echo "3. Verify with: dig _acme-challenge.api-prod.ventidole.xyz TXT +short"
 echo ""
 echo "4. Wait 2-3 minutes for DNS propagation"
 echo ""

@@ -1,8 +1,8 @@
-# HTTPS Setup for api.ventidole.xyz
+# HTTPS Setup for api-prod.ventidole.xyz
 
 ## 🎯 Your Configuration
 
-- **Domain**: `api.ventidole.xyz`
+- **Domain**: `api-prod.ventidole.xyz`
 - **Server IP**: `35.193.66.111`
 - **HTTP Port**: `80` (standard)
 - **HTTPS Port**: `443` (standard)
@@ -11,7 +11,7 @@
 
 Your domain is already pointing to the server. Verify:
 ```bash
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 # Should return: 35.193.66.111
 ```
 
@@ -61,7 +61,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 ```bash
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --email your-email@example.com \
     --agree-tos \
     --non-interactive
@@ -72,7 +72,7 @@ sudo certbot certonly --standalone \
 ### Step 6: Verify Certificate
 
 ```bash
-sudo ls -la /etc/letsencrypt/live/api.ventidole.xyz/
+sudo ls -la /etc/letsencrypt/live/api-prod.ventidole.xyz/
 # Should see: cert.pem, chain.pem, fullchain.pem, privkey.pem
 ```
 
@@ -105,25 +105,25 @@ docker-compose -f docker/prod/docker-compose.yaml logs server
 
 ### Test HTTP (Port 8080)
 ```bash
-curl -I http://api.ventidole.xyz:8080
+curl -I http://api-prod.ventidole.xyz:8080
 # Should redirect to HTTPS (301)
 ```
 
 ### Test HTTPS (Port 8443)
 ```bash
-curl -I https://api.ventidole.xyz:8443
+curl -I https://api-prod.ventidole.xyz:8443
 # Should return: HTTP/2 200
 ```
 
 ### Test in Browser
 
 **Swagger UI:**
-- HTTP: `http://api.ventidole.xyz:8080/docs` (redirects to HTTPS)
-- HTTPS: `https://api.ventidole.xyz:8443/docs`
+- HTTP: `http://api-prod.ventidole.xyz:8080/docs` (redirects to HTTPS)
+- HTTPS: `https://api-prod.ventidole.xyz:8443/docs`
 
 **API Endpoint:**
 ```bash
-curl https://api.ventidole.xyz:8443/v1/your-endpoint
+curl https://api-prod.ventidole.xyz:8443/v1/your-endpoint
 ```
 
 ## 🔄 Auto-Renewal Setup
@@ -153,10 +153,10 @@ sudo crontab -e
 
 After setup, your API will be accessible at:
 
-- ✅ **HTTP**: `http://api.ventidole.xyz:8080` → Redirects to HTTPS
-- ✅ **HTTPS**: `https://api.ventidole.xyz:8443` ← Use this
-- ✅ **Swagger**: `https://api.ventidole.xyz:8443/docs`
-- ✅ **API v1**: `https://api.ventidole.xyz:8443/v1/...`
+- ✅ **HTTP**: `http://api-prod.ventidole.xyz:8080` → Redirects to HTTPS
+- ✅ **HTTPS**: `https://api-prod.ventidole.xyz:8443` ← Use this
+- ✅ **Swagger**: `https://api-prod.ventidole.xyz:8443/docs`
+- ✅ **API v1**: `https://api-prod.ventidole.xyz:8443/v1/...`
 
 ## 🔍 Troubleshooting
 
@@ -176,13 +176,13 @@ telnet 35.193.66.111 8443
 
 **Verify certificate path:**
 ```bash
-sudo ls -la /etc/letsencrypt/live/api.ventidole.xyz/
+sudo ls -la /etc/letsencrypt/live/api-prod.ventidole.xyz/
 ```
 
 **If missing, get certificate again:**
 ```bash
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --http-01-port 8080
 ```
 
@@ -205,19 +205,19 @@ docker-compose -f docker/prod/docker-compose.yaml logs gateway
 
 **Check certificate validity:**
 ```bash
-openssl s_client -connect api.ventidole.xyz:8443 -servername api.ventidole.xyz
+openssl s_client -connect api-prod.ventidole.xyz:8443 -servername api-prod.ventidole.xyz
 # Should show: Verify return code: 0 (ok)
 ```
 
 ## 🎉 Success Checklist
 
-- [ ] DNS points to server: `api.ventidole.xyz` → `35.193.66.111`
+- [ ] DNS points to server: `api-prod.ventidole.xyz` → `35.193.66.111`
 - [ ] Ports 8080 and 8443 open in firewall
-- [ ] SSL certificate obtained for `api.ventidole.xyz`
+- [ ] SSL certificate obtained for `api-prod.ventidole.xyz`
 - [ ] Docker containers running (server + gateway)
 - [ ] HTTP (8080) redirects to HTTPS (8443)
-- [ ] HTTPS works: `https://api.ventidole.xyz:8443`
-- [ ] Swagger accessible: `https://api.ventidole.xyz:8443/docs`
+- [ ] HTTPS works: `https://api-prod.ventidole.xyz:8443`
+- [ ] Swagger accessible: `https://api-prod.ventidole.xyz:8443/docs`
 - [ ] Auto-renewal configured
 
 ## 📝 Notes
@@ -229,4 +229,4 @@ openssl s_client -connect api.ventidole.xyz:8443 -servername api.ventidole.xyz
 
 ---
 
-**Your API**: `https://api.ventidole.xyz:8443` 🚀
+**Your API**: `https://api-prod.ventidole.xyz:8443` 🚀

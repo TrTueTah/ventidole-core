@@ -1,4 +1,4 @@
-# How to Get SSL Certificate for nginx (api.ventidole.xyz)
+# How to Get SSL Certificate for nginx (api-prod.ventidole.xyz)
 
 ## 🔐 SSL Certificate (Not License)
 
@@ -42,7 +42,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 ```bash
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --http-01-port 8080 \
     --email your-email@example.com \
     --agree-tos \
@@ -53,7 +53,7 @@ sudo certbot certonly --standalone \
 
 This creates certificate files at:
 ```
-/etc/letsencrypt/live/api.ventidole.xyz/
+/etc/letsencrypt/live/api-prod.ventidole.xyz/
 ├── cert.pem          # Your certificate
 ├── chain.pem         # Certificate chain
 ├── fullchain.pem     # Full certificate chain
@@ -63,7 +63,7 @@ This creates certificate files at:
 ### Step 5: Verify Certificate Created
 
 ```bash
-sudo ls -la /etc/letsencrypt/live/api.ventidole.xyz/
+sudo ls -la /etc/letsencrypt/live/api-prod.ventidole.xyz/
 ```
 
 You should see 4 files listed above.
@@ -80,10 +80,10 @@ docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
 ```bash
 # Test certificate
-curl -I https://api.ventidole.xyz:8443
+curl -I https://api-prod.ventidole.xyz:8443
 
 # Or in browser
-https://api.ventidole.xyz:8443/docs
+https://api-prod.ventidole.xyz:8443/docs
 ```
 
 ---
@@ -114,7 +114,7 @@ location /.well-known/acme-challenge/ {
 ```bash
 sudo certbot certonly --webroot \
     -w /var/www/certbot \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --email your-email@example.com \
     --agree-tos \
     --non-interactive
@@ -168,20 +168,20 @@ sudo certbot certificates
 sudo certbot certificates | grep "Expiry Date"
 
 # View certificate with openssl
-sudo openssl x509 -in /etc/letsencrypt/live/api.ventidole.xyz/cert.pem -text -noout
+sudo openssl x509 -in /etc/letsencrypt/live/api-prod.ventidole.xyz/cert.pem -text -noout
 ```
 
 ### Certificate Locations
 
 ```bash
 # Certificate files
-/etc/letsencrypt/live/api.ventidole.xyz/
+/etc/letsencrypt/live/api-prod.ventidole.xyz/
 
 # Certificate archive (actual files)
-/etc/letsencrypt/archive/api.ventidole.xyz/
+/etc/letsencrypt/archive/api-prod.ventidole.xyz/
 
 # Certbot config
-/etc/letsencrypt/renewal/api.ventidole.xyz.conf
+/etc/letsencrypt/renewal/api-prod.ventidole.xyz.conf
 ```
 
 ---
@@ -195,7 +195,7 @@ sudo openssl x509 -in /etc/letsencrypt/live/api.ventidole.xyz/cert.pem -text -no
 **Solution**:
 ```bash
 # Check DNS
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 # Should return: 35.193.66.111
 
 # Check port is open
@@ -227,7 +227,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 # Use staging server for testing
 sudo certbot certonly --standalone \
     --staging \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --http-01-port 8080
 ```
 
@@ -264,9 +264,9 @@ sudo chmod -R 755 /etc/letsencrypt/archive/
 
 ### How Verification Works
 
-1. You request a certificate for `api.ventidole.xyz`
+1. You request a certificate for `api-prod.ventidole.xyz`
 2. Let's Encrypt challenges you to prove you own the domain
-3. It tries to access: `http://api.ventidole.xyz:8080/.well-known/acme-challenge/random-string`
+3. It tries to access: `http://api-prod.ventidole.xyz:8080/.well-known/acme-challenge/random-string`
 4. If successful, certificate is issued
 5. Certificate is saved to `/etc/letsencrypt/`
 
@@ -278,10 +278,10 @@ sudo chmod -R 755 /etc/letsencrypt/archive/
 
 ```bash
 # Check private key permissions (should be 600 or 400)
-ls -l /etc/letsencrypt/live/api.ventidole.xyz/privkey.pem
+ls -l /etc/letsencrypt/live/api-prod.ventidole.xyz/privkey.pem
 
 # Fix if needed
-sudo chmod 600 /etc/letsencrypt/live/api.ventidole.xyz/privkey.pem
+sudo chmod 600 /etc/letsencrypt/live/api-prod.ventidole.xyz/privkey.pem
 ```
 
 ### 2. Backup Certificates
@@ -310,7 +310,7 @@ sudo certbot certificates
 ### Get New Certificate
 
 ```bash
-sudo certbot certonly --standalone -d api.ventidole.xyz --http-01-port 8080
+sudo certbot certonly --standalone -d api-prod.ventidole.xyz --http-01-port 8080
 ```
 
 ### Renew Certificate
@@ -328,7 +328,7 @@ sudo certbot certificates
 ### Delete Certificate
 
 ```bash
-sudo certbot delete --cert-name api.ventidole.xyz
+sudo certbot delete --cert-name api-prod.ventidole.xyz
 ```
 
 ### Test Renewal
@@ -339,7 +339,7 @@ sudo certbot renew --dry-run --http-01-port 8080
 
 ---
 
-## 🎯 For Your Setup (api.ventidole.xyz)
+## 🎯 For Your Setup (api-prod.ventidole.xyz)
 
 ### Complete Command
 
@@ -356,7 +356,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 # 4. Get certificate
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --http-01-port 8080 \
     --email your-email@ventidole.xyz \
     --agree-tos
@@ -365,15 +365,15 @@ sudo certbot certonly --standalone \
 docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
 # 6. Test
-curl -I https://api.ventidole.xyz:8443
+curl -I https://api-prod.ventidole.xyz:8443
 ```
 
 ### Your nginx Already Configured
 
 Your nginx config already points to:
 ```
-/etc/letsencrypt/live/api.ventidole.xyz/fullchain.pem
-/etc/letsencrypt/live/api.ventidole.xyz/privkey.pem
+/etc/letsencrypt/live/api-prod.ventidole.xyz/fullchain.pem
+/etc/letsencrypt/live/api-prod.ventidole.xyz/privkey.pem
 ```
 
 Just get the certificate and restart!
@@ -384,8 +384,8 @@ Just get the certificate and restart!
 
 After getting the certificate, your API will be accessible at:
 
-- ✅ `https://api.ventidole.xyz:8443` (Secure)
-- ✅ `https://api.ventidole.xyz:8443/docs` (Swagger)
+- ✅ `https://api-prod.ventidole.xyz:8443` (Secure)
+- ✅ `https://api-prod.ventidole.xyz:8443/docs` (Swagger)
 - ✅ Browser shows 🔒 padlock icon
 
 ---

@@ -59,7 +59,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 # 4. Get certificate
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --http-01-port 8080 \
     --email your-email@ventidole.xyz \
     --agree-tos
@@ -68,7 +68,7 @@ sudo certbot certonly --standalone \
 docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
 # 6. Test
-curl -I https://api.ventidole.xyz:8443
+curl -I https://api-prod.ventidole.xyz:8443
 ```
 
 **Time**: ~5 minutes
@@ -109,10 +109,10 @@ After setup, verify:
 sudo certbot certificates
 
 # Test HTTPS
-curl -I https://api.ventidole.xyz:8443
+curl -I https://api-prod.ventidole.xyz:8443
 
 # Browser test
-https://api.ventidole.xyz:8443/docs
+https://api-prod.ventidole.xyz:8443/docs
 ```
 
 ---
@@ -131,7 +131,7 @@ gcloud compute firewall-rules create allow-http-8080 --allow tcp:8080
 ### DNS not configured
 ```bash
 # Check DNS
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 # Should return your server IP
 ```
 
@@ -168,4 +168,4 @@ See `docs/SSL_CERTIFICATE_GUIDE.md`
 
 ---
 
-Your API will be accessible at: **https://api.ventidole.xyz:8443** 🔒
+Your API will be accessible at: **https://api-prod.ventidole.xyz:8443** 🔒

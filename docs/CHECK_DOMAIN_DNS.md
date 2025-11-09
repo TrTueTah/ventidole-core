@@ -6,7 +6,7 @@
 
 ```bash
 # From your local machine
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 
 # Should return your VM's IP: 35.193.66.111
 ```
@@ -24,13 +24,13 @@ If it returns a different IP or nothing, your DNS is not configured correctly.
 
 ```bash
 # Google DNS
-dig @8.8.8.8 api.ventidole.xyz +short
+dig @8.8.8.8 api-prod.ventidole.xyz +short
 
 # Cloudflare DNS
-dig @1.1.1.1 api.ventidole.xyz +short
+dig @1.1.1.1 api-prod.ventidole.xyz +short
 
 # Your local DNS
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 ```
 
 All should return the same IP: `35.193.66.111`
@@ -40,14 +40,14 @@ All should return the same IP: `35.193.66.111`
 ### 3. Check with nslookup (Alternative to dig)
 
 ```bash
-nslookup api.ventidole.xyz
+nslookup api-prod.ventidole.xyz
 
 # Expected output:
 # Server:    1.1.1.1
 # Address:   1.1.1.1#53
 #
 # Non-authoritative answer:
-# Name:   api.ventidole.xyz
+# Name:   api-prod.ventidole.xyz
 # Address: 35.193.66.111
 ```
 
@@ -57,13 +57,13 @@ nslookup api.ventidole.xyz
 
 ```bash
 # Test HTTP (port 80)
-curl -I http://api.ventidole.xyz
+curl -I http://api-prod.ventidole.xyz
 
 # Test HTTPS (port 443)
-curl -I https://api.ventidole.xyz
+curl -I https://api-prod.ventidole.xyz
 
 # Test with custom port
-curl -I https://api.ventidole.xyz:8080
+curl -I https://api-prod.ventidole.xyz:8080
 ```
 
 ---
@@ -73,11 +73,11 @@ curl -I https://api.ventidole.xyz:8080
 Visit these websites to check from different locations:
 
 - **DNS Checker**: https://dnschecker.org
-  - Enter: `api.ventidole.xyz`
+  - Enter: `api-prod.ventidole.xyz`
   - Check if it resolves to `35.193.66.111` globally
 
 - **What's My DNS**: https://www.whatsmydns.net
-  - Enter: `api.ventidole.xyz`
+  - Enter: `api-prod.ventidole.xyz`
   - Check A record
 
 - **DNS Propagation**: https://www.dnswatch.info
@@ -122,10 +122,10 @@ gcloud compute instances describe YOUR_INSTANCE_NAME \
 ### 8. Ping Test (Basic Connectivity)
 
 ```bash
-ping api.ventidole.xyz
+ping api-prod.ventidole.xyz
 
 # Expected output:
-# PING api.ventidole.xyz (35.193.66.111): 56 data bytes
+# PING api-prod.ventidole.xyz (35.193.66.111): 56 data bytes
 # 64 bytes from 35.193.66.111: icmp_seq=0 ttl=54 time=45.1 ms
 ```
 
@@ -137,13 +137,13 @@ ping api.ventidole.xyz
 
 ```bash
 # Check if port 80 is open
-telnet api.ventidole.xyz 80
+telnet api-prod.ventidole.xyz 80
 
 # Check if port 443 is open
-telnet api.ventidole.xyz 443
+telnet api-prod.ventidole.xyz 443
 
 # Check if port 8080 is open
-telnet api.ventidole.xyz 8080
+telnet api-prod.ventidole.xyz 8080
 
 # Press Ctrl+] then type "quit" to exit
 ```
@@ -151,7 +151,7 @@ telnet api.ventidole.xyz 8080
 **If connection succeeds:**
 ```
 Trying 35.193.66.111...
-Connected to api.ventidole.xyz.
+Connected to api-prod.ventidole.xyz.
 ```
 
 **If connection fails:**
@@ -165,7 +165,7 @@ telnet: Unable to connect to remote host: Connection refused
 ### 10. Traceroute (Check Network Path)
 
 ```bash
-traceroute api.ventidole.xyz
+traceroute api-prod.ventidole.xyz
 
 # Shows the network path to your VM
 # Last hop should be 35.193.66.111
@@ -180,7 +180,7 @@ Create this script to check everything at once:
 ```bash
 #!/bin/bash
 
-DOMAIN="api.ventidole.xyz"
+DOMAIN="api-prod.ventidole.xyz"
 EXPECTED_IP="35.193.66.111"
 
 echo "=========================================="
@@ -275,14 +275,14 @@ bash scripts/check-domain.sh
 ### ✅ Correct Configuration:
 
 ```bash
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 # Output: 35.193.66.111
 ```
 
 ### ❌ Incorrect Configuration:
 
 ```bash
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 # Output: (nothing) or different IP
 ```
 
@@ -294,7 +294,7 @@ If the domain doesn't point to your VM:
 
 1. **Check your DNS provider** (where you manage ventidole.xyz)
 2. **Look for A record**:
-   - Name: `api` or `api.ventidole.xyz`
+   - Name: `api` or `api-prod.ventidole.xyz`
    - Type: `A`
    - Value: Should be `35.193.66.111`
 3. **Wait 5-15 minutes** for DNS propagation
@@ -313,12 +313,12 @@ If the domain doesn't point to your VM:
 
 | Command | Purpose |
 |---------|---------|
-| `dig api.ventidole.xyz +short` | Check DNS resolution |
-| `curl -I http://api.ventidole.xyz` | Test HTTP connectivity |
-| `curl -I https://api.ventidole.xyz` | Test HTTPS connectivity |
-| `telnet api.ventidole.xyz 80` | Test port 80 |
-| `nslookup api.ventidole.xyz` | Alternative DNS check |
+| `dig api-prod.ventidole.xyz +short` | Check DNS resolution |
+| `curl -I http://api-prod.ventidole.xyz` | Test HTTP connectivity |
+| `curl -I https://api-prod.ventidole.xyz` | Test HTTPS connectivity |
+| `telnet api-prod.ventidole.xyz 80` | Test port 80 |
+| `nslookup api-prod.ventidole.xyz` | Alternative DNS check |
 
 ---
 
-**TL;DR**: Run `dig api.ventidole.xyz +short` - if it returns `35.193.66.111`, your domain points to your VM! ✅
+**TL;DR**: Run `dig api-prod.ventidole.xyz +short` - if it returns `35.193.66.111`, your domain points to your VM! ✅

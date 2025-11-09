@@ -18,7 +18,7 @@ ssh trantanh227@35.193.66.111
 # OR just wait 15-30 minutes for DNSSEC to fully propagate
 
 # Check if your server can resolve (it might work there!)
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 # If this returns 35.193.66.111, proceed with certbot
 ```
 
@@ -28,7 +28,7 @@ The DNSSEC transition takes time. Check every 5 minutes:
 
 ```bash
 # From your local machine
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 
 # When this starts working consistently, DNSSEC is fixed
 # Then retry certbot on your server
@@ -50,7 +50,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 # Try certbot (it might work!)
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --preferred-challenges http \
     --email your-email@example.com \
     --agree-tos \
@@ -70,14 +70,14 @@ If HTTP-01 still fails due to CAA lookup, use DNS-01:
 # On GCP server
 sudo certbot certonly --manual \
     --preferred-challenges dns \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --email your-email@example.com \
     --agree-tos
 ```
 
 **Steps:**
 1. Certbot will give you a TXT record value
-2. Add this TXT record to your DNS: `_acme-challenge.api.ventidole.xyz`
+2. Add this TXT record to your DNS: `_acme-challenge.api-prod.ventidole.xyz`
 3. Wait 2-3 minutes
 4. Press Enter in certbot
 5. Certificate issued!
@@ -98,7 +98,7 @@ Test if certbot works at all:
 # On GCP server
 sudo certbot certonly --standalone \
     --staging \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --email your-email@example.com \
     --agree-tos
 ```
@@ -116,7 +116,7 @@ Your server might not be affected by DNSSEC validation:
 ssh trantanh227@35.193.66.111
 
 # Check local DNS resolution
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 # If this returns your IP, you're good!
 
 # Stop containers
@@ -125,7 +125,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 # Try certbot
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --preferred-challenges http \
     --email your-email@example.com \
     --agree-tos \
@@ -140,7 +140,7 @@ DNSSEC propagation typically takes 15-30 minutes. Check periodically:
 
 ```bash
 # Check every 5 minutes
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 
 # When it returns "35.193.66.111" consistently, retry certbot
 ```
@@ -153,7 +153,7 @@ DNS-01 bypasses HTTP and CAA issues:
 # On server
 sudo certbot certonly --manual \
     --preferred-challenges dns \
-    -d api.ventidole.xyz
+    -d api-prod.ventidole.xyz
 ```
 
 Add the TXT record it provides, wait 2 minutes, press Enter.
@@ -164,24 +164,24 @@ To see when DNSSEC is fully disabled:
 
 ```bash
 # Should show IP address (good)
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 
 # Should show NOERROR, no "ad" flag, no RRSIG
-dig api.ventidole.xyz +dnssec
+dig api-prod.ventidole.xyz +dnssec
 
 # Check from Google DNS
-dig @8.8.8.8 api.ventidole.xyz +short
+dig @8.8.8.8 api-prod.ventidole.xyz +short
 ```
 
 **When fixed, you'll see:**
 ```
-; <<>> DiG 9.10.6 <<>> api.ventidole.xyz +dnssec
+; <<>> DiG 9.10.6 <<>> api-prod.ventidole.xyz +dnssec
 ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: xxxxx
 ;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
                     ^^^^^^ (NO "ad" flag!)
 
 ;; ANSWER SECTION:
-api.ventidole.xyz.      3600    IN      A       35.193.66.111
+api-prod.ventidole.xyz.      3600    IN      A       35.193.66.111
                                         ^^^ (NO RRSIG record!)
 ```
 

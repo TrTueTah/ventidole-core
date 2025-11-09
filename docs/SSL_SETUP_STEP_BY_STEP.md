@@ -3,7 +3,7 @@
 ## 🚨 Current Issue
 
 ```
-nginx: [emerg] cannot load certificate "/etc/letsencrypt/live/api.ventidole.xyz/fullchain.pem"
+nginx: [emerg] cannot load certificate "/etc/letsencrypt/live/api-prod.ventidole.xyz/fullchain.pem"
 ```
 
 **Problem**: Nginx is trying to load SSL certificates that don't exist yet.
@@ -67,7 +67,7 @@ docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
 ```bash
 # Should work now
-curl -I http://api.ventidole.xyz
+curl -I http://api-prod.ventidole.xyz
 ```
 
 ### Step 6: Stop containers to free port 80
@@ -83,7 +83,7 @@ Since DNSSEC is still broken, use DNS-01:
 ```bash
 sudo certbot certonly --manual \
     --preferred-challenges dns \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --agree-tos \
     --email your-email@example.com
 ```
@@ -95,7 +95,7 @@ sudo certbot certonly --manual \
    - Name: `_acme-challenge.api`
    - Value: (paste the value)
    - TTL: `300`
-3. Verify: `dig _acme-challenge.api.ventidole.xyz TXT +short`
+3. Verify: `dig _acme-challenge.api-prod.ventidole.xyz TXT +short`
 4. Wait 2 minutes
 5. Press Enter in certbot
 6. Certificate generated! ✅
@@ -103,7 +103,7 @@ sudo certbot certonly --manual \
 ### Step 8: Verify certificates exist
 
 ```bash
-sudo ls -la /etc/letsencrypt/live/api.ventidole.xyz/
+sudo ls -la /etc/letsencrypt/live/api-prod.ventidole.xyz/
 
 # Should show:
 # cert.pem
@@ -161,14 +161,14 @@ docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 ### Step 5: Test HTTPS
 
 ```bash
-curl -I https://api.ventidole.xyz
+curl -I https://api-prod.ventidole.xyz
 ```
 
 ### Step 6: Access Swagger
 
 ```bash
 # Open in browser
-https://api.ventidole.xyz/docs
+https://api-prod.ventidole.xyz/docs
 ```
 
 ---
@@ -193,16 +193,16 @@ nano docker/prod/docker-compose.yaml
 docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
 # Test
-curl -I http://api.ventidole.xyz
+curl -I http://api-prod.ventidole.xyz
 
 # Stop for certbot
 docker-compose -f docker/prod/docker-compose.yaml down
 
 # Get certificate (DNS-01)
-sudo certbot certonly --manual --preferred-challenges dns -d api.ventidole.xyz --agree-tos --email your-email@example.com
+sudo certbot certonly --manual --preferred-challenges dns -d api-prod.ventidole.xyz --agree-tos --email your-email@example.com
 
 # Verify
-sudo ls -la /etc/letsencrypt/live/api.ventidole.xyz/
+sudo ls -la /etc/letsencrypt/live/api-prod.ventidole.xyz/
 ```
 
 ### Phase 2: Enable HTTPS
@@ -221,7 +221,7 @@ gcloud compute firewall-rules create allow-https --allow tcp:443 --source-ranges
 docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
 # Test
-curl -I https://api.ventidole.xyz
+curl -I https://api-prod.ventidole.xyz
 ```
 
 ---
@@ -236,7 +236,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 # Get certificate via HTTP-01 (simpler)
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --agree-tos \
     --email your-email@example.com
 ```
@@ -298,10 +298,10 @@ gateway:
 
 ## ✅ Success Checklist
 
-- [ ] Phase 1: HTTP works (`curl -I http://api.ventidole.xyz`)
-- [ ] Certificates generated (`sudo ls /etc/letsencrypt/live/api.ventidole.xyz/`)
-- [ ] Phase 2: HTTPS works (`curl -I https://api.ventidole.xyz`)
-- [ ] Swagger accessible (`https://api.ventidole.xyz/docs`)
+- [ ] Phase 1: HTTP works (`curl -I http://api-prod.ventidole.xyz`)
+- [ ] Certificates generated (`sudo ls /etc/letsencrypt/live/api-prod.ventidole.xyz/`)
+- [ ] Phase 2: HTTPS works (`curl -I https://api-prod.ventidole.xyz`)
+- [ ] Swagger accessible (`https://api-prod.ventidole.xyz/docs`)
 - [ ] No nginx warnings in logs
 - [ ] Firewall rules configured (443, 80)
 

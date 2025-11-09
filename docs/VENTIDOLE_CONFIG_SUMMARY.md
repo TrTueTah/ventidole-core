@@ -1,16 +1,16 @@
-# Configuration Summary for api.ventidole.xyz
+# Configuration Summary for api-prod.ventidole.xyz
 
 ## ✅ What's Been Configured
 
-All configuration files have been updated for your domain: **api.ventidole.xyz**
+All configuration files have been updated for your domain: **api-prod.ventidole.xyz**
 
 ### Files Modified:
 
 1. ✅ **`config.d/nginx/default.prod.conf`**
-   - Server name: `api.ventidole.xyz`
+   - Server name: `api-prod.ventidole.xyz`
    - HTTP port: `8080`
    - HTTPS port: `8443`
-   - SSL certificates: `/etc/letsencrypt/live/api.ventidole.xyz/`
+   - SSL certificates: `/etc/letsencrypt/live/api-prod.ventidole.xyz/`
 
 2. ✅ **`docker/prod/docker-compose.yaml`**
    - nginx gateway enabled (uncommented)
@@ -24,7 +24,7 @@ All configuration files have been updated for your domain: **api.ventidole.xyz**
 │                         Internet                             │
 └────────────────┬────────────────────────────────────────────┘
                  │
-                 │ api.ventidole.xyz
+                 │ api-prod.ventidole.xyz
                  │ (DNS → 35.193.66.111)
                  │
         ┌────────┴─────────┐
@@ -63,7 +63,7 @@ All configuration files have been updated for your domain: **api.ventidole.xyz**
 ```bash
 # Commit and push changes
 git add .
-git commit -m "feat: configure HTTPS for api.ventidole.xyz on ports 8080/8443"
+git commit -m "feat: configure HTTPS for api-prod.ventidole.xyz on ports 8080/8443"
 git push origin main
 ```
 
@@ -81,7 +81,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 # Get SSL certificate (one-time setup)
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --http-01-port 8080 \
     --email your-email@example.com \
     --agree-tos
@@ -100,19 +100,19 @@ docker-compose -f docker/prod/docker-compose.yaml ps
 
 ```bash
 # Test HTTP redirect
-curl -I http://api.ventidole.xyz:8080
-# Expected: 301 Moved Permanently → https://api.ventidole.xyz:8443
+curl -I http://api-prod.ventidole.xyz:8080
+# Expected: 301 Moved Permanently → https://api-prod.ventidole.xyz:8443
 
 # Test HTTPS
-curl -I https://api.ventidole.xyz:8443
+curl -I https://api-prod.ventidole.xyz:8443
 # Expected: HTTP/2 200
 
 # Test Swagger UI
-curl https://api.ventidole.xyz:8443/docs
+curl https://api-prod.ventidole.xyz:8443/docs
 # Expected: HTML content
 
 # Test API endpoint
-curl https://api.ventidole.xyz:8443/v1/your-endpoint
+curl https://api-prod.ventidole.xyz:8443/v1/your-endpoint
 ```
 
 ## 📱 Browser Access
@@ -121,14 +121,14 @@ After deployment, access your API at:
 
 - **Swagger Documentation**: 
   ```
-  https://api.ventidole.xyz:8443/docs
+  https://api-prod.ventidole.xyz:8443/docs
   ```
 
 - **API Endpoints**:
   ```
-  https://api.ventidole.xyz:8443/v1/auth/...
-  https://api.ventidole.xyz:8443/v1/users/...
-  https://api.ventidole.xyz:8443/v1/posts/...
+  https://api-prod.ventidole.xyz:8443/v1/auth/...
+  https://api-prod.ventidole.xyz:8443/v1/users/...
+  https://api-prod.ventidole.xyz:8443/v1/posts/...
   ```
 
 ## ⚙️ Environment Variables
@@ -193,6 +193,6 @@ For step-by-step instructions, see:
 
 ---
 
-**Your Domain**: `api.ventidole.xyz`  
+**Your Domain**: `api-prod.ventidole.xyz`  
 **HTTP**: Port 8080 (redirects)  
 **HTTPS**: Port 8443 (secure) 🔒

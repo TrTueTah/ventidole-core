@@ -19,7 +19,7 @@ DNS-01 challenge bypasses HTTP and DNSSEC A/AAAA record lookups by using TXT rec
 # On your GCP server
 sudo certbot certonly --manual \
     --preferred-challenges dns \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --agree-tos \
     --email your-email@example.com
 ```
@@ -30,7 +30,7 @@ Certbot will output something like:
 
 ```
 Please deploy a DNS TXT record under the name:
-_acme-challenge.api.ventidole.xyz.
+_acme-challenge.api-prod.ventidole.xyz.
 
 with the following value:
 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -62,7 +62,7 @@ TTL: 300 (or 1 minute)
 
 #### Google Cloud DNS:
 ```bash
-gcloud dns record-sets create _acme-challenge.api.ventidole.xyz. \
+gcloud dns record-sets create _acme-challenge.api-prod.ventidole.xyz. \
     --type=TXT \
     --ttl=300 \
     --rrdatas="(paste value from certbot)" \
@@ -83,7 +83,7 @@ Before pressing Enter in certbot, verify:
 
 ```bash
 # From your local machine or server
-dig _acme-challenge.api.ventidole.xyz TXT +short
+dig _acme-challenge.api-prod.ventidole.xyz TXT +short
 
 # You should see the value you added
 # Example output: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
@@ -140,7 +140,7 @@ sudo chmod 600 ~/.secrets/certbot/cloudflare.ini
 sudo certbot certonly \
     --dns-cloudflare \
     --dns-cloudflare-credentials ~/.secrets/certbot/cloudflare.ini \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --email your-email@example.com \
     --agree-tos
 ```
@@ -158,7 +158,7 @@ gcloud auth application-default login
 sudo certbot certonly \
     --dns-google \
     --dns-google-credentials /path/to/credentials.json \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --email your-email@example.com \
     --agree-tos
 ```
@@ -172,7 +172,7 @@ sudo apt install -y python3-certbot-dns-route53
 # Get certificate (uses AWS credentials)
 sudo certbot certonly \
     --dns-route53 \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --email your-email@example.com \
     --agree-tos
 ```
@@ -190,25 +190,25 @@ docker-compose -f docker/prod/docker-compose.yaml down
 # 3. Run certbot with DNS challenge
 sudo certbot certonly --manual \
     --preferred-challenges dns \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --agree-tos \
     --email your-email@example.com
 
 # 4. Follow prompts:
 #    - It will show you a TXT record value
-#    - Add this to your DNS as _acme-challenge.api.ventidole.xyz
+#    - Add this to your DNS as _acme-challenge.api-prod.ventidole.xyz
 #    - Wait 2 minutes
-#    - Verify with: dig _acme-challenge.api.ventidole.xyz TXT +short
+#    - Verify with: dig _acme-challenge.api-prod.ventidole.xyz TXT +short
 #    - Press Enter in certbot
 
 # 5. Certificate should be issued!
-# Location: /etc/letsencrypt/live/api.ventidole.xyz/
+# Location: /etc/letsencrypt/live/api-prod.ventidole.xyz/
 
 # 6. Start containers
 docker-compose --env-file .env -f docker/prod/docker-compose.yaml up -d
 
 # 7. Test
-curl -I https://api.ventidole.xyz
+curl -I https://api-prod.ventidole.xyz
 ```
 
 ## 🎯 Why DNS-01 Works When HTTP-01 Fails
@@ -228,7 +228,7 @@ Once DNSSEC is fully removed (15-30 minutes), you can use HTTP-01:
 
 ```bash
 # Check if fixed
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 # Should consistently return: 35.193.66.111
 
 # Then use HTTP-01 for renewals
@@ -238,7 +238,7 @@ sudo certbot renew --preferred-challenges http
 ## 🚀 Quick Command (Copy-Paste Ready)
 
 ```bash
-sudo certbot certonly --manual --preferred-challenges dns -d api.ventidole.xyz --agree-tos --email your-email@example.com
+sudo certbot certonly --manual --preferred-challenges dns -d api-prod.ventidole.xyz --agree-tos --email your-email@example.com
 ```
 
 Then add the TXT record it shows you, wait 2 minutes, press Enter. Done! 🎉

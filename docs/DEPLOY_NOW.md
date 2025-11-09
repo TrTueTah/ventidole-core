@@ -1,8 +1,8 @@
-# 🚀 Deploy HTTPS for api.ventidole.xyz - Action Items
+# 🚀 Deploy HTTPS for api-prod.ventidole.xyz - Action Items
 
 ## ✅ Ready to Deploy
 
-Everything is configured for **api.ventidole.xyz** on ports **8080** (HTTP) and **8443** (HTTPS).
+Everything is configured for **api-prod.ventidole.xyz** on ports **8080** (HTTP) and **8443** (HTTPS).
 
 ---
 
@@ -12,7 +12,7 @@ Everything is configured for **api.ventidole.xyz** on ports **8080** (HTTP) and 
 
 ```bash
 git add .
-git commit -m "feat: configure HTTPS for api.ventidole.xyz"
+git commit -m "feat: configure HTTPS for api-prod.ventidole.xyz"
 git push origin main
 ```
 
@@ -47,7 +47,7 @@ ssh trantanh227@35.193.66.111
 ### 4️⃣ Verify DNS (Should already work)
 
 ```bash
-dig api.ventidole.xyz +short
+dig api-prod.ventidole.xyz +short
 # Should return: 35.193.66.111
 ```
 
@@ -69,7 +69,7 @@ docker-compose -f docker/prod/docker-compose.yaml down
 
 ```bash
 sudo certbot certonly --standalone \
-    -d api.ventidole.xyz \
+    -d api-prod.ventidole.xyz \
     --http-01-port 8080 \
     --email your-email@ventidole.xyz \
     --agree-tos \
@@ -81,7 +81,7 @@ sudo certbot certonly --standalone \
 ### 8️⃣ Verify Certificate
 
 ```bash
-sudo ls -la /etc/letsencrypt/live/api.ventidole.xyz/
+sudo ls -la /etc/letsencrypt/live/api-prod.ventidole.xyz/
 # Should see 4 files: cert.pem, chain.pem, fullchain.pem, privkey.pem
 ```
 
@@ -115,13 +115,13 @@ docker-compose -f docker/prod/docker-compose.yaml logs server | tail -20
 
 ```bash
 # Test HTTP (should redirect)
-curl -I http://api.ventidole.xyz:8080
+curl -I http://api-prod.ventidole.xyz:8080
 
 # Test HTTPS (should work)
-curl -I https://api.ventidole.xyz:8443
+curl -I https://api-prod.ventidole.xyz:8443
 
 # Test Swagger
-curl https://api.ventidole.xyz:8443/docs
+curl https://api-prod.ventidole.xyz:8443/docs
 ```
 
 ### 1️⃣3️⃣ Setup Auto-Renewal
@@ -143,7 +143,7 @@ sudo crontab -e
 
 Open your browser and go to:
 ```
-https://api.ventidole.xyz:8443/docs
+https://api-prod.ventidole.xyz:8443/docs
 ```
 
 You should see:
@@ -157,9 +157,9 @@ You should see:
 
 Your API is now live at:
 
-- **Swagger UI**: `https://api.ventidole.xyz:8443/docs`
-- **API Base**: `https://api.ventidole.xyz:8443`
-- **API v1**: `https://api.ventidole.xyz:8443/v1/...`
+- **Swagger UI**: `https://api-prod.ventidole.xyz:8443/docs`
+- **API Base**: `https://api-prod.ventidole.xyz:8443`
+- **API v1**: `https://api-prod.ventidole.xyz:8443/v1/...`
 
 ---
 
@@ -170,7 +170,7 @@ Your API is now live at:
 **Solution**: Make sure port 8080 is open and containers are stopped
 ```bash
 docker-compose -f docker/prod/docker-compose.yaml down
-sudo certbot certonly --standalone -d api.ventidole.xyz --http-01-port 8080
+sudo certbot certonly --standalone -d api-prod.ventidole.xyz --http-01-port 8080
 ```
 
 ### Problem: nginx container won't start
@@ -224,7 +224,7 @@ Copy this checklist and check off as you complete:
 [ ] SSH'd into server: ssh trantanh227@35.193.66.111
 [ ] Installed certbot
 [ ] Stopped Docker containers
-[ ] Got SSL certificate for api.ventidole.xyz
+[ ] Got SSL certificate for api-prod.ventidole.xyz
 [ ] Verified certificate files exist
 [ ] Pulled latest code with git pull
 [ ] Started containers with docker-compose up -d
