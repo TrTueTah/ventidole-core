@@ -2,15 +2,20 @@ FROM node:22-bullseye
 
 WORKDIR /usr/src/app
 
+# Copy dependency files
 COPY package.json yarn.lock ./
 COPY prisma ./prisma
 
-RUN corepack enable && corepack prepare yarn@1.22.22 --activate
+# Cài Yarn thủ công để tránh lỗi Corepack network
+RUN npm install -g yarn@1.22.22
 
-RUN yarn install --frozen-lockfile
+# Cài dependencies
+RUN yarn install --frozen-lockfile --network-timeout 300000
 
+# Copy toàn bộ source
 COPY . .
 
+# Build app
 RUN yarn build
 
 EXPOSE 8080
