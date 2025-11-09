@@ -1,27 +1,17 @@
-FROM node:22-alpine
+FROM node:22-bullseye
 
 WORKDIR /usr/src/app
 
-# Yarn 1.x đã có sẵn, không cần corepack
-RUN apk add --no-cache yarn
-
-# Copy package files
 COPY package.json yarn.lock ./
-
-# Copy Prisma schema
 COPY prisma ./prisma
 
-# Install dependencies
-RUN yarn install --frozen-lockfile --network-timeout 300000
+RUN corepack enable && corepack prepare yarn@1.22.22 --activate
 
-# Copy source code
+RUN yarn install --frozen-lockfile
+
 COPY . .
 
-# Build application
 RUN yarn build
 
-# Expose port
 EXPOSE 8080
-
-# Start app
 CMD ["node", "dist/main.js"]
