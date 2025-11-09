@@ -11,8 +11,8 @@ services:
     image: nginx:alpine
     container_name: ${PROJECT}-gateway
     ports:
-      - "8080:443"  # Maps external 8080 to internal 443 (HTTPS)
-      - "8081:80"   # Maps external 8081 to internal 80 (HTTP) - optional
+      - "443:443"   # expose HTTPS directly on VM
+      - "80:80"     # expose HTTP directly on VM
     volumes:
       - ../../config.d/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ../../config.d/nginx/default.prod.conf:/etc/nginx/conf.d/default.conf:ro
