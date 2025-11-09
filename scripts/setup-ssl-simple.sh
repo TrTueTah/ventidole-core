@@ -66,12 +66,6 @@ certbot certonly --manual \
     --preferred-challenges dns \
     -d ${DOMAIN} \
     --agree-tos \
-    --email ${EMAIL} \
-    --non-interactive 2>/dev/null || \
-certbot certonly --manual \
-    --preferred-challenges dns \
-    -d ${DOMAIN} \
-    --agree-tos \
     --email ${EMAIL}
 
 # Verify certificates
