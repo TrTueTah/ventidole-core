@@ -16,10 +16,18 @@ RUN npm i --save-dev @swc/cli @swc/core
 
 RUN npm install @css-inline/css-inline-linux-x64-musl
 
-RUN npx prisma generate
-
 COPY . .
 
+RUN npx prisma generate
+
 RUN npm run build
+
+# Copy Prisma query engine to dist folder
+RUN cp -r node_modules/.prisma dist/ || true && \
+    cp -r node_modules/@prisma dist/ || true && \
+    mkdir -p dist/db/prisma && \
+    find node_modules/.prisma/client -name "*.node" -exec cp {} dist/db/prisma/ \; || true
+
+EXPOSE 8080
 
 CMD ["node", "dist/main.js"]
