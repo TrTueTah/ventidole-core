@@ -2,8 +2,8 @@ FROM node:22-alpine
 
 WORKDIR /usr/src/app
 
-# Enable corepack and use Yarn 1.x (classic) for compatibility
-RUN corepack enable && corepack prepare yarn@1.22.22 --activate
+# Yarn 1.x đã có sẵn, không cần corepack
+RUN apk add --no-cache yarn
 
 # Copy package files
 COPY package.json yarn.lock ./
@@ -11,9 +11,7 @@ COPY package.json yarn.lock ./
 # Copy Prisma schema
 COPY prisma ./prisma
 
-# Install all dependencies (includes devDependencies needed for build)
-# Using --frozen-lockfile to ensure reproducible builds
-# Using --network-timeout to handle slow connections
+# Install dependencies
 RUN yarn install --frozen-lockfile --network-timeout 300000
 
 # Copy source code
@@ -25,5 +23,5 @@ RUN yarn build
 # Expose port
 EXPOSE 8080
 
-# Start application
+# Start app
 CMD ["node", "dist/main.js"]
