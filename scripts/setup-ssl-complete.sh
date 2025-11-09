@@ -7,6 +7,7 @@ set -e
 
 PROJECT_DIR="/home/trantanh227/ventidole-core"
 DOMAIN="api.ventidole.xyz"
+EMAIL="trantanh227@gmail.com"  # Change this to your email if needed
 
 echo "🚀 Starting SSL Setup for ${DOMAIN}..."
 echo ""
@@ -64,11 +65,10 @@ echo "  - Faster (30 seconds)"
 echo "  - Requires port 80 accessible and DNSSEC working"
 echo ""
 
-read -p "Choose method (1 for DNS-01, 2 for HTTP-01): " -n 1 -r
-echo
+read -p "Choose method (1 for DNS-01, 2 for HTTP-01): " CHOICE
 echo ""
 
-if [[ $REPLY == "1" ]]; then
+if [[ $CHOICE == "1" ]]; then
     echo "📋 Using DNS-01 Challenge..."
     echo ""
     echo "⚠️  After certbot shows you the TXT record:"
@@ -89,9 +89,9 @@ if [[ $REPLY == "1" ]]; then
         --preferred-challenges dns \
         -d ${DOMAIN} \
         --agree-tos \
-        --email ${EMAIL:-trantanh227@gmail.com}
+        --email ${EMAIL}
         
-elif [[ $REPLY == "2" ]]; then
+elif [[ $CHOICE == "2" ]]; then
     echo "🌐 Using HTTP-01 Challenge..."
     
     # First start HTTP server briefly
@@ -127,7 +127,7 @@ EOF
     sudo certbot certonly --standalone \
         -d ${DOMAIN} \
         --agree-tos \
-        --email ${EMAIL:-trantanh227@gmail.com}
+        --email ${EMAIL}
 else
     echo "❌ Invalid choice. Exiting."
     exit 1
