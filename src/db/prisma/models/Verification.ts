@@ -43,7 +43,7 @@ export type VerificationMinAggregateOutputType = {
   type: $Enums.VerificationType | null
   token: string | null
   expiresAt: Date | null
-  accountId: string | null
+  userId: string | null
   usedAt: Date | null
   confirmedAt: Date | null
   email: string | null
@@ -58,7 +58,7 @@ export type VerificationMaxAggregateOutputType = {
   type: $Enums.VerificationType | null
   token: string | null
   expiresAt: Date | null
-  accountId: string | null
+  userId: string | null
   usedAt: Date | null
   confirmedAt: Date | null
   email: string | null
@@ -73,7 +73,7 @@ export type VerificationCountAggregateOutputType = {
   type: number
   token: number
   expiresAt: number
-  accountId: number
+  userId: number
   usedAt: number
   confirmedAt: number
   email: number
@@ -98,7 +98,7 @@ export type VerificationMinAggregateInputType = {
   type?: true
   token?: true
   expiresAt?: true
-  accountId?: true
+  userId?: true
   usedAt?: true
   confirmedAt?: true
   email?: true
@@ -113,7 +113,7 @@ export type VerificationMaxAggregateInputType = {
   type?: true
   token?: true
   expiresAt?: true
-  accountId?: true
+  userId?: true
   usedAt?: true
   confirmedAt?: true
   email?: true
@@ -128,7 +128,7 @@ export type VerificationCountAggregateInputType = {
   type?: true
   token?: true
   expiresAt?: true
-  accountId?: true
+  userId?: true
   usedAt?: true
   confirmedAt?: true
   email?: true
@@ -230,7 +230,7 @@ export type VerificationGroupByOutputType = {
   type: $Enums.VerificationType
   token: string
   expiresAt: Date
-  accountId: string | null
+  userId: string | null
   usedAt: Date | null
   confirmedAt: Date | null
   email: string | null
@@ -268,11 +268,11 @@ export type VerificationWhereInput = {
   type?: Prisma.EnumVerificationTypeFilter<"Verification"> | $Enums.VerificationType
   token?: Prisma.StringFilter<"Verification"> | string
   expiresAt?: Prisma.DateTimeFilter<"Verification"> | Date | string
-  accountId?: Prisma.StringNullableFilter<"Verification"> | string | null
+  userId?: Prisma.StringNullableFilter<"Verification"> | string | null
   usedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
   confirmedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
   email?: Prisma.StringNullableFilter<"Verification"> | string | null
-  account?: Prisma.XOR<Prisma.AccountNullableScalarRelationFilter, Prisma.AccountWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }
 
 export type VerificationOrderByWithRelationInput = {
@@ -284,11 +284,11 @@ export type VerificationOrderByWithRelationInput = {
   type?: Prisma.SortOrder
   token?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  accountId?: Prisma.SortOrderInput | Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
-  account?: Prisma.AccountOrderByWithRelationInput
+  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type VerificationWhereUniqueInput = Prisma.AtLeast<{
@@ -303,11 +303,11 @@ export type VerificationWhereUniqueInput = Prisma.AtLeast<{
   version?: Prisma.IntFilter<"Verification"> | number
   type?: Prisma.EnumVerificationTypeFilter<"Verification"> | $Enums.VerificationType
   expiresAt?: Prisma.DateTimeFilter<"Verification"> | Date | string
-  accountId?: Prisma.StringNullableFilter<"Verification"> | string | null
+  userId?: Prisma.StringNullableFilter<"Verification"> | string | null
   usedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
   confirmedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
   email?: Prisma.StringNullableFilter<"Verification"> | string | null
-  account?: Prisma.XOR<Prisma.AccountNullableScalarRelationFilter, Prisma.AccountWhereInput> | null
+  user?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
 }, "id" | "token">
 
 export type VerificationOrderByWithAggregationInput = {
@@ -319,7 +319,7 @@ export type VerificationOrderByWithAggregationInput = {
   type?: Prisma.SortOrder
   token?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  accountId?: Prisma.SortOrderInput | Prisma.SortOrder
+  userId?: Prisma.SortOrderInput | Prisma.SortOrder
   usedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   confirmedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -342,7 +342,7 @@ export type VerificationScalarWhereWithAggregatesInput = {
   type?: Prisma.EnumVerificationTypeWithAggregatesFilter<"Verification"> | $Enums.VerificationType
   token?: Prisma.StringWithAggregatesFilter<"Verification"> | string
   expiresAt?: Prisma.DateTimeWithAggregatesFilter<"Verification"> | Date | string
-  accountId?: Prisma.StringNullableWithAggregatesFilter<"Verification"> | string | null
+  userId?: Prisma.StringNullableWithAggregatesFilter<"Verification"> | string | null
   usedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Verification"> | Date | string | null
   confirmedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Verification"> | Date | string | null
   email?: Prisma.StringNullableWithAggregatesFilter<"Verification"> | string | null
@@ -360,7 +360,7 @@ export type VerificationCreateInput = {
   usedAt?: Date | string | null
   confirmedAt?: Date | string | null
   email?: string | null
-  account?: Prisma.AccountCreateNestedOneWithoutVerificationsInput
+  user?: Prisma.UserCreateNestedOneWithoutVerificationsInput
 }
 
 export type VerificationUncheckedCreateInput = {
@@ -372,7 +372,7 @@ export type VerificationUncheckedCreateInput = {
   type: $Enums.VerificationType
   token: string
   expiresAt: Date | string
-  accountId?: string | null
+  userId?: string | null
   usedAt?: Date | string | null
   confirmedAt?: Date | string | null
   email?: string | null
@@ -390,7 +390,7 @@ export type VerificationUpdateInput = {
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  account?: Prisma.AccountUpdateOneWithoutVerificationsNestedInput
+  user?: Prisma.UserUpdateOneWithoutVerificationsNestedInput
 }
 
 export type VerificationUncheckedUpdateInput = {
@@ -402,7 +402,7 @@ export type VerificationUncheckedUpdateInput = {
   type?: Prisma.EnumVerificationTypeFieldUpdateOperationsInput | $Enums.VerificationType
   token?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -417,7 +417,7 @@ export type VerificationCreateManyInput = {
   type: $Enums.VerificationType
   token: string
   expiresAt: Date | string
-  accountId?: string | null
+  userId?: string | null
   usedAt?: Date | string | null
   confirmedAt?: Date | string | null
   email?: string | null
@@ -446,7 +446,7 @@ export type VerificationUncheckedUpdateManyInput = {
   type?: Prisma.EnumVerificationTypeFieldUpdateOperationsInput | $Enums.VerificationType
   token?: Prisma.StringFieldUpdateOperationsInput | string
   expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  accountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   usedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   confirmedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -471,7 +471,7 @@ export type VerificationCountOrderByAggregateInput = {
   type?: Prisma.SortOrder
   token?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  accountId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
   confirmedAt?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -490,7 +490,7 @@ export type VerificationMaxOrderByAggregateInput = {
   type?: Prisma.SortOrder
   token?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  accountId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
   confirmedAt?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -505,7 +505,7 @@ export type VerificationMinOrderByAggregateInput = {
   type?: Prisma.SortOrder
   token?: Prisma.SortOrder
   expiresAt?: Prisma.SortOrder
-  accountId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   usedAt?: Prisma.SortOrder
   confirmedAt?: Prisma.SortOrder
   email?: Prisma.SortOrder
@@ -515,45 +515,45 @@ export type VerificationSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
 }
 
-export type VerificationCreateNestedManyWithoutAccountInput = {
-  create?: Prisma.XOR<Prisma.VerificationCreateWithoutAccountInput, Prisma.VerificationUncheckedCreateWithoutAccountInput> | Prisma.VerificationCreateWithoutAccountInput[] | Prisma.VerificationUncheckedCreateWithoutAccountInput[]
-  connectOrCreate?: Prisma.VerificationCreateOrConnectWithoutAccountInput | Prisma.VerificationCreateOrConnectWithoutAccountInput[]
-  createMany?: Prisma.VerificationCreateManyAccountInputEnvelope
+export type VerificationCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.VerificationCreateWithoutUserInput, Prisma.VerificationUncheckedCreateWithoutUserInput> | Prisma.VerificationCreateWithoutUserInput[] | Prisma.VerificationUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.VerificationCreateOrConnectWithoutUserInput | Prisma.VerificationCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.VerificationCreateManyUserInputEnvelope
   connect?: Prisma.VerificationWhereUniqueInput | Prisma.VerificationWhereUniqueInput[]
 }
 
-export type VerificationUncheckedCreateNestedManyWithoutAccountInput = {
-  create?: Prisma.XOR<Prisma.VerificationCreateWithoutAccountInput, Prisma.VerificationUncheckedCreateWithoutAccountInput> | Prisma.VerificationCreateWithoutAccountInput[] | Prisma.VerificationUncheckedCreateWithoutAccountInput[]
-  connectOrCreate?: Prisma.VerificationCreateOrConnectWithoutAccountInput | Prisma.VerificationCreateOrConnectWithoutAccountInput[]
-  createMany?: Prisma.VerificationCreateManyAccountInputEnvelope
+export type VerificationUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.VerificationCreateWithoutUserInput, Prisma.VerificationUncheckedCreateWithoutUserInput> | Prisma.VerificationCreateWithoutUserInput[] | Prisma.VerificationUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.VerificationCreateOrConnectWithoutUserInput | Prisma.VerificationCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.VerificationCreateManyUserInputEnvelope
   connect?: Prisma.VerificationWhereUniqueInput | Prisma.VerificationWhereUniqueInput[]
 }
 
-export type VerificationUpdateManyWithoutAccountNestedInput = {
-  create?: Prisma.XOR<Prisma.VerificationCreateWithoutAccountInput, Prisma.VerificationUncheckedCreateWithoutAccountInput> | Prisma.VerificationCreateWithoutAccountInput[] | Prisma.VerificationUncheckedCreateWithoutAccountInput[]
-  connectOrCreate?: Prisma.VerificationCreateOrConnectWithoutAccountInput | Prisma.VerificationCreateOrConnectWithoutAccountInput[]
-  upsert?: Prisma.VerificationUpsertWithWhereUniqueWithoutAccountInput | Prisma.VerificationUpsertWithWhereUniqueWithoutAccountInput[]
-  createMany?: Prisma.VerificationCreateManyAccountInputEnvelope
+export type VerificationUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCreateWithoutUserInput, Prisma.VerificationUncheckedCreateWithoutUserInput> | Prisma.VerificationCreateWithoutUserInput[] | Prisma.VerificationUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.VerificationCreateOrConnectWithoutUserInput | Prisma.VerificationCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.VerificationUpsertWithWhereUniqueWithoutUserInput | Prisma.VerificationUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.VerificationCreateManyUserInputEnvelope
   set?: Prisma.VerificationWhereUniqueInput | Prisma.VerificationWhereUniqueInput[]
   disconnect?: Prisma.VerificationWhereUniqueInput | Prisma.VerificationWhereUniqueInput[]
   delete?: Prisma.VerificationWhereUniqueInput | Prisma.VerificationWhereUniqueInput[]
   connect?: Prisma.VerificationWhereUniqueInput | Prisma.VerificationWhereUniqueInput[]
-  update?: Prisma.VerificationUpdateWithWhereUniqueWithoutAccountInput | Prisma.VerificationUpdateWithWhereUniqueWithoutAccountInput[]
-  updateMany?: Prisma.VerificationUpdateManyWithWhereWithoutAccountInput | Prisma.VerificationUpdateManyWithWhereWithoutAccountInput[]
+  update?: Prisma.VerificationUpdateWithWhereUniqueWithoutUserInput | Prisma.VerificationUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.VerificationUpdateManyWithWhereWithoutUserInput | Prisma.VerificationUpdateManyWithWhereWithoutUserInput[]
   deleteMany?: Prisma.VerificationScalarWhereInput | Prisma.VerificationScalarWhereInput[]
 }
 
-export type VerificationUncheckedUpdateManyWithoutAccountNestedInput = {
-  create?: Prisma.XOR<Prisma.VerificationCreateWithoutAccountInput, Prisma.VerificationUncheckedCreateWithoutAccountInput> | Prisma.VerificationCreateWithoutAccountInput[] | Prisma.VerificationUncheckedCreateWithoutAccountInput[]
-  connectOrCreate?: Prisma.VerificationCreateOrConnectWithoutAccountInput | Prisma.VerificationCreateOrConnectWithoutAccountInput[]
-  upsert?: Prisma.VerificationUpsertWithWhereUniqueWithoutAccountInput | Prisma.VerificationUpsertWithWhereUniqueWithoutAccountInput[]
-  createMany?: Prisma.VerificationCreateManyAccountInputEnvelope
+export type VerificationUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationCreateWithoutUserInput, Prisma.VerificationUncheckedCreateWithoutUserInput> | Prisma.VerificationCreateWithoutUserInput[] | Prisma.VerificationUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.VerificationCreateOrConnectWithoutUserInput | Prisma.VerificationCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.VerificationUpsertWithWhereUniqueWithoutUserInput | Prisma.VerificationUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.VerificationCreateManyUserInputEnvelope
   set?: Prisma.VerificationWhereUniqueInput | Prisma.VerificationWhereUniqueInput[]
   disconnect?: Prisma.VerificationWhereUniqueInput | Prisma.VerificationWhereUniqueInput[]
   delete?: Prisma.VerificationWhereUniqueInput | Prisma.VerificationWhereUniqueInput[]
   connect?: Prisma.VerificationWhereUniqueInput | Prisma.VerificationWhereUniqueInput[]
-  update?: Prisma.VerificationUpdateWithWhereUniqueWithoutAccountInput | Prisma.VerificationUpdateWithWhereUniqueWithoutAccountInput[]
-  updateMany?: Prisma.VerificationUpdateManyWithWhereWithoutAccountInput | Prisma.VerificationUpdateManyWithWhereWithoutAccountInput[]
+  update?: Prisma.VerificationUpdateWithWhereUniqueWithoutUserInput | Prisma.VerificationUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.VerificationUpdateManyWithWhereWithoutUserInput | Prisma.VerificationUpdateManyWithWhereWithoutUserInput[]
   deleteMany?: Prisma.VerificationScalarWhereInput | Prisma.VerificationScalarWhereInput[]
 }
 
@@ -565,7 +565,7 @@ export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
 }
 
-export type VerificationCreateWithoutAccountInput = {
+export type VerificationCreateWithoutUserInput = {
   id?: string
   isActive?: boolean
   createdAt?: Date | string
@@ -579,7 +579,7 @@ export type VerificationCreateWithoutAccountInput = {
   email?: string | null
 }
 
-export type VerificationUncheckedCreateWithoutAccountInput = {
+export type VerificationUncheckedCreateWithoutUserInput = {
   id?: string
   isActive?: boolean
   createdAt?: Date | string
@@ -593,30 +593,30 @@ export type VerificationUncheckedCreateWithoutAccountInput = {
   email?: string | null
 }
 
-export type VerificationCreateOrConnectWithoutAccountInput = {
+export type VerificationCreateOrConnectWithoutUserInput = {
   where: Prisma.VerificationWhereUniqueInput
-  create: Prisma.XOR<Prisma.VerificationCreateWithoutAccountInput, Prisma.VerificationUncheckedCreateWithoutAccountInput>
+  create: Prisma.XOR<Prisma.VerificationCreateWithoutUserInput, Prisma.VerificationUncheckedCreateWithoutUserInput>
 }
 
-export type VerificationCreateManyAccountInputEnvelope = {
-  data: Prisma.VerificationCreateManyAccountInput | Prisma.VerificationCreateManyAccountInput[]
+export type VerificationCreateManyUserInputEnvelope = {
+  data: Prisma.VerificationCreateManyUserInput | Prisma.VerificationCreateManyUserInput[]
   skipDuplicates?: boolean
 }
 
-export type VerificationUpsertWithWhereUniqueWithoutAccountInput = {
+export type VerificationUpsertWithWhereUniqueWithoutUserInput = {
   where: Prisma.VerificationWhereUniqueInput
-  update: Prisma.XOR<Prisma.VerificationUpdateWithoutAccountInput, Prisma.VerificationUncheckedUpdateWithoutAccountInput>
-  create: Prisma.XOR<Prisma.VerificationCreateWithoutAccountInput, Prisma.VerificationUncheckedCreateWithoutAccountInput>
+  update: Prisma.XOR<Prisma.VerificationUpdateWithoutUserInput, Prisma.VerificationUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.VerificationCreateWithoutUserInput, Prisma.VerificationUncheckedCreateWithoutUserInput>
 }
 
-export type VerificationUpdateWithWhereUniqueWithoutAccountInput = {
+export type VerificationUpdateWithWhereUniqueWithoutUserInput = {
   where: Prisma.VerificationWhereUniqueInput
-  data: Prisma.XOR<Prisma.VerificationUpdateWithoutAccountInput, Prisma.VerificationUncheckedUpdateWithoutAccountInput>
+  data: Prisma.XOR<Prisma.VerificationUpdateWithoutUserInput, Prisma.VerificationUncheckedUpdateWithoutUserInput>
 }
 
-export type VerificationUpdateManyWithWhereWithoutAccountInput = {
+export type VerificationUpdateManyWithWhereWithoutUserInput = {
   where: Prisma.VerificationScalarWhereInput
-  data: Prisma.XOR<Prisma.VerificationUpdateManyMutationInput, Prisma.VerificationUncheckedUpdateManyWithoutAccountInput>
+  data: Prisma.XOR<Prisma.VerificationUpdateManyMutationInput, Prisma.VerificationUncheckedUpdateManyWithoutUserInput>
 }
 
 export type VerificationScalarWhereInput = {
@@ -631,13 +631,13 @@ export type VerificationScalarWhereInput = {
   type?: Prisma.EnumVerificationTypeFilter<"Verification"> | $Enums.VerificationType
   token?: Prisma.StringFilter<"Verification"> | string
   expiresAt?: Prisma.DateTimeFilter<"Verification"> | Date | string
-  accountId?: Prisma.StringNullableFilter<"Verification"> | string | null
+  userId?: Prisma.StringNullableFilter<"Verification"> | string | null
   usedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
   confirmedAt?: Prisma.DateTimeNullableFilter<"Verification"> | Date | string | null
   email?: Prisma.StringNullableFilter<"Verification"> | string | null
 }
 
-export type VerificationCreateManyAccountInput = {
+export type VerificationCreateManyUserInput = {
   id?: string
   isActive?: boolean
   createdAt?: Date | string
@@ -651,7 +651,7 @@ export type VerificationCreateManyAccountInput = {
   email?: string | null
 }
 
-export type VerificationUpdateWithoutAccountInput = {
+export type VerificationUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -665,7 +665,7 @@ export type VerificationUpdateWithoutAccountInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type VerificationUncheckedUpdateWithoutAccountInput = {
+export type VerificationUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -679,7 +679,7 @@ export type VerificationUncheckedUpdateWithoutAccountInput = {
   email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
-export type VerificationUncheckedUpdateManyWithoutAccountInput = {
+export type VerificationUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -704,11 +704,11 @@ export type VerificationSelect<ExtArgs extends runtime.Types.Extensions.Internal
   type?: boolean
   token?: boolean
   expiresAt?: boolean
-  accountId?: boolean
+  userId?: boolean
   usedAt?: boolean
   confirmedAt?: boolean
   email?: boolean
-  account?: boolean | Prisma.Verification$accountArgs<ExtArgs>
+  user?: boolean | Prisma.Verification$userArgs<ExtArgs>
 }, ExtArgs["result"]["verification"]>
 
 export type VerificationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -720,11 +720,11 @@ export type VerificationSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   type?: boolean
   token?: boolean
   expiresAt?: boolean
-  accountId?: boolean
+  userId?: boolean
   usedAt?: boolean
   confirmedAt?: boolean
   email?: boolean
-  account?: boolean | Prisma.Verification$accountArgs<ExtArgs>
+  user?: boolean | Prisma.Verification$userArgs<ExtArgs>
 }, ExtArgs["result"]["verification"]>
 
 export type VerificationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -736,11 +736,11 @@ export type VerificationSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   type?: boolean
   token?: boolean
   expiresAt?: boolean
-  accountId?: boolean
+  userId?: boolean
   usedAt?: boolean
   confirmedAt?: boolean
   email?: boolean
-  account?: boolean | Prisma.Verification$accountArgs<ExtArgs>
+  user?: boolean | Prisma.Verification$userArgs<ExtArgs>
 }, ExtArgs["result"]["verification"]>
 
 export type VerificationSelectScalar = {
@@ -752,27 +752,27 @@ export type VerificationSelectScalar = {
   type?: boolean
   token?: boolean
   expiresAt?: boolean
-  accountId?: boolean
+  userId?: boolean
   usedAt?: boolean
   confirmedAt?: boolean
   email?: boolean
 }
 
-export type VerificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "type" | "token" | "expiresAt" | "accountId" | "usedAt" | "confirmedAt" | "email", ExtArgs["result"]["verification"]>
+export type VerificationOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "type" | "token" | "expiresAt" | "userId" | "usedAt" | "confirmedAt" | "email", ExtArgs["result"]["verification"]>
 export type VerificationInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  account?: boolean | Prisma.Verification$accountArgs<ExtArgs>
+  user?: boolean | Prisma.Verification$userArgs<ExtArgs>
 }
 export type VerificationIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  account?: boolean | Prisma.Verification$accountArgs<ExtArgs>
+  user?: boolean | Prisma.Verification$userArgs<ExtArgs>
 }
 export type VerificationIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  account?: boolean | Prisma.Verification$accountArgs<ExtArgs>
+  user?: boolean | Prisma.Verification$userArgs<ExtArgs>
 }
 
 export type $VerificationPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Verification"
   objects: {
-    account: Prisma.$AccountPayload<ExtArgs> | null
+    user: Prisma.$UserPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -783,7 +783,7 @@ export type $VerificationPayload<ExtArgs extends runtime.Types.Extensions.Intern
     type: $Enums.VerificationType
     token: string
     expiresAt: Date
-    accountId: string | null
+    userId: string | null
     usedAt: Date | null
     confirmedAt: Date | null
     email: string | null
@@ -1181,7 +1181,7 @@ readonly fields: VerificationFieldRefs;
  */
 export interface Prisma__VerificationClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  account<T extends Prisma.Verification$accountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Verification$accountArgs<ExtArgs>>): Prisma.Prisma__AccountClient<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.Verification$userArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Verification$userArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1219,7 +1219,7 @@ export interface VerificationFieldRefs {
   readonly type: Prisma.FieldRef<"Verification", 'VerificationType'>
   readonly token: Prisma.FieldRef<"Verification", 'String'>
   readonly expiresAt: Prisma.FieldRef<"Verification", 'DateTime'>
-  readonly accountId: Prisma.FieldRef<"Verification", 'String'>
+  readonly userId: Prisma.FieldRef<"Verification", 'String'>
   readonly usedAt: Prisma.FieldRef<"Verification", 'DateTime'>
   readonly confirmedAt: Prisma.FieldRef<"Verification", 'DateTime'>
   readonly email: Prisma.FieldRef<"Verification", 'String'>
@@ -1619,22 +1619,22 @@ export type VerificationDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.
 }
 
 /**
- * Verification.account
+ * Verification.user
  */
-export type Verification$accountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type Verification$userArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Account
+   * Select specific fields to fetch from the User
    */
-  select?: Prisma.AccountSelect<ExtArgs> | null
+  select?: Prisma.UserSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Account
+   * Omit specific fields from the User
    */
-  omit?: Prisma.AccountOmit<ExtArgs> | null
+  omit?: Prisma.UserOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.AccountInclude<ExtArgs> | null
-  where?: Prisma.AccountWhereInput
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

@@ -10,15 +10,13 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Account {
+model User {
   id              String          @id @default(cuid())
   isActive        Boolean         @default(true)
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
   version         Int             @default(0)
-  name            String?         @db.VarChar(255)
-  email           String          @unique(map: "accounts_email_unique_partial") @db.VarChar(255)
-  phoneNumber     String?         @db.VarChar(255)
+  email           String          @unique(map: "user_email_unique_partial") @db.VarChar(255)
   password        String          @db.VarChar(255)
   role            Role
   deviceToken     String?         @db.VarChar(255)
@@ -26,8 +24,10 @@ model Account {
   isOnline        Boolean         @default(false) @map("is_online")
   social_accounts SocialAccount[]
   verifications   Verification[]
+  fan             Fan?
+  idol            Idol?
 
-  @@map("accounts")
+  @@map("user")
 }
 
 model Verification {
@@ -39,14 +39,14 @@ model Verification {
   type        VerificationType
   token       String           @unique
   expiresAt   DateTime         @map("expires_at")
-  accountId   String?          @map("accountId")
+  userId      String?          @map("userId")
   usedAt      DateTime?        @map("used_at")
   confirmedAt DateTime?        @map("confirmed_at")
   email       String?          @db.VarChar(255)
-  account     Account?         @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  user        User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([token])
-  @@index([accountId])
+  @@index([userId])
   @@index([expiresAt])
   @@map("verifications")
 }
@@ -59,12 +59,80 @@ model SocialAccount {
   version    Int                   @default(0)
   provider   SocialAccountProvider
   providerId String                @map("provider_id")
-  accountId  String                @map("user_id")
-  account    Account               @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  userId     String                @map("userId")
+  user       User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerId])
-  @@index([accountId])
+  @@index([userId])
   @@map("social_accounts")
+}
+
+model Fan {
+  id              String            @id @default(cuid())
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  version         Int               @default(0)
+  username        String            @unique @db.VarChar(100)
+  avatarUrl       String?           @map("avatar_url") @db.VarChar(255)
+  backgroundUrl   String?           @map("background_url") @db.VarChar(255)
+  bio             String?           @db.VarChar(500)
+  userId          String            @map("userId") @unique
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  followedGroups  FanFollowGroup[]
+
+  @@map("fans")
+}
+
+model Idol {
+  id              String    @id @default(cuid())
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  version         Int       @default(0)
+  stageName       String    @map("stageName") @db.VarChar(100)
+  bio             String?   @db.VarChar(500)
+  avatarUrl       String?   @map("avatar_url") @db.VarChar(255)
+  backgroundUrl   String?   @map("background_url") @db.VarChar(255)
+  userId          String    @map("userId") @unique
+  groupId         String    @map("groupId")
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group           Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@map("idols")
+}
+
+model Group {
+  id              String            @id @default(cuid())
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  version         Int               @default(0)
+  description     String?           @db.VarChar(500)
+  logoUrl         String?           @map("logoUrl") @db.VarChar(255)
+  backgroundUrl   String?           @map("backgroundUrl") @db.VarChar(255)
+  groupName       String            @map("groupName") @db.VarChar(100)
+  idols           Idol[]
+  followers       FanFollowGroup[]
+
+  @@map("groups")
+}
+
+model FanFollowGroup {
+  id        String   @id @default(cuid())
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  version   Int      @default(0)
+  fanId     String   @map("fanId")
+  groupId   String   @map("groupId")
+  fan       Fan      @relation(fields: [fanId], references: [id], onDelete: Cascade)
+  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+
+  @@unique([fanId, groupId])
+  @@index([fanId])
+  @@index([groupId])
+  @@map("fan_follow_group")
 }
 
 enum Role {

@@ -42,7 +42,7 @@ export type SocialAccountMinAggregateOutputType = {
   version: number | null
   provider: $Enums.SocialAccountProvider | null
   providerId: string | null
-  accountId: string | null
+  userId: string | null
 }
 
 export type SocialAccountMaxAggregateOutputType = {
@@ -53,7 +53,7 @@ export type SocialAccountMaxAggregateOutputType = {
   version: number | null
   provider: $Enums.SocialAccountProvider | null
   providerId: string | null
-  accountId: string | null
+  userId: string | null
 }
 
 export type SocialAccountCountAggregateOutputType = {
@@ -64,7 +64,7 @@ export type SocialAccountCountAggregateOutputType = {
   version: number
   provider: number
   providerId: number
-  accountId: number
+  userId: number
   _all: number
 }
 
@@ -85,7 +85,7 @@ export type SocialAccountMinAggregateInputType = {
   version?: true
   provider?: true
   providerId?: true
-  accountId?: true
+  userId?: true
 }
 
 export type SocialAccountMaxAggregateInputType = {
@@ -96,7 +96,7 @@ export type SocialAccountMaxAggregateInputType = {
   version?: true
   provider?: true
   providerId?: true
-  accountId?: true
+  userId?: true
 }
 
 export type SocialAccountCountAggregateInputType = {
@@ -107,7 +107,7 @@ export type SocialAccountCountAggregateInputType = {
   version?: true
   provider?: true
   providerId?: true
-  accountId?: true
+  userId?: true
   _all?: true
 }
 
@@ -205,7 +205,7 @@ export type SocialAccountGroupByOutputType = {
   version: number
   provider: $Enums.SocialAccountProvider
   providerId: string
-  accountId: string
+  userId: string
   _count: SocialAccountCountAggregateOutputType | null
   _avg: SocialAccountAvgAggregateOutputType | null
   _sum: SocialAccountSumAggregateOutputType | null
@@ -239,8 +239,8 @@ export type SocialAccountWhereInput = {
   version?: Prisma.IntFilter<"SocialAccount"> | number
   provider?: Prisma.EnumSocialAccountProviderFilter<"SocialAccount"> | $Enums.SocialAccountProvider
   providerId?: Prisma.StringFilter<"SocialAccount"> | string
-  accountId?: Prisma.StringFilter<"SocialAccount"> | string
-  account?: Prisma.XOR<Prisma.AccountScalarRelationFilter, Prisma.AccountWhereInput>
+  userId?: Prisma.StringFilter<"SocialAccount"> | string
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type SocialAccountOrderByWithRelationInput = {
@@ -251,8 +251,8 @@ export type SocialAccountOrderByWithRelationInput = {
   version?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
-  accountId?: Prisma.SortOrder
-  account?: Prisma.AccountOrderByWithRelationInput
+  userId?: Prisma.SortOrder
+  user?: Prisma.UserOrderByWithRelationInput
 }
 
 export type SocialAccountWhereUniqueInput = Prisma.AtLeast<{
@@ -267,8 +267,8 @@ export type SocialAccountWhereUniqueInput = Prisma.AtLeast<{
   version?: Prisma.IntFilter<"SocialAccount"> | number
   provider?: Prisma.EnumSocialAccountProviderFilter<"SocialAccount"> | $Enums.SocialAccountProvider
   providerId?: Prisma.StringFilter<"SocialAccount"> | string
-  accountId?: Prisma.StringFilter<"SocialAccount"> | string
-  account?: Prisma.XOR<Prisma.AccountScalarRelationFilter, Prisma.AccountWhereInput>
+  userId?: Prisma.StringFilter<"SocialAccount"> | string
+  user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "provider_providerId">
 
 export type SocialAccountOrderByWithAggregationInput = {
@@ -279,7 +279,7 @@ export type SocialAccountOrderByWithAggregationInput = {
   version?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
-  accountId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
   _count?: Prisma.SocialAccountCountOrderByAggregateInput
   _avg?: Prisma.SocialAccountAvgOrderByAggregateInput
   _max?: Prisma.SocialAccountMaxOrderByAggregateInput
@@ -298,7 +298,7 @@ export type SocialAccountScalarWhereWithAggregatesInput = {
   version?: Prisma.IntWithAggregatesFilter<"SocialAccount"> | number
   provider?: Prisma.EnumSocialAccountProviderWithAggregatesFilter<"SocialAccount"> | $Enums.SocialAccountProvider
   providerId?: Prisma.StringWithAggregatesFilter<"SocialAccount"> | string
-  accountId?: Prisma.StringWithAggregatesFilter<"SocialAccount"> | string
+  userId?: Prisma.StringWithAggregatesFilter<"SocialAccount"> | string
 }
 
 export type SocialAccountCreateInput = {
@@ -309,7 +309,7 @@ export type SocialAccountCreateInput = {
   version?: number
   provider: $Enums.SocialAccountProvider
   providerId: string
-  account: Prisma.AccountCreateNestedOneWithoutSocial_accountsInput
+  user: Prisma.UserCreateNestedOneWithoutSocial_accountsInput
 }
 
 export type SocialAccountUncheckedCreateInput = {
@@ -320,7 +320,7 @@ export type SocialAccountUncheckedCreateInput = {
   version?: number
   provider: $Enums.SocialAccountProvider
   providerId: string
-  accountId: string
+  userId: string
 }
 
 export type SocialAccountUpdateInput = {
@@ -331,7 +331,7 @@ export type SocialAccountUpdateInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   provider?: Prisma.EnumSocialAccountProviderFieldUpdateOperationsInput | $Enums.SocialAccountProvider
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
-  account?: Prisma.AccountUpdateOneRequiredWithoutSocial_accountsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutSocial_accountsNestedInput
 }
 
 export type SocialAccountUncheckedUpdateInput = {
@@ -342,7 +342,7 @@ export type SocialAccountUncheckedUpdateInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   provider?: Prisma.EnumSocialAccountProviderFieldUpdateOperationsInput | $Enums.SocialAccountProvider
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
-  accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SocialAccountCreateManyInput = {
@@ -353,7 +353,7 @@ export type SocialAccountCreateManyInput = {
   version?: number
   provider: $Enums.SocialAccountProvider
   providerId: string
-  accountId: string
+  userId: string
 }
 
 export type SocialAccountUpdateManyMutationInput = {
@@ -374,7 +374,7 @@ export type SocialAccountUncheckedUpdateManyInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   provider?: Prisma.EnumSocialAccountProviderFieldUpdateOperationsInput | $Enums.SocialAccountProvider
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
-  accountId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SocialAccountListRelationFilter = {
@@ -400,7 +400,7 @@ export type SocialAccountCountOrderByAggregateInput = {
   version?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
-  accountId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
 }
 
 export type SocialAccountAvgOrderByAggregateInput = {
@@ -415,7 +415,7 @@ export type SocialAccountMaxOrderByAggregateInput = {
   version?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
-  accountId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
 }
 
 export type SocialAccountMinOrderByAggregateInput = {
@@ -426,52 +426,52 @@ export type SocialAccountMinOrderByAggregateInput = {
   version?: Prisma.SortOrder
   provider?: Prisma.SortOrder
   providerId?: Prisma.SortOrder
-  accountId?: Prisma.SortOrder
+  userId?: Prisma.SortOrder
 }
 
 export type SocialAccountSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
 }
 
-export type SocialAccountCreateNestedManyWithoutAccountInput = {
-  create?: Prisma.XOR<Prisma.SocialAccountCreateWithoutAccountInput, Prisma.SocialAccountUncheckedCreateWithoutAccountInput> | Prisma.SocialAccountCreateWithoutAccountInput[] | Prisma.SocialAccountUncheckedCreateWithoutAccountInput[]
-  connectOrCreate?: Prisma.SocialAccountCreateOrConnectWithoutAccountInput | Prisma.SocialAccountCreateOrConnectWithoutAccountInput[]
-  createMany?: Prisma.SocialAccountCreateManyAccountInputEnvelope
+export type SocialAccountCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.SocialAccountCreateWithoutUserInput, Prisma.SocialAccountUncheckedCreateWithoutUserInput> | Prisma.SocialAccountCreateWithoutUserInput[] | Prisma.SocialAccountUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.SocialAccountCreateOrConnectWithoutUserInput | Prisma.SocialAccountCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.SocialAccountCreateManyUserInputEnvelope
   connect?: Prisma.SocialAccountWhereUniqueInput | Prisma.SocialAccountWhereUniqueInput[]
 }
 
-export type SocialAccountUncheckedCreateNestedManyWithoutAccountInput = {
-  create?: Prisma.XOR<Prisma.SocialAccountCreateWithoutAccountInput, Prisma.SocialAccountUncheckedCreateWithoutAccountInput> | Prisma.SocialAccountCreateWithoutAccountInput[] | Prisma.SocialAccountUncheckedCreateWithoutAccountInput[]
-  connectOrCreate?: Prisma.SocialAccountCreateOrConnectWithoutAccountInput | Prisma.SocialAccountCreateOrConnectWithoutAccountInput[]
-  createMany?: Prisma.SocialAccountCreateManyAccountInputEnvelope
+export type SocialAccountUncheckedCreateNestedManyWithoutUserInput = {
+  create?: Prisma.XOR<Prisma.SocialAccountCreateWithoutUserInput, Prisma.SocialAccountUncheckedCreateWithoutUserInput> | Prisma.SocialAccountCreateWithoutUserInput[] | Prisma.SocialAccountUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.SocialAccountCreateOrConnectWithoutUserInput | Prisma.SocialAccountCreateOrConnectWithoutUserInput[]
+  createMany?: Prisma.SocialAccountCreateManyUserInputEnvelope
   connect?: Prisma.SocialAccountWhereUniqueInput | Prisma.SocialAccountWhereUniqueInput[]
 }
 
-export type SocialAccountUpdateManyWithoutAccountNestedInput = {
-  create?: Prisma.XOR<Prisma.SocialAccountCreateWithoutAccountInput, Prisma.SocialAccountUncheckedCreateWithoutAccountInput> | Prisma.SocialAccountCreateWithoutAccountInput[] | Prisma.SocialAccountUncheckedCreateWithoutAccountInput[]
-  connectOrCreate?: Prisma.SocialAccountCreateOrConnectWithoutAccountInput | Prisma.SocialAccountCreateOrConnectWithoutAccountInput[]
-  upsert?: Prisma.SocialAccountUpsertWithWhereUniqueWithoutAccountInput | Prisma.SocialAccountUpsertWithWhereUniqueWithoutAccountInput[]
-  createMany?: Prisma.SocialAccountCreateManyAccountInputEnvelope
+export type SocialAccountUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.SocialAccountCreateWithoutUserInput, Prisma.SocialAccountUncheckedCreateWithoutUserInput> | Prisma.SocialAccountCreateWithoutUserInput[] | Prisma.SocialAccountUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.SocialAccountCreateOrConnectWithoutUserInput | Prisma.SocialAccountCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.SocialAccountUpsertWithWhereUniqueWithoutUserInput | Prisma.SocialAccountUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.SocialAccountCreateManyUserInputEnvelope
   set?: Prisma.SocialAccountWhereUniqueInput | Prisma.SocialAccountWhereUniqueInput[]
   disconnect?: Prisma.SocialAccountWhereUniqueInput | Prisma.SocialAccountWhereUniqueInput[]
   delete?: Prisma.SocialAccountWhereUniqueInput | Prisma.SocialAccountWhereUniqueInput[]
   connect?: Prisma.SocialAccountWhereUniqueInput | Prisma.SocialAccountWhereUniqueInput[]
-  update?: Prisma.SocialAccountUpdateWithWhereUniqueWithoutAccountInput | Prisma.SocialAccountUpdateWithWhereUniqueWithoutAccountInput[]
-  updateMany?: Prisma.SocialAccountUpdateManyWithWhereWithoutAccountInput | Prisma.SocialAccountUpdateManyWithWhereWithoutAccountInput[]
+  update?: Prisma.SocialAccountUpdateWithWhereUniqueWithoutUserInput | Prisma.SocialAccountUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.SocialAccountUpdateManyWithWhereWithoutUserInput | Prisma.SocialAccountUpdateManyWithWhereWithoutUserInput[]
   deleteMany?: Prisma.SocialAccountScalarWhereInput | Prisma.SocialAccountScalarWhereInput[]
 }
 
-export type SocialAccountUncheckedUpdateManyWithoutAccountNestedInput = {
-  create?: Prisma.XOR<Prisma.SocialAccountCreateWithoutAccountInput, Prisma.SocialAccountUncheckedCreateWithoutAccountInput> | Prisma.SocialAccountCreateWithoutAccountInput[] | Prisma.SocialAccountUncheckedCreateWithoutAccountInput[]
-  connectOrCreate?: Prisma.SocialAccountCreateOrConnectWithoutAccountInput | Prisma.SocialAccountCreateOrConnectWithoutAccountInput[]
-  upsert?: Prisma.SocialAccountUpsertWithWhereUniqueWithoutAccountInput | Prisma.SocialAccountUpsertWithWhereUniqueWithoutAccountInput[]
-  createMany?: Prisma.SocialAccountCreateManyAccountInputEnvelope
+export type SocialAccountUncheckedUpdateManyWithoutUserNestedInput = {
+  create?: Prisma.XOR<Prisma.SocialAccountCreateWithoutUserInput, Prisma.SocialAccountUncheckedCreateWithoutUserInput> | Prisma.SocialAccountCreateWithoutUserInput[] | Prisma.SocialAccountUncheckedCreateWithoutUserInput[]
+  connectOrCreate?: Prisma.SocialAccountCreateOrConnectWithoutUserInput | Prisma.SocialAccountCreateOrConnectWithoutUserInput[]
+  upsert?: Prisma.SocialAccountUpsertWithWhereUniqueWithoutUserInput | Prisma.SocialAccountUpsertWithWhereUniqueWithoutUserInput[]
+  createMany?: Prisma.SocialAccountCreateManyUserInputEnvelope
   set?: Prisma.SocialAccountWhereUniqueInput | Prisma.SocialAccountWhereUniqueInput[]
   disconnect?: Prisma.SocialAccountWhereUniqueInput | Prisma.SocialAccountWhereUniqueInput[]
   delete?: Prisma.SocialAccountWhereUniqueInput | Prisma.SocialAccountWhereUniqueInput[]
   connect?: Prisma.SocialAccountWhereUniqueInput | Prisma.SocialAccountWhereUniqueInput[]
-  update?: Prisma.SocialAccountUpdateWithWhereUniqueWithoutAccountInput | Prisma.SocialAccountUpdateWithWhereUniqueWithoutAccountInput[]
-  updateMany?: Prisma.SocialAccountUpdateManyWithWhereWithoutAccountInput | Prisma.SocialAccountUpdateManyWithWhereWithoutAccountInput[]
+  update?: Prisma.SocialAccountUpdateWithWhereUniqueWithoutUserInput | Prisma.SocialAccountUpdateWithWhereUniqueWithoutUserInput[]
+  updateMany?: Prisma.SocialAccountUpdateManyWithWhereWithoutUserInput | Prisma.SocialAccountUpdateManyWithWhereWithoutUserInput[]
   deleteMany?: Prisma.SocialAccountScalarWhereInput | Prisma.SocialAccountScalarWhereInput[]
 }
 
@@ -479,7 +479,7 @@ export type EnumSocialAccountProviderFieldUpdateOperationsInput = {
   set?: $Enums.SocialAccountProvider
 }
 
-export type SocialAccountCreateWithoutAccountInput = {
+export type SocialAccountCreateWithoutUserInput = {
   id?: string
   isActive?: boolean
   createdAt?: Date | string
@@ -489,7 +489,7 @@ export type SocialAccountCreateWithoutAccountInput = {
   providerId: string
 }
 
-export type SocialAccountUncheckedCreateWithoutAccountInput = {
+export type SocialAccountUncheckedCreateWithoutUserInput = {
   id?: string
   isActive?: boolean
   createdAt?: Date | string
@@ -499,30 +499,30 @@ export type SocialAccountUncheckedCreateWithoutAccountInput = {
   providerId: string
 }
 
-export type SocialAccountCreateOrConnectWithoutAccountInput = {
+export type SocialAccountCreateOrConnectWithoutUserInput = {
   where: Prisma.SocialAccountWhereUniqueInput
-  create: Prisma.XOR<Prisma.SocialAccountCreateWithoutAccountInput, Prisma.SocialAccountUncheckedCreateWithoutAccountInput>
+  create: Prisma.XOR<Prisma.SocialAccountCreateWithoutUserInput, Prisma.SocialAccountUncheckedCreateWithoutUserInput>
 }
 
-export type SocialAccountCreateManyAccountInputEnvelope = {
-  data: Prisma.SocialAccountCreateManyAccountInput | Prisma.SocialAccountCreateManyAccountInput[]
+export type SocialAccountCreateManyUserInputEnvelope = {
+  data: Prisma.SocialAccountCreateManyUserInput | Prisma.SocialAccountCreateManyUserInput[]
   skipDuplicates?: boolean
 }
 
-export type SocialAccountUpsertWithWhereUniqueWithoutAccountInput = {
+export type SocialAccountUpsertWithWhereUniqueWithoutUserInput = {
   where: Prisma.SocialAccountWhereUniqueInput
-  update: Prisma.XOR<Prisma.SocialAccountUpdateWithoutAccountInput, Prisma.SocialAccountUncheckedUpdateWithoutAccountInput>
-  create: Prisma.XOR<Prisma.SocialAccountCreateWithoutAccountInput, Prisma.SocialAccountUncheckedCreateWithoutAccountInput>
+  update: Prisma.XOR<Prisma.SocialAccountUpdateWithoutUserInput, Prisma.SocialAccountUncheckedUpdateWithoutUserInput>
+  create: Prisma.XOR<Prisma.SocialAccountCreateWithoutUserInput, Prisma.SocialAccountUncheckedCreateWithoutUserInput>
 }
 
-export type SocialAccountUpdateWithWhereUniqueWithoutAccountInput = {
+export type SocialAccountUpdateWithWhereUniqueWithoutUserInput = {
   where: Prisma.SocialAccountWhereUniqueInput
-  data: Prisma.XOR<Prisma.SocialAccountUpdateWithoutAccountInput, Prisma.SocialAccountUncheckedUpdateWithoutAccountInput>
+  data: Prisma.XOR<Prisma.SocialAccountUpdateWithoutUserInput, Prisma.SocialAccountUncheckedUpdateWithoutUserInput>
 }
 
-export type SocialAccountUpdateManyWithWhereWithoutAccountInput = {
+export type SocialAccountUpdateManyWithWhereWithoutUserInput = {
   where: Prisma.SocialAccountScalarWhereInput
-  data: Prisma.XOR<Prisma.SocialAccountUpdateManyMutationInput, Prisma.SocialAccountUncheckedUpdateManyWithoutAccountInput>
+  data: Prisma.XOR<Prisma.SocialAccountUpdateManyMutationInput, Prisma.SocialAccountUncheckedUpdateManyWithoutUserInput>
 }
 
 export type SocialAccountScalarWhereInput = {
@@ -536,10 +536,10 @@ export type SocialAccountScalarWhereInput = {
   version?: Prisma.IntFilter<"SocialAccount"> | number
   provider?: Prisma.EnumSocialAccountProviderFilter<"SocialAccount"> | $Enums.SocialAccountProvider
   providerId?: Prisma.StringFilter<"SocialAccount"> | string
-  accountId?: Prisma.StringFilter<"SocialAccount"> | string
+  userId?: Prisma.StringFilter<"SocialAccount"> | string
 }
 
-export type SocialAccountCreateManyAccountInput = {
+export type SocialAccountCreateManyUserInput = {
   id?: string
   isActive?: boolean
   createdAt?: Date | string
@@ -549,7 +549,7 @@ export type SocialAccountCreateManyAccountInput = {
   providerId: string
 }
 
-export type SocialAccountUpdateWithoutAccountInput = {
+export type SocialAccountUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -559,7 +559,7 @@ export type SocialAccountUpdateWithoutAccountInput = {
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type SocialAccountUncheckedUpdateWithoutAccountInput = {
+export type SocialAccountUncheckedUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -569,7 +569,7 @@ export type SocialAccountUncheckedUpdateWithoutAccountInput = {
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type SocialAccountUncheckedUpdateManyWithoutAccountInput = {
+export type SocialAccountUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -589,8 +589,8 @@ export type SocialAccountSelect<ExtArgs extends runtime.Types.Extensions.Interna
   version?: boolean
   provider?: boolean
   providerId?: boolean
-  accountId?: boolean
-  account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
+  userId?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["socialAccount"]>
 
 export type SocialAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -601,8 +601,8 @@ export type SocialAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   version?: boolean
   provider?: boolean
   providerId?: boolean
-  accountId?: boolean
-  account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
+  userId?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["socialAccount"]>
 
 export type SocialAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -613,8 +613,8 @@ export type SocialAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   version?: boolean
   provider?: boolean
   providerId?: boolean
-  accountId?: boolean
-  account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
+  userId?: boolean
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["socialAccount"]>
 
 export type SocialAccountSelectScalar = {
@@ -625,24 +625,24 @@ export type SocialAccountSelectScalar = {
   version?: boolean
   provider?: boolean
   providerId?: boolean
-  accountId?: boolean
+  userId?: boolean
 }
 
-export type SocialAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "provider" | "providerId" | "accountId", ExtArgs["result"]["socialAccount"]>
+export type SocialAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "provider" | "providerId" | "userId", ExtArgs["result"]["socialAccount"]>
 export type SocialAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type SocialAccountIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 export type SocialAccountIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  account?: boolean | Prisma.AccountDefaultArgs<ExtArgs>
+  user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }
 
 export type $SocialAccountPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "SocialAccount"
   objects: {
-    account: Prisma.$AccountPayload<ExtArgs>
+    user: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -652,7 +652,7 @@ export type $SocialAccountPayload<ExtArgs extends runtime.Types.Extensions.Inter
     version: number
     provider: $Enums.SocialAccountProvider
     providerId: string
-    accountId: string
+    userId: string
   }, ExtArgs["result"]["socialAccount"]>
   composites: {}
 }
@@ -1047,7 +1047,7 @@ readonly fields: SocialAccountFieldRefs;
  */
 export interface Prisma__SocialAccountClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  account<T extends Prisma.AccountDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AccountDefaultArgs<ExtArgs>>): Prisma.Prisma__AccountClient<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1084,7 +1084,7 @@ export interface SocialAccountFieldRefs {
   readonly version: Prisma.FieldRef<"SocialAccount", 'Int'>
   readonly provider: Prisma.FieldRef<"SocialAccount", 'SocialAccountProvider'>
   readonly providerId: Prisma.FieldRef<"SocialAccount", 'String'>
-  readonly accountId: Prisma.FieldRef<"SocialAccount", 'String'>
+  readonly userId: Prisma.FieldRef<"SocialAccount", 'String'>
 }
     
 

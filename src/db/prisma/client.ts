@@ -27,8 +27,8 @@ export * from "./enums"
  * @example
  * ```
  * const prisma = new PrismaClient()
- * // Fetch zero or more Accounts
- * const accounts = await prisma.account.findMany()
+ * // Fetch zero or more Users
+ * const users = await prisma.user.findMany()
  * ```
  * 
  * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
@@ -47,10 +47,10 @@ path.join(__dirname, "libquery_engine-linux-musl-openssl-3.0.x.so.node")
 path.join(process.cwd(), "src/db/prisma/libquery_engine-linux-musl-openssl-3.0.x.so.node")
 
 /**
- * Model Account
+ * Model User
  * 
  */
-export type Account = Prisma.AccountModel
+export type User = Prisma.UserModel
 /**
  * Model Verification
  * 
@@ -61,3 +61,23 @@ export type Verification = Prisma.VerificationModel
  * 
  */
 export type SocialAccount = Prisma.SocialAccountModel
+/**
+ * Model Fan
+ * 
+ */
+export type Fan = Prisma.FanModel
+/**
+ * Model Idol
+ * 
+ */
+export type Idol = Prisma.IdolModel
+/**
+ * Model Group
+ * 
+ */
+export type Group = Prisma.GroupModel
+/**
+ * Model FanFollowGroup
+ * 
+ */
+export type FanFollowGroup = Prisma.FanFollowGroupModel

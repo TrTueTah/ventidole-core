@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class CreatePostResponse {
+export class PostDto {
   @ApiProperty({
     description: 'Post ID',
     example: 'post-clx123abc',
@@ -16,20 +16,20 @@ export class CreatePostResponse {
   userId: string;
 
   @ApiProperty({
-    description: 'Username of the author',
-    example: 'johndoe',
-    type: String,
-  })
-  username: string;
-
-  @ApiProperty({
     description: 'Display name of the author',
     example: 'John Doe',
     type: String,
   })
   displayName: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
+    description: 'User email',
+    example: 'john@example.com',
+    type: String,
+  })
+  userEmail?: string;
+
+  @ApiPropertyOptional({
     description: 'User avatar URL',
     example: 'https://storage.googleapis.com/bucket/avatars/user-123.jpg',
     type: String,
@@ -48,28 +48,56 @@ export class CreatePostResponse {
     type: [String],
     example: ['https://storage.googleapis.com/bucket/image1.jpg'],
   })
-  mediaUrls?: string[];
+  mediaUrls: string[];
 
   @ApiProperty({
     description: 'Hashtags',
     type: [String],
     example: ['nature', 'sunset'],
   })
-  hashtags?: string[];
+  hashtags: string[];
 
   @ApiProperty({
     description: 'Mentioned user IDs',
     type: [String],
     example: ['user-id-1'],
   })
-  mentions?: string[];
+  mentions: string[];
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Location',
     example: 'Santa Monica Beach, CA',
     type: String,
   })
   location?: string;
+
+  @ApiProperty({
+    description: 'Post visibility',
+    example: 'public',
+    type: String,
+  })
+  visibility: string;
+
+  @ApiProperty({
+    description: 'Likes count',
+    example: 10,
+    type: Number,
+  })
+  likesCount: number;
+
+  @ApiProperty({
+    description: 'Comments count',
+    example: 5,
+    type: Number,
+  })
+  commentsCount: number;
+
+  @ApiProperty({
+    description: 'Shares count',
+    example: 2,
+    type: Number,
+  })
+  sharesCount: number;
 
   @ApiProperty({
     description: 'Creation timestamp',
@@ -79,13 +107,18 @@ export class CreatePostResponse {
   createdAt: Date;
 
   @ApiProperty({
-    description: 'Counters',
-    example: { likesCount: 0, commentsCount: 0, sharesCount: 0 },
-    type: Object,
+    description: 'Last update timestamp',
+    example: '2025-11-05T10:30:00Z',
+    type: String,
   })
-  counters: {
-    likesCount: number;
-    commentsCount: number;
-    sharesCount: number;
-  };
+  updatedAt: Date;
+
+  @ApiProperty({
+    description: 'Deletion status',
+    example: false,
+    type: Boolean,
+  })
+  isDeleted: boolean;
 }
+
+export class GetPostResponse extends PostDto {}

@@ -3,7 +3,7 @@ import { REGEX_USER_PASSWORD } from "@shared/constant/regex.constant";
 import { Transform } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsString, Matches, MinLength } from "class-validator";
 import { Role } from "src/db/prisma/enums";
-import { AccountModel } from "src/db/prisma/models";
+import { UserModel } from "src/db/prisma/models";
 
 export class SignUpRequest {
   @ApiProperty({
@@ -28,30 +28,19 @@ export class SignUpRequest {
   password: string;
 
   @ApiProperty({
-    example: 'John Doe',
-    description: 'Your full name',
+    example: 'johndoe',
+    description: 'Your username',
     type: String,
   })
   @IsString()
   @IsNotEmpty()
-  name: string;
-
-  @ApiProperty({
-    example: '+1234567890',
-    description: 'Your phone number',
-    type: String,
-  })
-  @IsString()
-  @IsNotEmpty()
-  phoneNumber: string;
+  username: string;
 
   static toCreateInput(request: SignUpRequest, hashedPassword: string) {
     return {
-      name: request.name,
       email: request.email,
       password: hashedPassword,
-      phoneNumber: request.phoneNumber,
       role: Role.FAN,
-    } as AccountModel;
+    } as UserModel;
   }
 }

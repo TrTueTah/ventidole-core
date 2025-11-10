@@ -24,7 +24,7 @@ import { ConfirmVerificationResponse } from "./response/confirm-verification.res
 import { IJwtDecoded } from "@shared/interface/jwt-payload.interface";
 import { TokenIssuer } from "@shared/enum/token.enum";
 import { VerificationType } from "src/db/prisma/enums";
-import { AccountModel } from "src/db/prisma/models";
+import { UserModel } from "src/db/prisma/models";
 
 @Injectable()
 export class AuthService {
@@ -38,18 +38,18 @@ export class AuthService {
   ) {}
   async signIn(request: SignInRequest) {
     try {
-      const account = await this.prisma.account.findUnique({
+      const user = await this.prisma.user.findUnique({
         where: { email: request.email, isActive: true, isDeleted: false },
       });
-      if (!account) throw new CustomError(ErrorCode.InvalidEmailOrPassword);
+      if (!user) throw new CustomError(ErrorCode.InvalidEmailOrPassword);
 
-      await this.validatePassword(account, request.password);
+      await this.validatePassword(user, request.password);
 
-      const [accessToken, refreshToken] = await this.generateTokens(account);
+      const [accessToken, refreshToken] = await this.generateTokens(user);
 
       const response = new SignInResponse();
-      response.id = account.id;
-      response.role = account.role;
+      response.id = user.id;
+      response.role = user.role;
       response.accessToken = accessToken;
       response.refreshToken = refreshToken;
 
@@ -63,18 +63,27 @@ export class AuthService {
     try {
       await this.validateSignUp(request);
       const hashedPassword = await hashPassword(request.password);
-      const account = await this.prisma.account.create({
-        data: SignUpRequest.toCreateInput(request, hashedPassword),
+      
+      // Create User and Fan in a transaction
+      const user = await this.prisma.user.create({
+        data: {
+          ...SignUpRequest.toCreateInput(request, hashedPassword),
+          fan: {
+            create: {
+              username: request.username,
+            },
+          },
+        },
+        include: {
+          fan: true,
+        },
       });
 
-      const [[accessToken, refreshToken]] = await Promise.all([
-        // this.createDefaultNotiSettings(account, request.timezone),
-        this.generateTokens(account),
-      ]);
+      const [accessToken, refreshToken] = await this.generateTokens(user);
 
       const response = new SignInResponse();
-      response.id = account.id;
-      response.role = account.role;
+      response.id = user.id;
+      response.role = user.role;
       response.accessToken = accessToken;
       response.refreshToken = refreshToken;
       
@@ -107,18 +116,19 @@ export class AuthService {
       );
 
       if (request.verificationType === VerificationType.FIND_EMAIL) {
-        const account = await this.prisma.account.findFirst({
+        const user = await this.prisma.user.findFirst({
           where: { email: request.email, isDeleted: false },
         });
         const response = new ConfirmVerificationResponse();
-        if (account) {
-          response.id = account.id;
-          response.role = account.role;
-          response.email = account.email;
-          response.name = account.name ?? undefined;
+        if (user) {
+          response.id = user.id;
+          response.role = user.role;
+          response.email = user.email;
+          // Note: User model doesn't have 'name' field - it's in Fan/Idol models
+          response.name = undefined;
         }
 
-        return account
+        return user
           ? BaseResponse.of(response)
           : BaseResponse.ok();
       }
@@ -154,21 +164,21 @@ export class AuthService {
         secret,
       );
 
-      const account = await this.prisma.account.findFirst({
+      const user = await this.prisma.user.findFirst({
         where: {
           id: refreshTokenPayload.sub,
           isActive: true,
           isDeleted: false,
         },
       });
-      if (!account) throw new CustomError(ErrorCode.Unauthenticated);
+      if (!user) throw new CustomError(ErrorCode.Unauthenticated);
 
       const [newAccessToken, newRefreshToken] =
-        await this.generateTokens(account);
+        await this.generateTokens(user);
       
       const response = new SignInResponse();
-      response.id = account.id;
-      response.role = account.role;
+      response.id = user.id;
+      response.role = user.role;
       response.accessToken = newAccessToken;
       response.refreshToken = newRefreshToken;
       return BaseResponse.of(response);
@@ -183,7 +193,7 @@ export class AuthService {
       await this.validateResetPassword(request);
       const hashedPassword = await hashPassword(password);
 
-      await this.prisma.account.update({
+      await this.prisma.user.update({
         where: { email },
         data: { password: hashedPassword },
       });
@@ -193,22 +203,22 @@ export class AuthService {
     }
   }
 
-  private async validatePassword(account: AccountModel, password: string) {
-    const isMatch = await verifyPassword(password, account.password);
+  private async validatePassword(user: UserModel, password: string) {
+    const isMatch = await verifyPassword(password, user.password);
     if (!isMatch) throw new CustomError(ErrorCode.InvalidEmailOrPassword);
   }
 
-  private async generateTokens(account: AccountModel) {
-    const accessToken = this.tokenService.generateAccessToken(account);
+  private async generateTokens(user: UserModel) {
+    const accessToken = this.tokenService.generateAccessToken(user);
     const refreshToken = this.tokenService.generateRefreshToken(
-      account,
+      user,
       accessToken,
       ENVIRONMENT.JWT_SECRET,
     );
 
     await this.redisService.set(
-      `${RedisKey.Account}${account.id}`,
-      account,
+      `${RedisKey.Account}${user.id}`,
+      user,
       ENVIRONMENT.JWT_EXPIRED,
     );
 
@@ -217,27 +227,27 @@ export class AuthService {
 
   private async validateSignUp(request: SignUpRequest) {
     try {
-      const { phoneNumber, email } = request;
+      const { email, username } = request;
 
       await this.validatePrevVerification(
         email,
         VerificationType.REGISTER_ACCOUNT,
       );
 
-      const accountEmailExisted = await this.prisma.account.findUnique({
+      const userEmailExisted = await this.prisma.user.findUnique({
         where: { email, isActive: true, isDeleted: false },
         select: { id: true },
       });
 
-      if (accountEmailExisted) throw new CustomError(ErrorCode.ExistedEmail);
+      if (userEmailExisted) throw new CustomError(ErrorCode.ExistedEmail);
 
-      const accountPhoneNumberExisted = await this.prisma.account.findFirst({
-        where: { phoneNumber, isActive: true, isDeleted: false },
+      // Check if username is already taken
+      const fanUsernameExisted = await this.prisma.fan.findUnique({
+        where: { username, isActive: true },
         select: { id: true },
       });
 
-      if (accountPhoneNumberExisted)
-        throw new CustomError(ErrorCode.ExistedPhoneNumber);
+      if (fanUsernameExisted) throw new CustomError(ErrorCode.ExistedUsername);
     } catch (error) {
       throw error;
     }
@@ -283,7 +293,7 @@ export class AuthService {
         VerificationType.RESET_PASSWORD,
       );
 
-      const accountExisted = await this.prisma.account.findFirst({
+      const userExisted = await this.prisma.user.findFirst({
         where: {
           email,
           isActive: true,
@@ -292,7 +302,7 @@ export class AuthService {
         select: { id: true }, 
       });
 
-      if (!accountExisted)
+      if (!userExisted)
         throw new CustomError(ErrorCode.AccountNotFound, email);
     } catch (error) {
       throw error;

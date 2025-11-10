@@ -22,6 +22,7 @@ export enum ErrorCode {
   AccountNotFound = "AccountNotFound",
   ExistedEmail = "ExistedEmail",
   ExistedPhoneNumber = "ExistedPhoneNumber",
+  ExistedUsername = "ExistedUsername",
   InvalidEmailOrPassword = "InvalidEmailOrPassword",
   InvalidTokenSecret = "InvalidTokenSecret",
   FileNotFound = "FileNotFound",

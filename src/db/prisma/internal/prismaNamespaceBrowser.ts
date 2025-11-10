@@ -49,9 +49,13 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 
 
 export const ModelName = {
-  Account: 'Account',
+  User: 'User',
   Verification: 'Verification',
-  SocialAccount: 'SocialAccount'
+  SocialAccount: 'SocialAccount',
+  Fan: 'Fan',
+  Idol: 'Idol',
+  Group: 'Group',
+  FanFollowGroup: 'FanFollowGroup'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -70,15 +74,13 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
-export const AccountScalarFieldEnum = {
+export const UserScalarFieldEnum = {
   id: 'id',
   isActive: 'isActive',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   version: 'version',
-  name: 'name',
   email: 'email',
-  phoneNumber: 'phoneNumber',
   password: 'password',
   role: 'role',
   deviceToken: 'deviceToken',
@@ -86,7 +88,7 @@ export const AccountScalarFieldEnum = {
   isOnline: 'isOnline'
 } as const
 
-export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
+export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
 export const VerificationScalarFieldEnum = {
@@ -98,7 +100,7 @@ export const VerificationScalarFieldEnum = {
   type: 'type',
   token: 'token',
   expiresAt: 'expiresAt',
-  accountId: 'accountId',
+  userId: 'userId',
   usedAt: 'usedAt',
   confirmedAt: 'confirmedAt',
   email: 'email'
@@ -115,10 +117,71 @@ export const SocialAccountScalarFieldEnum = {
   version: 'version',
   provider: 'provider',
   providerId: 'providerId',
-  accountId: 'accountId'
+  userId: 'userId'
 } as const
 
 export type SocialAccountScalarFieldEnum = (typeof SocialAccountScalarFieldEnum)[keyof typeof SocialAccountScalarFieldEnum]
+
+
+export const FanScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version',
+  username: 'username',
+  avatarUrl: 'avatarUrl',
+  backgroundUrl: 'backgroundUrl',
+  bio: 'bio',
+  userId: 'userId'
+} as const
+
+export type FanScalarFieldEnum = (typeof FanScalarFieldEnum)[keyof typeof FanScalarFieldEnum]
+
+
+export const IdolScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version',
+  stageName: 'stageName',
+  bio: 'bio',
+  avatarUrl: 'avatarUrl',
+  backgroundUrl: 'backgroundUrl',
+  userId: 'userId',
+  groupId: 'groupId'
+} as const
+
+export type IdolScalarFieldEnum = (typeof IdolScalarFieldEnum)[keyof typeof IdolScalarFieldEnum]
+
+
+export const GroupScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version',
+  description: 'description',
+  logoUrl: 'logoUrl',
+  backgroundUrl: 'backgroundUrl',
+  groupName: 'groupName'
+} as const
+
+export type GroupScalarFieldEnum = (typeof GroupScalarFieldEnum)[keyof typeof GroupScalarFieldEnum]
+
+
+export const FanFollowGroupScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version',
+  fanId: 'fanId',
+  groupId: 'groupId'
+} as const
+
+export type FanFollowGroupScalarFieldEnum = (typeof FanFollowGroupScalarFieldEnum)[keyof typeof FanFollowGroupScalarFieldEnum]
 
 
 export const SortOrder = {
