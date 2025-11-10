@@ -23,6 +23,7 @@ export class VerificationCodeResponse {
 
   static transformOtpData(expireAt: number): Partial<VerificationCodeResponse> {
     return {
+      waitSeconds: 60,
       expireAt,
     };
   }
