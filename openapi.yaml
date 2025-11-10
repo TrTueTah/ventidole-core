@@ -604,6 +604,212 @@ paths:
                   - message
                   - data
       tags: *ref_3
+  /v1/user/me:
+    get:
+      operationId: UserController_getCurrentUser_v1
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/GetUserResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: &ref_4
+        - bearer: []
+      tags: &ref_5
+        - User
+  /v1/user/{userId}:
+    get:
+      operationId: UserController_getUserById_v1
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          description: User ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/GetUserResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: *ref_4
+      tags: *ref_5
+  /v1/user/profile:
+    patch:
+      operationId: UserController_updateProfile_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UpdateUserResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: *ref_4
+      tags: *ref_5
+  /v1/user/fan:
+    patch:
+      operationId: UserController_updateFanProfile_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFanRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UpdateFanResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: *ref_4
+      tags: *ref_5
+  /v1/user/idol:
+    patch:
+      operationId: UserController_updateIdolProfile_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIdolRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UpdateIdolResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: *ref_4
+      tags: *ref_5
   /v1/user/update-status:
     post:
       operationId: UserController_updateStatus_v1
@@ -645,10 +851,8 @@ paths:
                   - statusCode
                   - message
                   - data
-      security:
-        - bearer: []
-      tags:
-        - User
+      security: *ref_4
+      tags: *ref_5
   /v1/post:
     post:
       operationId: PostController_createPost_v1
@@ -689,9 +893,9 @@ paths:
                   - statusCode
                   - message
                   - data
-      security: &ref_4
+      security: &ref_6
         - bearer: []
-      tags: &ref_5
+      tags: &ref_7
         - Post
     get:
       operationId: PostController_getPosts_v1
@@ -784,8 +988,8 @@ paths:
                   - statusCode
                   - message
                   - data
-      security: *ref_4
-      tags: *ref_5
+      security: *ref_6
+      tags: *ref_7
   /v1/post/{postId}:
     get:
       operationId: PostController_getPost_v1
@@ -826,8 +1030,8 @@ paths:
                   - statusCode
                   - message
                   - data
-      security: *ref_4
-      tags: *ref_5
+      security: *ref_6
+      tags: *ref_7
     patch:
       operationId: PostController_updatePost_v1
       parameters:
@@ -873,8 +1077,8 @@ paths:
                   - statusCode
                   - message
                   - data
-      security: *ref_4
-      tags: *ref_5
+      security: *ref_6
+      tags: *ref_7
     delete:
       operationId: PostController_deletePost_v1
       parameters:
@@ -914,8 +1118,8 @@ paths:
                   - statusCode
                   - message
                   - data
-      security: *ref_4
-      tags: *ref_5
+      security: *ref_6
+      tags: *ref_7
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -1037,6 +1241,10 @@ components:
             - FileTooLarge
             - InvalidFileType
             - InvalidFileName
+            - EmailAlreadyExists
+            - UsernameAlreadyExists
+            - FanProfileNotFound
+            - IdolProfileNotFound
           description: Error code (optional)
       required:
         - statusCode
@@ -1312,6 +1520,267 @@ components:
       required:
         - password
         - email
+    FanDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Fan ID
+          example: fan-clx123abc
+        username:
+          type: string
+          description: Fan username
+          example: cool_username
+        avatarUrl:
+          type: string
+          description: Fan avatar URL
+          example: https://storage.googleapis.com/bucket/avatars/fan-123.jpg
+        backgroundUrl:
+          type: string
+          description: Fan background image URL
+          example: https://storage.googleapis.com/bucket/backgrounds/fan-123.jpg
+        bio:
+          type: string
+          description: Fan bio/description
+          example: Music lover and K-pop enthusiast 🎵
+        createdAt:
+          type: string
+          description: Created at timestamp
+          example: '2024-01-01T00:00:00.000Z'
+        updatedAt:
+          type: string
+          description: Updated at timestamp
+          example: '2024-01-01T00:00:00.000Z'
+      required:
+        - id
+        - username
+        - createdAt
+        - updatedAt
+    IdolDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Idol ID
+          example: idol-clx123abc
+        stageName:
+          type: string
+          description: Idol stage name
+          example: StarLight
+        avatarUrl:
+          type: string
+          description: Idol avatar URL
+          example: https://storage.googleapis.com/bucket/avatars/idol-123.jpg
+        backgroundUrl:
+          type: string
+          description: Idol background image URL
+          example: https://storage.googleapis.com/bucket/backgrounds/idol-123.jpg
+        bio:
+          type: string
+          description: Idol bio/description
+          example: Professional singer and performer 🎤
+        groupId:
+          type: string
+          description: Group ID
+          example: group-clx123abc
+        createdAt:
+          type: string
+          description: Created at timestamp
+          example: '2024-01-01T00:00:00.000Z'
+        updatedAt:
+          type: string
+          description: Updated at timestamp
+          example: '2024-01-01T00:00:00.000Z'
+      required:
+        - id
+        - stageName
+        - groupId
+        - createdAt
+        - updatedAt
+    UserDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: User ID
+          example: user-123e4567
+        email:
+          type: string
+          description: User email
+          example: user@example.com
+        role:
+          type: string
+          description: User role
+          enum:
+            - FAN
+            - ADMIN
+            - IDOL
+          example: FAN
+        deviceToken:
+          type: string
+          description: Device token for push notifications
+          example: device-token-xyz123
+        isOnline:
+          type: boolean
+          description: Online status
+          example: true
+        isActive:
+          type: boolean
+          description: Active status
+          example: true
+        fan:
+          description: Fan profile (only present if user is a FAN)
+          allOf:
+            - $ref: '#/components/schemas/FanDto'
+        idol:
+          description: Idol profile (only present if user is an IDOL)
+          allOf:
+            - $ref: '#/components/schemas/IdolDto'
+        createdAt:
+          type: string
+          description: Created at timestamp
+          example: '2024-01-01T00:00:00.000Z'
+        updatedAt:
+          type: string
+          description: Updated at timestamp
+          example: '2024-01-01T00:00:00.000Z'
+      required:
+        - id
+        - email
+        - role
+        - isOnline
+        - isActive
+        - createdAt
+        - updatedAt
+    GetUserResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: Status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: User retrieved successfully
+        data:
+          description: User data
+          allOf:
+            - $ref: '#/components/schemas/UserDto'
+      required:
+        - statusCode
+        - message
+        - data
+    UpdateUserResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: Status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: User updated successfully
+        data:
+          description: Updated user data
+          allOf:
+            - $ref: '#/components/schemas/UserDto'
+      required:
+        - statusCode
+        - message
+        - data
+    UpdateFanResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: Status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: Fan profile updated successfully
+        data:
+          description: Updated fan profile data
+          allOf:
+            - $ref: '#/components/schemas/FanDto'
+      required:
+        - statusCode
+        - message
+        - data
+    UpdateIdolResponse:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          description: Status code
+          example: 200
+        message:
+          type: string
+          description: Response message
+          example: Idol profile updated successfully
+        data:
+          description: Updated idol profile data
+          allOf:
+            - $ref: '#/components/schemas/IdolDto'
+      required:
+        - statusCode
+        - message
+        - data
+    UpdateUserRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@example.com
+          description: User email
+        deviceToken:
+          type: string
+          example: device-token-xyz123
+          description: Device token for push notifications
+        isOnline:
+          type: boolean
+          example: true
+          description: Online status
+    UpdateFanRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: cool_username
+          description: Fan username
+        avatarUrl:
+          type: string
+          example: https://storage.googleapis.com/bucket/avatars/fan-123.jpg
+          description: Avatar URL
+        backgroundUrl:
+          type: string
+          example: https://storage.googleapis.com/bucket/backgrounds/fan-123.jpg
+          description: Background image URL
+        bio:
+          type: string
+          example: Music lover and K-pop enthusiast 🎵
+          description: Bio/description
+    UpdateIdolRequest:
+      type: object
+      properties:
+        stageName:
+          type: string
+          example: StarLight
+          description: Idol stage name
+        avatarUrl:
+          type: string
+          example: https://storage.googleapis.com/bucket/avatars/idol-123.jpg
+          description: Avatar URL
+        backgroundUrl:
+          type: string
+          example: https://storage.googleapis.com/bucket/backgrounds/idol-123.jpg
+          description: Background image URL
+        bio:
+          type: string
+          example: Professional singer and performer 🎤
+          description: Bio/description
     UpdateStatusRequest:
       type: object
       properties:
@@ -1435,14 +1904,14 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: &ref_6
+          example: &ref_8
             - https://storage.googleapis.com/bucket/image1.jpg
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: &ref_7
+          example: &ref_9
             - nature
             - sunset
           type: array
@@ -1450,7 +1919,7 @@ components:
             type: string
         mentions:
           description: Mentioned user IDs
-          example: &ref_8
+          example: &ref_10
             - user-id-1
           type: array
           items:
@@ -1531,19 +2000,19 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: *ref_6
+          example: *ref_8
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: *ref_7
+          example: *ref_9
           type: array
           items:
             type: string
         mentions:
           description: Mentioned user IDs
-          example: *ref_8
+          example: *ref_10
           type: array
           items:
             type: string

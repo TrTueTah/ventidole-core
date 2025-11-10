@@ -29,6 +29,10 @@ export enum ErrorCode {
   FileTooLarge = "FileTooLarge",
   InvalidFileType = "InvalidFileType",
   InvalidFileName = "InvalidFileName",
+  EmailAlreadyExists = "EmailAlreadyExists",
+  UsernameAlreadyExists = "UsernameAlreadyExists",
+  FanProfileNotFound = "FanProfileNotFound",
+  IdolProfileNotFound = "IdolProfileNotFound",
 }
 
 const ErrorCodeSet = new Set(Object.values(ErrorCode));
