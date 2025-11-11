@@ -35,21 +35,25 @@ export function ApiResponseCustom(ref?: string | Function, isArray = false) {
                 description: 'Response data'
               }
           : { 
-              type: 'null',
+              type: 'object',
+              nullable: true,
               example: null,
               description: 'No data returned'
             },
         error: {
-          type: 'null',
+          type: 'object',
+          nullable: true,
           example: null,
           description: 'Error information (null on success)'
         },
         errorCode: {
           type: 'string',
-          description: 'Error code (optional)'
+          nullable: true,
+          example: null,
+          description: 'Error code (null on success)'
         }
       },
-      required: ['statusCode', 'message', 'data']
+      required: ['statusCode', 'message']
     },
   });
 }
@@ -138,14 +142,16 @@ export function ApiPaginationResponse<TModel extends Type<unknown>>(
             required: ['total', 'page', 'limit', 'totalPages'],
           },
           error: {
-            type: 'null',
+            type: 'object',
+            nullable: true,
             example: null,
             description: 'Error information (null on success)',
           },
           errorCode: {
             type: 'string',
             nullable: true,
-            description: 'Error code (optional, null on success)',
+            example: null,
+            description: 'Error code (null on success)',
           },
         },
         required: ['statusCode', 'message', 'data', 'paging'],

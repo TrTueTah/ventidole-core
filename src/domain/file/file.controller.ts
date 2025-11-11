@@ -96,8 +96,8 @@ export class FileController {
 
   @Delete('delete')
   @ApiResponseCustom()
-  deleteFile(@Body() request: DeleteFileRequest) {
-    return this.fileService.deleteFile(request);
+  deleteFile(@Query('filePath') filePath: string) {
+    return this.fileService.deleteFile({ filePath });
   }
 
   @Get('url')
@@ -140,7 +140,7 @@ export class FileController {
 
   @Delete('folder')
   @ApiResponseCustom()
-  deleteFolder(@Body('folder') folder: string) {
+  deleteFolder(@Query('folder') folder: string) {
     return this.fileService.deleteFolder(folder);
   }
 }

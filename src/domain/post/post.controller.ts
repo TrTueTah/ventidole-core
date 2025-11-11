@@ -19,7 +19,7 @@ import { IRequest } from "@shared/interface/request.interface";
 @ApiBearerAuth()
 @Roles(Role.FAN, Role.IDOL, Role.ADMIN)
 @ApiTags('Post')
-// @ApiExtraModelsCustom(...postResponses)
+@ApiExtraModelsCustom(...postResponses)
 @Controller({ path: 'post', version: ApiVersion.V1 })
 export class PostController {
   constructor(private readonly postService: PostService) {}
