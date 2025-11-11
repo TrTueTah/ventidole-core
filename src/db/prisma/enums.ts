@@ -34,3 +34,20 @@ export const SocialAccountProvider = {
 } as const
 
 export type SocialAccountProvider = (typeof SocialAccountProvider)[keyof typeof SocialAccountProvider]
+
+
+export const ChatChannelType = {
+  DIRECT: 'DIRECT',
+  GROUP: 'GROUP',
+  ANNOUNCEMENT: 'ANNOUNCEMENT'
+} as const
+
+export type ChatChannelType = (typeof ChatChannelType)[keyof typeof ChatChannelType]
+
+
+export const ChatRole = {
+  ADMIN: 'ADMIN',
+  MEMBER: 'MEMBER'
+} as const
+
+export type ChatRole = (typeof ChatRole)[keyof typeof ChatRole]

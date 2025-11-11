@@ -144,6 +144,54 @@ export class UserService {
     return BaseResponse.of(updatedFan);
   }
 
+  async createFanProfile(body: any, request: IRequest) {
+    const userId = request.user.id;
+
+    // Check if user exists and doesn't already have a fan profile
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId, isDeleted: false },
+      include: { fan: true },
+    });
+
+    if (!user) {
+      throw new CustomError(ErrorCode.AccountNotFound);
+    }
+
+    if (user.fan) {
+      throw new CustomError(ErrorCode.ValidationFailed);
+    }
+
+    // Check username uniqueness
+    const usernameExists = await this.prisma.fan.findFirst({
+      where: { username: body.username },
+    });
+
+    if (usernameExists) {
+      throw new CustomError(ErrorCode.UsernameAlreadyExists);
+    }
+
+    // Create fan profile
+    const fan = await this.prisma.fan.create({
+      data: {
+        userId,
+        username: body.username,
+        ...(body.avatarUrl && { avatarUrl: body.avatarUrl }),
+        ...(body.backgroundUrl && { backgroundUrl: body.backgroundUrl }),
+        ...(body.bio && { bio: body.bio }),
+      },
+    });
+
+    // Update user role to FAN if not already set
+    if (user.role !== Role.FAN) {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { role: Role.FAN },
+      });
+    }
+
+    return BaseResponse.of(fan);
+  }
+
   async updateIdolProfile(body: UpdateIdolRequest, request: IRequest) {
     const userId = request.user.id;
 

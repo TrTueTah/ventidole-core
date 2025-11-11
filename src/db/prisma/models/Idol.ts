@@ -266,6 +266,7 @@ export type IdolWhereInput = {
   groupId?: Prisma.StringFilter<"Idol"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
+  chatChannels?: Prisma.ChatChannelListRelationFilter
 }
 
 export type IdolOrderByWithRelationInput = {
@@ -282,6 +283,7 @@ export type IdolOrderByWithRelationInput = {
   groupId?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   group?: Prisma.GroupOrderByWithRelationInput
+  chatChannels?: Prisma.ChatChannelOrderByRelationAggregateInput
 }
 
 export type IdolWhereUniqueInput = Prisma.AtLeast<{
@@ -301,6 +303,7 @@ export type IdolWhereUniqueInput = Prisma.AtLeast<{
   groupId?: Prisma.StringFilter<"Idol"> | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   group?: Prisma.XOR<Prisma.GroupScalarRelationFilter, Prisma.GroupWhereInput>
+  chatChannels?: Prisma.ChatChannelListRelationFilter
 }, "id" | "userId">
 
 export type IdolOrderByWithAggregationInput = {
@@ -351,6 +354,7 @@ export type IdolCreateInput = {
   backgroundUrl?: string | null
   user: Prisma.UserCreateNestedOneWithoutIdolInput
   group: Prisma.GroupCreateNestedOneWithoutIdolsInput
+  chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutIdolInput
 }
 
 export type IdolUncheckedCreateInput = {
@@ -365,6 +369,7 @@ export type IdolUncheckedCreateInput = {
   backgroundUrl?: string | null
   userId: string
   groupId: string
+  chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutIdolInput
 }
 
 export type IdolUpdateInput = {
@@ -379,6 +384,7 @@ export type IdolUpdateInput = {
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutIdolNestedInput
   group?: Prisma.GroupUpdateOneRequiredWithoutIdolsNestedInput
+  chatChannels?: Prisma.ChatChannelUpdateManyWithoutIdolNestedInput
 }
 
 export type IdolUncheckedUpdateInput = {
@@ -393,6 +399,7 @@ export type IdolUncheckedUpdateInput = {
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
+  chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutIdolNestedInput
 }
 
 export type IdolCreateManyInput = {
@@ -574,6 +581,22 @@ export type IdolUncheckedUpdateManyWithoutGroupNestedInput = {
   deleteMany?: Prisma.IdolScalarWhereInput | Prisma.IdolScalarWhereInput[]
 }
 
+export type IdolCreateNestedOneWithoutChatChannelsInput = {
+  create?: Prisma.XOR<Prisma.IdolCreateWithoutChatChannelsInput, Prisma.IdolUncheckedCreateWithoutChatChannelsInput>
+  connectOrCreate?: Prisma.IdolCreateOrConnectWithoutChatChannelsInput
+  connect?: Prisma.IdolWhereUniqueInput
+}
+
+export type IdolUpdateOneWithoutChatChannelsNestedInput = {
+  create?: Prisma.XOR<Prisma.IdolCreateWithoutChatChannelsInput, Prisma.IdolUncheckedCreateWithoutChatChannelsInput>
+  connectOrCreate?: Prisma.IdolCreateOrConnectWithoutChatChannelsInput
+  upsert?: Prisma.IdolUpsertWithoutChatChannelsInput
+  disconnect?: Prisma.IdolWhereInput | boolean
+  delete?: Prisma.IdolWhereInput | boolean
+  connect?: Prisma.IdolWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.IdolUpdateToOneWithWhereWithoutChatChannelsInput, Prisma.IdolUpdateWithoutChatChannelsInput>, Prisma.IdolUncheckedUpdateWithoutChatChannelsInput>
+}
+
 export type IdolCreateWithoutUserInput = {
   id?: string
   isActive?: boolean
@@ -585,6 +608,7 @@ export type IdolCreateWithoutUserInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   group: Prisma.GroupCreateNestedOneWithoutIdolsInput
+  chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutIdolInput
 }
 
 export type IdolUncheckedCreateWithoutUserInput = {
@@ -598,6 +622,7 @@ export type IdolUncheckedCreateWithoutUserInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   groupId: string
+  chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutIdolInput
 }
 
 export type IdolCreateOrConnectWithoutUserInput = {
@@ -627,6 +652,7 @@ export type IdolUpdateWithoutUserInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   group?: Prisma.GroupUpdateOneRequiredWithoutIdolsNestedInput
+  chatChannels?: Prisma.ChatChannelUpdateManyWithoutIdolNestedInput
 }
 
 export type IdolUncheckedUpdateWithoutUserInput = {
@@ -640,6 +666,7 @@ export type IdolUncheckedUpdateWithoutUserInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groupId?: Prisma.StringFieldUpdateOperationsInput | string
+  chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutIdolNestedInput
 }
 
 export type IdolCreateWithoutGroupInput = {
@@ -653,6 +680,7 @@ export type IdolCreateWithoutGroupInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   user: Prisma.UserCreateNestedOneWithoutIdolInput
+  chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutIdolInput
 }
 
 export type IdolUncheckedCreateWithoutGroupInput = {
@@ -666,6 +694,7 @@ export type IdolUncheckedCreateWithoutGroupInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   userId: string
+  chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutIdolInput
 }
 
 export type IdolCreateOrConnectWithoutGroupInput = {
@@ -711,6 +740,78 @@ export type IdolScalarWhereInput = {
   groupId?: Prisma.StringFilter<"Idol"> | string
 }
 
+export type IdolCreateWithoutChatChannelsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  stageName: string
+  bio?: string | null
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  user: Prisma.UserCreateNestedOneWithoutIdolInput
+  group: Prisma.GroupCreateNestedOneWithoutIdolsInput
+}
+
+export type IdolUncheckedCreateWithoutChatChannelsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  stageName: string
+  bio?: string | null
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  userId: string
+  groupId: string
+}
+
+export type IdolCreateOrConnectWithoutChatChannelsInput = {
+  where: Prisma.IdolWhereUniqueInput
+  create: Prisma.XOR<Prisma.IdolCreateWithoutChatChannelsInput, Prisma.IdolUncheckedCreateWithoutChatChannelsInput>
+}
+
+export type IdolUpsertWithoutChatChannelsInput = {
+  update: Prisma.XOR<Prisma.IdolUpdateWithoutChatChannelsInput, Prisma.IdolUncheckedUpdateWithoutChatChannelsInput>
+  create: Prisma.XOR<Prisma.IdolCreateWithoutChatChannelsInput, Prisma.IdolUncheckedCreateWithoutChatChannelsInput>
+  where?: Prisma.IdolWhereInput
+}
+
+export type IdolUpdateToOneWithWhereWithoutChatChannelsInput = {
+  where?: Prisma.IdolWhereInput
+  data: Prisma.XOR<Prisma.IdolUpdateWithoutChatChannelsInput, Prisma.IdolUncheckedUpdateWithoutChatChannelsInput>
+}
+
+export type IdolUpdateWithoutChatChannelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  stageName?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  user?: Prisma.UserUpdateOneRequiredWithoutIdolNestedInput
+  group?: Prisma.GroupUpdateOneRequiredWithoutIdolsNestedInput
+}
+
+export type IdolUncheckedUpdateWithoutChatChannelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  stageName?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  groupId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
 export type IdolCreateManyGroupInput = {
   id?: string
   isActive?: boolean
@@ -735,6 +836,7 @@ export type IdolUpdateWithoutGroupInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   user?: Prisma.UserUpdateOneRequiredWithoutIdolNestedInput
+  chatChannels?: Prisma.ChatChannelUpdateManyWithoutIdolNestedInput
 }
 
 export type IdolUncheckedUpdateWithoutGroupInput = {
@@ -748,6 +850,7 @@ export type IdolUncheckedUpdateWithoutGroupInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutIdolNestedInput
 }
 
 export type IdolUncheckedUpdateManyWithoutGroupInput = {
@@ -764,6 +867,35 @@ export type IdolUncheckedUpdateManyWithoutGroupInput = {
 }
 
 
+/**
+ * Count Type IdolCountOutputType
+ */
+
+export type IdolCountOutputType = {
+  chatChannels: number
+}
+
+export type IdolCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  chatChannels?: boolean | IdolCountOutputTypeCountChatChannelsArgs
+}
+
+/**
+ * IdolCountOutputType without action
+ */
+export type IdolCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the IdolCountOutputType
+   */
+  select?: Prisma.IdolCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * IdolCountOutputType without action
+ */
+export type IdolCountOutputTypeCountChatChannelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatChannelWhereInput
+}
+
 
 export type IdolSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -779,6 +911,8 @@ export type IdolSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   groupId?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
+  chatChannels?: boolean | Prisma.Idol$chatChannelsArgs<ExtArgs>
+  _count?: boolean | Prisma.IdolCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["idol"]>
 
 export type IdolSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -831,6 +965,8 @@ export type IdolOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type IdolInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   group?: boolean | Prisma.GroupDefaultArgs<ExtArgs>
+  chatChannels?: boolean | Prisma.Idol$chatChannelsArgs<ExtArgs>
+  _count?: boolean | Prisma.IdolCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type IdolIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -846,6 +982,7 @@ export type $IdolPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     group: Prisma.$GroupPayload<ExtArgs>
+    chatChannels: Prisma.$ChatChannelPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1255,6 +1392,7 @@ export interface Prisma__IdolClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   group<T extends Prisma.GroupDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GroupDefaultArgs<ExtArgs>>): Prisma.Prisma__GroupClient<runtime.Types.Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  chatChannels<T extends Prisma.Idol$chatChannelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Idol$chatChannelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1688,6 +1826,30 @@ export type IdolDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Idols to delete.
    */
   limit?: number
+}
+
+/**
+ * Idol.chatChannels
+ */
+export type Idol$chatChannelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatChannel
+   */
+  select?: Prisma.ChatChannelSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatChannel
+   */
+  omit?: Prisma.ChatChannelOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatChannelInclude<ExtArgs> | null
+  where?: Prisma.ChatChannelWhereInput
+  orderBy?: Prisma.ChatChannelOrderByWithRelationInput | Prisma.ChatChannelOrderByWithRelationInput[]
+  cursor?: Prisma.ChatChannelWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatChannelScalarFieldEnum | Prisma.ChatChannelScalarFieldEnum[]
 }
 
 /**

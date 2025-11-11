@@ -11,21 +11,22 @@ datasource db {
 }
 
 model User {
-  id              String          @id @default(cuid())
-  isActive        Boolean         @default(true)
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  version         Int             @default(0)
-  email           String          @unique(map: "user_email_unique_partial") @db.VarChar(255)
-  password        String          @db.VarChar(255)
+  id              String            @id @default(cuid())
+  isActive        Boolean           @default(true)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  version         Int               @default(0)
+  email           String            @unique(map: "user_email_unique_partial") @db.VarChar(255)
+  password        String            @db.VarChar(255)
   role            Role
-  deviceToken     String?         @db.VarChar(255)
-  isDeleted       Boolean         @default(false) @map("is_deleted")
-  isOnline        Boolean         @default(false) @map("is_online")
+  deviceToken     String?           @db.VarChar(255)
+  isDeleted       Boolean           @default(false) @map("is_deleted")
+  isOnline        Boolean           @default(false) @map("is_online")
   social_accounts SocialAccount[]
   verifications   Verification[]
   fan             Fan?
   idol            Idol?
+  chatParticipants ChatParticipant[]
 
   @@map("user")
 }
@@ -85,19 +86,20 @@ model Fan {
 }
 
 model Idol {
-  id              String    @id @default(cuid())
-  isActive        Boolean   @default(true)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  version         Int       @default(0)
-  stageName       String    @map("stageName") @db.VarChar(100)
-  bio             String?   @db.VarChar(500)
-  avatarUrl       String?   @map("avatar_url") @db.VarChar(255)
-  backgroundUrl   String?   @map("background_url") @db.VarChar(255)
-  userId          String    @map("userId") @unique
-  groupId         String    @map("groupId")
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  group           Group     @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  id              String        @id @default(cuid())
+  isActive        Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  version         Int           @default(0)
+  stageName       String        @map("stageName") @db.VarChar(100)
+  bio             String?       @db.VarChar(500)
+  avatarUrl       String?       @map("avatar_url") @db.VarChar(255)
+  backgroundUrl   String?       @map("background_url") @db.VarChar(255)
+  userId          String        @map("userId") @unique
+  groupId         String        @map("groupId")
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group           Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  chatChannels    ChatChannel[]
 
   @@map("idols")
 }
@@ -114,6 +116,7 @@ model Group {
   groupName       String            @map("groupName") @db.VarChar(100)
   idols           Idol[]
   followers       FanFollowGroup[]
+  chatChannels    ChatChannel[]
 
   @@map("groups")
 }
@@ -135,6 +138,52 @@ model FanFollowGroup {
   @@map("fan_follow_group")
 }
 
+model ChatChannel {
+  id              String              @id @default(cuid())
+  isActive        Boolean             @default(true)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+  version         Int                 @default(0)
+  name            String?             @db.VarChar(255)
+  description     String?             @db.VarChar(500)
+  type            ChatChannelType
+  groupId         String?             @map("groupId")
+  idolId          String?             @map("idolId")
+  isAnnouncement  Boolean             @default(false) @map("is_announcement")
+  lastMessageAt   DateTime?           @map("last_message_at")
+  firebaseDocId   String              @unique @map("firebase_doc_id") @db.VarChar(255)
+  group           Group?              @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  idol            Idol?               @relation(fields: [idolId], references: [id], onDelete: Cascade)
+  participants    ChatParticipant[]
+
+  @@index([groupId])
+  @@index([idolId])
+  @@index([type])
+  @@index([lastMessageAt])
+  @@map("chat_channels")
+}
+
+model ChatParticipant {
+  id              String      @id @default(cuid())
+  isActive        Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  version         Int         @default(0)
+  channelId       String      @map("channelId")
+  userId          String      @map("userId")
+  role            ChatRole    @default(MEMBER)
+  lastReadAt      DateTime?   @map("last_read_at")
+  unreadCount     Int         @default(0) @map("unread_count")
+  isMuted         Boolean     @default(false) @map("is_muted")
+  channel         ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([channelId, userId])
+  @@index([userId])
+  @@index([channelId])
+  @@map("chat_participants")
+}
+
 enum Role {
   FAN
   ADMIN
@@ -151,4 +200,15 @@ enum VerificationType {
 enum SocialAccountProvider {
   GOOGLE
   FACEBOOK
+}
+
+enum ChatChannelType {
+  DIRECT
+  GROUP
+  ANNOUNCEMENT
+}
+
+enum ChatRole {
+  ADMIN
+  MEMBER
 }

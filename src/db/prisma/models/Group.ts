@@ -250,6 +250,7 @@ export type GroupWhereInput = {
   groupName?: Prisma.StringFilter<"Group"> | string
   idols?: Prisma.IdolListRelationFilter
   followers?: Prisma.FanFollowGroupListRelationFilter
+  chatChannels?: Prisma.ChatChannelListRelationFilter
 }
 
 export type GroupOrderByWithRelationInput = {
@@ -264,6 +265,7 @@ export type GroupOrderByWithRelationInput = {
   groupName?: Prisma.SortOrder
   idols?: Prisma.IdolOrderByRelationAggregateInput
   followers?: Prisma.FanFollowGroupOrderByRelationAggregateInput
+  chatChannels?: Prisma.ChatChannelOrderByRelationAggregateInput
 }
 
 export type GroupWhereUniqueInput = Prisma.AtLeast<{
@@ -281,6 +283,7 @@ export type GroupWhereUniqueInput = Prisma.AtLeast<{
   groupName?: Prisma.StringFilter<"Group"> | string
   idols?: Prisma.IdolListRelationFilter
   followers?: Prisma.FanFollowGroupListRelationFilter
+  chatChannels?: Prisma.ChatChannelListRelationFilter
 }, "id">
 
 export type GroupOrderByWithAggregationInput = {
@@ -327,6 +330,7 @@ export type GroupCreateInput = {
   groupName: string
   idols?: Prisma.IdolCreateNestedManyWithoutGroupInput
   followers?: Prisma.FanFollowGroupCreateNestedManyWithoutGroupInput
+  chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateInput = {
@@ -341,6 +345,7 @@ export type GroupUncheckedCreateInput = {
   groupName: string
   idols?: Prisma.IdolUncheckedCreateNestedManyWithoutGroupInput
   followers?: Prisma.FanFollowGroupUncheckedCreateNestedManyWithoutGroupInput
+  chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUpdateInput = {
@@ -355,6 +360,7 @@ export type GroupUpdateInput = {
   groupName?: Prisma.StringFieldUpdateOperationsInput | string
   idols?: Prisma.IdolUpdateManyWithoutGroupNestedInput
   followers?: Prisma.FanFollowGroupUpdateManyWithoutGroupNestedInput
+  chatChannels?: Prisma.ChatChannelUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateInput = {
@@ -369,6 +375,7 @@ export type GroupUncheckedUpdateInput = {
   groupName?: Prisma.StringFieldUpdateOperationsInput | string
   idols?: Prisma.IdolUncheckedUpdateManyWithoutGroupNestedInput
   followers?: Prisma.FanFollowGroupUncheckedUpdateManyWithoutGroupNestedInput
+  chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupCreateManyInput = {
@@ -456,6 +463,11 @@ export type GroupSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
 }
 
+export type GroupNullableScalarRelationFilter = {
+  is?: Prisma.GroupWhereInput | null
+  isNot?: Prisma.GroupWhereInput | null
+}
+
 export type GroupCreateNestedOneWithoutIdolsInput = {
   create?: Prisma.XOR<Prisma.GroupCreateWithoutIdolsInput, Prisma.GroupUncheckedCreateWithoutIdolsInput>
   connectOrCreate?: Prisma.GroupCreateOrConnectWithoutIdolsInput
@@ -484,6 +496,22 @@ export type GroupUpdateOneRequiredWithoutFollowersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GroupUpdateToOneWithWhereWithoutFollowersInput, Prisma.GroupUpdateWithoutFollowersInput>, Prisma.GroupUncheckedUpdateWithoutFollowersInput>
 }
 
+export type GroupCreateNestedOneWithoutChatChannelsInput = {
+  create?: Prisma.XOR<Prisma.GroupCreateWithoutChatChannelsInput, Prisma.GroupUncheckedCreateWithoutChatChannelsInput>
+  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutChatChannelsInput
+  connect?: Prisma.GroupWhereUniqueInput
+}
+
+export type GroupUpdateOneWithoutChatChannelsNestedInput = {
+  create?: Prisma.XOR<Prisma.GroupCreateWithoutChatChannelsInput, Prisma.GroupUncheckedCreateWithoutChatChannelsInput>
+  connectOrCreate?: Prisma.GroupCreateOrConnectWithoutChatChannelsInput
+  upsert?: Prisma.GroupUpsertWithoutChatChannelsInput
+  disconnect?: Prisma.GroupWhereInput | boolean
+  delete?: Prisma.GroupWhereInput | boolean
+  connect?: Prisma.GroupWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GroupUpdateToOneWithWhereWithoutChatChannelsInput, Prisma.GroupUpdateWithoutChatChannelsInput>, Prisma.GroupUncheckedUpdateWithoutChatChannelsInput>
+}
+
 export type GroupCreateWithoutIdolsInput = {
   id?: string
   isActive?: boolean
@@ -495,6 +523,7 @@ export type GroupCreateWithoutIdolsInput = {
   backgroundUrl?: string | null
   groupName: string
   followers?: Prisma.FanFollowGroupCreateNestedManyWithoutGroupInput
+  chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateWithoutIdolsInput = {
@@ -508,6 +537,7 @@ export type GroupUncheckedCreateWithoutIdolsInput = {
   backgroundUrl?: string | null
   groupName: string
   followers?: Prisma.FanFollowGroupUncheckedCreateNestedManyWithoutGroupInput
+  chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupCreateOrConnectWithoutIdolsInput = {
@@ -537,6 +567,7 @@ export type GroupUpdateWithoutIdolsInput = {
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groupName?: Prisma.StringFieldUpdateOperationsInput | string
   followers?: Prisma.FanFollowGroupUpdateManyWithoutGroupNestedInput
+  chatChannels?: Prisma.ChatChannelUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutIdolsInput = {
@@ -550,6 +581,7 @@ export type GroupUncheckedUpdateWithoutIdolsInput = {
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groupName?: Prisma.StringFieldUpdateOperationsInput | string
   followers?: Prisma.FanFollowGroupUncheckedUpdateManyWithoutGroupNestedInput
+  chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupCreateWithoutFollowersInput = {
@@ -563,6 +595,7 @@ export type GroupCreateWithoutFollowersInput = {
   backgroundUrl?: string | null
   groupName: string
   idols?: Prisma.IdolCreateNestedManyWithoutGroupInput
+  chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutGroupInput
 }
 
 export type GroupUncheckedCreateWithoutFollowersInput = {
@@ -576,6 +609,7 @@ export type GroupUncheckedCreateWithoutFollowersInput = {
   backgroundUrl?: string | null
   groupName: string
   idols?: Prisma.IdolUncheckedCreateNestedManyWithoutGroupInput
+  chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutGroupInput
 }
 
 export type GroupCreateOrConnectWithoutFollowersInput = {
@@ -605,6 +639,7 @@ export type GroupUpdateWithoutFollowersInput = {
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groupName?: Prisma.StringFieldUpdateOperationsInput | string
   idols?: Prisma.IdolUpdateManyWithoutGroupNestedInput
+  chatChannels?: Prisma.ChatChannelUpdateManyWithoutGroupNestedInput
 }
 
 export type GroupUncheckedUpdateWithoutFollowersInput = {
@@ -618,6 +653,79 @@ export type GroupUncheckedUpdateWithoutFollowersInput = {
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   groupName?: Prisma.StringFieldUpdateOperationsInput | string
   idols?: Prisma.IdolUncheckedUpdateManyWithoutGroupNestedInput
+  chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutGroupNestedInput
+}
+
+export type GroupCreateWithoutChatChannelsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  description?: string | null
+  logoUrl?: string | null
+  backgroundUrl?: string | null
+  groupName: string
+  idols?: Prisma.IdolCreateNestedManyWithoutGroupInput
+  followers?: Prisma.FanFollowGroupCreateNestedManyWithoutGroupInput
+}
+
+export type GroupUncheckedCreateWithoutChatChannelsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  description?: string | null
+  logoUrl?: string | null
+  backgroundUrl?: string | null
+  groupName: string
+  idols?: Prisma.IdolUncheckedCreateNestedManyWithoutGroupInput
+  followers?: Prisma.FanFollowGroupUncheckedCreateNestedManyWithoutGroupInput
+}
+
+export type GroupCreateOrConnectWithoutChatChannelsInput = {
+  where: Prisma.GroupWhereUniqueInput
+  create: Prisma.XOR<Prisma.GroupCreateWithoutChatChannelsInput, Prisma.GroupUncheckedCreateWithoutChatChannelsInput>
+}
+
+export type GroupUpsertWithoutChatChannelsInput = {
+  update: Prisma.XOR<Prisma.GroupUpdateWithoutChatChannelsInput, Prisma.GroupUncheckedUpdateWithoutChatChannelsInput>
+  create: Prisma.XOR<Prisma.GroupCreateWithoutChatChannelsInput, Prisma.GroupUncheckedCreateWithoutChatChannelsInput>
+  where?: Prisma.GroupWhereInput
+}
+
+export type GroupUpdateToOneWithWhereWithoutChatChannelsInput = {
+  where?: Prisma.GroupWhereInput
+  data: Prisma.XOR<Prisma.GroupUpdateWithoutChatChannelsInput, Prisma.GroupUncheckedUpdateWithoutChatChannelsInput>
+}
+
+export type GroupUpdateWithoutChatChannelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  groupName?: Prisma.StringFieldUpdateOperationsInput | string
+  idols?: Prisma.IdolUpdateManyWithoutGroupNestedInput
+  followers?: Prisma.FanFollowGroupUpdateManyWithoutGroupNestedInput
+}
+
+export type GroupUncheckedUpdateWithoutChatChannelsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  logoUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  groupName?: Prisma.StringFieldUpdateOperationsInput | string
+  idols?: Prisma.IdolUncheckedUpdateManyWithoutGroupNestedInput
+  followers?: Prisma.FanFollowGroupUncheckedUpdateManyWithoutGroupNestedInput
 }
 
 
@@ -628,11 +736,13 @@ export type GroupUncheckedUpdateWithoutFollowersInput = {
 export type GroupCountOutputType = {
   idols: number
   followers: number
+  chatChannels: number
 }
 
 export type GroupCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   idols?: boolean | GroupCountOutputTypeCountIdolsArgs
   followers?: boolean | GroupCountOutputTypeCountFollowersArgs
+  chatChannels?: boolean | GroupCountOutputTypeCountChatChannelsArgs
 }
 
 /**
@@ -659,6 +769,13 @@ export type GroupCountOutputTypeCountFollowersArgs<ExtArgs extends runtime.Types
   where?: Prisma.FanFollowGroupWhereInput
 }
 
+/**
+ * GroupCountOutputType without action
+ */
+export type GroupCountOutputTypeCountChatChannelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatChannelWhereInput
+}
+
 
 export type GroupSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -672,6 +789,7 @@ export type GroupSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   groupName?: boolean
   idols?: boolean | Prisma.Group$idolsArgs<ExtArgs>
   followers?: boolean | Prisma.Group$followersArgs<ExtArgs>
+  chatChannels?: boolean | Prisma.Group$chatChannelsArgs<ExtArgs>
   _count?: boolean | Prisma.GroupCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["group"]>
 
@@ -715,6 +833,7 @@ export type GroupOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
 export type GroupInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   idols?: boolean | Prisma.Group$idolsArgs<ExtArgs>
   followers?: boolean | Prisma.Group$followersArgs<ExtArgs>
+  chatChannels?: boolean | Prisma.Group$chatChannelsArgs<ExtArgs>
   _count?: boolean | Prisma.GroupCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GroupIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -725,6 +844,7 @@ export type $GroupPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     idols: Prisma.$IdolPayload<ExtArgs>[]
     followers: Prisma.$FanFollowGroupPayload<ExtArgs>[]
+    chatChannels: Prisma.$ChatChannelPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1132,6 +1252,7 @@ export interface Prisma__GroupClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   idols<T extends Prisma.Group$idolsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$idolsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$IdolPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   followers<T extends Prisma.Group$followersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$followersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FanFollowGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  chatChannels<T extends Prisma.Group$chatChannelsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Group$chatChannelsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatChannelPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1603,6 +1724,30 @@ export type Group$followersArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.FanFollowGroupScalarFieldEnum | Prisma.FanFollowGroupScalarFieldEnum[]
+}
+
+/**
+ * Group.chatChannels
+ */
+export type Group$chatChannelsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatChannel
+   */
+  select?: Prisma.ChatChannelSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatChannel
+   */
+  omit?: Prisma.ChatChannelOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatChannelInclude<ExtArgs> | null
+  where?: Prisma.ChatChannelWhereInput
+  orderBy?: Prisma.ChatChannelOrderByWithRelationInput | Prisma.ChatChannelOrderByWithRelationInput[]
+  cursor?: Prisma.ChatChannelWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatChannelScalarFieldEnum | Prisma.ChatChannelScalarFieldEnum[]
 }
 
 /**

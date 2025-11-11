@@ -6,13 +6,13 @@ import { TokenIssuer } from "@shared/enum/token.enum";
 import { CustomError } from "@shared/helper/error";
 import { IJwtPayload } from "@shared/interface/jwt-payload.interface";
 import md5 from "md5";
-import { AccountModel } from "src/db/prisma/models";
+import { UserModel } from "src/db/prisma/models";
 
 @Injectable()
 export class TokenService {
   constructor(private readonly jwtService: JwtService) {}
 
-  generateAccessToken(account: AccountModel) {
+  generateAccessToken(account: UserModel) {
     const payload = { sub: account.id, role: account.role } as IJwtPayload;
 
     return this.jwtService.sign(payload, {
@@ -22,7 +22,7 @@ export class TokenService {
     });
   }
 
-  generateSensitiveToken(account: AccountModel) {
+  generateSensitiveToken(account: UserModel) {
     const payload = { sub: account.id, role: account.role } as IJwtPayload;
 
     return this.jwtService.sign(payload, {
@@ -36,7 +36,7 @@ export class TokenService {
     return secret.substring(0, 24) + md5(token).substring(0, 8);
   }
 
-  generateRefreshToken(account: AccountModel, token: string, secretKey: string) {
+  generateRefreshToken(account: UserModel, token: string, secretKey: string) {
     const payload = { sub: account.id, role: account.role } as IJwtPayload;
     const secret = this.generateRefreshTokenSecret(token, secretKey);
 

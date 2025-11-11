@@ -52,3 +52,13 @@ export type Group = Prisma.GroupModel
  * 
  */
 export type FanFollowGroup = Prisma.FanFollowGroupModel
+/**
+ * Model ChatChannel
+ * 
+ */
+export type ChatChannel = Prisma.ChatChannelModel
+/**
+ * Model ChatParticipant
+ * 
+ */
+export type ChatParticipant = Prisma.ChatParticipantModel

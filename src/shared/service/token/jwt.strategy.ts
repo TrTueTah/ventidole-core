@@ -11,7 +11,7 @@ import { RedisService } from "@shared/service/redis/redis.service";
 import { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { PrismaService } from "../prisma/prisma.service";
-import { AccountModel } from "src/db/prisma/models";
+import { UserModel } from "src/db/prisma/models";
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, TokenStrategyKey.Jwt) {
   constructor(
@@ -40,20 +40,20 @@ export class JwtStrategy extends PassportStrategy(Strategy, TokenStrategyKey.Jwt
   }
 
   async validate(payload: IJwtPayload) {
-    const cachedAccount = await this.redisService.get<AccountModel>(`${RedisKey.Account}${payload.sub}`);
-    if (cachedAccount) {
-      const user = { id: cachedAccount.id, role: cachedAccount.role };
+    const cachedUser = await this.redisService.get<UserModel>(`${RedisKey.Account}${payload.sub}`);
+    if (cachedUser) {
+      const user = { id: cachedUser.id, role: cachedUser.role };
       return user;
     }
 
-    const account = await this.prismaService.account.findFirst(
-      { where: { id: payload.sub, isActive: true, isDeleted: false } },
-    );
+    // Find user in database
+    const user = await this.prismaService.user.findFirst({
+      where: { id: payload.sub, isActive: true, isDeleted: false }
+    });
 
-    if (account) {
-      await this.redisService.set(`${RedisKey.Account}${account.id}`, account, ENVIRONMENT.JWT_EXPIRED);
-      const user = { id: account.id, role: account.role };
-      return user;
+    if (user) {
+      await this.redisService.set(`${RedisKey.Account}${user.id}`, user, ENVIRONMENT.JWT_EXPIRED);
+      return { id: user.id, role: user.role };
     }
 
     return null;

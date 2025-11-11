@@ -20,17 +20,21 @@ export class JwtAuthGuard extends AuthGuard(TokenStrategyKey.Jwt) {
    * Authentication & Authorization flow
    *
    * @description
-   * If do not set `Roles` decorator on route handler, it is the public API.
-   * Otherwise, it authentication by JWT. Afterward, authorization rely on current role.
+   * 1. Check if route is marked as @Public() - if yes, skip authentication
+   * 2. Otherwise, always authenticate by JWT first
+   * 3. If `Roles` decorator is set, additionally check if user has required role
+   * 4. If no `Roles` decorator, allow any authenticated user
    */
   async canActivate(context: ExecutionContext) {
-    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(DecoratorKey.Roles, [
+    // Check if route is public
+    const isPublic = this.reflector.getAllAndOverride<boolean>(DecoratorKey.Public, [
       context.getHandler(),
       context.getClass(),
     ]);
 
-    if (!requiredRoles) return true;
+    if (isPublic) return true;
 
+    // Always authenticate for non-public routes
     const isAuthenticated = await super.canActivate(context);
     if (!isAuthenticated) return false;
 
@@ -39,6 +43,16 @@ export class JwtAuthGuard extends AuthGuard(TokenStrategyKey.Jwt) {
 
     if (!user) throw new ForbiddenException(getErrorMessage(ErrorCode.Unauthenticated));
 
+    // Check for required roles
+    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(DecoratorKey.Roles, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    // If no roles specified, allow any authenticated user
+    if (!requiredRoles || requiredRoles.length === 0) return true;
+
+    // Check if user has one of the required roles
     if (requiredRoles.includes(user.role)) return true;
 
     throw new UnauthorizedException(new CustomHttpException(ErrorCode.Unauthorized, user.role));

@@ -55,7 +55,9 @@ export const ModelName = {
   Fan: 'Fan',
   Idol: 'Idol',
   Group: 'Group',
-  FanFollowGroup: 'FanFollowGroup'
+  FanFollowGroup: 'FanFollowGroup',
+  ChatChannel: 'ChatChannel',
+  ChatParticipant: 'ChatParticipant'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -182,6 +184,42 @@ export const FanFollowGroupScalarFieldEnum = {
 } as const
 
 export type FanFollowGroupScalarFieldEnum = (typeof FanFollowGroupScalarFieldEnum)[keyof typeof FanFollowGroupScalarFieldEnum]
+
+
+export const ChatChannelScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version',
+  name: 'name',
+  description: 'description',
+  type: 'type',
+  groupId: 'groupId',
+  idolId: 'idolId',
+  isAnnouncement: 'isAnnouncement',
+  lastMessageAt: 'lastMessageAt',
+  firebaseDocId: 'firebaseDocId'
+} as const
+
+export type ChatChannelScalarFieldEnum = (typeof ChatChannelScalarFieldEnum)[keyof typeof ChatChannelScalarFieldEnum]
+
+
+export const ChatParticipantScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version',
+  channelId: 'channelId',
+  userId: 'userId',
+  role: 'role',
+  lastReadAt: 'lastReadAt',
+  unreadCount: 'unreadCount',
+  isMuted: 'isMuted'
+} as const
+
+export type ChatParticipantScalarFieldEnum = (typeof ChatParticipantScalarFieldEnum)[keyof typeof ChatParticipantScalarFieldEnum]
 
 
 export const SortOrder = {

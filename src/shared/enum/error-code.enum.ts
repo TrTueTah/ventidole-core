@@ -33,6 +33,10 @@ export enum ErrorCode {
   UsernameAlreadyExists = "UsernameAlreadyExists",
   FanProfileNotFound = "FanProfileNotFound",
   IdolProfileNotFound = "IdolProfileNotFound",
+  ChatChannelNotFound = "ChatChannelNotFound",
+  NotChannelParticipant = "NotChannelParticipant",
+  NotChannelAdmin = "NotChannelAdmin",
+  CannotSendToAnnouncementChannel = "CannotSendToAnnouncementChannel",
 }
 
 const ErrorCodeSet = new Set(Object.values(ErrorCode));

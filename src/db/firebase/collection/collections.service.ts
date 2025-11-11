@@ -4,5 +4,6 @@ export const getFirebaseCollectionNames = (): FirebaseCollectionNames => {
   return {
     posts: 'posts',
     notifications: 'notifications',
+    chatMessages: 'chat_messages',
   };
 };

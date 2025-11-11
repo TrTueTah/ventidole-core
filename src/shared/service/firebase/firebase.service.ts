@@ -10,6 +10,17 @@ export class FirebaseService implements OnModuleInit {
 
   async onModuleInit() {
     try {
+      // Check if Firebase app already exists
+      const existingApps = admin.apps;
+      
+      if (existingApps && existingApps.length > 0 && existingApps[0]) {
+        // Use existing Firebase app
+        this.firebaseApp = existingApps[0];
+        this.logger.log('[FIREBASE] Using existing Firebase app');
+        return;
+      }
+
+      // Initialize new Firebase app
       const serviceAccount = {
         projectId: ENVIRONMENT.FIREBASE_PROJECT_ID,
         privateKey: ENVIRONMENT.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
@@ -25,6 +36,15 @@ export class FirebaseService implements OnModuleInit {
       this.logger.log('[FIREBASE] Initialized successfully');
     } catch (error) {
       this.logger.error('[FIREBASE] Initialization failed:', error);
+      
+      // Try to get existing app as fallback
+      try {
+        this.firebaseApp = admin.app();
+        this.logger.log('[FIREBASE] Using default app as fallback');
+      } catch (fallbackError) {
+        this.logger.error('[FIREBASE] Could not get fallback app:', fallbackError);
+      }
+      
       // Don't throw - allow app to start even if Firebase is not configured
     }
   }

@@ -268,6 +268,7 @@ export type UserWhereInput = {
   verifications?: Prisma.VerificationListRelationFilter
   fan?: Prisma.XOR<Prisma.FanNullableScalarRelationFilter, Prisma.FanWhereInput> | null
   idol?: Prisma.XOR<Prisma.IdolNullableScalarRelationFilter, Prisma.IdolWhereInput> | null
+  chatParticipants?: Prisma.ChatParticipantListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -286,6 +287,7 @@ export type UserOrderByWithRelationInput = {
   verifications?: Prisma.VerificationOrderByRelationAggregateInput
   fan?: Prisma.FanOrderByWithRelationInput
   idol?: Prisma.IdolOrderByWithRelationInput
+  chatParticipants?: Prisma.ChatParticipantOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -307,6 +309,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   verifications?: Prisma.VerificationListRelationFilter
   fan?: Prisma.XOR<Prisma.FanNullableScalarRelationFilter, Prisma.FanWhereInput> | null
   idol?: Prisma.XOR<Prisma.IdolNullableScalarRelationFilter, Prisma.IdolWhereInput> | null
+  chatParticipants?: Prisma.ChatParticipantListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -361,6 +364,7 @@ export type UserCreateInput = {
   verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
   fan?: Prisma.FanCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -379,6 +383,7 @@ export type UserUncheckedCreateInput = {
   verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
   fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -397,6 +402,7 @@ export type UserUpdateInput = {
   verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
   fan?: Prisma.FanUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -415,6 +421,7 @@ export type UserUncheckedUpdateInput = {
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
   fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -605,6 +612,20 @@ export type UserUpdateOneRequiredWithoutIdolNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutIdolInput, Prisma.UserUpdateWithoutIdolInput>, Prisma.UserUncheckedUpdateWithoutIdolInput>
 }
 
+export type UserCreateNestedOneWithoutChatParticipantsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChatParticipantsInput, Prisma.UserUncheckedCreateWithoutChatParticipantsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChatParticipantsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutChatParticipantsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutChatParticipantsInput, Prisma.UserUncheckedCreateWithoutChatParticipantsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutChatParticipantsInput
+  upsert?: Prisma.UserUpsertWithoutChatParticipantsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChatParticipantsInput, Prisma.UserUpdateWithoutChatParticipantsInput>, Prisma.UserUncheckedUpdateWithoutChatParticipantsInput>
+}
+
 export type UserCreateWithoutVerificationsInput = {
   id?: string
   isActive?: boolean
@@ -620,6 +641,7 @@ export type UserCreateWithoutVerificationsInput = {
   social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
   fan?: Prisma.FanCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVerificationsInput = {
@@ -637,6 +659,7 @@ export type UserUncheckedCreateWithoutVerificationsInput = {
   social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
   fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVerificationsInput = {
@@ -670,6 +693,7 @@ export type UserUpdateWithoutVerificationsInput = {
   social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
   fan?: Prisma.FanUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVerificationsInput = {
@@ -687,6 +711,7 @@ export type UserUncheckedUpdateWithoutVerificationsInput = {
   social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
   fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSocial_accountsInput = {
@@ -704,6 +729,7 @@ export type UserCreateWithoutSocial_accountsInput = {
   verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
   fan?: Prisma.FanCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSocial_accountsInput = {
@@ -721,6 +747,7 @@ export type UserUncheckedCreateWithoutSocial_accountsInput = {
   verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
   fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSocial_accountsInput = {
@@ -754,6 +781,7 @@ export type UserUpdateWithoutSocial_accountsInput = {
   verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
   fan?: Prisma.FanUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSocial_accountsInput = {
@@ -771,6 +799,7 @@ export type UserUncheckedUpdateWithoutSocial_accountsInput = {
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
   fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFanInput = {
@@ -788,6 +817,7 @@ export type UserCreateWithoutFanInput = {
   social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
   verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
   idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFanInput = {
@@ -805,6 +835,7 @@ export type UserUncheckedCreateWithoutFanInput = {
   social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
   verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
   idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFanInput = {
@@ -838,6 +869,7 @@ export type UserUpdateWithoutFanInput = {
   social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
   idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFanInput = {
@@ -855,6 +887,7 @@ export type UserUncheckedUpdateWithoutFanInput = {
   social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
   idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutIdolInput = {
@@ -872,6 +905,7 @@ export type UserCreateWithoutIdolInput = {
   social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
   verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
   fan?: Prisma.FanCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutIdolInput = {
@@ -889,6 +923,7 @@ export type UserUncheckedCreateWithoutIdolInput = {
   social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
   verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
   fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutIdolInput = {
@@ -922,6 +957,7 @@ export type UserUpdateWithoutIdolInput = {
   social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
   fan?: Prisma.FanUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutIdolInput = {
@@ -939,6 +975,95 @@ export type UserUncheckedUpdateWithoutIdolInput = {
   social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
   fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutChatParticipantsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  email: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  isDeleted?: boolean
+  isOnline?: boolean
+  social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  fan?: Prisma.FanCreateNestedOneWithoutUserInput
+  idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutChatParticipantsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  email: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  isDeleted?: boolean
+  isOnline?: boolean
+  social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
+  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutChatParticipantsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutChatParticipantsInput, Prisma.UserUncheckedCreateWithoutChatParticipantsInput>
+}
+
+export type UserUpsertWithoutChatParticipantsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutChatParticipantsInput, Prisma.UserUncheckedUpdateWithoutChatParticipantsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutChatParticipantsInput, Prisma.UserUncheckedCreateWithoutChatParticipantsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutChatParticipantsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutChatParticipantsInput, Prisma.UserUncheckedUpdateWithoutChatParticipantsInput>
+}
+
+export type UserUpdateWithoutChatParticipantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  fan?: Prisma.FanUpdateOneWithoutUserNestedInput
+  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutChatParticipantsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
+  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
 }
 
 
@@ -949,11 +1074,13 @@ export type UserUncheckedUpdateWithoutIdolInput = {
 export type UserCountOutputType = {
   social_accounts: number
   verifications: number
+  chatParticipants: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   social_accounts?: boolean | UserCountOutputTypeCountSocial_accountsArgs
   verifications?: boolean | UserCountOutputTypeCountVerificationsArgs
+  chatParticipants?: boolean | UserCountOutputTypeCountChatParticipantsArgs
 }
 
 /**
@@ -980,6 +1107,13 @@ export type UserCountOutputTypeCountVerificationsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.VerificationWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountChatParticipantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatParticipantWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -997,6 +1131,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   verifications?: boolean | Prisma.User$verificationsArgs<ExtArgs>
   fan?: boolean | Prisma.User$fanArgs<ExtArgs>
   idol?: boolean | Prisma.User$idolArgs<ExtArgs>
+  chatParticipants?: boolean | Prisma.User$chatParticipantsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1048,6 +1183,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   verifications?: boolean | Prisma.User$verificationsArgs<ExtArgs>
   fan?: boolean | Prisma.User$fanArgs<ExtArgs>
   idol?: boolean | Prisma.User$idolArgs<ExtArgs>
+  chatParticipants?: boolean | Prisma.User$chatParticipantsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1060,6 +1196,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     verifications: Prisma.$VerificationPayload<ExtArgs>[]
     fan: Prisma.$FanPayload<ExtArgs> | null
     idol: Prisma.$IdolPayload<ExtArgs> | null
+    chatParticipants: Prisma.$ChatParticipantPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1471,6 +1608,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   verifications<T extends Prisma.User$verificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$verificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fan<T extends Prisma.User$fanArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$fanArgs<ExtArgs>>): Prisma.Prisma__FanClient<runtime.Types.Result.GetResult<Prisma.$FanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   idol<T extends Prisma.User$idolArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$idolArgs<ExtArgs>>): Prisma.Prisma__IdolClient<runtime.Types.Result.GetResult<Prisma.$IdolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  chatParticipants<T extends Prisma.User$chatParticipantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$chatParticipantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1982,6 +2120,30 @@ export type User$idolArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs 
    */
   include?: Prisma.IdolInclude<ExtArgs> | null
   where?: Prisma.IdolWhereInput
+}
+
+/**
+ * User.chatParticipants
+ */
+export type User$chatParticipantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatParticipant
+   */
+  select?: Prisma.ChatParticipantSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatParticipant
+   */
+  omit?: Prisma.ChatParticipantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatParticipantInclude<ExtArgs> | null
+  where?: Prisma.ChatParticipantWhereInput
+  orderBy?: Prisma.ChatParticipantOrderByWithRelationInput | Prisma.ChatParticipantOrderByWithRelationInput[]
+  cursor?: Prisma.ChatParticipantWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatParticipantScalarFieldEnum | Prisma.ChatParticipantScalarFieldEnum[]
 }
 
 /**

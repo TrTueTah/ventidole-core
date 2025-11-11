@@ -727,6 +727,47 @@ paths:
       security: *ref_4
       tags: *ref_5
   /v1/user/fan:
+    post:
+      operationId: UserController_createFanProfile_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFanRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/CreateFanResponse'
+                    description: Response data
+                  error:
+                    type: 'null'
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    description: Error code (optional)
+                required:
+                  - statusCode
+                  - message
+                  - data
+      security: *ref_4
+      tags: *ref_5
     patch:
       operationId: UserController_updateFanProfile_v1
       parameters: []
@@ -1120,6 +1161,345 @@ paths:
                   - data
       security: *ref_6
       tags: *ref_7
+  /chat/channels:
+    post:
+      operationId: ChatController_createChannel
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChannelRequest'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatChannelResponse'
+      security: &ref_8
+        - bearer: []
+      summary: Create a new chat channel
+      tags: &ref_9
+        - Chat
+    get:
+      operationId: ChatController_getMyChannels
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatChannelResponse'
+      security: *ref_8
+      summary: Get all channels for current user
+      tags: *ref_9
+  /chat/channels/{channelId}:
+    get:
+      operationId: ChatController_getChannelById
+      parameters:
+        - name: channelId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatChannelResponse'
+      security: *ref_8
+      summary: Get channel details by ID
+      tags: *ref_9
+  /chat/messages:
+    post:
+      operationId: ChatController_sendMessage
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessageRequest'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageResponse'
+      security: *ref_8
+      summary: Send a message to a channel
+      tags: *ref_9
+  /chat/channels/{channelId}/messages:
+    get:
+      operationId: ChatController_getMessages
+      parameters:
+        - name: channelId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: number
+        - name: lastMessageId
+          required: true
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ChatMessageResponse'
+      security: *ref_8
+      summary: Get messages from a channel
+      tags: *ref_9
+  /chat/channels/read:
+    post:
+      operationId: ChatController_markAsRead
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarkAsReadRequest'
+      responses:
+        '200':
+          description: ''
+      security: *ref_8
+      summary: Mark messages as read in a channel
+      tags: *ref_9
+  /chat/channels/participants:
+    post:
+      operationId: ChatController_addParticipants
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddParticipantsRequest'
+      responses:
+        '200':
+          description: ''
+      security: *ref_8
+      summary: Add participants to a channel
+      tags: *ref_9
+  /chat/channels/{channelId}/leave:
+    post:
+      operationId: ChatController_leaveChannel
+      parameters:
+        - name: channelId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      security: *ref_8
+      summary: Leave a channel
+      tags: *ref_9
+  /admin/login:
+    post:
+      operationId: AdminController_adminLogin
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminLoginRequest'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAuthResponse'
+      summary: Admin login (bypass all verification)
+      tags: &ref_10
+        - Admin
+  /admin/signup:
+    post:
+      operationId: AdminController_adminSignup
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminSignupRequest'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAuthResponse'
+      summary: Admin signup (bypass all verification, instantly active)
+      tags: *ref_10
+  /admin/groups:
+    post:
+      operationId: AdminController_createGroup
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGroupRequest'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateGroupResponse'
+      security:
+        - bearer: []
+      summary: Create a new group (Admin only)
+      tags: *ref_10
+    get:
+      operationId: AdminController_getAllGroups
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get all groups (Admin only)
+      tags: *ref_10
+  /admin/idols:
+    post:
+      operationId: AdminController_createIdolAccount
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateIdolRequest'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateIdolResponse'
+      security:
+        - bearer: []
+      summary: Create a new idol account (Admin only)
+      tags: *ref_10
+    get:
+      operationId: AdminController_getAllIdols
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get all idols (Admin only)
+      tags: *ref_10
+  /admin/fans:
+    get:
+      operationId: AdminController_getAllFans
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get all fans (Admin only)
+      tags: *ref_10
+  /admin/users:
+    get:
+      operationId: AdminController_getAllUsers
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get all users with profiles (Admin only)
+      tags: *ref_10
+  /admin/statistics:
+    get:
+      operationId: AdminController_getStatistics
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get platform statistics (Admin only)
+      tags: *ref_10
+  /admin/users/{userId}/deactivate:
+    patch:
+      operationId: AdminController_deactivateUser
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          description: User ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearer: []
+      summary: Deactivate a user account (Admin only)
+      tags: *ref_10
+  /admin/users/{userId}/activate:
+    patch:
+      operationId: AdminController_activateUser
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          description: User ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearer: []
+      summary: Activate a user account (Admin only)
+      tags: *ref_10
+  /admin/users/{userId}:
+    delete:
+      operationId: AdminController_deleteUser
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          description: User ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearer: []
+      summary: Delete a user account (Admin only)
+      tags: *ref_10
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -1245,6 +1625,10 @@ components:
             - UsernameAlreadyExists
             - FanProfileNotFound
             - IdolProfileNotFound
+            - ChatChannelNotFound
+            - NotChannelParticipant
+            - NotChannelAdmin
+            - CannotSendToAnnouncementChannel
           description: Error code (optional)
       required:
         - statusCode
@@ -1709,6 +2093,33 @@ components:
         - statusCode
         - message
         - data
+    CreateFanResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        avatarUrl:
+          type: string
+        backgroundUrl:
+          type: string
+        bio:
+          type: string
+        userId:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - username
+        - userId
+        - createdAt
+        - updatedAt
     UpdateIdolResponse:
       type: object
       properties:
@@ -1743,6 +2154,27 @@ components:
           type: boolean
           example: true
           description: Online status
+    CreateFanRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          example: cool_username
+          description: Fan username (required)
+        avatarUrl:
+          type: string
+          example: https://storage.googleapis.com/bucket/avatars/fan-123.jpg
+          description: Avatar URL
+        backgroundUrl:
+          type: string
+          example: https://storage.googleapis.com/bucket/backgrounds/fan-123.jpg
+          description: Background image URL
+        bio:
+          type: string
+          example: Music lover and K-pop enthusiast 🎵
+          description: Bio/description
+      required:
+        - username
     UpdateFanRequest:
       type: object
       properties:
@@ -1904,14 +2336,14 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: &ref_8
+          example: &ref_11
             - https://storage.googleapis.com/bucket/image1.jpg
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: &ref_9
+          example: &ref_12
             - nature
             - sunset
           type: array
@@ -1919,7 +2351,7 @@ components:
             type: string
         mentions:
           description: Mentioned user IDs
-          example: &ref_10
+          example: &ref_13
             - user-id-1
           type: array
           items:
@@ -2000,19 +2432,19 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: *ref_8
+          example: *ref_11
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: *ref_9
+          example: *ref_12
           type: array
           items:
             type: string
         mentions:
           description: Mentioned user IDs
-          example: *ref_10
+          example: *ref_13
           type: array
           items:
             type: string
@@ -2213,3 +2645,365 @@ components:
             - followers
             - private
           example: public
+    CreateChannelRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Channel name (optional for direct messages)
+        description:
+          type: string
+          description: Channel description
+        type:
+          type: string
+          enum:
+            - DIRECT
+            - GROUP
+            - ANNOUNCEMENT
+          description: Type of chat channel
+        groupId:
+          type: string
+          description: Group ID (for group channels)
+        idolId:
+          type: string
+          description: Idol ID (for idol announcement channels)
+        isAnnouncement:
+          type: boolean
+          description: Whether this is an announcement channel
+          default: false
+        participantIds:
+          description: Array of user IDs to add as participants
+          type: array
+          items:
+            type: string
+      required:
+        - type
+    ChatChannelResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          type: string
+        groupId:
+          type: string
+        idolId:
+          type: string
+        isAnnouncement:
+          type: boolean
+        firebaseDocId:
+          type: string
+        lastMessageAt:
+          format: date-time
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        participants:
+          type: array
+          items:
+            type: string
+        lastMessage:
+          type: object
+        unreadCount:
+          type: number
+      required:
+        - id
+        - name
+        - description
+        - type
+        - groupId
+        - idolId
+        - isAnnouncement
+        - firebaseDocId
+        - lastMessageAt
+        - createdAt
+        - updatedAt
+    SendMessageRequest:
+      type: object
+      properties:
+        channelId:
+          type: string
+          description: Chat channel ID
+        type:
+          type: string
+          enum:
+            - TEXT
+            - IMAGE
+            - VIDEO
+            - AUDIO
+            - FILE
+            - SYSTEM
+          description: Type of message
+        content:
+          type: string
+          description: Message content
+        mediaUrl:
+          type: string
+          description: Media URL (for image, video, audio, file)
+        thumbnailUrl:
+          type: string
+          description: Thumbnail URL (for video)
+        metadata:
+          type: object
+          description: Additional metadata
+        replyTo:
+          type: string
+          description: Message ID to reply to
+      required:
+        - channelId
+        - type
+        - content
+    ChatMessageResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        channelId:
+          type: string
+        senderId:
+          type: string
+        senderName:
+          type: string
+        senderAvatar:
+          type: string
+        type:
+          type: string
+        content:
+          type: string
+        mediaUrl:
+          type: string
+        thumbnailUrl:
+          type: string
+        metadata:
+          type: object
+        replyTo:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        isDeleted:
+          type: boolean
+        readBy:
+          type: array
+          items:
+            type: string
+      required:
+        - id
+        - channelId
+        - senderId
+        - senderName
+        - senderAvatar
+        - type
+        - content
+        - mediaUrl
+        - thumbnailUrl
+        - replyTo
+        - createdAt
+        - updatedAt
+        - isDeleted
+    MarkAsReadRequest:
+      type: object
+      properties:
+        channelId:
+          type: string
+          description: Chat channel ID
+        lastMessageId:
+          type: string
+          description: Last message ID that was read
+      required:
+        - channelId
+    AddParticipantsRequest:
+      type: object
+      properties:
+        channelId:
+          type: string
+          description: Chat channel ID
+        userIds:
+          description: Array of user IDs to add
+          type: array
+          items:
+            type: string
+      required:
+        - channelId
+        - userIds
+    AdminLoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: admin@ventidole.com
+          description: Admin email
+        password:
+          type: string
+          example: admin123
+          description: Admin password
+      required:
+        - email
+        - password
+    AdminAuthResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        name:
+          type: string
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+      required:
+        - userId
+        - email
+        - role
+        - name
+        - accessToken
+        - refreshToken
+    AdminSignupRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: admin@ventidole.com
+          description: Admin email
+        password:
+          type: string
+          example: admin123
+          description: Admin password (min 6 characters)
+        name:
+          type: string
+          example: Admin Name
+          description: Admin name/username
+      required:
+        - email
+        - password
+        - name
+    CreateGroupRequest:
+      type: object
+      properties:
+        groupName:
+          type: string
+          example: StarLight
+          description: Group name
+        description:
+          type: string
+          example: A talented K-pop group known for their powerful performances
+          description: Group description
+        logoUrl:
+          type: string
+          example: https://res.cloudinary.com/bucket/logo.jpg
+          description: Group logo URL
+        backgroundUrl:
+          type: string
+          example: https://res.cloudinary.com/bucket/background.jpg
+          description: Group background image URL
+      required:
+        - groupName
+    CreateGroupResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        groupName:
+          type: string
+        description:
+          type: string
+        logoUrl:
+          type: string
+        backgroundUrl:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - groupName
+        - description
+        - logoUrl
+        - backgroundUrl
+        - isActive
+        - createdAt
+        - updatedAt
+    CreateIdolRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: idol@example.com
+          description: Idol email for login
+        password:
+          type: string
+          example: Password@123456
+          description: >-
+            Idol password (min 8 chars, must contain uppercase, lowercase,
+            number and special char)
+        stageName:
+          type: string
+          example: Luna Star
+          description: Idol stage name
+        groupId:
+          type: string
+          example: group-id-123
+          description: Group ID that the idol belongs to
+        avatarUrl:
+          type: string
+          example: https://storage.googleapis.com/bucket/avatars/idol-123.jpg
+          description: Avatar URL
+        backgroundUrl:
+          type: string
+          example: https://storage.googleapis.com/bucket/backgrounds/idol-123.jpg
+          description: Background image URL
+        bio:
+          type: string
+          example: Professional singer and performer 🎤✨
+          description: Bio/description
+        deviceToken:
+          type: string
+          example: FCM_DEVICE_TOKEN_HERE
+          description: Device token for push notifications
+      required:
+        - email
+        - password
+        - stageName
+        - groupId
+    CreateIdolResponse:
+      type: object
+      properties:
+        userId:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        idol:
+          type: object
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+      required:
+        - userId
+        - email
+        - role
+        - idol
+        - accessToken
+        - refreshToken
