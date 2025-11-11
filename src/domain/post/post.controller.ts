@@ -1,4 +1,4 @@
-import { ApiExtraModelsCustom, ApiResponseCustom } from "@core/decorator/doc.decorator";
+import { ApiExtraModelsCustom, ApiPaginationResponse, ApiResponseCustom } from "@core/decorator/doc.decorator";
 import { Roles } from "@core/decorator/role.decorator";
 import { Body, Controller, Post, Get, Patch, Delete, Req, Param, Query } from "@nestjs/common";
 import { ApiBearerAuth, ApiBody, ApiTags, ApiParam, ApiQuery } from "@nestjs/swagger";
@@ -6,7 +6,7 @@ import { ApiVersion } from "@shared/enum/api-version.enum";
 import { postResponses } from "./response/index.response";
 import { PostService } from "./post.service";
 import { CreatePostResponse } from "./response/create-post.response";
-import { GetPostResponse } from "./response/get-post.response";
+import { GetPostResponse, PostDto } from "./response/get-post.response";
 import { GetPostsResponse } from "./response/get-posts.response";
 import { UpdatePostResponse } from "./response/update-post.response";
 import { DeletePostResponse } from "./response/delete-post.response";
@@ -19,7 +19,7 @@ import { IRequest } from "@shared/interface/request.interface";
 @ApiBearerAuth()
 @Roles(Role.FAN, Role.IDOL, Role.ADMIN)
 @ApiTags('Post')
-@ApiExtraModelsCustom(...postResponses)
+// @ApiExtraModelsCustom(...postResponses)
 @Controller({ path: 'post', version: ApiVersion.V1 })
 export class PostController {
   constructor(private readonly postService: PostService) {}
@@ -35,7 +35,7 @@ export class PostController {
   }
 
   @Get()
-  @ApiResponseCustom(GetPostsResponse)
+  @ApiPaginationResponse(PostDto)
   getPosts(
     @Query() query: GetPostsRequest,
     @Req() request: IRequest

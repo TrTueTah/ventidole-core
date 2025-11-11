@@ -1001,7 +1001,7 @@ paths:
               - desc
       responses:
         '200':
-          description: Successful Response
+          description: Successful paginated response
           content:
             application/json:
               schema:
@@ -1016,19 +1016,48 @@ paths:
                     example: OK
                     description: Response message
                   data:
-                    $ref: '#/components/schemas/GetPostsResponse'
-                    description: Response data
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
                   error:
                     type: 'null'
                     example: null
                     description: Error information (null on success)
                   errorCode:
                     type: string
-                    description: Error code (optional)
+                    nullable: true
+                    description: Error code (optional, null on success)
                 required:
                   - statusCode
                   - message
                   - data
+                  - paging
       security: *ref_6
       tags: *ref_7
   /v1/post/{postId}:
@@ -2230,35 +2259,16 @@ components:
       required:
         - userId
         - status
-    CreatePostResponse:
+    CreatePostRequest:
       type: object
       properties:
-        postId:
-          type: string
-          description: Post ID
-          example: post-clx123abc
-        userId:
-          type: string
-          description: User ID who created the post
-          example: user-123
-        username:
-          type: string
-          description: Username of the author
-          example: johndoe
-        displayName:
-          type: string
-          description: Display name of the author
-          example: John Doe
-        userAvatar:
-          type: string
-          description: User avatar URL
-          example: https://storage.googleapis.com/bucket/avatars/user-123.jpg
         content:
           type: string
-          description: Post content
+          description: Post content/caption
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
+          maxLength: 2000
         mediaUrls:
-          description: Media URLs
+          description: Media URLs (images/videos)
           example:
             - https://storage.googleapis.com/bucket/image1.jpg
           type: array
@@ -2269,6 +2279,7 @@ components:
           example:
             - nature
             - sunset
+            - photography
           type: array
           items:
             type: string
@@ -2276,133 +2287,28 @@ components:
           description: Mentioned user IDs
           example:
             - user-id-1
+            - user-id-2
           type: array
           items:
             type: string
         location:
           type: string
-          description: Location
-          example: Santa Monica Beach, CA
-        createdAt:
-          type: string
-          description: Creation timestamp
-          example: '2025-11-05T10:30:00Z'
-        counters:
-          type: object
-          description: Counters
-          example:
-            likesCount: 0
-            commentsCount: 0
-            sharesCount: 0
-      required:
-        - postId
-        - userId
-        - username
-        - displayName
-        - userAvatar
-        - content
-        - mediaUrls
-        - hashtags
-        - mentions
-        - location
-        - createdAt
-        - counters
-    GetPostResponse:
-      type: object
-      properties:
-        postId:
-          type: string
-          description: Post ID
-          example: post-clx123abc
-        userId:
-          type: string
-          description: User ID who created the post
-          example: user-123
-        displayName:
-          type: string
-          description: Display name of the author
-          example: John Doe
-        userEmail:
-          type: string
-          description: User email
-          example: john@example.com
-        userAvatar:
-          type: string
-          description: User avatar URL
-          example: https://storage.googleapis.com/bucket/avatars/user-123.jpg
-        content:
-          type: string
-          description: Post content
-          example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
-        mediaUrls:
-          description: Media URLs
-          example: &ref_11
-            - https://storage.googleapis.com/bucket/image1.jpg
-          type: array
-          items:
-            type: string
-        hashtags:
-          description: Hashtags
-          example: &ref_12
-            - nature
-            - sunset
-          type: array
-          items:
-            type: string
-        mentions:
-          description: Mentioned user IDs
-          example: &ref_13
-            - user-id-1
-          type: array
-          items:
-            type: string
-        location:
-          type: string
-          description: Location
+          description: Location/place name
           example: Santa Monica Beach, CA
         visibility:
           type: string
           description: Post visibility
+          enum:
+            - public
+            - followers
+            - private
           example: public
-        likesCount:
-          type: number
-          description: Likes count
-          example: 10
-        commentsCount:
-          type: number
-          description: Comments count
-          example: 5
-        sharesCount:
-          type: number
-          description: Shares count
-          example: 2
-        createdAt:
-          type: string
-          description: Creation timestamp
-          example: '2025-11-05T10:30:00Z'
-        updatedAt:
-          type: string
-          description: Last update timestamp
-          example: '2025-11-05T10:30:00Z'
-        isDeleted:
-          type: boolean
-          description: Deletion status
-          example: false
       required:
-        - postId
-        - userId
-        - displayName
         - content
         - mediaUrls
         - hashtags
-        - mentions
+        - location
         - visibility
-        - likesCount
-        - commentsCount
-        - sharesCount
-        - createdAt
-        - updatedAt
-        - isDeleted
     PostDto:
       type: object
       properties:
@@ -2432,19 +2338,23 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: *ref_11
+          example:
+            - https://storage.googleapis.com/bucket/image1.jpg
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: *ref_12
+          example:
+            - nature
+            - sunset
           type: array
           items:
             type: string
         mentions:
           description: Mentioned user IDs
-          example: *ref_13
+          example:
+            - user-id-1
           type: array
           items:
             type: string
@@ -2498,109 +2408,6 @@ components:
     PageInfo:
       type: object
       properties: {}
-    GetPostsResponse:
-      type: object
-      properties:
-        data:
-          description: Array of posts
-          type: array
-          items:
-            $ref: '#/components/schemas/PostDto'
-        paging:
-          description: Pagination information
-          allOf:
-            - $ref: '#/components/schemas/PageInfo'
-      required:
-        - data
-        - paging
-    UpdatePostResponse:
-      type: object
-      properties:
-        postId:
-          type: string
-          description: Post ID
-          example: post-clx123abc
-        message:
-          type: string
-          description: Success message
-          example: Post updated successfully
-        updatedAt:
-          type: string
-          description: Update timestamp
-          example: '2025-11-05T10:30:00Z'
-      required:
-        - postId
-        - message
-        - updatedAt
-    DeletePostResponse:
-      type: object
-      properties:
-        postId:
-          type: string
-          description: Post ID
-          example: post-clx123abc
-        message:
-          type: string
-          description: Success message
-          example: Post deleted successfully
-        deletedAt:
-          type: string
-          description: Deletion timestamp
-          example: '2025-11-05T10:30:00Z'
-      required:
-        - postId
-        - message
-        - deletedAt
-    CreatePostRequest:
-      type: object
-      properties:
-        content:
-          type: string
-          description: Post content/caption
-          example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
-          maxLength: 2000
-        mediaUrls:
-          description: Media URLs (images/videos)
-          example:
-            - https://storage.googleapis.com/bucket/image1.jpg
-          type: array
-          items:
-            type: string
-        hashtags:
-          description: Hashtags
-          example:
-            - nature
-            - sunset
-            - photography
-          type: array
-          items:
-            type: string
-        mentions:
-          description: Mentioned user IDs
-          example:
-            - user-id-1
-            - user-id-2
-          type: array
-          items:
-            type: string
-        location:
-          type: string
-          description: Location/place name
-          example: Santa Monica Beach, CA
-        visibility:
-          type: string
-          description: Post visibility
-          enum:
-            - public
-            - followers
-            - private
-          example: public
-      required:
-        - content
-        - mediaUrls
-        - hashtags
-        - location
-        - visibility
     UpdatePostRequest:
       type: object
       properties:
