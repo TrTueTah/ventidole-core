@@ -1,6 +1,8 @@
 import { initEnvironmentConfig } from "@core/config/env.config";
 import { AuthModule } from "@domain/auth/auth.module";
 import { PostModule } from "@domain/post/post.module";
+import { CommentModule } from "@domain/comment/comment.module";
+import { ReplyModule } from "@domain/reply/reply.module";
 import { UserModule } from "@domain/user/user.module";
 import { ChatModule } from "@domain/chat/chat.module";
 import { AdminModule } from "@domain/admin/admin.module";
@@ -19,6 +21,8 @@ import { FileModule } from "@domain/file/file.module";
     AuthModule,
     UserModule,
     PostModule,
+    CommentModule,
+    ReplyModule,
     ChatModule,
     AdminModule
   ],

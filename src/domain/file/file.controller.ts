@@ -32,7 +32,6 @@ import {
 import { fileResponses } from './response/index.response';
 import { UploadFileRequest } from './request/upload-file.request';
 import { UploadFileResponse } from './response/upload-file.response';
-import { DeleteFileRequest } from './request/delete-file.request';
 import { GetFileUrlResponse } from './response/get-file-url.response';
 import { GetFileUrlRequest } from './request/get-file-url.request';
 import { GetSignedUrlResponse } from './response/get-signed-url.response';
