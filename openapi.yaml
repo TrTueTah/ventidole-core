@@ -1980,7 +1980,7 @@ paths:
       security: *ref_12
       summary: Leave a channel
       tags: *ref_13
-  /v1/admin/login:
+  /v1/admin/authentication/login:
     post:
       operationId: AdminController_adminLogin_v1
       parameters: []
@@ -2000,7 +2000,7 @@ paths:
       summary: Admin login (bypass all verification)
       tags: &ref_14
         - Admin
-  /v1/admin/signup:
+  /v1/admin/authentication/signup:
     post:
       operationId: AdminController_adminSignup_v1
       parameters: []

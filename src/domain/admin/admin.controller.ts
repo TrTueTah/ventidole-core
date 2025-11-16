@@ -16,7 +16,7 @@ export class AdminController {
 
   // Public endpoints (no authentication required)
   @Public()
-  @Post('login')
+  @Post('authentication/login')
   @ApiOperation({ summary: 'Admin login (bypass all verification)' })
   @ApiBody({ type: AdminLoginRequest })
   @ApiResponse({ status: 200, type: AdminAuthResponse })
@@ -27,7 +27,7 @@ export class AdminController {
   }
 
   @Public()
-  @Post('signup')
+  @Post('authentication/signup')
   @ApiOperation({ summary: 'Admin signup (bypass all verification, instantly active)' })
   @ApiBody({ type: AdminSignupRequest })
   @ApiResponse({ status: 201, type: AdminAuthResponse })
