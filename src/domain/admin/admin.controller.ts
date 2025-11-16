@@ -7,9 +7,10 @@ import { Role } from 'src/db/prisma/enums';
 import { CreateIdolRequest, AdminLoginRequest, AdminSignupRequest, CreateGroupRequest } from './request/index.request';
 import { CreateIdolResponse, AdminAuthResponse, CreateGroupResponse } from './response/index.response';
 import { BaseResponse } from '@shared/helper/response';
+import { ApiVersion } from '@shared/enum/api-version.enum';
 
 @ApiTags('Admin')
-@Controller('admin')
+@Controller({ path: 'admin', version: ApiVersion.V1 })
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
