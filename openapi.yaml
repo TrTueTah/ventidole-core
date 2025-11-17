@@ -1982,7 +1982,7 @@ paths:
       tags: *ref_13
   /v1/admin/authentication/login:
     post:
-      operationId: AdminController_adminLogin_v1
+      operationId: AdminAuthController_adminLogin_v1
       parameters: []
       requestBody:
         required: true
@@ -1992,17 +1992,42 @@ paths:
               $ref: '#/components/schemas/AdminLoginRequest'
       responses:
         '200':
-          description: ''
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminAuthResponse'
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AdminAuthResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       summary: Admin login (bypass all verification)
       tags: &ref_14
-        - Admin
+        - Admin Auth
   /v1/admin/authentication/signup:
     post:
-      operationId: AdminController_adminSignup_v1
+      operationId: AdminAuthController_adminSignup_v1
       parameters: []
       requestBody:
         required: true
@@ -2011,17 +2036,42 @@ paths:
             schema:
               $ref: '#/components/schemas/AdminSignupRequest'
       responses:
-        '201':
-          description: ''
+        '200':
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminAuthResponse'
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AdminAuthResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       summary: Admin signup (bypass all verification, instantly active)
       tags: *ref_14
   /v1/admin/groups:
     post:
-      operationId: AdminController_createGroup_v1
+      operationId: AdminGroupsController_createGroup_v1
       parameters: []
       requestBody:
         required: true
@@ -2036,23 +2086,112 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateGroupResponse'
-      security:
+      security: &ref_15
         - bearer: []
       summary: Create a new group (Admin only)
-      tags: *ref_14
+      tags: &ref_16
+        - Admin Groups
     get:
-      operationId: AdminController_getAllGroups_v1
-      parameters: []
+      operationId: AdminGroupsController_getAllGroups_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            example: createdAt
+            type: string
+            enum:
+              - createdAt
+        - name: sortOrder
+          required: false
+          in: query
+          description: Sort order
+          schema:
+            example: desc
+            type: string
+            enum:
+              - asc
+              - desc
       responses:
         '200':
-          description: ''
-      security:
-        - bearer: []
-      summary: Get all groups (Admin only)
-      tags: *ref_14
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GroupDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: *ref_15
+      summary: Get all groups with pagination (Admin only)
+      tags: *ref_16
   /v1/admin/idols:
     post:
-      operationId: AdminController_createIdolAccount_v1
+      operationId: AdminIdolsController_createIdolAccount_v1
       parameters: []
       requestBody:
         required: true
@@ -2070,20 +2209,118 @@ paths:
       security:
         - bearer: []
       summary: Create a new idol account (Admin only)
-      tags: *ref_14
+      tags: &ref_17
+        - Admin Idols
     get:
-      operationId: AdminController_getAllIdols_v1
-      parameters: []
+      operationId: AdminIdolsController_getAllIdols_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Search by username
+          schema:
+            example: ''
+            type: string
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            example: createdAt
+            type: string
+            enum:
+              - createdAt
+              - stageName
+        - name: sortOrder
+          required: false
+          in: query
+          description: Sort order
+          schema:
+            example: desc
+            type: string
+            enum:
+              - asc
+              - desc
       responses:
         '200':
-          description: ''
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/IdolDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
       security:
         - bearer: []
-      summary: Get all idols (Admin only)
-      tags: *ref_14
-  /v1/admin/fans:
+      summary: Get all idols with pagination (Admin only)
+      tags: *ref_17
+  /v1/admin/users/fans:
     get:
-      operationId: AdminController_getAllFans_v1
+      operationId: AdminUsersController_getAllFans_v1
       parameters: []
       responses:
         '200':
@@ -2091,10 +2328,11 @@ paths:
       security:
         - bearer: []
       summary: Get all fans (Admin only)
-      tags: *ref_14
+      tags: &ref_18
+        - Admin Users
   /v1/admin/users:
     get:
-      operationId: AdminController_getAllUsers_v1
+      operationId: AdminUsersController_getAllUsers_v1
       parameters: []
       responses:
         '200':
@@ -2102,21 +2340,10 @@ paths:
       security:
         - bearer: []
       summary: Get all users with profiles (Admin only)
-      tags: *ref_14
-  /v1/admin/statistics:
-    get:
-      operationId: AdminController_getStatistics_v1
-      parameters: []
-      responses:
-        '200':
-          description: ''
-      security:
-        - bearer: []
-      summary: Get platform statistics (Admin only)
-      tags: *ref_14
+      tags: *ref_18
   /v1/admin/users/{userId}/deactivate:
     patch:
-      operationId: AdminController_deactivateUser_v1
+      operationId: AdminUsersController_deactivateUser_v1
       parameters:
         - name: userId
           required: true
@@ -2130,10 +2357,10 @@ paths:
       security:
         - bearer: []
       summary: Deactivate a user account (Admin only)
-      tags: *ref_14
+      tags: *ref_18
   /v1/admin/users/{userId}/activate:
     patch:
-      operationId: AdminController_activateUser_v1
+      operationId: AdminUsersController_activateUser_v1
       parameters:
         - name: userId
           required: true
@@ -2147,10 +2374,10 @@ paths:
       security:
         - bearer: []
       summary: Activate a user account (Admin only)
-      tags: *ref_14
+      tags: *ref_18
   /v1/admin/users/{userId}:
     delete:
-      operationId: AdminController_deleteUser_v1
+      operationId: AdminUsersController_deleteUser_v1
       parameters:
         - name: userId
           required: true
@@ -2164,7 +2391,19 @@ paths:
       security:
         - bearer: []
       summary: Delete a user account (Admin only)
-      tags: *ref_14
+      tags: *ref_18
+  /v1/admin/statistics:
+    get:
+      operationId: AdminStatisticsController_getStatistics_v1
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      security:
+        - bearer: []
+      summary: Get platform statistics (Admin only)
+      tags:
+        - Admin Statistics
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -2601,42 +2840,46 @@ components:
       properties:
         id:
           type: string
-          description: Idol ID
-          example: idol-clx123abc
         stageName:
           type: string
-          description: Idol stage name
-          example: StarLight
         avatarUrl:
           type: string
-          description: Idol avatar URL
-          example: https://storage.googleapis.com/bucket/avatars/idol-123.jpg
         backgroundUrl:
           type: string
-          description: Idol background image URL
-          example: https://storage.googleapis.com/bucket/backgrounds/idol-123.jpg
         bio:
           type: string
-          description: Idol bio/description
-          example: Professional singer and performer 🎤
         groupId:
           type: string
-          description: Group ID
-          example: group-clx123abc
+        userId:
+          type: string
+        isActive:
+          type: boolean
         createdAt:
+          format: date-time
           type: string
-          description: Created at timestamp
-          example: '2024-01-01T00:00:00.000Z'
         updatedAt:
+          format: date-time
           type: string
-          description: Updated at timestamp
-          example: '2024-01-01T00:00:00.000Z'
+        version:
+          type: number
+        user:
+          $ref: '#/components/schemas/UserSummaryDto'
+        group:
+          $ref: '#/components/schemas/GroupSummaryDto'
       required:
         - id
         - stageName
+        - avatarUrl
+        - backgroundUrl
+        - bio
         - groupId
+        - userId
+        - isActive
         - createdAt
         - updatedAt
+        - version
+        - user
+        - group
     UserDto:
       type: object
       properties:
@@ -2992,14 +3235,14 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: &ref_15
+          example: &ref_19
             - https://storage.googleapis.com/bucket/image1.jpg
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: &ref_16
+          example: &ref_20
             - nature
             - sunset
           type: array
@@ -3007,7 +3250,7 @@ components:
             type: string
         mentions:
           description: Mentioned user IDs
-          example: &ref_17
+          example: &ref_21
             - user-id-1
           type: array
           items:
@@ -3088,19 +3331,19 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: *ref_15
+          example: *ref_19
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: *ref_16
+          example: *ref_20
           type: array
           items:
             type: string
         mentions:
           description: Mentioned user IDs
-          example: *ref_17
+          example: *ref_21
           type: array
           items:
             type: string
@@ -3955,20 +4198,6 @@ components:
       required:
         - channelId
         - userIds
-    AdminLoginRequest:
-      type: object
-      properties:
-        email:
-          type: string
-          example: admin@ventidole.com
-          description: Admin email
-        password:
-          type: string
-          example: admin123
-          description: Admin password
-      required:
-        - email
-        - password
     AdminAuthResponse:
       type: object
       properties:
@@ -3991,6 +4220,20 @@ components:
         - name
         - accessToken
         - refreshToken
+    AdminLoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: admin@ventidole.com
+          description: Admin email
+        password:
+          type: string
+          example: admin123
+          description: Admin password
+      required:
+        - email
+        - password
     AdminSignupRequest:
       type: object
       properties:
@@ -4052,6 +4295,8 @@ components:
         updatedAt:
           format: date-time
           type: string
+        version:
+          type: number
       required:
         - id
         - groupName
@@ -4061,6 +4306,71 @@ components:
         - isActive
         - createdAt
         - updatedAt
+        - version
+    IdolSummaryDto:
+      type: object
+      properties:
+        id:
+          type: string
+        stageName:
+          type: string
+        avatarUrl:
+          type: string
+      required:
+        - id
+        - stageName
+        - avatarUrl
+    GroupCountDto:
+      type: object
+      properties:
+        idols:
+          type: number
+        followers:
+          type: number
+      required:
+        - idols
+        - followers
+    GroupDto:
+      type: object
+      properties:
+        id:
+          type: string
+        groupName:
+          type: string
+        description:
+          type: string
+        logoUrl:
+          type: string
+        backgroundUrl:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        version:
+          type: number
+        idols:
+          type: array
+          items:
+            $ref: '#/components/schemas/IdolSummaryDto'
+        _count:
+          $ref: '#/components/schemas/GroupCountDto'
+      required:
+        - id
+        - groupName
+        - description
+        - logoUrl
+        - backgroundUrl
+        - isActive
+        - createdAt
+        - updatedAt
+        - version
+        - idols
+        - _count
     CreateIdolRequest:
       type: object
       properties:
@@ -4103,6 +4413,45 @@ components:
         - password
         - stageName
         - groupId
+    CreatedIdolDto:
+      type: object
+      properties:
+        id:
+          type: string
+        stageName:
+          type: string
+        avatarUrl:
+          type: string
+        backgroundUrl:
+          type: string
+        bio:
+          type: string
+        groupId:
+          type: string
+        userId:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        version:
+          type: number
+      required:
+        - id
+        - stageName
+        - avatarUrl
+        - backgroundUrl
+        - bio
+        - groupId
+        - userId
+        - isActive
+        - createdAt
+        - updatedAt
+        - version
     CreateIdolResponse:
       type: object
       properties:
@@ -4113,7 +4462,7 @@ components:
         role:
           type: string
         idol:
-          type: object
+          $ref: '#/components/schemas/CreatedIdolDto'
         accessToken:
           type: string
         refreshToken:
@@ -4125,3 +4474,39 @@ components:
         - idol
         - accessToken
         - refreshToken
+    UserSummaryDto:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        isOnline:
+          type: boolean
+        isActive:
+          type: boolean
+        createdAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - email
+        - role
+        - isOnline
+        - isActive
+        - createdAt
+    GroupSummaryDto:
+      type: object
+      properties:
+        id:
+          type: string
+        groupName:
+          type: string
+        logoUrl:
+          type: string
+      required:
+        - id
+        - groupName
+        - logoUrl

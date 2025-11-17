@@ -1,23 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AdminController } from './admin.controller';
-import { AdminService } from './admin.service';
-import { PrismaService } from '@shared/service/prisma/prisma.service';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AdminAuthModule } from './auth/admin-auth.module';
+import { AdminGroupsModule } from './groups/admin-groups.module';
+import { AdminIdolsModule } from './idols/admin-idols.module';
+import { AdminUsersModule } from './users/admin-users.module';
+import { AdminStatisticsModule } from './statistics/admin-statistics.module';
 
 @Module({
   imports: [
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '7d' },
-      }),
-    }),
+    AdminAuthModule,
+    AdminGroupsModule,
+    AdminIdolsModule,
+    AdminUsersModule,
+    AdminStatisticsModule,
   ],
-  controllers: [AdminController],
-  providers: [AdminService, PrismaService],
-  exports: [AdminService],
 })
 export class AdminModule {}
