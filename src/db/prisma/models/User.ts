@@ -269,6 +269,8 @@ export type UserWhereInput = {
   fan?: Prisma.XOR<Prisma.FanNullableScalarRelationFilter, Prisma.FanWhereInput> | null
   idol?: Prisma.XOR<Prisma.IdolNullableScalarRelationFilter, Prisma.IdolWhereInput> | null
   chatParticipants?: Prisma.ChatParticipantListRelationFilter
+  carts?: Prisma.CartListRelationFilter
+  orders?: Prisma.OrderListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -288,6 +290,8 @@ export type UserOrderByWithRelationInput = {
   fan?: Prisma.FanOrderByWithRelationInput
   idol?: Prisma.IdolOrderByWithRelationInput
   chatParticipants?: Prisma.ChatParticipantOrderByRelationAggregateInput
+  carts?: Prisma.CartOrderByRelationAggregateInput
+  orders?: Prisma.OrderOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -310,6 +314,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   fan?: Prisma.XOR<Prisma.FanNullableScalarRelationFilter, Prisma.FanWhereInput> | null
   idol?: Prisma.XOR<Prisma.IdolNullableScalarRelationFilter, Prisma.IdolWhereInput> | null
   chatParticipants?: Prisma.ChatParticipantListRelationFilter
+  carts?: Prisma.CartListRelationFilter
+  orders?: Prisma.OrderListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -365,6 +371,8 @@ export type UserCreateInput = {
   fan?: Prisma.FanCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolCreateNestedOneWithoutUserInput
   chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -384,6 +392,8 @@ export type UserUncheckedCreateInput = {
   fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
   chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
 }
 
 export type UserUpdateInput = {
@@ -403,6 +413,8 @@ export type UserUpdateInput = {
   fan?: Prisma.FanUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
   chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -422,6 +434,8 @@ export type UserUncheckedUpdateInput = {
   fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
   chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -626,6 +640,34 @@ export type UserUpdateOneRequiredWithoutChatParticipantsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChatParticipantsInput, Prisma.UserUpdateWithoutChatParticipantsInput>, Prisma.UserUncheckedUpdateWithoutChatParticipantsInput>
 }
 
+export type UserCreateNestedOneWithoutCartsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCartsInput, Prisma.UserUncheckedCreateWithoutCartsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCartsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCartsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCartsInput, Prisma.UserUncheckedCreateWithoutCartsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCartsInput
+  upsert?: Prisma.UserUpsertWithoutCartsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCartsInput, Prisma.UserUpdateWithoutCartsInput>, Prisma.UserUncheckedUpdateWithoutCartsInput>
+}
+
+export type UserCreateNestedOneWithoutOrdersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrdersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutOrdersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrdersInput
+  upsert?: Prisma.UserUpsertWithoutOrdersInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOrdersInput, Prisma.UserUpdateWithoutOrdersInput>, Prisma.UserUncheckedUpdateWithoutOrdersInput>
+}
+
 export type UserCreateWithoutVerificationsInput = {
   id?: string
   isActive?: boolean
@@ -642,6 +684,8 @@ export type UserCreateWithoutVerificationsInput = {
   fan?: Prisma.FanCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolCreateNestedOneWithoutUserInput
   chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
 }
 
 export type UserUncheckedCreateWithoutVerificationsInput = {
@@ -660,6 +704,8 @@ export type UserUncheckedCreateWithoutVerificationsInput = {
   fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
   chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
 }
 
 export type UserCreateOrConnectWithoutVerificationsInput = {
@@ -694,6 +740,8 @@ export type UserUpdateWithoutVerificationsInput = {
   fan?: Prisma.FanUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
   chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVerificationsInput = {
@@ -712,6 +760,8 @@ export type UserUncheckedUpdateWithoutVerificationsInput = {
   fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
   chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
 }
 
 export type UserCreateWithoutSocial_accountsInput = {
@@ -730,6 +780,8 @@ export type UserCreateWithoutSocial_accountsInput = {
   fan?: Prisma.FanCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolCreateNestedOneWithoutUserInput
   chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
 }
 
 export type UserUncheckedCreateWithoutSocial_accountsInput = {
@@ -748,6 +800,8 @@ export type UserUncheckedCreateWithoutSocial_accountsInput = {
   fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
   chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
 }
 
 export type UserCreateOrConnectWithoutSocial_accountsInput = {
@@ -782,6 +836,8 @@ export type UserUpdateWithoutSocial_accountsInput = {
   fan?: Prisma.FanUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
   chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSocial_accountsInput = {
@@ -800,6 +856,8 @@ export type UserUncheckedUpdateWithoutSocial_accountsInput = {
   fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
   chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
 }
 
 export type UserCreateWithoutFanInput = {
@@ -818,6 +876,8 @@ export type UserCreateWithoutFanInput = {
   verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
   idol?: Prisma.IdolCreateNestedOneWithoutUserInput
   chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
 }
 
 export type UserUncheckedCreateWithoutFanInput = {
@@ -836,6 +896,8 @@ export type UserUncheckedCreateWithoutFanInput = {
   verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
   idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
   chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
 }
 
 export type UserCreateOrConnectWithoutFanInput = {
@@ -870,6 +932,8 @@ export type UserUpdateWithoutFanInput = {
   verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
   idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
   chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFanInput = {
@@ -888,6 +952,8 @@ export type UserUncheckedUpdateWithoutFanInput = {
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
   idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
   chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
 }
 
 export type UserCreateWithoutIdolInput = {
@@ -906,6 +972,8 @@ export type UserCreateWithoutIdolInput = {
   verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
   fan?: Prisma.FanCreateNestedOneWithoutUserInput
   chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
 }
 
 export type UserUncheckedCreateWithoutIdolInput = {
@@ -924,6 +992,8 @@ export type UserUncheckedCreateWithoutIdolInput = {
   verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
   fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
   chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
 }
 
 export type UserCreateOrConnectWithoutIdolInput = {
@@ -958,6 +1028,8 @@ export type UserUpdateWithoutIdolInput = {
   verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
   fan?: Prisma.FanUpdateOneWithoutUserNestedInput
   chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutIdolInput = {
@@ -976,6 +1048,8 @@ export type UserUncheckedUpdateWithoutIdolInput = {
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
   fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
   chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
 }
 
 export type UserCreateWithoutChatParticipantsInput = {
@@ -994,6 +1068,8 @@ export type UserCreateWithoutChatParticipantsInput = {
   verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
   fan?: Prisma.FanCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
 }
 
 export type UserUncheckedCreateWithoutChatParticipantsInput = {
@@ -1012,6 +1088,8 @@ export type UserUncheckedCreateWithoutChatParticipantsInput = {
   verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
   fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
   idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
 }
 
 export type UserCreateOrConnectWithoutChatParticipantsInput = {
@@ -1046,6 +1124,8 @@ export type UserUpdateWithoutChatParticipantsInput = {
   verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
   fan?: Prisma.FanUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChatParticipantsInput = {
@@ -1064,6 +1144,200 @@ export type UserUncheckedUpdateWithoutChatParticipantsInput = {
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
   fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
   idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
+}
+
+export type UserCreateWithoutCartsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  email: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  isDeleted?: boolean
+  isOnline?: boolean
+  social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  fan?: Prisma.FanCreateNestedOneWithoutUserInput
+  idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
+}
+
+export type UserUncheckedCreateWithoutCartsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  email: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  isDeleted?: boolean
+  isOnline?: boolean
+  social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
+  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
+}
+
+export type UserCreateOrConnectWithoutCartsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCartsInput, Prisma.UserUncheckedCreateWithoutCartsInput>
+}
+
+export type UserUpsertWithoutCartsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCartsInput, Prisma.UserUncheckedUpdateWithoutCartsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCartsInput, Prisma.UserUncheckedCreateWithoutCartsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCartsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCartsInput, Prisma.UserUncheckedUpdateWithoutCartsInput>
+}
+
+export type UserUpdateWithoutCartsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  fan?: Prisma.FanUpdateOneWithoutUserNestedInput
+  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCartsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
+  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
+}
+
+export type UserCreateWithoutOrdersInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  email: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  isDeleted?: boolean
+  isOnline?: boolean
+  social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  fan?: Prisma.FanCreateNestedOneWithoutUserInput
+  idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutOrdersInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  email: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  isDeleted?: boolean
+  isOnline?: boolean
+  social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
+  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutOrdersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
+}
+
+export type UserUpsertWithoutOrdersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOrdersInput, Prisma.UserUncheckedUpdateWithoutOrdersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOrdersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOrdersInput, Prisma.UserUncheckedUpdateWithoutOrdersInput>
+}
+
+export type UserUpdateWithoutOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  fan?: Prisma.FanUpdateOneWithoutUserNestedInput
+  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
+  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1075,12 +1349,16 @@ export type UserCountOutputType = {
   social_accounts: number
   verifications: number
   chatParticipants: number
+  carts: number
+  orders: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   social_accounts?: boolean | UserCountOutputTypeCountSocial_accountsArgs
   verifications?: boolean | UserCountOutputTypeCountVerificationsArgs
   chatParticipants?: boolean | UserCountOutputTypeCountChatParticipantsArgs
+  carts?: boolean | UserCountOutputTypeCountCartsArgs
+  orders?: boolean | UserCountOutputTypeCountOrdersArgs
 }
 
 /**
@@ -1114,6 +1392,20 @@ export type UserCountOutputTypeCountChatParticipantsArgs<ExtArgs extends runtime
   where?: Prisma.ChatParticipantWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCartsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CartWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrderWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1132,6 +1424,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   fan?: boolean | Prisma.User$fanArgs<ExtArgs>
   idol?: boolean | Prisma.User$idolArgs<ExtArgs>
   chatParticipants?: boolean | Prisma.User$chatParticipantsArgs<ExtArgs>
+  carts?: boolean | Prisma.User$cartsArgs<ExtArgs>
+  orders?: boolean | Prisma.User$ordersArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1184,6 +1478,8 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   fan?: boolean | Prisma.User$fanArgs<ExtArgs>
   idol?: boolean | Prisma.User$idolArgs<ExtArgs>
   chatParticipants?: boolean | Prisma.User$chatParticipantsArgs<ExtArgs>
+  carts?: boolean | Prisma.User$cartsArgs<ExtArgs>
+  orders?: boolean | Prisma.User$ordersArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1197,6 +1493,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     fan: Prisma.$FanPayload<ExtArgs> | null
     idol: Prisma.$IdolPayload<ExtArgs> | null
     chatParticipants: Prisma.$ChatParticipantPayload<ExtArgs>[]
+    carts: Prisma.$CartPayload<ExtArgs>[]
+    orders: Prisma.$OrderPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1609,6 +1907,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   fan<T extends Prisma.User$fanArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$fanArgs<ExtArgs>>): Prisma.Prisma__FanClient<runtime.Types.Result.GetResult<Prisma.$FanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   idol<T extends Prisma.User$idolArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$idolArgs<ExtArgs>>): Prisma.Prisma__IdolClient<runtime.Types.Result.GetResult<Prisma.$IdolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   chatParticipants<T extends Prisma.User$chatParticipantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$chatParticipantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  carts<T extends Prisma.User$cartsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$cartsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  orders<T extends Prisma.User$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2144,6 +2444,54 @@ export type User$chatParticipantsArgs<ExtArgs extends runtime.Types.Extensions.I
   take?: number
   skip?: number
   distinct?: Prisma.ChatParticipantScalarFieldEnum | Prisma.ChatParticipantScalarFieldEnum[]
+}
+
+/**
+ * User.carts
+ */
+export type User$cartsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Cart
+   */
+  select?: Prisma.CartSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Cart
+   */
+  omit?: Prisma.CartOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CartInclude<ExtArgs> | null
+  where?: Prisma.CartWhereInput
+  orderBy?: Prisma.CartOrderByWithRelationInput | Prisma.CartOrderByWithRelationInput[]
+  cursor?: Prisma.CartWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CartScalarFieldEnum | Prisma.CartScalarFieldEnum[]
+}
+
+/**
+ * User.orders
+ */
+export type User$ordersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Order
+   */
+  select?: Prisma.OrderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Order
+   */
+  omit?: Prisma.OrderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderInclude<ExtArgs> | null
+  where?: Prisma.OrderWhereInput
+  orderBy?: Prisma.OrderOrderByWithRelationInput | Prisma.OrderOrderByWithRelationInput[]
+  cursor?: Prisma.OrderWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrderScalarFieldEnum | Prisma.OrderScalarFieldEnum[]
 }
 
 /**

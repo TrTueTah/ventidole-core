@@ -2404,6 +2404,142 @@ paths:
       summary: Get platform statistics (Admin only)
       tags:
         - Admin Statistics
+  /v1/admin/products:
+    post:
+      operationId: ProductController_createProduct_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductRequest'
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateProductResponse'
+      security: &ref_19
+        - bearer: []
+      summary: Create a new product (Admin only)
+      tags: &ref_20
+        - Admin Products
+    get:
+      operationId: ProductController_getAllProducts_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            example: createdAt
+            type: string
+            enum:
+              - createdAt
+              - name
+              - updatedAt
+        - name: order
+          required: false
+          in: query
+          description: Sort order
+          schema:
+            example: desc
+            type: string
+            enum:
+              - asc
+              - desc
+        - name: category_id
+          required: false
+          in: query
+          description: Filter by category ID
+          schema:
+            example: cmi64epuq0000p5wb5q352lws
+            type: string
+        - name: search
+          required: false
+          in: query
+          description: Search by product name
+          schema:
+            example: BTS
+            type: string
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: *ref_19
+      summary: Get all products with pagination (Admin only)
+      tags: *ref_20
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -3235,14 +3371,14 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: &ref_19
+          example: &ref_21
             - https://storage.googleapis.com/bucket/image1.jpg
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: &ref_20
+          example: &ref_22
             - nature
             - sunset
           type: array
@@ -3250,7 +3386,7 @@ components:
             type: string
         mentions:
           description: Mentioned user IDs
-          example: &ref_21
+          example: &ref_23
             - user-id-1
           type: array
           items:
@@ -3331,19 +3467,19 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: *ref_19
+          example: *ref_21
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: *ref_20
+          example: *ref_22
           type: array
           items:
             type: string
         mentions:
           description: Mentioned user IDs
-          example: *ref_21
+          example: *ref_23
           type: array
           items:
             type: string
@@ -4510,3 +4646,228 @@ components:
         - id
         - groupName
         - logoUrl
+    CreateProductVariantRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Standard Version
+          description: Product variant name
+        price_money:
+          type: number
+          example: 29.99
+          description: Product variant price
+        total_supply:
+          type: number
+          example: 100
+          description: Total supply/stock for this variant
+        remaining_supply:
+          type: number
+          example: 100
+          description: Remaining supply (defaults to total_supply if not provided)
+      required:
+        - name
+        - price_money
+        - total_supply
+    CreateProductRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          example: BTS Official Light Stick
+          description: Product name
+        description:
+          type: string
+          example: >-
+            Official BTS light stick for concerts and fan events. High quality
+            and long-lasting.
+          description: Product description
+        cover_image:
+          type: string
+          example: https://res.cloudinary.com/bucket/bts-lightstick.jpg
+          description: Product cover image URL
+        product_category_id:
+          type: string
+          example: cmi64epuq0000p5wb5q352lws
+          description: Product category ID
+        variants:
+          description: Product variants (at least one variant is required)
+          example:
+            - name: Standard Version
+              price_money: 29.99
+              total_supply: 100
+              remaining_supply: 100
+            - name: Premium Version
+              price_money: 35.99
+              total_supply: 50
+              remaining_supply: 50
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateProductVariantRequest'
+      required:
+        - name
+        - product_category_id
+        - variants
+    ProductCategoryDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clz1234567890
+          description: Category ID
+        name:
+          type: string
+          example: Merchandise
+          description: Category name
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the category is active
+        createdAt:
+          format: date-time
+          type: string
+          example: '2023-11-19T10:00:00.000Z'
+          description: Creation timestamp
+      required:
+        - id
+        - name
+        - isActive
+        - createdAt
+    ProductVariantDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: cmi64xyz987654321
+          description: Variant ID
+        name:
+          type: string
+          example: Standard Version
+          description: Variant name
+        price_money:
+          type: number
+          example: 29.99
+          description: Product variant price
+        total_supply:
+          type: number
+          example: 100
+          description: Total supply/stock
+        remaining_supply:
+          type: number
+          example: 85
+          description: Remaining supply/stock
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the variant is active
+        createdAt:
+          format: date-time
+          type: string
+          example: '2023-11-19T10:30:00.000Z'
+          description: Creation timestamp
+      required:
+        - id
+        - name
+        - price_money
+        - total_supply
+        - remaining_supply
+        - isActive
+        - createdAt
+    CreateProductResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clz1234567890
+          description: Created product ID
+        name:
+          type: string
+          example: BTS Official Light Stick
+          description: Product name
+        description:
+          type: object
+          example: Official BTS light stick for concerts and fan events.
+          description: Product description
+        cover_image:
+          type: object
+          example: https://res.cloudinary.com/bucket/bts-lightstick.jpg
+          description: Product cover image URL
+        category:
+          description: Product category
+          allOf:
+            - $ref: '#/components/schemas/ProductCategoryDto'
+        variants:
+          description: Created product variants
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductVariantDto'
+        createdAt:
+          format: date-time
+          type: string
+          example: '2023-11-19T10:00:00.000Z'
+          description: Creation timestamp
+      required:
+        - id
+        - name
+        - description
+        - cover_image
+        - category
+        - variants
+        - createdAt
+    ProductDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clz1234567890
+          description: Product ID
+        name:
+          type: string
+          example: BTS Official Light Stick
+          description: Product name
+        description:
+          type: object
+          example: >-
+            Official BTS light stick for concerts and fan events. High quality
+            and long-lasting.
+          description: Product description
+        cover_image:
+          type: object
+          example: https://res.cloudinary.com/bucket/bts-lightstick.jpg
+          description: Product cover image URL
+        category:
+          description: Product category
+          allOf:
+            - $ref: '#/components/schemas/ProductCategoryDto'
+        variants:
+          description: Product variants
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductVariantDto'
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the product is active
+        createdAt:
+          format: date-time
+          type: string
+          example: '2023-11-19T10:00:00.000Z'
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2023-11-19T10:30:00.000Z'
+          description: Last update timestamp
+        version:
+          type: number
+          example: 0
+          description: Version for optimistic locking
+      required:
+        - id
+        - name
+        - category
+        - variants
+        - isActive
+        - createdAt
+        - updatedAt
+        - version
