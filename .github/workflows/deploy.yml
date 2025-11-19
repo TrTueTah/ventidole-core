@@ -53,6 +53,9 @@ jobs:
             echo "🛑 Stopping existing containers..."
             sudo docker compose --env-file .env -f docker/prod/docker-compose.yaml down || true
 
+            echo "🧹 Full cleanup..."
+            sudo docker system prune -af --volumes || true
+
             # Build Docker images with npm cache clean
             echo "🏗️ Building Docker images..."
             sudo docker compose --env-file .env -f docker/prod/docker-compose.yaml build --no-cache
