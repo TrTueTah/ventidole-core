@@ -44,7 +44,7 @@ export class FileService {
       const fileName = this.generateFileName(uploadData.originalName, uploadData.customFileName);
       const filePath = `${uploadData.folder}/${fileName}`;
       const storage = this.firebaseService.getStorage();
-      const bucket = storage.bucket(this.defaultBucket);
+      const bucket = storage.bucket();
       const file = bucket.file(filePath);
 
       const metadata = {
@@ -59,7 +59,7 @@ export class FileService {
       await file.save(uploadData.file, { metadata, public: true, validation: 'md5' });
       await file.makePublic();
 
-      const publicUrl = `https://storage.googleapis.com/${this.defaultBucket}/${filePath}`;
+      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
       this.logger.log(`File uploaded successfully: ${filePath}`);
 
       const response = new UploadFileResponse();
