@@ -1053,6 +1053,17 @@ paths:
             enum:
               - asc
               - desc
+        - name: authorFilter
+          required: false
+          in: query
+          description: Filter by author role (for community posts)
+          schema:
+            example: all
+            type: string
+            enum:
+              - all
+              - idol
+              - fan
       responses:
         '200':
           description: Successful paginated response
@@ -1349,6 +1360,17 @@ paths:
             enum:
               - asc
               - desc
+        - name: authorFilter
+          required: false
+          in: query
+          description: Filter by author role (for community posts)
+          schema:
+            example: all
+            type: string
+            enum:
+              - all
+              - idol
+              - fan
       responses:
         '200':
           description: Successful paginated response

@@ -14,6 +14,12 @@ export enum SortOrder {
   DESC = 'desc',
 }
 
+export enum PostAuthorFilter {
+  ALL = 'all',
+  IDOL = 'idol',
+  FAN = 'fan',
+}
+
 export class GetPostsRequest extends PaginationDto {
   @ApiPropertyOptional({
     description: 'Filter by user ID',
@@ -57,4 +63,13 @@ export class GetPostsRequest extends PaginationDto {
   @IsEnum(SortOrder)
   @IsOptional()
   sortOrder?: SortOrder = SortOrder.DESC;
+
+  @ApiPropertyOptional({
+    description: 'Filter by author role (for community posts)',
+    enum: PostAuthorFilter,
+    example: PostAuthorFilter.ALL,
+  })
+  @IsEnum(PostAuthorFilter)
+  @IsOptional()
+  authorFilter?: PostAuthorFilter = PostAuthorFilter.ALL;
 }

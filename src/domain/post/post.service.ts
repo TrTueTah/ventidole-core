@@ -8,7 +8,7 @@ import { GetPostsResponse } from './response/get-posts.response';
 import { UpdatePostResponse } from './response/update-post.response';
 import { DeletePostResponse } from './response/delete-post.response';
 import { UpdatePostRequest } from './request/update-post.request';
-import { GetPostsRequest } from './request/get-posts.request';
+import { GetPostsRequest, PostAuthorFilter } from './request/get-posts.request';
 import { PageInfo, PaginationResponse } from '@shared/dto/pagination-response.dto';
 import { BaseResponse } from '@shared/helper/response';
 import * as admin from 'firebase-admin';
@@ -232,10 +232,11 @@ export class PostService {
 
   /**
    * Get posts from a specific community
+   * Supports filtering by author role (idol, fan, or all)
    */
   async getPostsByCommunity(communityId: string, query: GetPostsRequest, request: IRequest): Promise<PaginationResponse<PostDto>> {
     try {
-      // 1. Verify community exists and is active
+      // 1. Verify community exists and get members
       const community = await this.prisma.community.findFirst({
         where: {
           id: communityId,
@@ -249,6 +250,14 @@ export class PostService {
               userId: true,
             },
           },
+          followers: {
+            where: {
+              isDeleted: false,
+            },
+            select: {
+              userId: true,
+            },
+          },
         },
       });
 
@@ -256,33 +265,46 @@ export class PostService {
         throw new NotFoundException('Community not found');
       }
 
-      // 2. Get all idol user IDs in this community
+      // 2. Get user IDs based on author filter
       const idolUserIds = community.idols.map(idol => idol.userId);
+      const fanUserIds = community.followers.map(follower => follower.userId);
 
-      if (idolUserIds.length === 0) {
-        // No idols in this community, return empty result
+      let targetUserIds: string[] = [];
+      const authorFilter = query.authorFilter || PostAuthorFilter.ALL;
+
+      if (authorFilter === PostAuthorFilter.IDOL) {
+        targetUserIds = idolUserIds;
+      } else if (authorFilter === PostAuthorFilter.FAN) {
+        targetUserIds = fanUserIds;
+      } else {
+        // ALL: combine both idols and fans
+        targetUserIds = [...new Set([...idolUserIds, ...fanUserIds])];
+      }
+
+      if (targetUserIds.length === 0) {
+        // No users in this filter, return empty result
         return PaginationResponse.of(
           new PaginationResponse([], new PageInfo(query.page || 1, query.limit || 20, 0))
         );
       }
 
-      // 3. Query Firestore for posts from these idols
+      // 3. Query Firestore for posts from these users
       const { posts } = getCollection();
       const firestore = this.firebaseService.getFirestore();
 
       // Note: Firestore 'in' operator supports up to 10 values
-      // For communities with more than 10 idols, we need to batch the queries
+      // For communities with more than 10 users, we need to batch the queries
       const batchSize = 10;
-      const idolBatches: string[][] = [];
-      for (let i = 0; i < idolUserIds.length; i += batchSize) {
-        idolBatches.push(idolUserIds.slice(i, i + batchSize));
+      const userBatches: string[][] = [];
+      for (let i = 0; i < targetUserIds.length; i += batchSize) {
+        userBatches.push(targetUserIds.slice(i, i + batchSize));
       }
 
       // Execute queries for each batch in parallel
-      const allPostsPromises = idolBatches.map(async (batch) => {
+      const allPostsPromises = userBatches.map(async (batch) => {
         let firestoreQuery: admin.firestore.Query = firestore.collection(posts);
 
-        // Filter by idol userIds in this batch
+        // Filter by user IDs in this batch
         firestoreQuery = firestoreQuery.where('userId', 'in', batch);
 
         // Filter by visibility (only public posts or user's own posts)
