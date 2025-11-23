@@ -57,13 +57,6 @@ export class PostDto {
   })
   hashtags: string[];
 
-  @ApiProperty({
-    description: 'Mentioned user IDs',
-    type: [String],
-    example: ['user-id-1'],
-  })
-  mentions: string[];
-
   @ApiPropertyOptional({
     description: 'Location',
     example: 'Santa Monica Beach, CA',

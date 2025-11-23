@@ -42,8 +42,8 @@ export class GroupSummaryDto {
 
   constructor(data: any) {
     this.id = data.id;
-    this.groupName = data.groupName;
-    this.logoUrl = data.logoUrl;
+    this.groupName = data.name || data.groupName; // Map from Community.name
+    this.logoUrl = data.avatarUrl || data.logoUrl; // Map from Community.avatarUrl
   }
 }
 
@@ -93,14 +93,14 @@ export class IdolDto {
     this.avatarUrl = data.avatarUrl;
     this.backgroundUrl = data.backgroundUrl;
     this.bio = data.bio;
-    this.groupId = data.groupId;
+    this.groupId = data.communityId || data.groupId; // Map from Idol.communityId
     this.userId = data.userId;
     this.isActive = data.isActive;
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
     this.version = data.version;
     this.user = new UserSummaryDto(data.user);
-    this.group = new GroupSummaryDto(data.group);
+    this.group = new GroupSummaryDto(data.community || data.group); // Map from Idol.community
   }
 }
 

@@ -40,7 +40,7 @@ export class CreatedIdolDto {
     this.avatarUrl = data.avatarUrl;
     this.backgroundUrl = data.backgroundUrl;
     this.bio = data.bio;
-    this.groupId = data.groupId;
+    this.groupId = data.communityId || data.groupId; // Map from Idol.communityId
     this.userId = data.userId;
     this.isActive = data.isActive;
     this.createdAt = data.createdAt;

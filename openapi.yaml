@@ -1252,6 +1252,35 @@ paths:
                   - message
       security: *ref_6
       tags: *ref_7
+  /v1/post/{postId}/like:
+    post:
+      operationId: PostController_likePost_v1
+      parameters:
+        - name: postId
+          required: true
+          in: path
+          description: Post ID
+          schema:
+            type: string
+      responses:
+        '201':
+          description: ''
+      security: *ref_6
+      tags: *ref_7
+    delete:
+      operationId: PostController_unlikePost_v1
+      parameters:
+        - name: postId
+          required: true
+          in: path
+          description: Post ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ''
+      security: *ref_6
+      tags: *ref_7
   /v1/comment:
     post:
       operationId: CommentController_createComment_v1
@@ -1902,6 +1931,40 @@ paths:
       security: *ref_12
       summary: Send a message to a channel
       tags: *ref_13
+    patch:
+      operationId: ChatController_updateMessage
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMessageRequest'
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageResponse'
+      security: *ref_12
+      summary: Update a message
+      tags: *ref_13
+    delete:
+      operationId: ChatController_deleteMessage
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeleteMessageRequest'
+      responses:
+        '200':
+          description: ''
+      security: *ref_12
+      summary: Delete a message
+      tags: *ref_13
   /chat/channels/{channelId}/messages:
     get:
       operationId: ChatController_getMessages
@@ -1924,14 +1987,8 @@ paths:
       responses:
         '200':
           description: ''
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ChatMessageResponse'
       security: *ref_12
-      summary: Get messages from a channel
+      summary: Get messages from a channel with pagination
       tags: *ref_13
   /chat/channels/read:
     post:
@@ -1979,6 +2036,22 @@ paths:
           description: ''
       security: *ref_12
       summary: Leave a channel
+      tags: *ref_13
+  /chat/channels/archive:
+    post:
+      operationId: ChatController_archiveChannel
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArchiveChannelRequest'
+      responses:
+        '200':
+          description: ''
+      security: *ref_12
+      summary: Archive a channel
       tags: *ref_13
   /v1/admin/authentication/login:
     post:
@@ -2069,30 +2142,30 @@ paths:
                   - message
       summary: Admin signup (bypass all verification, instantly active)
       tags: *ref_14
-  /v1/admin/groups:
+  /v1/admin/communities:
     post:
-      operationId: AdminGroupsController_createGroup_v1
+      operationId: AdminCommunitiesController_createCommunity_v1
       parameters: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateGroupRequest'
+              $ref: '#/components/schemas/CreateCommunityRequest'
       responses:
         '201':
           description: ''
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateGroupResponse'
+                $ref: '#/components/schemas/CreateCommunityResponse'
       security: &ref_15
         - bearer: []
-      summary: Create a new group (Admin only)
+      summary: Create a new community (Admin only)
       tags: &ref_16
-        - Admin Groups
+        - Admin Communities
     get:
-      operationId: AdminGroupsController_getAllGroups_v1
+      operationId: AdminCommunitiesController_getAllCommunities_v1
       parameters:
         - name: page
           required: false
@@ -2144,7 +2217,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/GroupDto'
+                      $ref: '#/components/schemas/CommunityDto'
                     description: Array of data items
                   paging:
                     type: object
@@ -2187,7 +2260,7 @@ paths:
                   - data
                   - paging
       security: *ref_15
-      summary: Get all groups with pagination (Admin only)
+      summary: Get all communities with pagination (Admin only)
       tags: *ref_16
   /v1/admin/idols:
     post:
@@ -2540,6 +2613,207 @@ paths:
       security: *ref_19
       summary: Get all products with pagination (Admin only)
       tags: *ref_20
+  /v1/community:
+    get:
+      description: >-
+        Get communities with optional filtering. Use filter=joined to get only
+        joined communities, or filter=all to get all communities with isJoin
+        field.
+      operationId: CommunityController_getCommunities_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: filter
+          required: false
+          in: query
+          description: >-
+            Filter communities by join status. "all" returns all communities
+            with isJoin field, "joined" returns only joined communities
+          schema:
+            default: joined
+            type: string
+            enum:
+              - all
+              - joined
+        - name: search
+          required: false
+          in: query
+          description: Search communities by name (case-insensitive partial match)
+          schema:
+            example: K-pop
+            type: string
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GetCommunitiesResponse'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: &ref_21
+        - bearer: []
+      summary: Get communities
+      tags: &ref_22
+        - Community
+  /v1/community/join:
+    post:
+      description: Join a community by providing the community ID
+      operationId: CommunityController_joinCommunity_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinCommunityRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_21
+      summary: Join a community
+      tags: *ref_22
+  /v1/community/leave:
+    delete:
+      description: Leave a community by providing the community ID
+      operationId: CommunityController_leaveCommunity_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LeaveCommunityRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_21
+      summary: Leave a community
+      tags: *ref_22
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -3307,13 +3581,6 @@ components:
           type: array
           items:
             type: string
-        mentions:
-          description: Mentioned user IDs
-          example:
-            - user-id-1
-          type: array
-          items:
-            type: string
         location:
           type: string
           description: Location
@@ -3338,7 +3605,6 @@ components:
         - content
         - mediaUrls
         - hashtags
-        - mentions
         - location
         - createdAt
         - counters
@@ -3371,23 +3637,16 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: &ref_21
+          example: &ref_23
             - https://storage.googleapis.com/bucket/image1.jpg
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: &ref_22
+          example: &ref_24
             - nature
             - sunset
-          type: array
-          items:
-            type: string
-        mentions:
-          description: Mentioned user IDs
-          example: &ref_23
-            - user-id-1
           type: array
           items:
             type: string
@@ -3430,7 +3689,6 @@ components:
         - content
         - mediaUrls
         - hashtags
-        - mentions
         - visibility
         - likesCount
         - commentsCount
@@ -3467,19 +3725,13 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: *ref_21
+          example: *ref_23
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: *ref_22
-          type: array
-          items:
-            type: string
-        mentions:
-          description: Mentioned user IDs
-          example: *ref_23
+          example: *ref_24
           type: array
           items:
             type: string
@@ -3522,7 +3774,6 @@ components:
         - content
         - mediaUrls
         - hashtags
-        - mentions
         - visibility
         - likesCount
         - commentsCount
@@ -3610,14 +3861,6 @@ components:
           type: array
           items:
             type: string
-        mentions:
-          description: Mentioned user IDs
-          example:
-            - user-id-1
-            - user-id-2
-          type: array
-          items:
-            type: string
         location:
           type: string
           description: Location/place name
@@ -3657,14 +3900,6 @@ components:
             - nature
             - sunset
             - photography
-          type: array
-          items:
-            type: string
-        mentions:
-          description: Mentioned user IDs
-          example:
-            - user-id-1
-            - user-id-2
           type: array
           items:
             type: string
@@ -4334,6 +4569,38 @@ components:
       required:
         - channelId
         - userIds
+    UpdateMessageRequest:
+      type: object
+      properties:
+        messageId:
+          type: string
+          description: Message ID to update
+        content:
+          type: string
+          description: New message content
+      required:
+        - messageId
+        - content
+    DeleteMessageRequest:
+      type: object
+      properties:
+        messageId:
+          type: string
+          description: Message ID to delete
+        channelId:
+          type: string
+          description: Channel ID
+      required:
+        - messageId
+        - channelId
+    ArchiveChannelRequest:
+      type: object
+      properties:
+        channelId:
+          type: string
+          description: Channel ID to archive
+      required:
+        - channelId
     AdminAuthResponse:
       type: object
       properties:
@@ -4389,37 +4656,37 @@ components:
         - email
         - password
         - name
-    CreateGroupRequest:
+    CreateCommunityRequest:
       type: object
       properties:
-        groupName:
+        name:
           type: string
           example: StarLight
-          description: Group name
+          description: Community name
         description:
           type: string
-          example: A talented K-pop group known for their powerful performances
-          description: Group description
-        logoUrl:
+          example: A talented K-pop community known for their powerful performances
+          description: Community description
+        avatarUrl:
           type: string
-          example: https://res.cloudinary.com/bucket/logo.jpg
-          description: Group logo URL
+          example: https://res.cloudinary.com/bucket/avatar.jpg
+          description: Community avatar URL
         backgroundUrl:
           type: string
           example: https://res.cloudinary.com/bucket/background.jpg
-          description: Group background image URL
+          description: Community background image URL
       required:
-        - groupName
-    CreateGroupResponse:
+        - name
+    CreateCommunityResponse:
       type: object
       properties:
         id:
           type: string
-        groupName:
+        name:
           type: string
         description:
           type: string
-        logoUrl:
+        avatarUrl:
           type: string
         backgroundUrl:
           type: string
@@ -4435,9 +4702,9 @@ components:
           type: number
       required:
         - id
-        - groupName
+        - name
         - description
-        - logoUrl
+        - avatarUrl
         - backgroundUrl
         - isActive
         - createdAt
@@ -4456,7 +4723,7 @@ components:
         - id
         - stageName
         - avatarUrl
-    GroupCountDto:
+    CommunityCountDto:
       type: object
       properties:
         idols:
@@ -4466,16 +4733,16 @@ components:
       required:
         - idols
         - followers
-    GroupDto:
+    CommunityDto:
       type: object
       properties:
         id:
           type: string
-        groupName:
+        name:
           type: string
         description:
           type: string
-        logoUrl:
+        avatarUrl:
           type: string
         backgroundUrl:
           type: string
@@ -4494,12 +4761,12 @@ components:
           items:
             $ref: '#/components/schemas/IdolSummaryDto'
         _count:
-          $ref: '#/components/schemas/GroupCountDto'
+          $ref: '#/components/schemas/CommunityCountDto'
       required:
         - id
-        - groupName
+        - name
         - description
-        - logoUrl
+        - avatarUrl
         - backgroundUrl
         - isActive
         - createdAt
@@ -4871,3 +5138,48 @@ components:
         - createdAt
         - updatedAt
         - version
+    GetCommunitiesResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        avatarUrl:
+          type: string
+        backgroundUrl:
+          type: string
+        isJoin:
+          type: boolean
+          description: Indicates if the current user has joined this community
+        followerCount:
+          type: number
+          description: Total number of followers in the community
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+        - isJoin
+        - followerCount
+        - createdAt
+        - updatedAt
+    JoinCommunityRequest:
+      type: object
+      properties:
+        communityId:
+          type: string
+      required:
+        - communityId
+    LeaveCommunityRequest:
+      type: object
+      properties:
+        communityId:
+          type: string
+          description: The ID of the community to leave
+      required:
+        - communityId

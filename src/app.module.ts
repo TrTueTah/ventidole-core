@@ -11,6 +11,7 @@ import { ConfigModule } from "@nestjs/config";
 import { QueueModule } from "@shared/service/queue/queue.module";
 import { RedisModule } from "@shared/service/redis/redis.module";
 import { FileModule } from "@domain/file/file.module";
+import { CommunityModule } from "@domain/community/community.module";
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { FileModule } from "@domain/file/file.module";
     CommentModule,
     ReplyModule,
     ChatModule,
-    AdminModule
+    AdminModule,
+    CommunityModule,
   ],
   controllers: [],
   providers: [],

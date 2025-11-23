@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Param, Query, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Query, UseGuards, Req, Patch, Delete } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { ChatService } from './chat.service';
 import { ChatGateway } from './chat.gateway';
@@ -8,6 +8,9 @@ import { CreateChannelRequest } from './request/create-channel.request';
 import { SendMessageRequest } from './request/send-message.request';
 import { AddParticipantsRequest } from './request/add-participants.request';
 import { MarkAsReadRequest } from './request/mark-as-read.request';
+import { UpdateMessageRequest } from './request/update-message.request';
+import { DeleteMessageRequest } from './request/delete-message.request';
+import { ArchiveChannelRequest } from './request/archive-channel.request';
 import { ChatChannelResponse, ChatMessageResponse } from './response/chat.response';
 import { BaseResponse } from '@shared/helper/response';
 
@@ -27,23 +30,23 @@ export class ChatController {
   async createChannel(
     @Body() body: CreateChannelRequest,
     @Req() request: IRequest,
-  ): Promise<BaseResponse<any>> {
+  ): Promise<BaseResponse<ChatChannelResponse>> {
     const result = await this.chatService.createChannel(body, request);
-    
+
     // Notify participants via WebSocket
     if (body.participantIds) {
       body.participantIds.forEach(userId => {
         this.chatGateway.emitNewChannel(userId, result.data);
       });
     }
-    
+
     return result;
   }
 
   @Get('channels')
   @ApiOperation({ summary: 'Get all channels for current user' })
   @ApiResponse({ status: 200, type: [ChatChannelResponse] })
-  async getMyChannels(@Req() request: IRequest): Promise<BaseResponse<any[]>> {
+  async getMyChannels(@Req() request: IRequest): Promise<BaseResponse<ChatChannelResponse[]>> {
     return this.chatService.getMyChannels(request);
   }
 
@@ -53,7 +56,7 @@ export class ChatController {
   async getChannelById(
     @Param('channelId') channelId: string,
     @Req() request: IRequest,
-  ): Promise<BaseResponse<any>> {
+  ): Promise<BaseResponse<ChatChannelResponse>> {
     return this.chatService.getChannelById(channelId, request);
   }
 
@@ -63,27 +66,27 @@ export class ChatController {
   async sendMessage(
     @Body() body: SendMessageRequest,
     @Req() request: IRequest,
-  ): Promise<BaseResponse<any>> {
+  ): Promise<BaseResponse<ChatMessageResponse>> {
     const result = await this.chatService.sendMessage(body, request);
-    
+
     // Broadcast message via WebSocket
     this.chatGateway.emitNewMessage(body.channelId, result.data);
-    
+
     return result;
   }
 
   @Get('channels/:channelId/messages')
-  @ApiOperation({ summary: 'Get messages from a channel' })
-  @ApiResponse({ status: 200, type: [ChatMessageResponse] })
+  @ApiOperation({ summary: 'Get messages from a channel with pagination' })
+  @ApiResponse({ status: 200 })
   async getMessages(
     @Param('channelId') channelId: string,
     @Query('limit') limit?: number,
     @Query('lastMessageId') lastMessageId?: string,
     @Req() request?: IRequest,
-  ): Promise<BaseResponse<any[]>> {
+  ) {
     return this.chatService.getMessages(
       channelId,
-      limit ? Number(limit) : 50,
+      limit ? Number(limit) : undefined,
       lastMessageId,
       request,
     );
@@ -105,14 +108,14 @@ export class ChatController {
   async addParticipants(
     @Body() body: AddParticipantsRequest,
     @Req() request: IRequest,
-  ): Promise<BaseResponse<any>> {
+  ): Promise<BaseResponse<{ added: number }>> {
     const result = await this.chatService.addParticipants(body, request);
-    
+
     // Notify new participants via WebSocket
     body.userIds.forEach(userId => {
       this.chatGateway.emitNewChannel(userId, { channelId: body.channelId });
     });
-    
+
     return result;
   }
 
@@ -124,5 +127,48 @@ export class ChatController {
     @Req() request: IRequest,
   ): Promise<BaseResponse<unknown>> {
     return this.chatService.leaveChannel(channelId, request);
+  }
+
+  @Patch('messages')
+  @ApiOperation({ summary: 'Update a message' })
+  @ApiResponse({ status: 200, type: ChatMessageResponse })
+  async updateMessage(
+    @Body() body: UpdateMessageRequest,
+    @Req() request: IRequest,
+  ): Promise<BaseResponse<ChatMessageResponse>> {
+    const result = await this.chatService.updateMessage(body, request);
+
+    // Broadcast update via WebSocket
+    const messageData = result.data as any;
+    if (messageData?.channelId) {
+      this.chatGateway.emitMessageUpdate(messageData.channelId, result.data);
+    }
+
+    return result;
+  }
+
+  @Delete('messages')
+  @ApiOperation({ summary: 'Delete a message' })
+  @ApiResponse({ status: 200 })
+  async deleteMessage(
+    @Body() body: DeleteMessageRequest,
+    @Req() request: IRequest,
+  ): Promise<BaseResponse<{ messageId: string }>> {
+    const result = await this.chatService.deleteMessage(body, request);
+
+    // Broadcast deletion via WebSocket
+    this.chatGateway.emitMessageDeleted(body.channelId, body.messageId);
+
+    return result;
+  }
+
+  @Post('channels/archive')
+  @ApiOperation({ summary: 'Archive a channel' })
+  @ApiResponse({ status: 200 })
+  async archiveChannel(
+    @Body() body: ArchiveChannelRequest,
+    @Req() request: IRequest,
+  ): Promise<BaseResponse<unknown>> {
+    return this.chatService.archiveChannel(body, request);
   }
 }

@@ -40,12 +40,14 @@ export type UserMinAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   version: number | null
+  isDeleted: boolean | null
+  deletedAt: Date | null
   email: string | null
   password: string | null
   role: $Enums.Role | null
   deviceToken: string | null
-  isDeleted: boolean | null
-  isOnline: boolean | null
+  avatarUrl: string | null
+  backgroundUrl: string | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -54,12 +56,14 @@ export type UserMaxAggregateOutputType = {
   createdAt: Date | null
   updatedAt: Date | null
   version: number | null
+  isDeleted: boolean | null
+  deletedAt: Date | null
   email: string | null
   password: string | null
   role: $Enums.Role | null
   deviceToken: string | null
-  isDeleted: boolean | null
-  isOnline: boolean | null
+  avatarUrl: string | null
+  backgroundUrl: string | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -68,12 +72,15 @@ export type UserCountAggregateOutputType = {
   createdAt: number
   updatedAt: number
   version: number
+  isDeleted: number
+  deletedAt: number
+  metadata: number
   email: number
   password: number
   role: number
   deviceToken: number
-  isDeleted: number
-  isOnline: number
+  avatarUrl: number
+  backgroundUrl: number
   _all: number
 }
 
@@ -92,12 +99,14 @@ export type UserMinAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   version?: true
+  isDeleted?: true
+  deletedAt?: true
   email?: true
   password?: true
   role?: true
   deviceToken?: true
-  isDeleted?: true
-  isOnline?: true
+  avatarUrl?: true
+  backgroundUrl?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -106,12 +115,14 @@ export type UserMaxAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   version?: true
+  isDeleted?: true
+  deletedAt?: true
   email?: true
   password?: true
   role?: true
   deviceToken?: true
-  isDeleted?: true
-  isOnline?: true
+  avatarUrl?: true
+  backgroundUrl?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -120,12 +131,15 @@ export type UserCountAggregateInputType = {
   createdAt?: true
   updatedAt?: true
   version?: true
+  isDeleted?: true
+  deletedAt?: true
+  metadata?: true
   email?: true
   password?: true
   role?: true
   deviceToken?: true
-  isDeleted?: true
-  isOnline?: true
+  avatarUrl?: true
+  backgroundUrl?: true
   _all?: true
 }
 
@@ -221,12 +235,15 @@ export type UserGroupByOutputType = {
   createdAt: Date
   updatedAt: Date
   version: number
+  isDeleted: boolean
+  deletedAt: Date | null
+  metadata: runtime.JsonValue | null
   email: string
   password: string
   role: $Enums.Role
   deviceToken: string | null
-  isDeleted: boolean
-  isOnline: boolean
+  avatarUrl: string | null
+  backgroundUrl: string | null
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -258,19 +275,20 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   version?: Prisma.IntFilter<"User"> | number
+  isDeleted?: Prisma.BoolFilter<"User"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  metadata?: Prisma.JsonNullableFilter<"User">
   email?: Prisma.StringFilter<"User"> | string
   password?: Prisma.StringFilter<"User"> | string
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   deviceToken?: Prisma.StringNullableFilter<"User"> | string | null
-  isDeleted?: Prisma.BoolFilter<"User"> | boolean
-  isOnline?: Prisma.BoolFilter<"User"> | boolean
-  social_accounts?: Prisma.SocialAccountListRelationFilter
-  verifications?: Prisma.VerificationListRelationFilter
-  fan?: Prisma.XOR<Prisma.FanNullableScalarRelationFilter, Prisma.FanWhereInput> | null
-  idol?: Prisma.XOR<Prisma.IdolNullableScalarRelationFilter, Prisma.IdolWhereInput> | null
+  avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  backgroundUrl?: Prisma.StringNullableFilter<"User"> | string | null
   chatParticipants?: Prisma.ChatParticipantListRelationFilter
-  carts?: Prisma.CartListRelationFilter
-  orders?: Prisma.OrderListRelationFilter
+  followedCommunities?: Prisma.CommunityFollowerListRelationFilter
+  idol?: Prisma.XOR<Prisma.IdolNullableScalarRelationFilter, Prisma.IdolWhereInput> | null
+  socialAccounts?: Prisma.SocialAccountListRelationFilter
+  verifications?: Prisma.VerificationListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -279,19 +297,20 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   role?: Prisma.SortOrder
   deviceToken?: Prisma.SortOrderInput | Prisma.SortOrder
-  isDeleted?: Prisma.SortOrder
-  isOnline?: Prisma.SortOrder
-  social_accounts?: Prisma.SocialAccountOrderByRelationAggregateInput
-  verifications?: Prisma.VerificationOrderByRelationAggregateInput
-  fan?: Prisma.FanOrderByWithRelationInput
-  idol?: Prisma.IdolOrderByWithRelationInput
+  avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  backgroundUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   chatParticipants?: Prisma.ChatParticipantOrderByRelationAggregateInput
-  carts?: Prisma.CartOrderByRelationAggregateInput
-  orders?: Prisma.OrderOrderByRelationAggregateInput
+  followedCommunities?: Prisma.CommunityFollowerOrderByRelationAggregateInput
+  idol?: Prisma.IdolOrderByWithRelationInput
+  socialAccounts?: Prisma.SocialAccountOrderByRelationAggregateInput
+  verifications?: Prisma.VerificationOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -304,18 +323,19 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   version?: Prisma.IntFilter<"User"> | number
+  isDeleted?: Prisma.BoolFilter<"User"> | boolean
+  deletedAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
+  metadata?: Prisma.JsonNullableFilter<"User">
   password?: Prisma.StringFilter<"User"> | string
   role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role
   deviceToken?: Prisma.StringNullableFilter<"User"> | string | null
-  isDeleted?: Prisma.BoolFilter<"User"> | boolean
-  isOnline?: Prisma.BoolFilter<"User"> | boolean
-  social_accounts?: Prisma.SocialAccountListRelationFilter
-  verifications?: Prisma.VerificationListRelationFilter
-  fan?: Prisma.XOR<Prisma.FanNullableScalarRelationFilter, Prisma.FanWhereInput> | null
-  idol?: Prisma.XOR<Prisma.IdolNullableScalarRelationFilter, Prisma.IdolWhereInput> | null
+  avatarUrl?: Prisma.StringNullableFilter<"User"> | string | null
+  backgroundUrl?: Prisma.StringNullableFilter<"User"> | string | null
   chatParticipants?: Prisma.ChatParticipantListRelationFilter
-  carts?: Prisma.CartListRelationFilter
-  orders?: Prisma.OrderListRelationFilter
+  followedCommunities?: Prisma.CommunityFollowerListRelationFilter
+  idol?: Prisma.XOR<Prisma.IdolNullableScalarRelationFilter, Prisma.IdolWhereInput> | null
+  socialAccounts?: Prisma.SocialAccountListRelationFilter
+  verifications?: Prisma.VerificationListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -324,12 +344,15 @@ export type UserOrderByWithAggregationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
+  metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   role?: Prisma.SortOrder
   deviceToken?: Prisma.SortOrderInput | Prisma.SortOrder
-  isDeleted?: Prisma.SortOrder
-  isOnline?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  backgroundUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -346,12 +369,15 @@ export type UserScalarWhereWithAggregatesInput = {
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
   version?: Prisma.IntWithAggregatesFilter<"User"> | number
+  isDeleted?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+  metadata?: Prisma.JsonNullableWithAggregatesFilter<"User">
   email?: Prisma.StringWithAggregatesFilter<"User"> | string
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
   role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
   deviceToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
-  isDeleted?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
-  isOnline?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  backgroundUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
 }
 
 export type UserCreateInput = {
@@ -360,19 +386,20 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email: string
   password: string
   role: $Enums.Role
   deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
-  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanCreateNestedOneWithoutUserInput
-  idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
   chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
-  carts?: Prisma.CartCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
+  followedCommunities?: Prisma.CommunityFollowerCreateNestedManyWithoutUserInput
+  idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -381,19 +408,20 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email: string
   password: string
   role: $Enums.Role
   deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
-  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
-  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
   chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
-  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutUserInput
+  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -402,19 +430,20 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
-  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUpdateOneWithoutUserNestedInput
-  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
-  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUpdateManyWithoutUserNestedInput
+  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -423,19 +452,20 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
-  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
-  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
-  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutUserNestedInput
+  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -444,12 +474,15 @@ export type UserCreateManyInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email: string
   password: string
   role: $Enums.Role
   deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -458,12 +491,15 @@ export type UserUpdateManyMutationInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -472,12 +508,15 @@ export type UserUncheckedUpdateManyInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type UserCountOrderByAggregateInput = {
@@ -486,12 +525,15 @@ export type UserCountOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
+  metadata?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   role?: Prisma.SortOrder
   deviceToken?: Prisma.SortOrder
-  isDeleted?: Prisma.SortOrder
-  isOnline?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
+  backgroundUrl?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -504,12 +546,14 @@ export type UserMaxOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   role?: Prisma.SortOrder
   deviceToken?: Prisma.SortOrder
-  isDeleted?: Prisma.SortOrder
-  isOnline?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
+  backgroundUrl?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -518,12 +562,14 @@ export type UserMinOrderByAggregateInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   version?: Prisma.SortOrder
+  isDeleted?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
   email?: Prisma.SortOrder
   password?: Prisma.SortOrder
   role?: Prisma.SortOrder
   deviceToken?: Prisma.SortOrder
-  isDeleted?: Prisma.SortOrder
-  isOnline?: Prisma.SortOrder
+  avatarUrl?: Prisma.SortOrder
+  backgroundUrl?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
@@ -560,6 +606,10 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type EnumRoleFieldUpdateOperationsInput = {
   set?: $Enums.Role
 }
@@ -584,32 +634,18 @@ export type UserUpdateOneWithoutVerificationsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutVerificationsInput, Prisma.UserUpdateWithoutVerificationsInput>, Prisma.UserUncheckedUpdateWithoutVerificationsInput>
 }
 
-export type UserCreateNestedOneWithoutSocial_accountsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSocial_accountsInput, Prisma.UserUncheckedCreateWithoutSocial_accountsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSocial_accountsInput
+export type UserCreateNestedOneWithoutSocialAccountsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSocialAccountsInput, Prisma.UserUncheckedCreateWithoutSocialAccountsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSocialAccountsInput
   connect?: Prisma.UserWhereUniqueInput
 }
 
-export type UserUpdateOneRequiredWithoutSocial_accountsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutSocial_accountsInput, Prisma.UserUncheckedCreateWithoutSocial_accountsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSocial_accountsInput
-  upsert?: Prisma.UserUpsertWithoutSocial_accountsInput
+export type UserUpdateOneRequiredWithoutSocialAccountsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutSocialAccountsInput, Prisma.UserUncheckedCreateWithoutSocialAccountsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutSocialAccountsInput
+  upsert?: Prisma.UserUpsertWithoutSocialAccountsInput
   connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSocial_accountsInput, Prisma.UserUpdateWithoutSocial_accountsInput>, Prisma.UserUncheckedUpdateWithoutSocial_accountsInput>
-}
-
-export type UserCreateNestedOneWithoutFanInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutFanInput, Prisma.UserUncheckedCreateWithoutFanInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFanInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutFanNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutFanInput, Prisma.UserUncheckedCreateWithoutFanInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFanInput
-  upsert?: Prisma.UserUpsertWithoutFanInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFanInput, Prisma.UserUpdateWithoutFanInput>, Prisma.UserUncheckedUpdateWithoutFanInput>
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutSocialAccountsInput, Prisma.UserUpdateWithoutSocialAccountsInput>, Prisma.UserUncheckedUpdateWithoutSocialAccountsInput>
 }
 
 export type UserCreateNestedOneWithoutIdolInput = {
@@ -626,6 +662,20 @@ export type UserUpdateOneRequiredWithoutIdolNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutIdolInput, Prisma.UserUpdateWithoutIdolInput>, Prisma.UserUncheckedUpdateWithoutIdolInput>
 }
 
+export type UserCreateNestedOneWithoutFollowedCommunitiesInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFollowedCommunitiesInput, Prisma.UserUncheckedCreateWithoutFollowedCommunitiesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFollowedCommunitiesInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutFollowedCommunitiesNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutFollowedCommunitiesInput, Prisma.UserUncheckedCreateWithoutFollowedCommunitiesInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutFollowedCommunitiesInput
+  upsert?: Prisma.UserUpsertWithoutFollowedCommunitiesInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFollowedCommunitiesInput, Prisma.UserUpdateWithoutFollowedCommunitiesInput>, Prisma.UserUncheckedUpdateWithoutFollowedCommunitiesInput>
+}
+
 export type UserCreateNestedOneWithoutChatParticipantsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutChatParticipantsInput, Prisma.UserUncheckedCreateWithoutChatParticipantsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutChatParticipantsInput
@@ -640,52 +690,25 @@ export type UserUpdateOneRequiredWithoutChatParticipantsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutChatParticipantsInput, Prisma.UserUpdateWithoutChatParticipantsInput>, Prisma.UserUncheckedUpdateWithoutChatParticipantsInput>
 }
 
-export type UserCreateNestedOneWithoutCartsInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutCartsInput, Prisma.UserUncheckedCreateWithoutCartsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCartsInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutCartsNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutCartsInput, Prisma.UserUncheckedCreateWithoutCartsInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCartsInput
-  upsert?: Prisma.UserUpsertWithoutCartsInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCartsInput, Prisma.UserUpdateWithoutCartsInput>, Prisma.UserUncheckedUpdateWithoutCartsInput>
-}
-
-export type UserCreateNestedOneWithoutOrdersInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrdersInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutOrdersNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrdersInput
-  upsert?: Prisma.UserUpsertWithoutOrdersInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOrdersInput, Prisma.UserUpdateWithoutOrdersInput>, Prisma.UserUncheckedUpdateWithoutOrdersInput>
-}
-
 export type UserCreateWithoutVerificationsInput = {
   id?: string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email: string
   password: string
   role: $Enums.Role
   deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanCreateNestedOneWithoutUserInput
-  idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
   chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
-  carts?: Prisma.CartCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
+  followedCommunities?: Prisma.CommunityFollowerCreateNestedManyWithoutUserInput
+  idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVerificationsInput = {
@@ -694,18 +717,19 @@ export type UserUncheckedCreateWithoutVerificationsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email: string
   password: string
   role: $Enums.Role
   deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
-  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
   chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
-  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutUserInput
+  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVerificationsInput = {
@@ -730,18 +754,19 @@ export type UserUpdateWithoutVerificationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUpdateOneWithoutUserNestedInput
-  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
-  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUpdateManyWithoutUserNestedInput
+  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVerificationsInput = {
@@ -750,210 +775,119 @@ export type UserUncheckedUpdateWithoutVerificationsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
-  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
-  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutUserNestedInput
+  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
 }
 
-export type UserCreateWithoutSocial_accountsInput = {
+export type UserCreateWithoutSocialAccountsInput = {
   id?: string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email: string
   password: string
   role: $Enums.Role
   deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanCreateNestedOneWithoutUserInput
-  idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
   chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
-  carts?: Prisma.CartCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
-}
-
-export type UserUncheckedCreateWithoutSocial_accountsInput = {
-  id?: string
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  version?: number
-  email: string
-  password: string
-  role: $Enums.Role
-  deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
-  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
-  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
-  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
-}
-
-export type UserCreateOrConnectWithoutSocial_accountsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutSocial_accountsInput, Prisma.UserUncheckedCreateWithoutSocial_accountsInput>
-}
-
-export type UserUpsertWithoutSocial_accountsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutSocial_accountsInput, Prisma.UserUncheckedUpdateWithoutSocial_accountsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutSocial_accountsInput, Prisma.UserUncheckedCreateWithoutSocial_accountsInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutSocial_accountsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutSocial_accountsInput, Prisma.UserUncheckedUpdateWithoutSocial_accountsInput>
-}
-
-export type UserUpdateWithoutSocial_accountsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  version?: Prisma.IntFieldUpdateOperationsInput | number
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUpdateOneWithoutUserNestedInput
-  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
-  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
-  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
-}
-
-export type UserUncheckedUpdateWithoutSocial_accountsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  version?: Prisma.IntFieldUpdateOperationsInput | number
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
-  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
-  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
-  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
-}
-
-export type UserCreateWithoutFanInput = {
-  id?: string
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  version?: number
-  email: string
-  password: string
-  role: $Enums.Role
-  deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
-  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  followedCommunities?: Prisma.CommunityFollowerCreateNestedManyWithoutUserInput
   idol?: Prisma.IdolCreateNestedOneWithoutUserInput
-  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
-  carts?: Prisma.CartCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
 }
 
-export type UserUncheckedCreateWithoutFanInput = {
+export type UserUncheckedCreateWithoutSocialAccountsInput = {
   id?: string
   isActive?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
   version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email: string
   password: string
   role: $Enums.Role
   deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
-  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
-  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
   chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
-  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutUserInput
+  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
 }
 
-export type UserCreateOrConnectWithoutFanInput = {
+export type UserCreateOrConnectWithoutSocialAccountsInput = {
   where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutFanInput, Prisma.UserUncheckedCreateWithoutFanInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSocialAccountsInput, Prisma.UserUncheckedCreateWithoutSocialAccountsInput>
 }
 
-export type UserUpsertWithoutFanInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutFanInput, Prisma.UserUncheckedUpdateWithoutFanInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutFanInput, Prisma.UserUncheckedCreateWithoutFanInput>
+export type UserUpsertWithoutSocialAccountsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutSocialAccountsInput, Prisma.UserUncheckedUpdateWithoutSocialAccountsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutSocialAccountsInput, Prisma.UserUncheckedCreateWithoutSocialAccountsInput>
   where?: Prisma.UserWhereInput
 }
 
-export type UserUpdateToOneWithWhereWithoutFanInput = {
+export type UserUpdateToOneWithWhereWithoutSocialAccountsInput = {
   where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutFanInput, Prisma.UserUncheckedUpdateWithoutFanInput>
+  data: Prisma.XOR<Prisma.UserUpdateWithoutSocialAccountsInput, Prisma.UserUncheckedUpdateWithoutSocialAccountsInput>
 }
 
-export type UserUpdateWithoutFanInput = {
+export type UserUpdateWithoutSocialAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
-  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
-  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
-  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUpdateManyWithoutUserNestedInput
+  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
 }
 
-export type UserUncheckedUpdateWithoutFanInput = {
+export type UserUncheckedUpdateWithoutSocialAccountsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
-  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
-  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
-  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutUserNestedInput
+  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutIdolInput = {
@@ -962,18 +896,19 @@ export type UserCreateWithoutIdolInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email: string
   password: string
   role: $Enums.Role
   deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
-  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanCreateNestedOneWithoutUserInput
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
   chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
-  carts?: Prisma.CartCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
+  followedCommunities?: Prisma.CommunityFollowerCreateNestedManyWithoutUserInput
+  socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutIdolInput = {
@@ -982,18 +917,19 @@ export type UserUncheckedCreateWithoutIdolInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email: string
   password: string
   role: $Enums.Role
   deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
-  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
   chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
-  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutUserInput
+  socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutIdolInput = {
@@ -1018,18 +954,19 @@ export type UserUpdateWithoutIdolInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
-  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUpdateOneWithoutUserNestedInput
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
-  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUpdateManyWithoutUserNestedInput
+  socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutIdolInput = {
@@ -1038,18 +975,119 @@ export type UserUncheckedUpdateWithoutIdolInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
-  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
-  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutUserNestedInput
+  socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutFollowedCommunitiesInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
+  idol?: Prisma.IdolCreateNestedOneWithoutUserInput
+  socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutFollowedCommunitiesInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
+  socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutFollowedCommunitiesInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutFollowedCommunitiesInput, Prisma.UserUncheckedCreateWithoutFollowedCommunitiesInput>
+}
+
+export type UserUpsertWithoutFollowedCommunitiesInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFollowedCommunitiesInput, Prisma.UserUncheckedUpdateWithoutFollowedCommunitiesInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFollowedCommunitiesInput, Prisma.UserUncheckedCreateWithoutFollowedCommunitiesInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutFollowedCommunitiesInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFollowedCommunitiesInput, Prisma.UserUncheckedUpdateWithoutFollowedCommunitiesInput>
+}
+
+export type UserUpdateWithoutFollowedCommunitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
+  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
+  socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutFollowedCommunitiesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
+  socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutChatParticipantsInput = {
@@ -1058,18 +1096,19 @@ export type UserCreateWithoutChatParticipantsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email: string
   password: string
   role: $Enums.Role
   deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
-  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanCreateNestedOneWithoutUserInput
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  followedCommunities?: Prisma.CommunityFollowerCreateNestedManyWithoutUserInput
   idol?: Prisma.IdolCreateNestedOneWithoutUserInput
-  carts?: Prisma.CartCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
+  socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutChatParticipantsInput = {
@@ -1078,18 +1117,19 @@ export type UserUncheckedCreateWithoutChatParticipantsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email: string
   password: string
   role: $Enums.Role
   deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
-  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  followedCommunities?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutUserInput
   idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
-  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
+  socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutChatParticipantsInput = {
@@ -1114,18 +1154,19 @@ export type UserUpdateWithoutChatParticipantsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
-  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUpdateOneWithoutUserNestedInput
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  followedCommunities?: Prisma.CommunityFollowerUpdateManyWithoutUserNestedInput
   idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
-  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
+  socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChatParticipantsInput = {
@@ -1134,210 +1175,19 @@ export type UserUncheckedUpdateWithoutChatParticipantsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   email?: Prisma.StringFieldUpdateOperationsInput | string
   password?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
   deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
-  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  followedCommunities?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutUserNestedInput
   idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
-  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
-}
-
-export type UserCreateWithoutCartsInput = {
-  id?: string
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  version?: number
-  email: string
-  password: string
-  role: $Enums.Role
-  deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
-  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanCreateNestedOneWithoutUserInput
-  idol?: Prisma.IdolCreateNestedOneWithoutUserInput
-  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderCreateNestedManyWithoutBuyerInput
-}
-
-export type UserUncheckedCreateWithoutCartsInput = {
-  id?: string
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  version?: number
-  email: string
-  password: string
-  role: $Enums.Role
-  deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
-  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
-  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
-  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
-  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutBuyerInput
-}
-
-export type UserCreateOrConnectWithoutCartsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutCartsInput, Prisma.UserUncheckedCreateWithoutCartsInput>
-}
-
-export type UserUpsertWithoutCartsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutCartsInput, Prisma.UserUncheckedUpdateWithoutCartsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutCartsInput, Prisma.UserUncheckedCreateWithoutCartsInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutCartsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutCartsInput, Prisma.UserUncheckedUpdateWithoutCartsInput>
-}
-
-export type UserUpdateWithoutCartsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  version?: Prisma.IntFieldUpdateOperationsInput | number
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
-  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUpdateOneWithoutUserNestedInput
-  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
-  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUpdateManyWithoutBuyerNestedInput
-}
-
-export type UserUncheckedUpdateWithoutCartsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  version?: Prisma.IntFieldUpdateOperationsInput | number
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
+  socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
   verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
-  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
-  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
-  orders?: Prisma.OrderUncheckedUpdateManyWithoutBuyerNestedInput
-}
-
-export type UserCreateWithoutOrdersInput = {
-  id?: string
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  version?: number
-  email: string
-  password: string
-  role: $Enums.Role
-  deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
-  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanCreateNestedOneWithoutUserInput
-  idol?: Prisma.IdolCreateNestedOneWithoutUserInput
-  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
-  carts?: Prisma.CartCreateNestedManyWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutOrdersInput = {
-  id?: string
-  isActive?: boolean
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  version?: number
-  email: string
-  password: string
-  role: $Enums.Role
-  deviceToken?: string | null
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
-  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
-  fan?: Prisma.FanUncheckedCreateNestedOneWithoutUserInput
-  idol?: Prisma.IdolUncheckedCreateNestedOneWithoutUserInput
-  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
-  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutOrdersInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
-}
-
-export type UserUpsertWithoutOrdersInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutOrdersInput, Prisma.UserUncheckedUpdateWithoutOrdersInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutOrdersInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutOrdersInput, Prisma.UserUncheckedUpdateWithoutOrdersInput>
-}
-
-export type UserUpdateWithoutOrdersInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  version?: Prisma.IntFieldUpdateOperationsInput | number
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
-  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUpdateOneWithoutUserNestedInput
-  idol?: Prisma.IdolUpdateOneWithoutUserNestedInput
-  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
-  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutOrdersInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  version?: Prisma.IntFieldUpdateOperationsInput | number
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  password?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  social_accounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
-  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
-  fan?: Prisma.FanUncheckedUpdateOneWithoutUserNestedInput
-  idol?: Prisma.IdolUncheckedUpdateOneWithoutUserNestedInput
-  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
-  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -1346,19 +1196,17 @@ export type UserUncheckedUpdateWithoutOrdersInput = {
  */
 
 export type UserCountOutputType = {
-  social_accounts: number
-  verifications: number
   chatParticipants: number
-  carts: number
-  orders: number
+  followedCommunities: number
+  socialAccounts: number
+  verifications: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  social_accounts?: boolean | UserCountOutputTypeCountSocial_accountsArgs
-  verifications?: boolean | UserCountOutputTypeCountVerificationsArgs
   chatParticipants?: boolean | UserCountOutputTypeCountChatParticipantsArgs
-  carts?: boolean | UserCountOutputTypeCountCartsArgs
-  orders?: boolean | UserCountOutputTypeCountOrdersArgs
+  followedCommunities?: boolean | UserCountOutputTypeCountFollowedCommunitiesArgs
+  socialAccounts?: boolean | UserCountOutputTypeCountSocialAccountsArgs
+  verifications?: boolean | UserCountOutputTypeCountVerificationsArgs
 }
 
 /**
@@ -1374,7 +1222,21 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
 /**
  * UserCountOutputType without action
  */
-export type UserCountOutputTypeCountSocial_accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type UserCountOutputTypeCountChatParticipantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ChatParticipantWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountFollowedCommunitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CommunityFollowerWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountSocialAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.SocialAccountWhereInput
 }
 
@@ -1385,27 +1247,6 @@ export type UserCountOutputTypeCountVerificationsArgs<ExtArgs extends runtime.Ty
   where?: Prisma.VerificationWhereInput
 }
 
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountChatParticipantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.ChatParticipantWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountCartsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.CartWhereInput
-}
-
-/**
- * UserCountOutputType without action
- */
-export type UserCountOutputTypeCountOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  where?: Prisma.OrderWhereInput
-}
-
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1413,19 +1254,20 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   version?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
+  metadata?: boolean
   email?: boolean
   password?: boolean
   role?: boolean
   deviceToken?: boolean
-  isDeleted?: boolean
-  isOnline?: boolean
-  social_accounts?: boolean | Prisma.User$social_accountsArgs<ExtArgs>
-  verifications?: boolean | Prisma.User$verificationsArgs<ExtArgs>
-  fan?: boolean | Prisma.User$fanArgs<ExtArgs>
-  idol?: boolean | Prisma.User$idolArgs<ExtArgs>
+  avatarUrl?: boolean
+  backgroundUrl?: boolean
   chatParticipants?: boolean | Prisma.User$chatParticipantsArgs<ExtArgs>
-  carts?: boolean | Prisma.User$cartsArgs<ExtArgs>
-  orders?: boolean | Prisma.User$ordersArgs<ExtArgs>
+  followedCommunities?: boolean | Prisma.User$followedCommunitiesArgs<ExtArgs>
+  idol?: boolean | Prisma.User$idolArgs<ExtArgs>
+  socialAccounts?: boolean | Prisma.User$socialAccountsArgs<ExtArgs>
+  verifications?: boolean | Prisma.User$verificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1435,12 +1277,15 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   version?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
+  metadata?: boolean
   email?: boolean
   password?: boolean
   role?: boolean
   deviceToken?: boolean
-  isDeleted?: boolean
-  isOnline?: boolean
+  avatarUrl?: boolean
+  backgroundUrl?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1449,12 +1294,15 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   createdAt?: boolean
   updatedAt?: boolean
   version?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
+  metadata?: boolean
   email?: boolean
   password?: boolean
   role?: boolean
   deviceToken?: boolean
-  isDeleted?: boolean
-  isOnline?: boolean
+  avatarUrl?: boolean
+  backgroundUrl?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -1463,23 +1311,24 @@ export type UserSelectScalar = {
   createdAt?: boolean
   updatedAt?: boolean
   version?: boolean
+  isDeleted?: boolean
+  deletedAt?: boolean
+  metadata?: boolean
   email?: boolean
   password?: boolean
   role?: boolean
   deviceToken?: boolean
-  isDeleted?: boolean
-  isOnline?: boolean
+  avatarUrl?: boolean
+  backgroundUrl?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "email" | "password" | "role" | "deviceToken" | "isDeleted" | "isOnline", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "isDeleted" | "deletedAt" | "metadata" | "email" | "password" | "role" | "deviceToken" | "avatarUrl" | "backgroundUrl", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  social_accounts?: boolean | Prisma.User$social_accountsArgs<ExtArgs>
-  verifications?: boolean | Prisma.User$verificationsArgs<ExtArgs>
-  fan?: boolean | Prisma.User$fanArgs<ExtArgs>
-  idol?: boolean | Prisma.User$idolArgs<ExtArgs>
   chatParticipants?: boolean | Prisma.User$chatParticipantsArgs<ExtArgs>
-  carts?: boolean | Prisma.User$cartsArgs<ExtArgs>
-  orders?: boolean | Prisma.User$ordersArgs<ExtArgs>
+  followedCommunities?: boolean | Prisma.User$followedCommunitiesArgs<ExtArgs>
+  idol?: boolean | Prisma.User$idolArgs<ExtArgs>
+  socialAccounts?: boolean | Prisma.User$socialAccountsArgs<ExtArgs>
+  verifications?: boolean | Prisma.User$verificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1488,13 +1337,11 @@ export type UserIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "User"
   objects: {
-    social_accounts: Prisma.$SocialAccountPayload<ExtArgs>[]
-    verifications: Prisma.$VerificationPayload<ExtArgs>[]
-    fan: Prisma.$FanPayload<ExtArgs> | null
-    idol: Prisma.$IdolPayload<ExtArgs> | null
     chatParticipants: Prisma.$ChatParticipantPayload<ExtArgs>[]
-    carts: Prisma.$CartPayload<ExtArgs>[]
-    orders: Prisma.$OrderPayload<ExtArgs>[]
+    followedCommunities: Prisma.$CommunityFollowerPayload<ExtArgs>[]
+    idol: Prisma.$IdolPayload<ExtArgs> | null
+    socialAccounts: Prisma.$SocialAccountPayload<ExtArgs>[]
+    verifications: Prisma.$VerificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1502,12 +1349,15 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdAt: Date
     updatedAt: Date
     version: number
+    isDeleted: boolean
+    deletedAt: Date | null
+    metadata: runtime.JsonValue | null
     email: string
     password: string
     role: $Enums.Role
     deviceToken: string | null
-    isDeleted: boolean
-    isOnline: boolean
+    avatarUrl: string | null
+    backgroundUrl: string | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1902,13 +1752,11 @@ readonly fields: UserFieldRefs;
  */
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  social_accounts<T extends Prisma.User$social_accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$social_accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SocialAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  verifications<T extends Prisma.User$verificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$verificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  fan<T extends Prisma.User$fanArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$fanArgs<ExtArgs>>): Prisma.Prisma__FanClient<runtime.Types.Result.GetResult<Prisma.$FanPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  idol<T extends Prisma.User$idolArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$idolArgs<ExtArgs>>): Prisma.Prisma__IdolClient<runtime.Types.Result.GetResult<Prisma.$IdolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   chatParticipants<T extends Prisma.User$chatParticipantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$chatParticipantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  carts<T extends Prisma.User$cartsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$cartsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  orders<T extends Prisma.User$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  followedCommunities<T extends Prisma.User$followedCommunitiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$followedCommunitiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommunityFollowerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  idol<T extends Prisma.User$idolArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$idolArgs<ExtArgs>>): Prisma.Prisma__IdolClient<runtime.Types.Result.GetResult<Prisma.$IdolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  socialAccounts<T extends Prisma.User$socialAccountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$socialAccountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SocialAccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  verifications<T extends Prisma.User$verificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$verificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1943,12 +1791,15 @@ export interface UserFieldRefs {
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly version: Prisma.FieldRef<"User", 'Int'>
+  readonly isDeleted: Prisma.FieldRef<"User", 'Boolean'>
+  readonly deletedAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly metadata: Prisma.FieldRef<"User", 'Json'>
   readonly email: Prisma.FieldRef<"User", 'String'>
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly role: Prisma.FieldRef<"User", 'Role'>
   readonly deviceToken: Prisma.FieldRef<"User", 'String'>
-  readonly isDeleted: Prisma.FieldRef<"User", 'Boolean'>
-  readonly isOnline: Prisma.FieldRef<"User", 'Boolean'>
+  readonly avatarUrl: Prisma.FieldRef<"User", 'String'>
+  readonly backgroundUrl: Prisma.FieldRef<"User", 'String'>
 }
     
 
@@ -2337,9 +2188,76 @@ export type UserDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
 }
 
 /**
- * User.social_accounts
+ * User.chatParticipants
  */
-export type User$social_accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type User$chatParticipantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ChatParticipant
+   */
+  select?: Prisma.ChatParticipantSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ChatParticipant
+   */
+  omit?: Prisma.ChatParticipantOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ChatParticipantInclude<ExtArgs> | null
+  where?: Prisma.ChatParticipantWhereInput
+  orderBy?: Prisma.ChatParticipantOrderByWithRelationInput | Prisma.ChatParticipantOrderByWithRelationInput[]
+  cursor?: Prisma.ChatParticipantWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ChatParticipantScalarFieldEnum | Prisma.ChatParticipantScalarFieldEnum[]
+}
+
+/**
+ * User.followedCommunities
+ */
+export type User$followedCommunitiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the CommunityFollower
+   */
+  select?: Prisma.CommunityFollowerSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the CommunityFollower
+   */
+  omit?: Prisma.CommunityFollowerOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CommunityFollowerInclude<ExtArgs> | null
+  where?: Prisma.CommunityFollowerWhereInput
+  orderBy?: Prisma.CommunityFollowerOrderByWithRelationInput | Prisma.CommunityFollowerOrderByWithRelationInput[]
+  cursor?: Prisma.CommunityFollowerWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CommunityFollowerScalarFieldEnum | Prisma.CommunityFollowerScalarFieldEnum[]
+}
+
+/**
+ * User.idol
+ */
+export type User$idolArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Idol
+   */
+  select?: Prisma.IdolSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Idol
+   */
+  omit?: Prisma.IdolOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.IdolInclude<ExtArgs> | null
+  where?: Prisma.IdolWhereInput
+}
+
+/**
+ * User.socialAccounts
+ */
+export type User$socialAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
    * Select specific fields to fetch from the SocialAccount
    */
@@ -2382,116 +2300,6 @@ export type User$verificationsArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.VerificationScalarFieldEnum | Prisma.VerificationScalarFieldEnum[]
-}
-
-/**
- * User.fan
- */
-export type User$fanArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Fan
-   */
-  select?: Prisma.FanSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Fan
-   */
-  omit?: Prisma.FanOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.FanInclude<ExtArgs> | null
-  where?: Prisma.FanWhereInput
-}
-
-/**
- * User.idol
- */
-export type User$idolArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Idol
-   */
-  select?: Prisma.IdolSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Idol
-   */
-  omit?: Prisma.IdolOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.IdolInclude<ExtArgs> | null
-  where?: Prisma.IdolWhereInput
-}
-
-/**
- * User.chatParticipants
- */
-export type User$chatParticipantsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the ChatParticipant
-   */
-  select?: Prisma.ChatParticipantSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the ChatParticipant
-   */
-  omit?: Prisma.ChatParticipantOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.ChatParticipantInclude<ExtArgs> | null
-  where?: Prisma.ChatParticipantWhereInput
-  orderBy?: Prisma.ChatParticipantOrderByWithRelationInput | Prisma.ChatParticipantOrderByWithRelationInput[]
-  cursor?: Prisma.ChatParticipantWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.ChatParticipantScalarFieldEnum | Prisma.ChatParticipantScalarFieldEnum[]
-}
-
-/**
- * User.carts
- */
-export type User$cartsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Cart
-   */
-  select?: Prisma.CartSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Cart
-   */
-  omit?: Prisma.CartOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.CartInclude<ExtArgs> | null
-  where?: Prisma.CartWhereInput
-  orderBy?: Prisma.CartOrderByWithRelationInput | Prisma.CartOrderByWithRelationInput[]
-  cursor?: Prisma.CartWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.CartScalarFieldEnum | Prisma.CartScalarFieldEnum[]
-}
-
-/**
- * User.orders
- */
-export type User$ordersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the Order
-   */
-  select?: Prisma.OrderSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the Order
-   */
-  omit?: Prisma.OrderOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.OrderInclude<ExtArgs> | null
-  where?: Prisma.OrderWhereInput
-  orderBy?: Prisma.OrderOrderByWithRelationInput | Prisma.OrderOrderByWithRelationInput[]
-  cursor?: Prisma.OrderWhereUniqueInput
-  take?: number
-  skip?: number
-  distinct?: Prisma.OrderScalarFieldEnum | Prisma.OrderScalarFieldEnum[]
 }
 
 /**

@@ -34,12 +34,12 @@ export class AdminIdolsService {
       throw new CustomError(ErrorCode.EmailAlreadyExists);
     }
 
-    // Check if group exists
-    const group = await this.prisma.group.findUnique({
+    // Check if community exists
+    const community = await this.prisma.community.findUnique({
       where: { id: body.groupId },
     });
 
-    if (!group) {
+    if (!community) {
       throw new CustomError(ErrorCode.ValidationFailed);
     }
 
@@ -56,7 +56,7 @@ export class AdminIdolsService {
         idol: {
           create: {
             stageName: body.stageName,
-            groupId: body.groupId,
+            communityId: body.groupId,
             avatarUrl: body.avatarUrl,
             backgroundUrl: body.backgroundUrl,
             bio: body.bio,
@@ -66,7 +66,7 @@ export class AdminIdolsService {
       include: {
         idol: {
           include: {
-            group: true,
+            community: true,
           },
         },
       },
@@ -130,12 +130,11 @@ export class AdminIdolsService {
               id: true,
               email: true,
               role: true,
-              isOnline: true,
               isActive: true,
               createdAt: true,
             },
           },
-          group: true,
+          community: true,
         },
         orderBy: orderByObj,
         skip: query.offset,

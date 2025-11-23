@@ -59,16 +59,19 @@ export class PostService {
 
         // Post content
         content: body.content,
-        mediaUrls: body.mediaUrls || [],
+        contentType: this.determineContentType(body.content, body.mediaUrls),
         hashtags: body.hashtags || [],
-        mentions: body.mentions || [],
         location: body.location || null,
         visibility: body.visibility || PostVisibility.PUBLIC,
+
+        // Media count (media stored in separate collection)
+        mediaCount: body.mediaUrls ? body.mediaUrls.length : 0,
 
         // Counters
         likesCount: 0,
         commentsCount: 0,
         sharesCount: 0,
+        viewsCount: 0,
 
         // Timestamps
         createdAt: now,
@@ -78,17 +81,17 @@ export class PostService {
         isDeleted: false,
       };
 
-      await postRef.set(postData);      // 3. Update user's post count in PostgreSQL (optional - skip for now)
-      // TODO: Add postsCount field to Account schema to enable this
-      // await this.prisma.account.update({
-      //   where: { id: userId },
-      //   data: { postsCount: { increment: 1 } },
-      // });
+      await postRef.set(postData);
 
-      // 4. Send notifications to mentioned users (async - don't wait)
-      if (body.mentions && body.mentions.length > 0) {
-        this.sendMentionNotifications(request.user.id, postId, body.mentions).catch((error) => {
-          this.logger.error('Failed to send mention notifications', error);
+      // Store media in separate collection
+      if (body.mediaUrls && body.mediaUrls.length > 0) {
+        await this.createPostMedia(postId, body.mediaUrls, request.user.id);
+      }
+
+      // 3. Send notifications to community members if post is from an idol (async - don't wait)
+      if (request.user.role === 'IDOL') {
+        this.sendIdolPostNotifications(request.user.id, postId).catch((error) => {
+          this.logger.error('Failed to send idol post notifications', error);
         });
       }
 
@@ -106,7 +109,6 @@ export class PostService {
         content: body.content,
         mediaUrls: body.mediaUrls || [],
         hashtags: body.hashtags || [],
-        mentions: body.mentions || [],
         location: body.location,
         createdAt: new Date(),
         counters: {
@@ -272,7 +274,6 @@ export class PostService {
       if (body.content !== undefined) updateData.content = body.content;
       if (body.mediaUrls !== undefined) updateData.mediaUrls = body.mediaUrls;
       if (body.hashtags !== undefined) updateData.hashtags = body.hashtags;
-      if (body.mentions !== undefined) updateData.mentions = body.mentions;
       if (body.location !== undefined) updateData.location = body.location;
       if (body.visibility !== undefined) updateData.visibility = body.visibility;
 
@@ -361,12 +362,7 @@ export class PostService {
       where: { id: userId },
       select: {
         email: true,
-        fan: {
-          select: {
-            username: true,
-            avatarUrl: true,
-          },
-        },
+        avatarUrl: true,
         idol: {
           select: {
             stageName: true,
@@ -385,9 +381,11 @@ export class PostService {
       };
     }
 
-    const username = user.fan?.username || user.idol?.stageName || 'unknown';
-    const displayName = user.fan?.username || user.idol?.stageName || 'Unknown User';
-    const avatarUrl = user.fan?.avatarUrl || user.idol?.avatarUrl || null;
+    // For idols, use stageName, otherwise use email as username
+    const username = user.idol?.stageName || user.email.split('@')[0];
+    const displayName = user.idol?.stageName || user.email.split('@')[0];
+    // Prioritize idol avatar, then user avatar
+    const avatarUrl = user.idol?.avatarUrl || user.avatarUrl || null;
 
     return {
       username,
@@ -413,7 +411,6 @@ export class PostService {
       content: data.content,
       mediaUrls: data.mediaUrls || [],
       hashtags: data.hashtags || [],
-      mentions: data.mentions || [],
       location: data.location,
       visibility: data.visibility,
       likesCount: data.likesCount || 0,
@@ -426,62 +423,276 @@ export class PostService {
   }
 
   /**
-   * Send notifications to mentioned users
+   * Send notifications to all community members when idol creates a post
    * This runs asynchronously and doesn't block post creation
    */
-  private async sendMentionNotifications(
-    authorId: string,
+  private async sendIdolPostNotifications(
+    idolUserId: string,
     postId: string,
-    mentionedUserIds: string[],
   ): Promise<void> {
     try {
       const { notifications } = getCollection();
       const firestore = this.firebaseService.getFirestore();
 
-      // Get author info
-      const author = await this.prisma.user.findUnique({
-        where: { id: authorId },
-        select: { 
-          id: true, 
-          email: true,
-          fan: {
+      // Get idol info and their community
+      const idol = await this.prisma.idol.findUnique({
+        where: { userId: idolUserId },
+        select: {
+          id: true,
+          stageName: true,
+          avatarUrl: true,
+          communityId: true,
+          community: {
             select: {
-              username: true,
-            },
-          },
-          idol: {
-            select: {
-              stageName: true,
+              name: true,
+              followers: {
+                where: {
+                  isActive: true,
+                },
+                select: {
+                  userId: true,
+                },
+              },
             },
           },
         },
       });
 
-      if (!author) return;
+      if (!idol || !idol.community.followers.length) {
+        this.logger.log(`No followers found for idol ${idolUserId}`);
+        return;
+      }
 
-      const authorName = author.fan?.username || author.idol?.stageName || 'Unknown';
+      // Get all follower user IDs
+      const followerUserIds = idol.community.followers.map(f => f.userId);
 
-      // Create notification for each mentioned user
-      const notificationPayload = mentionedUserIds.map((userId) => {
+      // Create notification for each follower
+      const notificationPromises = followerUserIds.map((userId) => {
         return firestore.collection(notifications).add({
           userId,
-          actorId: authorId,
-          actorName: authorName,
-          actorAvatar: null, // TODO: Add avatarUrl field to schema
-          type: 'mention',
+          actorId: idolUserId,
+          actorName: idol.stageName,
+          actorAvatar: idol.avatarUrl || null,
+          type: 'idol_post',
           contentId: postId,
           contentType: 'post',
-          message: `${authorName} mentioned you in a post`,
+          message: `${idol.stageName} posted in ${idol.community.name}`,
           read: false,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });
       });
 
-      await Promise.all(notificationPayload);
+      await Promise.all(notificationPromises);
 
-      this.logger.log(`Sent ${mentionedUserIds.length} mention notifications for post ${postId}`);
+      this.logger.log(`Sent ${followerUserIds.length} idol post notifications for post ${postId}`);
     } catch (error) {
-      this.logger.error('Failed to send mention notifications', error);
+      this.logger.error('Failed to send idol post notifications', error);
     }
+  }
+
+  /**
+   * Create post media in separate collection
+   */
+  private async createPostMedia(postId: string, mediaUrls: string[], uploadedBy: string): Promise<void> {
+    try {
+      const { postMedia } = getCollection();
+      const firestore = this.firebaseService.getFirestore();
+
+      const mediaPromises = mediaUrls.map((url, index) => {
+        return firestore.collection(postMedia).add({
+          postId,
+          url,
+          type: this.detectMediaType(url),
+          order: index,
+          uploadedBy,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      });
+
+      await Promise.all(mediaPromises);
+      this.logger.log(`Created ${mediaUrls.length} media items for post ${postId}`);
+    } catch (error) {
+      this.logger.error(`Failed to create post media for post ${postId}`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get post media from separate collection
+   */
+  private async getPostMedia(postId: string): Promise<Array<{
+    id: string;
+    url: string;
+    type: string;
+    order: number;
+  }>> {
+    try {
+      const { postMedia } = getCollection();
+      const firestore = this.firebaseService.getFirestore();
+
+      const snapshot = await firestore
+        .collection(postMedia)
+        .where('postId', '==', postId)
+        .orderBy('order', 'asc')
+        .get();
+
+      return snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          url: data.url,
+          type: data.type,
+          order: data.order,
+        };
+      });
+    } catch (error) {
+      this.logger.error(`Failed to get media for post ${postId}`, error);
+      return [];
+    }
+  }
+
+  /**
+   * Like a post
+   */
+  async likePost(postId: string, request: IRequest): Promise<BaseResponse<{ message: string; likesCount: number }>> {
+    try {
+      const { posts, postLikes } = getCollection();
+      const firestore = this.firebaseService.getFirestore();
+
+      // Check if post exists
+      const postRef = firestore.collection(posts).doc(postId);
+      const postDoc = await postRef.get();
+
+      if (!postDoc.exists || postDoc.data()?.isDeleted) {
+        throw new NotFoundException('Post not found');
+      }
+
+      // Check if user already liked this post (using composite key)
+      const likeId = `${request.user.id}_${postId}`;
+      const likeRef = firestore.collection(postLikes).doc(likeId);
+      const likeDoc = await likeRef.get();
+
+      if (likeDoc.exists) {
+        throw new BadRequestException('You already liked this post');
+      }
+
+      // Create like document
+      await likeRef.set({
+        userId: request.user.id,
+        postId,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+      // Increment like counter
+      await postRef.update({
+        likesCount: admin.firestore.FieldValue.increment(1),
+      });
+
+      // Get updated like count
+      const updatedPost = await postRef.get();
+      const likesCount = updatedPost.data()?.likesCount || 0;
+
+      this.logger.log(`Post ${postId} liked by user ${request.user.id}`);
+
+      return BaseResponse.of({
+        message: 'Post liked successfully',
+        likesCount,
+      });
+    } catch (error) {
+      this.logger.error(`Failed to like post ${postId}`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Unlike a post
+   */
+  async unlikePost(postId: string, request: IRequest): Promise<BaseResponse<{ message: string; likesCount: number }>> {
+    try {
+      const { posts, postLikes } = getCollection();
+      const firestore = this.firebaseService.getFirestore();
+
+      // Check if post exists
+      const postRef = firestore.collection(posts).doc(postId);
+      const postDoc = await postRef.get();
+
+      if (!postDoc.exists || postDoc.data()?.isDeleted) {
+        throw new NotFoundException('Post not found');
+      }
+
+      // Check if like exists (using composite key)
+      const likeId = `${request.user.id}_${postId}`;
+      const likeRef = firestore.collection(postLikes).doc(likeId);
+      const likeDoc = await likeRef.get();
+
+      if (!likeDoc.exists) {
+        throw new BadRequestException('You have not liked this post');
+      }
+
+      // Delete like document
+      await likeRef.delete();
+
+      // Decrement like counter
+      await postRef.update({
+        likesCount: admin.firestore.FieldValue.increment(-1),
+      });
+
+      // Get updated like count
+      const updatedPost = await postRef.get();
+      const likesCount = Math.max(0, updatedPost.data()?.likesCount || 0);
+
+      this.logger.log(`Post ${postId} unliked by user ${request.user.id}`);
+
+      return BaseResponse.of({
+        message: 'Post unliked successfully',
+        likesCount,
+      });
+    } catch (error) {
+      this.logger.error(`Failed to unlike post ${postId}`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Check if user has liked a post
+   */
+  async hasUserLikedPost(postId: string, userId: string): Promise<boolean> {
+    try {
+      const { postLikes } = getCollection();
+      const firestore = this.firebaseService.getFirestore();
+
+      const likeId = `${userId}_${postId}`;
+      const likeDoc = await firestore.collection(postLikes).doc(likeId).get();
+
+      return likeDoc.exists;
+    } catch (error) {
+      this.logger.error(`Failed to check like status for post ${postId}`, error);
+      return false;
+    }
+  }
+
+  /**
+   * Determine content type based on content and media
+   */
+  private determineContentType(content: string, mediaUrls?: string[]): 'text' | 'media' | 'mixed' {
+    const hasContent = content && content.trim().length > 0;
+    const hasMedia = mediaUrls && mediaUrls.length > 0;
+
+    if (hasContent && hasMedia) return 'mixed';
+    if (hasMedia) return 'media';
+    return 'text';
+  }
+
+  /**
+   * Detect media type from URL
+   */
+  private detectMediaType(url: string): 'image' | 'video' | 'gif' {
+    const lowerUrl = url.toLowerCase();
+
+    if (lowerUrl.endsWith('.gif')) return 'gif';
+    if (lowerUrl.match(/\.(jpg|jpeg|png|webp|svg)$/)) return 'image';
+    if (lowerUrl.match(/\.(mp4|webm|mov|avi)$/)) return 'video';
+
+    return 'image'; // default
   }
 }

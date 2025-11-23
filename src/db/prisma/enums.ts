@@ -51,15 +51,3 @@ export const ChatRole = {
 } as const
 
 export type ChatRole = (typeof ChatRole)[keyof typeof ChatRole]
-
-
-export const OrderStatus = {
-  PENDING: 'PENDING',
-  CONFIRMED: 'CONFIRMED',
-  SHIPPED: 'SHIPPED',
-  DELIVERED: 'DELIVERED',
-  CANCELLED: 'CANCELLED',
-  REFUNDED: 'REFUNDED'
-} as const
-
-export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]

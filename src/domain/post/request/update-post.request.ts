@@ -34,16 +34,6 @@ export class UpdatePostRequest {
   hashtags?: string[];
 
   @ApiPropertyOptional({
-    description: 'Mentioned user IDs',
-    example: ['user-id-1', 'user-id-2'],
-    type: [String],
-  })
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
-  mentions?: string[];
-
-  @ApiPropertyOptional({
     description: 'Location',
     example: 'Santa Monica Beach, CA',
   })

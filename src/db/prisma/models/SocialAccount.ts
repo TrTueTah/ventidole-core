@@ -309,7 +309,7 @@ export type SocialAccountCreateInput = {
   version?: number
   provider: $Enums.SocialAccountProvider
   providerId: string
-  user: Prisma.UserCreateNestedOneWithoutSocial_accountsInput
+  user: Prisma.UserCreateNestedOneWithoutSocialAccountsInput
 }
 
 export type SocialAccountUncheckedCreateInput = {
@@ -331,7 +331,7 @@ export type SocialAccountUpdateInput = {
   version?: Prisma.IntFieldUpdateOperationsInput | number
   provider?: Prisma.EnumSocialAccountProviderFieldUpdateOperationsInput | $Enums.SocialAccountProvider
   providerId?: Prisma.StringFieldUpdateOperationsInput | string
-  user?: Prisma.UserUpdateOneRequiredWithoutSocial_accountsNestedInput
+  user?: Prisma.UserUpdateOneRequiredWithoutSocialAccountsNestedInput
 }
 
 export type SocialAccountUncheckedUpdateInput = {

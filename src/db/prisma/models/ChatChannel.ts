@@ -43,7 +43,7 @@ export type ChatChannelMinAggregateOutputType = {
   name: string | null
   description: string | null
   type: $Enums.ChatChannelType | null
-  groupId: string | null
+  communityId: string | null
   idolId: string | null
   isAnnouncement: boolean | null
   lastMessageAt: Date | null
@@ -59,7 +59,7 @@ export type ChatChannelMaxAggregateOutputType = {
   name: string | null
   description: string | null
   type: $Enums.ChatChannelType | null
-  groupId: string | null
+  communityId: string | null
   idolId: string | null
   isAnnouncement: boolean | null
   lastMessageAt: Date | null
@@ -75,7 +75,7 @@ export type ChatChannelCountAggregateOutputType = {
   name: number
   description: number
   type: number
-  groupId: number
+  communityId: number
   idolId: number
   isAnnouncement: number
   lastMessageAt: number
@@ -101,7 +101,7 @@ export type ChatChannelMinAggregateInputType = {
   name?: true
   description?: true
   type?: true
-  groupId?: true
+  communityId?: true
   idolId?: true
   isAnnouncement?: true
   lastMessageAt?: true
@@ -117,7 +117,7 @@ export type ChatChannelMaxAggregateInputType = {
   name?: true
   description?: true
   type?: true
-  groupId?: true
+  communityId?: true
   idolId?: true
   isAnnouncement?: true
   lastMessageAt?: true
@@ -133,7 +133,7 @@ export type ChatChannelCountAggregateInputType = {
   name?: true
   description?: true
   type?: true
-  groupId?: true
+  communityId?: true
   idolId?: true
   isAnnouncement?: true
   lastMessageAt?: true
@@ -236,7 +236,7 @@ export type ChatChannelGroupByOutputType = {
   name: string | null
   description: string | null
   type: $Enums.ChatChannelType
-  groupId: string | null
+  communityId: string | null
   idolId: string | null
   isAnnouncement: boolean
   lastMessageAt: Date | null
@@ -275,12 +275,12 @@ export type ChatChannelWhereInput = {
   name?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   description?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   type?: Prisma.EnumChatChannelTypeFilter<"ChatChannel"> | $Enums.ChatChannelType
-  groupId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
+  communityId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   idolId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   isAnnouncement?: Prisma.BoolFilter<"ChatChannel"> | boolean
   lastMessageAt?: Prisma.DateTimeNullableFilter<"ChatChannel"> | Date | string | null
   firebaseDocId?: Prisma.StringFilter<"ChatChannel"> | string
-  group?: Prisma.XOR<Prisma.GroupNullableScalarRelationFilter, Prisma.GroupWhereInput> | null
+  community?: Prisma.XOR<Prisma.CommunityNullableScalarRelationFilter, Prisma.CommunityWhereInput> | null
   idol?: Prisma.XOR<Prisma.IdolNullableScalarRelationFilter, Prisma.IdolWhereInput> | null
   participants?: Prisma.ChatParticipantListRelationFilter
 }
@@ -294,12 +294,12 @@ export type ChatChannelOrderByWithRelationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
-  groupId?: Prisma.SortOrderInput | Prisma.SortOrder
+  communityId?: Prisma.SortOrderInput | Prisma.SortOrder
   idolId?: Prisma.SortOrderInput | Prisma.SortOrder
   isAnnouncement?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrderInput | Prisma.SortOrder
   firebaseDocId?: Prisma.SortOrder
-  group?: Prisma.GroupOrderByWithRelationInput
+  community?: Prisma.CommunityOrderByWithRelationInput
   idol?: Prisma.IdolOrderByWithRelationInput
   participants?: Prisma.ChatParticipantOrderByRelationAggregateInput
 }
@@ -317,11 +317,11 @@ export type ChatChannelWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   description?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   type?: Prisma.EnumChatChannelTypeFilter<"ChatChannel"> | $Enums.ChatChannelType
-  groupId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
+  communityId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   idolId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   isAnnouncement?: Prisma.BoolFilter<"ChatChannel"> | boolean
   lastMessageAt?: Prisma.DateTimeNullableFilter<"ChatChannel"> | Date | string | null
-  group?: Prisma.XOR<Prisma.GroupNullableScalarRelationFilter, Prisma.GroupWhereInput> | null
+  community?: Prisma.XOR<Prisma.CommunityNullableScalarRelationFilter, Prisma.CommunityWhereInput> | null
   idol?: Prisma.XOR<Prisma.IdolNullableScalarRelationFilter, Prisma.IdolWhereInput> | null
   participants?: Prisma.ChatParticipantListRelationFilter
 }, "id" | "firebaseDocId">
@@ -335,7 +335,7 @@ export type ChatChannelOrderByWithAggregationInput = {
   name?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
-  groupId?: Prisma.SortOrderInput | Prisma.SortOrder
+  communityId?: Prisma.SortOrderInput | Prisma.SortOrder
   idolId?: Prisma.SortOrderInput | Prisma.SortOrder
   isAnnouncement?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -359,7 +359,7 @@ export type ChatChannelScalarWhereWithAggregatesInput = {
   name?: Prisma.StringNullableWithAggregatesFilter<"ChatChannel"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"ChatChannel"> | string | null
   type?: Prisma.EnumChatChannelTypeWithAggregatesFilter<"ChatChannel"> | $Enums.ChatChannelType
-  groupId?: Prisma.StringNullableWithAggregatesFilter<"ChatChannel"> | string | null
+  communityId?: Prisma.StringNullableWithAggregatesFilter<"ChatChannel"> | string | null
   idolId?: Prisma.StringNullableWithAggregatesFilter<"ChatChannel"> | string | null
   isAnnouncement?: Prisma.BoolWithAggregatesFilter<"ChatChannel"> | boolean
   lastMessageAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ChatChannel"> | Date | string | null
@@ -378,7 +378,7 @@ export type ChatChannelCreateInput = {
   isAnnouncement?: boolean
   lastMessageAt?: Date | string | null
   firebaseDocId: string
-  group?: Prisma.GroupCreateNestedOneWithoutChatChannelsInput
+  community?: Prisma.CommunityCreateNestedOneWithoutChatChannelsInput
   idol?: Prisma.IdolCreateNestedOneWithoutChatChannelsInput
   participants?: Prisma.ChatParticipantCreateNestedManyWithoutChannelInput
 }
@@ -392,7 +392,7 @@ export type ChatChannelUncheckedCreateInput = {
   name?: string | null
   description?: string | null
   type: $Enums.ChatChannelType
-  groupId?: string | null
+  communityId?: string | null
   idolId?: string | null
   isAnnouncement?: boolean
   lastMessageAt?: Date | string | null
@@ -412,7 +412,7 @@ export type ChatChannelUpdateInput = {
   isAnnouncement?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   firebaseDocId?: Prisma.StringFieldUpdateOperationsInput | string
-  group?: Prisma.GroupUpdateOneWithoutChatChannelsNestedInput
+  community?: Prisma.CommunityUpdateOneWithoutChatChannelsNestedInput
   idol?: Prisma.IdolUpdateOneWithoutChatChannelsNestedInput
   participants?: Prisma.ChatParticipantUpdateManyWithoutChannelNestedInput
 }
@@ -426,7 +426,7 @@ export type ChatChannelUncheckedUpdateInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChatChannelTypeFieldUpdateOperationsInput | $Enums.ChatChannelType
-  groupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAnnouncement?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -443,7 +443,7 @@ export type ChatChannelCreateManyInput = {
   name?: string | null
   description?: string | null
   type: $Enums.ChatChannelType
-  groupId?: string | null
+  communityId?: string | null
   idolId?: string | null
   isAnnouncement?: boolean
   lastMessageAt?: Date | string | null
@@ -473,7 +473,7 @@ export type ChatChannelUncheckedUpdateManyInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChatChannelTypeFieldUpdateOperationsInput | $Enums.ChatChannelType
-  groupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAnnouncement?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -499,7 +499,7 @@ export type ChatChannelCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  groupId?: Prisma.SortOrder
+  communityId?: Prisma.SortOrder
   idolId?: Prisma.SortOrder
   isAnnouncement?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrder
@@ -519,7 +519,7 @@ export type ChatChannelMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  groupId?: Prisma.SortOrder
+  communityId?: Prisma.SortOrder
   idolId?: Prisma.SortOrder
   isAnnouncement?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrder
@@ -535,7 +535,7 @@ export type ChatChannelMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
   type?: Prisma.SortOrder
-  groupId?: Prisma.SortOrder
+  communityId?: Prisma.SortOrder
   idolId?: Prisma.SortOrder
   isAnnouncement?: Prisma.SortOrder
   lastMessageAt?: Prisma.SortOrder
@@ -593,45 +593,45 @@ export type ChatChannelUncheckedUpdateManyWithoutIdolNestedInput = {
   deleteMany?: Prisma.ChatChannelScalarWhereInput | Prisma.ChatChannelScalarWhereInput[]
 }
 
-export type ChatChannelCreateNestedManyWithoutGroupInput = {
-  create?: Prisma.XOR<Prisma.ChatChannelCreateWithoutGroupInput, Prisma.ChatChannelUncheckedCreateWithoutGroupInput> | Prisma.ChatChannelCreateWithoutGroupInput[] | Prisma.ChatChannelUncheckedCreateWithoutGroupInput[]
-  connectOrCreate?: Prisma.ChatChannelCreateOrConnectWithoutGroupInput | Prisma.ChatChannelCreateOrConnectWithoutGroupInput[]
-  createMany?: Prisma.ChatChannelCreateManyGroupInputEnvelope
+export type ChatChannelCreateNestedManyWithoutCommunityInput = {
+  create?: Prisma.XOR<Prisma.ChatChannelCreateWithoutCommunityInput, Prisma.ChatChannelUncheckedCreateWithoutCommunityInput> | Prisma.ChatChannelCreateWithoutCommunityInput[] | Prisma.ChatChannelUncheckedCreateWithoutCommunityInput[]
+  connectOrCreate?: Prisma.ChatChannelCreateOrConnectWithoutCommunityInput | Prisma.ChatChannelCreateOrConnectWithoutCommunityInput[]
+  createMany?: Prisma.ChatChannelCreateManyCommunityInputEnvelope
   connect?: Prisma.ChatChannelWhereUniqueInput | Prisma.ChatChannelWhereUniqueInput[]
 }
 
-export type ChatChannelUncheckedCreateNestedManyWithoutGroupInput = {
-  create?: Prisma.XOR<Prisma.ChatChannelCreateWithoutGroupInput, Prisma.ChatChannelUncheckedCreateWithoutGroupInput> | Prisma.ChatChannelCreateWithoutGroupInput[] | Prisma.ChatChannelUncheckedCreateWithoutGroupInput[]
-  connectOrCreate?: Prisma.ChatChannelCreateOrConnectWithoutGroupInput | Prisma.ChatChannelCreateOrConnectWithoutGroupInput[]
-  createMany?: Prisma.ChatChannelCreateManyGroupInputEnvelope
+export type ChatChannelUncheckedCreateNestedManyWithoutCommunityInput = {
+  create?: Prisma.XOR<Prisma.ChatChannelCreateWithoutCommunityInput, Prisma.ChatChannelUncheckedCreateWithoutCommunityInput> | Prisma.ChatChannelCreateWithoutCommunityInput[] | Prisma.ChatChannelUncheckedCreateWithoutCommunityInput[]
+  connectOrCreate?: Prisma.ChatChannelCreateOrConnectWithoutCommunityInput | Prisma.ChatChannelCreateOrConnectWithoutCommunityInput[]
+  createMany?: Prisma.ChatChannelCreateManyCommunityInputEnvelope
   connect?: Prisma.ChatChannelWhereUniqueInput | Prisma.ChatChannelWhereUniqueInput[]
 }
 
-export type ChatChannelUpdateManyWithoutGroupNestedInput = {
-  create?: Prisma.XOR<Prisma.ChatChannelCreateWithoutGroupInput, Prisma.ChatChannelUncheckedCreateWithoutGroupInput> | Prisma.ChatChannelCreateWithoutGroupInput[] | Prisma.ChatChannelUncheckedCreateWithoutGroupInput[]
-  connectOrCreate?: Prisma.ChatChannelCreateOrConnectWithoutGroupInput | Prisma.ChatChannelCreateOrConnectWithoutGroupInput[]
-  upsert?: Prisma.ChatChannelUpsertWithWhereUniqueWithoutGroupInput | Prisma.ChatChannelUpsertWithWhereUniqueWithoutGroupInput[]
-  createMany?: Prisma.ChatChannelCreateManyGroupInputEnvelope
+export type ChatChannelUpdateManyWithoutCommunityNestedInput = {
+  create?: Prisma.XOR<Prisma.ChatChannelCreateWithoutCommunityInput, Prisma.ChatChannelUncheckedCreateWithoutCommunityInput> | Prisma.ChatChannelCreateWithoutCommunityInput[] | Prisma.ChatChannelUncheckedCreateWithoutCommunityInput[]
+  connectOrCreate?: Prisma.ChatChannelCreateOrConnectWithoutCommunityInput | Prisma.ChatChannelCreateOrConnectWithoutCommunityInput[]
+  upsert?: Prisma.ChatChannelUpsertWithWhereUniqueWithoutCommunityInput | Prisma.ChatChannelUpsertWithWhereUniqueWithoutCommunityInput[]
+  createMany?: Prisma.ChatChannelCreateManyCommunityInputEnvelope
   set?: Prisma.ChatChannelWhereUniqueInput | Prisma.ChatChannelWhereUniqueInput[]
   disconnect?: Prisma.ChatChannelWhereUniqueInput | Prisma.ChatChannelWhereUniqueInput[]
   delete?: Prisma.ChatChannelWhereUniqueInput | Prisma.ChatChannelWhereUniqueInput[]
   connect?: Prisma.ChatChannelWhereUniqueInput | Prisma.ChatChannelWhereUniqueInput[]
-  update?: Prisma.ChatChannelUpdateWithWhereUniqueWithoutGroupInput | Prisma.ChatChannelUpdateWithWhereUniqueWithoutGroupInput[]
-  updateMany?: Prisma.ChatChannelUpdateManyWithWhereWithoutGroupInput | Prisma.ChatChannelUpdateManyWithWhereWithoutGroupInput[]
+  update?: Prisma.ChatChannelUpdateWithWhereUniqueWithoutCommunityInput | Prisma.ChatChannelUpdateWithWhereUniqueWithoutCommunityInput[]
+  updateMany?: Prisma.ChatChannelUpdateManyWithWhereWithoutCommunityInput | Prisma.ChatChannelUpdateManyWithWhereWithoutCommunityInput[]
   deleteMany?: Prisma.ChatChannelScalarWhereInput | Prisma.ChatChannelScalarWhereInput[]
 }
 
-export type ChatChannelUncheckedUpdateManyWithoutGroupNestedInput = {
-  create?: Prisma.XOR<Prisma.ChatChannelCreateWithoutGroupInput, Prisma.ChatChannelUncheckedCreateWithoutGroupInput> | Prisma.ChatChannelCreateWithoutGroupInput[] | Prisma.ChatChannelUncheckedCreateWithoutGroupInput[]
-  connectOrCreate?: Prisma.ChatChannelCreateOrConnectWithoutGroupInput | Prisma.ChatChannelCreateOrConnectWithoutGroupInput[]
-  upsert?: Prisma.ChatChannelUpsertWithWhereUniqueWithoutGroupInput | Prisma.ChatChannelUpsertWithWhereUniqueWithoutGroupInput[]
-  createMany?: Prisma.ChatChannelCreateManyGroupInputEnvelope
+export type ChatChannelUncheckedUpdateManyWithoutCommunityNestedInput = {
+  create?: Prisma.XOR<Prisma.ChatChannelCreateWithoutCommunityInput, Prisma.ChatChannelUncheckedCreateWithoutCommunityInput> | Prisma.ChatChannelCreateWithoutCommunityInput[] | Prisma.ChatChannelUncheckedCreateWithoutCommunityInput[]
+  connectOrCreate?: Prisma.ChatChannelCreateOrConnectWithoutCommunityInput | Prisma.ChatChannelCreateOrConnectWithoutCommunityInput[]
+  upsert?: Prisma.ChatChannelUpsertWithWhereUniqueWithoutCommunityInput | Prisma.ChatChannelUpsertWithWhereUniqueWithoutCommunityInput[]
+  createMany?: Prisma.ChatChannelCreateManyCommunityInputEnvelope
   set?: Prisma.ChatChannelWhereUniqueInput | Prisma.ChatChannelWhereUniqueInput[]
   disconnect?: Prisma.ChatChannelWhereUniqueInput | Prisma.ChatChannelWhereUniqueInput[]
   delete?: Prisma.ChatChannelWhereUniqueInput | Prisma.ChatChannelWhereUniqueInput[]
   connect?: Prisma.ChatChannelWhereUniqueInput | Prisma.ChatChannelWhereUniqueInput[]
-  update?: Prisma.ChatChannelUpdateWithWhereUniqueWithoutGroupInput | Prisma.ChatChannelUpdateWithWhereUniqueWithoutGroupInput[]
-  updateMany?: Prisma.ChatChannelUpdateManyWithWhereWithoutGroupInput | Prisma.ChatChannelUpdateManyWithWhereWithoutGroupInput[]
+  update?: Prisma.ChatChannelUpdateWithWhereUniqueWithoutCommunityInput | Prisma.ChatChannelUpdateWithWhereUniqueWithoutCommunityInput[]
+  updateMany?: Prisma.ChatChannelUpdateManyWithWhereWithoutCommunityInput | Prisma.ChatChannelUpdateManyWithWhereWithoutCommunityInput[]
   deleteMany?: Prisma.ChatChannelScalarWhereInput | Prisma.ChatChannelScalarWhereInput[]
 }
 
@@ -665,7 +665,7 @@ export type ChatChannelCreateWithoutIdolInput = {
   isAnnouncement?: boolean
   lastMessageAt?: Date | string | null
   firebaseDocId: string
-  group?: Prisma.GroupCreateNestedOneWithoutChatChannelsInput
+  community?: Prisma.CommunityCreateNestedOneWithoutChatChannelsInput
   participants?: Prisma.ChatParticipantCreateNestedManyWithoutChannelInput
 }
 
@@ -678,7 +678,7 @@ export type ChatChannelUncheckedCreateWithoutIdolInput = {
   name?: string | null
   description?: string | null
   type: $Enums.ChatChannelType
-  groupId?: string | null
+  communityId?: string | null
   isAnnouncement?: boolean
   lastMessageAt?: Date | string | null
   firebaseDocId: string
@@ -723,14 +723,14 @@ export type ChatChannelScalarWhereInput = {
   name?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   description?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   type?: Prisma.EnumChatChannelTypeFilter<"ChatChannel"> | $Enums.ChatChannelType
-  groupId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
+  communityId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   idolId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   isAnnouncement?: Prisma.BoolFilter<"ChatChannel"> | boolean
   lastMessageAt?: Prisma.DateTimeNullableFilter<"ChatChannel"> | Date | string | null
   firebaseDocId?: Prisma.StringFilter<"ChatChannel"> | string
 }
 
-export type ChatChannelCreateWithoutGroupInput = {
+export type ChatChannelCreateWithoutCommunityInput = {
   id?: string
   isActive?: boolean
   createdAt?: Date | string
@@ -746,7 +746,7 @@ export type ChatChannelCreateWithoutGroupInput = {
   participants?: Prisma.ChatParticipantCreateNestedManyWithoutChannelInput
 }
 
-export type ChatChannelUncheckedCreateWithoutGroupInput = {
+export type ChatChannelUncheckedCreateWithoutCommunityInput = {
   id?: string
   isActive?: boolean
   createdAt?: Date | string
@@ -762,30 +762,30 @@ export type ChatChannelUncheckedCreateWithoutGroupInput = {
   participants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutChannelInput
 }
 
-export type ChatChannelCreateOrConnectWithoutGroupInput = {
+export type ChatChannelCreateOrConnectWithoutCommunityInput = {
   where: Prisma.ChatChannelWhereUniqueInput
-  create: Prisma.XOR<Prisma.ChatChannelCreateWithoutGroupInput, Prisma.ChatChannelUncheckedCreateWithoutGroupInput>
+  create: Prisma.XOR<Prisma.ChatChannelCreateWithoutCommunityInput, Prisma.ChatChannelUncheckedCreateWithoutCommunityInput>
 }
 
-export type ChatChannelCreateManyGroupInputEnvelope = {
-  data: Prisma.ChatChannelCreateManyGroupInput | Prisma.ChatChannelCreateManyGroupInput[]
+export type ChatChannelCreateManyCommunityInputEnvelope = {
+  data: Prisma.ChatChannelCreateManyCommunityInput | Prisma.ChatChannelCreateManyCommunityInput[]
   skipDuplicates?: boolean
 }
 
-export type ChatChannelUpsertWithWhereUniqueWithoutGroupInput = {
+export type ChatChannelUpsertWithWhereUniqueWithoutCommunityInput = {
   where: Prisma.ChatChannelWhereUniqueInput
-  update: Prisma.XOR<Prisma.ChatChannelUpdateWithoutGroupInput, Prisma.ChatChannelUncheckedUpdateWithoutGroupInput>
-  create: Prisma.XOR<Prisma.ChatChannelCreateWithoutGroupInput, Prisma.ChatChannelUncheckedCreateWithoutGroupInput>
+  update: Prisma.XOR<Prisma.ChatChannelUpdateWithoutCommunityInput, Prisma.ChatChannelUncheckedUpdateWithoutCommunityInput>
+  create: Prisma.XOR<Prisma.ChatChannelCreateWithoutCommunityInput, Prisma.ChatChannelUncheckedCreateWithoutCommunityInput>
 }
 
-export type ChatChannelUpdateWithWhereUniqueWithoutGroupInput = {
+export type ChatChannelUpdateWithWhereUniqueWithoutCommunityInput = {
   where: Prisma.ChatChannelWhereUniqueInput
-  data: Prisma.XOR<Prisma.ChatChannelUpdateWithoutGroupInput, Prisma.ChatChannelUncheckedUpdateWithoutGroupInput>
+  data: Prisma.XOR<Prisma.ChatChannelUpdateWithoutCommunityInput, Prisma.ChatChannelUncheckedUpdateWithoutCommunityInput>
 }
 
-export type ChatChannelUpdateManyWithWhereWithoutGroupInput = {
+export type ChatChannelUpdateManyWithWhereWithoutCommunityInput = {
   where: Prisma.ChatChannelScalarWhereInput
-  data: Prisma.XOR<Prisma.ChatChannelUpdateManyMutationInput, Prisma.ChatChannelUncheckedUpdateManyWithoutGroupInput>
+  data: Prisma.XOR<Prisma.ChatChannelUpdateManyMutationInput, Prisma.ChatChannelUncheckedUpdateManyWithoutCommunityInput>
 }
 
 export type ChatChannelCreateWithoutParticipantsInput = {
@@ -800,7 +800,7 @@ export type ChatChannelCreateWithoutParticipantsInput = {
   isAnnouncement?: boolean
   lastMessageAt?: Date | string | null
   firebaseDocId: string
-  group?: Prisma.GroupCreateNestedOneWithoutChatChannelsInput
+  community?: Prisma.CommunityCreateNestedOneWithoutChatChannelsInput
   idol?: Prisma.IdolCreateNestedOneWithoutChatChannelsInput
 }
 
@@ -813,7 +813,7 @@ export type ChatChannelUncheckedCreateWithoutParticipantsInput = {
   name?: string | null
   description?: string | null
   type: $Enums.ChatChannelType
-  groupId?: string | null
+  communityId?: string | null
   idolId?: string | null
   isAnnouncement?: boolean
   lastMessageAt?: Date | string | null
@@ -848,7 +848,7 @@ export type ChatChannelUpdateWithoutParticipantsInput = {
   isAnnouncement?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   firebaseDocId?: Prisma.StringFieldUpdateOperationsInput | string
-  group?: Prisma.GroupUpdateOneWithoutChatChannelsNestedInput
+  community?: Prisma.CommunityUpdateOneWithoutChatChannelsNestedInput
   idol?: Prisma.IdolUpdateOneWithoutChatChannelsNestedInput
 }
 
@@ -861,7 +861,7 @@ export type ChatChannelUncheckedUpdateWithoutParticipantsInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChatChannelTypeFieldUpdateOperationsInput | $Enums.ChatChannelType
-  groupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAnnouncement?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -877,7 +877,7 @@ export type ChatChannelCreateManyIdolInput = {
   name?: string | null
   description?: string | null
   type: $Enums.ChatChannelType
-  groupId?: string | null
+  communityId?: string | null
   isAnnouncement?: boolean
   lastMessageAt?: Date | string | null
   firebaseDocId: string
@@ -895,7 +895,7 @@ export type ChatChannelUpdateWithoutIdolInput = {
   isAnnouncement?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   firebaseDocId?: Prisma.StringFieldUpdateOperationsInput | string
-  group?: Prisma.GroupUpdateOneWithoutChatChannelsNestedInput
+  community?: Prisma.CommunityUpdateOneWithoutChatChannelsNestedInput
   participants?: Prisma.ChatParticipantUpdateManyWithoutChannelNestedInput
 }
 
@@ -908,7 +908,7 @@ export type ChatChannelUncheckedUpdateWithoutIdolInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChatChannelTypeFieldUpdateOperationsInput | $Enums.ChatChannelType
-  groupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAnnouncement?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   firebaseDocId?: Prisma.StringFieldUpdateOperationsInput | string
@@ -924,13 +924,13 @@ export type ChatChannelUncheckedUpdateManyWithoutIdolInput = {
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumChatChannelTypeFieldUpdateOperationsInput | $Enums.ChatChannelType
-  groupId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   isAnnouncement?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   firebaseDocId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
-export type ChatChannelCreateManyGroupInput = {
+export type ChatChannelCreateManyCommunityInput = {
   id?: string
   isActive?: boolean
   createdAt?: Date | string
@@ -945,7 +945,7 @@ export type ChatChannelCreateManyGroupInput = {
   firebaseDocId: string
 }
 
-export type ChatChannelUpdateWithoutGroupInput = {
+export type ChatChannelUpdateWithoutCommunityInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -961,7 +961,7 @@ export type ChatChannelUpdateWithoutGroupInput = {
   participants?: Prisma.ChatParticipantUpdateManyWithoutChannelNestedInput
 }
 
-export type ChatChannelUncheckedUpdateWithoutGroupInput = {
+export type ChatChannelUncheckedUpdateWithoutCommunityInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -977,7 +977,7 @@ export type ChatChannelUncheckedUpdateWithoutGroupInput = {
   participants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutChannelNestedInput
 }
 
-export type ChatChannelUncheckedUpdateManyWithoutGroupInput = {
+export type ChatChannelUncheckedUpdateManyWithoutCommunityInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1032,12 +1032,12 @@ export type ChatChannelSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   name?: boolean
   description?: boolean
   type?: boolean
-  groupId?: boolean
+  communityId?: boolean
   idolId?: boolean
   isAnnouncement?: boolean
   lastMessageAt?: boolean
   firebaseDocId?: boolean
-  group?: boolean | Prisma.ChatChannel$groupArgs<ExtArgs>
+  community?: boolean | Prisma.ChatChannel$communityArgs<ExtArgs>
   idol?: boolean | Prisma.ChatChannel$idolArgs<ExtArgs>
   participants?: boolean | Prisma.ChatChannel$participantsArgs<ExtArgs>
   _count?: boolean | Prisma.ChatChannelCountOutputTypeDefaultArgs<ExtArgs>
@@ -1052,12 +1052,12 @@ export type ChatChannelSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   name?: boolean
   description?: boolean
   type?: boolean
-  groupId?: boolean
+  communityId?: boolean
   idolId?: boolean
   isAnnouncement?: boolean
   lastMessageAt?: boolean
   firebaseDocId?: boolean
-  group?: boolean | Prisma.ChatChannel$groupArgs<ExtArgs>
+  community?: boolean | Prisma.ChatChannel$communityArgs<ExtArgs>
   idol?: boolean | Prisma.ChatChannel$idolArgs<ExtArgs>
 }, ExtArgs["result"]["chatChannel"]>
 
@@ -1070,12 +1070,12 @@ export type ChatChannelSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   name?: boolean
   description?: boolean
   type?: boolean
-  groupId?: boolean
+  communityId?: boolean
   idolId?: boolean
   isAnnouncement?: boolean
   lastMessageAt?: boolean
   firebaseDocId?: boolean
-  group?: boolean | Prisma.ChatChannel$groupArgs<ExtArgs>
+  community?: boolean | Prisma.ChatChannel$communityArgs<ExtArgs>
   idol?: boolean | Prisma.ChatChannel$idolArgs<ExtArgs>
 }, ExtArgs["result"]["chatChannel"]>
 
@@ -1088,33 +1088,33 @@ export type ChatChannelSelectScalar = {
   name?: boolean
   description?: boolean
   type?: boolean
-  groupId?: boolean
+  communityId?: boolean
   idolId?: boolean
   isAnnouncement?: boolean
   lastMessageAt?: boolean
   firebaseDocId?: boolean
 }
 
-export type ChatChannelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "name" | "description" | "type" | "groupId" | "idolId" | "isAnnouncement" | "lastMessageAt" | "firebaseDocId", ExtArgs["result"]["chatChannel"]>
+export type ChatChannelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "name" | "description" | "type" | "communityId" | "idolId" | "isAnnouncement" | "lastMessageAt" | "firebaseDocId", ExtArgs["result"]["chatChannel"]>
 export type ChatChannelInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  group?: boolean | Prisma.ChatChannel$groupArgs<ExtArgs>
+  community?: boolean | Prisma.ChatChannel$communityArgs<ExtArgs>
   idol?: boolean | Prisma.ChatChannel$idolArgs<ExtArgs>
   participants?: boolean | Prisma.ChatChannel$participantsArgs<ExtArgs>
   _count?: boolean | Prisma.ChatChannelCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ChatChannelIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  group?: boolean | Prisma.ChatChannel$groupArgs<ExtArgs>
+  community?: boolean | Prisma.ChatChannel$communityArgs<ExtArgs>
   idol?: boolean | Prisma.ChatChannel$idolArgs<ExtArgs>
 }
 export type ChatChannelIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  group?: boolean | Prisma.ChatChannel$groupArgs<ExtArgs>
+  community?: boolean | Prisma.ChatChannel$communityArgs<ExtArgs>
   idol?: boolean | Prisma.ChatChannel$idolArgs<ExtArgs>
 }
 
 export type $ChatChannelPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "ChatChannel"
   objects: {
-    group: Prisma.$GroupPayload<ExtArgs> | null
+    community: Prisma.$CommunityPayload<ExtArgs> | null
     idol: Prisma.$IdolPayload<ExtArgs> | null
     participants: Prisma.$ChatParticipantPayload<ExtArgs>[]
   }
@@ -1127,7 +1127,7 @@ export type $ChatChannelPayload<ExtArgs extends runtime.Types.Extensions.Interna
     name: string | null
     description: string | null
     type: $Enums.ChatChannelType
-    groupId: string | null
+    communityId: string | null
     idolId: string | null
     isAnnouncement: boolean
     lastMessageAt: Date | null
@@ -1526,7 +1526,7 @@ readonly fields: ChatChannelFieldRefs;
  */
 export interface Prisma__ChatChannelClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  group<T extends Prisma.ChatChannel$groupArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChatChannel$groupArgs<ExtArgs>>): Prisma.Prisma__GroupClient<runtime.Types.Result.GetResult<Prisma.$GroupPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  community<T extends Prisma.ChatChannel$communityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChatChannel$communityArgs<ExtArgs>>): Prisma.Prisma__CommunityClient<runtime.Types.Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   idol<T extends Prisma.ChatChannel$idolArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChatChannel$idolArgs<ExtArgs>>): Prisma.Prisma__IdolClient<runtime.Types.Result.GetResult<Prisma.$IdolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   participants<T extends Prisma.ChatChannel$participantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChatChannel$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1566,7 +1566,7 @@ export interface ChatChannelFieldRefs {
   readonly name: Prisma.FieldRef<"ChatChannel", 'String'>
   readonly description: Prisma.FieldRef<"ChatChannel", 'String'>
   readonly type: Prisma.FieldRef<"ChatChannel", 'ChatChannelType'>
-  readonly groupId: Prisma.FieldRef<"ChatChannel", 'String'>
+  readonly communityId: Prisma.FieldRef<"ChatChannel", 'String'>
   readonly idolId: Prisma.FieldRef<"ChatChannel", 'String'>
   readonly isAnnouncement: Prisma.FieldRef<"ChatChannel", 'Boolean'>
   readonly lastMessageAt: Prisma.FieldRef<"ChatChannel", 'DateTime'>
@@ -1967,22 +1967,22 @@ export type ChatChannelDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.I
 }
 
 /**
- * ChatChannel.group
+ * ChatChannel.community
  */
-export type ChatChannel$groupArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+export type ChatChannel$communityArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Group
+   * Select specific fields to fetch from the Community
    */
-  select?: Prisma.GroupSelect<ExtArgs> | null
+  select?: Prisma.CommunitySelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Group
+   * Omit specific fields from the Community
    */
-  omit?: Prisma.GroupOmit<ExtArgs> | null
+  omit?: Prisma.CommunityOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.GroupInclude<ExtArgs> | null
-  where?: Prisma.GroupWhereInput
+  include?: Prisma.CommunityInclude<ExtArgs> | null
+  where?: Prisma.CommunityWhereInput
 }
 
 /**

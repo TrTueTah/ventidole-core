@@ -561,10 +561,6 @@ export type EnumVerificationTypeFieldUpdateOperationsInput = {
   set?: $Enums.VerificationType
 }
 
-export type NullableDateTimeFieldUpdateOperationsInput = {
-  set?: Date | string | null
-}
-
 export type VerificationCreateWithoutUserInput = {
   id?: string
   isActive?: boolean

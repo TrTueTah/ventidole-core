@@ -1,7 +1,7 @@
 generator client {
-  provider = "prisma-client"
+  provider      = "prisma-client"
+  output        = "../src/db/prisma"
   binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
-  output   = "../src/db/prisma"
 }
 
 datasource db {
@@ -11,24 +11,25 @@ datasource db {
 }
 
 model User {
-  id              String            @id @default(cuid())
-  isActive        Boolean           @default(true)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  version         Int               @default(0)
-  email           String            @unique(map: "user_email_unique_partial") @db.VarChar(255)
-  password        String            @db.VarChar(255)
-  role            Role
-  deviceToken     String?           @db.VarChar(255)
-  isDeleted       Boolean           @default(false) @map("is_deleted")
-  isOnline        Boolean           @default(false) @map("is_online")
-  social_accounts SocialAccount[]
-  verifications   Verification[]
-  fan             Fan?
-  idol            Idol?
-  chatParticipants ChatParticipant[]
-  carts           Cart[]
-  orders          Order[]
+  id                  String              @id @default(cuid())
+  isActive            Boolean             @default(true)
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  version             Int                 @default(0)
+  isDeleted           Boolean             @default(false) @map("is_deleted")
+  deletedAt           DateTime?           @map("deleted_at")
+  metadata            Json?
+  email               String              @unique(map: "user_email_unique_partial") @db.VarChar(255)
+  password            String              @db.VarChar(255)
+  role                Role
+  deviceToken         String?             @db.VarChar(255)
+  avatarUrl           String?             @map("avatar_url") @db.VarChar(255)
+  backgroundUrl       String?             @map("background_url") @db.VarChar(255)
+  chatParticipants    ChatParticipant[]
+  followedCommunities CommunityFollower[]
+  idol                Idol?
+  socialAccounts      SocialAccount[]
+  verifications       Verification[]
 
   @@map("user")
 }
@@ -51,7 +52,7 @@ model Verification {
   @@index([token])
   @@index([userId])
   @@index([expiresAt])
-  @@map("verifications")
+  @@map("verification")
 }
 
 model SocialAccount {
@@ -67,236 +68,112 @@ model SocialAccount {
 
   @@unique([provider, providerId])
   @@index([userId])
-  @@map("social_accounts")
-}
-
-model Fan {
-  id              String            @id @default(cuid())
-  isActive        Boolean           @default(true)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  version         Int               @default(0)
-  username        String            @unique @db.VarChar(100)
-  avatarUrl       String?           @map("avatar_url") @db.VarChar(255)
-  backgroundUrl   String?           @map("background_url") @db.VarChar(255)
-  bio             String?           @db.VarChar(500)
-  userId          String            @map("userId") @unique
-  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  followedGroups  FanFollowGroup[]
-
-  @@map("fans")
+  @@map("social_account")
 }
 
 model Idol {
-  id              String        @id @default(cuid())
-  isActive        Boolean       @default(true)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-  version         Int           @default(0)
-  stageName       String        @map("stageName") @db.VarChar(100)
-  bio             String?       @db.VarChar(500)
-  avatarUrl       String?       @map("avatar_url") @db.VarChar(255)
-  backgroundUrl   String?       @map("background_url") @db.VarChar(255)
-  userId          String        @map("userId") @unique
-  groupId         String        @map("groupId")
-  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  group           Group         @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  chatChannels    ChatChannel[]
+  id            String        @id @default(cuid())
+  isActive      Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  version       Int           @default(0)
+  stageName     String        @map("stageName") @db.VarChar(100)
+  bio           String?       @db.VarChar(500)
+  avatarUrl     String?       @map("avatar_url") @db.VarChar(255)
+  backgroundUrl String?       @map("background_url") @db.VarChar(255)
+  userId        String        @unique @map("userId")
+  communityId   String        @map("communityId")
+  chatChannels  ChatChannel[]
+  community     Community     @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("idols")
+  @@map("idol")
 }
 
-model Group {
-  id              String            @id @default(cuid())
-  isActive        Boolean           @default(true)
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  version         Int               @default(0)
-  description     String?           @db.VarChar(500)
-  logoUrl         String?           @map("logoUrl") @db.VarChar(255)
-  backgroundUrl   String?           @map("backgroundUrl") @db.VarChar(255)
-  groupName       String            @map("groupName") @db.VarChar(100)
-  idols           Idol[]
-  followers       FanFollowGroup[]
-  chatChannels    ChatChannel[]
+model Community {
+  id            String              @id @default(cuid())
+  isActive      Boolean             @default(true)
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  version       Int                 @default(0)
+  isDeleted     Boolean             @default(false) @map("is_deleted")
+  deletedAt     DateTime?           @map("deleted_at")
+  metadata      Json?
+  name          String              @db.VarChar(100)
+  avatarUrl     String?             @map("avatar_url") @db.VarChar(255)
+  backgroundUrl String?             @map("background_url") @db.VarChar(255)
+  description   String?             @db.VarChar(500)
+  chatChannels  ChatChannel[]
+  followers     CommunityFollower[]
+  idols         Idol[]
 
-  @@map("groups")
+  @@map("community")
 }
 
-model FanFollowGroup {
-  id        String   @id @default(cuid())
-  isActive  Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  version   Int      @default(0)
-  fanId     String   @map("fanId")
-  groupId   String   @map("groupId")
-  fan       Fan      @relation(fields: [fanId], references: [id], onDelete: Cascade)
-  group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
+model CommunityFollower {
+  id          String    @id @default(cuid())
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  version     Int       @default(0)
+  isDeleted   Boolean   @default(false) @map("is_deleted")
+  deletedAt   DateTime? @map("deleted_at")
+  metadata    Json?
+  userId      String    @map("userId")
+  communityId String    @map("communityId")
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([fanId, groupId])
-  @@index([fanId])
-  @@index([groupId])
-  @@map("fan_follow_group")
+  @@unique([userId, communityId])
+  @@index([userId])
+  @@index([communityId])
+  @@map("community_follower")
 }
 
 model ChatChannel {
-  id              String              @id @default(cuid())
-  isActive        Boolean             @default(true)
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
-  version         Int                 @default(0)
-  name            String?             @db.VarChar(255)
-  description     String?             @db.VarChar(500)
-  type            ChatChannelType
-  groupId         String?             @map("groupId")
-  idolId          String?             @map("idolId")
-  isAnnouncement  Boolean             @default(false) @map("is_announcement")
-  lastMessageAt   DateTime?           @map("last_message_at")
-  firebaseDocId   String              @unique @map("firebase_doc_id") @db.VarChar(255)
-  group           Group?              @relation(fields: [groupId], references: [id], onDelete: Cascade)
-  idol            Idol?               @relation(fields: [idolId], references: [id], onDelete: Cascade)
-  participants    ChatParticipant[]
+  id             String            @id @default(cuid())
+  isActive       Boolean           @default(true)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  version        Int               @default(0)
+  name           String?           @db.VarChar(255)
+  description    String?           @db.VarChar(500)
+  type           ChatChannelType
+  communityId    String?           @map("communityId")
+  idolId         String?           @map("idolId")
+  isAnnouncement Boolean           @default(false) @map("is_announcement")
+  lastMessageAt  DateTime?         @map("last_message_at")
+  firebaseDocId  String            @unique @map("firebase_doc_id") @db.VarChar(255)
+  community      Community?        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  idol           Idol?             @relation(fields: [idolId], references: [id], onDelete: Cascade)
+  participants   ChatParticipant[]
 
-  @@index([groupId])
+  @@index([communityId])
   @@index([idolId])
   @@index([type])
   @@index([lastMessageAt])
-  @@map("chat_channels")
+  @@map("chat_channel")
 }
 
 model ChatParticipant {
-  id              String      @id @default(cuid())
-  isActive        Boolean     @default(true)
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  version         Int         @default(0)
-  channelId       String      @map("channelId")
-  userId          String      @map("userId")
-  role            ChatRole    @default(MEMBER)
-  lastReadAt      DateTime?   @map("last_read_at")
-  unreadCount     Int         @default(0) @map("unread_count")
-  isMuted         Boolean     @default(false) @map("is_muted")
-  channel         ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([channelId, userId])
-  @@index([userId])
-  @@index([channelId])
-  @@map("chat_participants")
-}
-
-model Product {
-  id                  String            @id @default(cuid())
-  isActive            Boolean           @default(true)
-  createdAt           DateTime          @default(now())
-  updatedAt           DateTime          @updatedAt
-  version             Int               @default(0)
-  name                String            @db.VarChar(255)
-  description         String?           @db.Text
-  cover_image         String?           @map("cover_image") @db.VarChar(500)
-  product_category_id String            @map("product_category_id")
-  category            ProductCategory   @relation(fields: [product_category_id], references: [id], onDelete: Cascade)
-  variants            ProductVariant[]
-
-  @@index([product_category_id])
-  @@map("products")
-}
-
-model ProductCategory {
-  id        String    @id @default(cuid())
-  isActive  Boolean   @default(true)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  version   Int       @default(0)
-  name      String    @db.VarChar(255)
-  products  Product[]
-
-  @@map("product_categories")
-}
-
-model ProductVariant {
-  id                String      @id @default(cuid())
-  isActive          Boolean     @default(true)
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-  version           Int         @default(0)
-  name              String?     @db.VarChar(255)
-  price_money       Decimal     @db.Decimal(10, 2)
-  total_supply      Int         @default(0)
-  remaining_supply  Int         @default(0)
-  product_id        String      @map("product_id")
-  product           Product     @relation(fields: [product_id], references: [id], onDelete: Cascade)
-  cartItems         CartItem[]
-  orderItems        OrderItem[]
-
-  @@index([product_id])
-  @@map("product_variants")
-}
-
-model Cart {
-  id        String     @id @default(cuid())
-  isActive  Boolean    @default(true)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  version   Int        @default(0)
-  user_id   String     @map("user_id")
-  user      User       @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  items     CartItem[]
-
-  @@index([user_id])
-  @@map("carts")
-}
-
-model CartItem {
-  id                 String         @id @default(cuid())
-  isActive           Boolean        @default(true)
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
-  version            Int            @default(0)
-  cart_id            String         @map("cart_id")
-  quantity           Int            @default(1)
-  product_variant_id String         @map("product_variant_id")
-  cart               Cart           @relation(fields: [cart_id], references: [id], onDelete: Cascade)
-  productVariant     ProductVariant @relation(fields: [product_variant_id], references: [id], onDelete: Cascade)
-
-  @@unique([cart_id, product_variant_id])
-  @@index([cart_id])
-  @@index([product_variant_id])
-  @@map("cart_items")
-}
-
-model Order {
   id          String      @id @default(cuid())
   isActive    Boolean     @default(true)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   version     Int         @default(0)
-  buyer_id    String      @map("buyer_id")
-  total_price Decimal     @db.Decimal(10, 2)
-  status      OrderStatus @default(PENDING)
-  buyer       User        @relation(fields: [buyer_id], references: [id], onDelete: Cascade)
-  items       OrderItem[]
+  channelId   String      @map("channelId")
+  userId      String      @map("userId")
+  role        ChatRole    @default(MEMBER)
+  lastReadAt  DateTime?   @map("last_read_at")
+  unreadCount Int         @default(0) @map("unread_count")
+  isMuted     Boolean     @default(false) @map("is_muted")
+  channel     ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([buyer_id])
-  @@map("orders")
-}
-
-model OrderItem {
-  id                 String         @id @default(cuid())
-  isActive           Boolean        @default(true)
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
-  version            Int            @default(0)
-  order_id           String         @map("order_id")
-  product_variant_id String         @map("product_variant_id")
-  order              Order          @relation(fields: [order_id], references: [id], onDelete: Cascade)
-  productVariant     ProductVariant @relation(fields: [product_variant_id], references: [id], onDelete: Cascade)
-
-  @@unique([order_id, product_variant_id])
-  @@index([order_id])
-  @@index([product_variant_id])
-  @@map("order_items")
+  @@unique([channelId, userId])
+  @@index([userId])
+  @@index([channelId])
+  @@map("chat_participant")
 }
 
 enum Role {
@@ -326,13 +203,4 @@ enum ChatChannelType {
 enum ChatRole {
   ADMIN
   MEMBER
-}
-
-enum OrderStatus {
-  PENDING
-  CONFIRMED
-  SHIPPED
-  DELIVERED
-  CANCELLED
-  REFUNDED
 }

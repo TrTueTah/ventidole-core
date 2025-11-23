@@ -8,9 +8,10 @@ import {
   MessageBody,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Logger, UseGuards } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { ChatConstants } from './chat.constants';
 
 interface AuthSocket extends Socket {
   userId?: string;
@@ -19,7 +20,7 @@ interface AuthSocket extends Socket {
 
 @WebSocketGateway({
   cors: {
-    origin: '*', // Configure this based on your frontend domain
+    origin: ChatConstants.ALLOWED_ORIGINS,
     credentials: true,
   },
   namespace: '/chat',

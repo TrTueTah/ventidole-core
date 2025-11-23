@@ -7,7 +7,6 @@ import { postResponses } from "./response/index.response";
 import { PostService } from "./post.service";
 import { CreatePostResponse } from "./response/create-post.response";
 import { GetPostResponse, PostDto } from "./response/get-post.response";
-import { GetPostsResponse } from "./response/get-posts.response";
 import { UpdatePostResponse } from "./response/update-post.response";
 import { DeletePostResponse } from "./response/delete-post.response";
 import { CreatePostRequest } from "./request/create-post.request";
@@ -73,5 +72,23 @@ export class PostController {
     @Req() request: IRequest
   ) {
     return this.postService.deletePost(postId, request);
+  }
+
+  @Post(':postId/like')
+  @ApiParam({ name: 'postId', description: 'Post ID' })
+  likePost(
+    @Param('postId') postId: string,
+    @Req() request: IRequest
+  ) {
+    return this.postService.likePost(postId, request);
+  }
+
+  @Delete(':postId/like')
+  @ApiParam({ name: 'postId', description: 'Post ID' })
+  unlikePost(
+    @Param('postId') postId: string,
+    @Req() request: IRequest
+  ) {
+    return this.postService.unlikePost(postId, request);
   }
 }

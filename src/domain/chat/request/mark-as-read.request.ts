@@ -1,18 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 
 export class MarkAsReadRequest {
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Chat channel ID',
   })
   @IsNotEmpty()
   @IsString()
   channelId: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'Last message ID that was read',
     required: false,
   })
+  @IsOptional()
   @IsString()
   lastMessageId?: string;
 }

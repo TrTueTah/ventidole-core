@@ -33,25 +33,20 @@ export type Verification = Prisma.VerificationModel
  */
 export type SocialAccount = Prisma.SocialAccountModel
 /**
- * Model Fan
- * 
- */
-export type Fan = Prisma.FanModel
-/**
  * Model Idol
  * 
  */
 export type Idol = Prisma.IdolModel
 /**
- * Model Group
+ * Model Community
  * 
  */
-export type Group = Prisma.GroupModel
+export type Community = Prisma.CommunityModel
 /**
- * Model FanFollowGroup
+ * Model CommunityFollower
  * 
  */
-export type FanFollowGroup = Prisma.FanFollowGroupModel
+export type CommunityFollower = Prisma.CommunityFollowerModel
 /**
  * Model ChatChannel
  * 
@@ -62,38 +57,3 @@ export type ChatChannel = Prisma.ChatChannelModel
  * 
  */
 export type ChatParticipant = Prisma.ChatParticipantModel
-/**
- * Model Product
- * 
- */
-export type Product = Prisma.ProductModel
-/**
- * Model ProductCategory
- * 
- */
-export type ProductCategory = Prisma.ProductCategoryModel
-/**
- * Model ProductVariant
- * 
- */
-export type ProductVariant = Prisma.ProductVariantModel
-/**
- * Model Cart
- * 
- */
-export type Cart = Prisma.CartModel
-/**
- * Model CartItem
- * 
- */
-export type CartItem = Prisma.CartItemModel
-/**
- * Model Order
- * 
- */
-export type Order = Prisma.OrderModel
-/**
- * Model OrderItem
- * 
- */
-export type OrderItem = Prisma.OrderItemModel

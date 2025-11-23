@@ -58,13 +58,6 @@ export class CreatePostResponse {
   hashtags?: string[];
 
   @ApiProperty({
-    description: 'Mentioned user IDs',
-    type: [String],
-    example: ['user-id-1'],
-  })
-  mentions?: string[];
-
-  @ApiProperty({
     description: 'Location',
     example: 'Santa Monica Beach, CA',
     type: String,

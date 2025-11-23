@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export enum PostVisibility {
@@ -37,16 +37,6 @@ export class CreatePostRequest {
   @IsString({ each: true })
   @IsOptional()
   hashtags?: string[];
-
-  @ApiPropertyOptional({
-    description: 'Mentioned user IDs',
-    example: ['user-id-1', 'user-id-2'],
-    type: [String],
-  })
-  @IsArray()
-  @IsString({ each: true })
-  @IsOptional()
-  mentions?: string[];
 
   @ApiProperty({
     description: 'Location/place name',
