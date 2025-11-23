@@ -209,7 +209,7 @@ export class PostService {
       // Apply pagination
       const offset = query.offset || 0;
       const limit = query.limit || 20;
-      
+
       firestoreQuery = firestoreQuery.offset(offset).limit(limit);
 
       // Execute query
@@ -226,6 +226,126 @@ export class PostService {
       );
     } catch (error) {
       this.logger.error('Failed to get posts', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get posts from a specific community
+   */
+  async getPostsByCommunity(communityId: string, query: GetPostsRequest, request: IRequest): Promise<PaginationResponse<PostDto>> {
+    try {
+      // 1. Verify community exists and is active
+      const community = await this.prisma.community.findFirst({
+        where: {
+          id: communityId,
+          isActive: true,
+          isDeleted: false,
+        },
+        select: {
+          id: true,
+          idols: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      });
+
+      if (!community) {
+        throw new NotFoundException('Community not found');
+      }
+
+      // 2. Get all idol user IDs in this community
+      const idolUserIds = community.idols.map(idol => idol.userId);
+
+      if (idolUserIds.length === 0) {
+        // No idols in this community, return empty result
+        return PaginationResponse.of(
+          new PaginationResponse([], new PageInfo(query.page || 1, query.limit || 20, 0))
+        );
+      }
+
+      // 3. Query Firestore for posts from these idols
+      const { posts } = getCollection();
+      const firestore = this.firebaseService.getFirestore();
+
+      // Note: Firestore 'in' operator supports up to 10 values
+      // For communities with more than 10 idols, we need to batch the queries
+      const batchSize = 10;
+      const idolBatches: string[][] = [];
+      for (let i = 0; i < idolUserIds.length; i += batchSize) {
+        idolBatches.push(idolUserIds.slice(i, i + batchSize));
+      }
+
+      // Execute queries for each batch in parallel
+      const allPostsPromises = idolBatches.map(async (batch) => {
+        let firestoreQuery: admin.firestore.Query = firestore.collection(posts);
+
+        // Filter by idol userIds in this batch
+        firestoreQuery = firestoreQuery.where('userId', 'in', batch);
+
+        // Filter by visibility (only public posts or user's own posts)
+        if (query.visibility) {
+          firestoreQuery = firestoreQuery.where('visibility', '==', query.visibility);
+        } else {
+          firestoreQuery = firestoreQuery.where('visibility', '==', PostVisibility.PUBLIC);
+        }
+
+        // Filter by hashtag if provided
+        if (query.hashtag) {
+          firestoreQuery = firestoreQuery.where('hashtags', 'array-contains', query.hashtag);
+        }
+
+        // Filter out deleted posts
+        firestoreQuery = firestoreQuery.where('isDeleted', '==', false);
+
+        // Sort
+        const sortField = query.sortBy || 'createdAt';
+        const sortDirection = query.sortOrder || 'desc';
+        firestoreQuery = firestoreQuery.orderBy(sortField, sortDirection);
+
+        const snapshot = await firestoreQuery.get();
+        return snapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+      });
+
+      const batchResults = await Promise.all(allPostsPromises);
+      const allPosts = batchResults.flat();
+
+      // Sort all posts by the sort field
+      const sortField = query.sortBy || 'createdAt';
+      const sortDirection = query.sortOrder || 'desc';
+      allPosts.sort((a, b) => {
+        const aValue = a.data[sortField];
+        const bValue = b.data[sortField];
+
+        // Handle Firestore timestamps
+        const aTime = aValue?.toDate?.() || aValue;
+        const bTime = bValue?.toDate?.() || bValue;
+
+        if (sortDirection === 'desc') {
+          return bTime > aTime ? 1 : -1;
+        } else {
+          return aTime > bTime ? 1 : -1;
+        }
+      });
+
+      // Apply pagination
+      const offset = query.offset || 0;
+      const limit = query.limit || 20;
+      const total = allPosts.length;
+      const paginatedPosts = allPosts.slice(offset, offset + limit);
+
+      // Map results - fetch user info for each post in parallel
+      const postsData: PostDto[] = await Promise.all(
+        paginatedPosts.map((post) => this.mapPostToDto(post.id, post.data))
+      );
+
+      return PaginationResponse.of(
+        new PaginationResponse(postsData, new PageInfo(query.page || 1, query.limit || 20, total))
+      );
+    } catch (error) {
+      this.logger.error(`Failed to get posts for community ${communityId}`, error);
       throw error;
     }
   }

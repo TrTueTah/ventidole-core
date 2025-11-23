@@ -91,4 +91,15 @@ export class PostController {
   ) {
     return this.postService.unlikePost(postId, request);
   }
+
+  @Get('community/:communityId')
+  @ApiPaginationResponse(PostDto)
+  @ApiParam({ name: 'communityId', description: 'Community ID' })
+  getPostsByCommunity(
+    @Param('communityId') communityId: string,
+    @Query() query: GetPostsRequest,
+    @Req() request: IRequest
+  ) {
+    return this.postService.getPostsByCommunity(communityId, query, request);
+  }
 }

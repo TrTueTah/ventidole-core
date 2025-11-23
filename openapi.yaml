@@ -1281,6 +1281,137 @@ paths:
           description: ''
       security: *ref_6
       tags: *ref_7
+  /v1/post/community/{communityId}:
+    get:
+      operationId: PostController_getPostsByCommunity_v1
+      parameters:
+        - name: communityId
+          required: true
+          in: path
+          description: Community ID
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: userId
+          required: false
+          in: query
+          description: Filter by user ID
+          schema:
+            example: user-123
+            type: string
+        - name: hashtag
+          required: false
+          in: query
+          description: Filter by hashtag
+          schema:
+            example: nature
+            type: string
+        - name: visibility
+          required: false
+          in: query
+          description: Filter by visibility
+          schema:
+            example: public
+            type: string
+            enum:
+              - public
+              - followers
+              - private
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            example: createdAt
+            type: string
+            enum:
+              - createdAt
+              - likesCount
+              - commentsCount
+        - name: sortOrder
+          required: false
+          in: query
+          description: Sort order
+          schema:
+            example: desc
+            type: string
+            enum:
+              - asc
+              - desc
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: *ref_6
+      tags: *ref_7
   /v1/comment:
     post:
       operationId: CommentController_createComment_v1
@@ -2813,6 +2944,54 @@ paths:
                   - message
       security: *ref_21
       summary: Leave a community
+      tags: *ref_22
+  /v1/community/{communityId}:
+    get:
+      description: >-
+        Get detailed information about a community including idols and follower
+        count
+      operationId: CommunityController_getCommunityDetail_v1
+      parameters:
+        - name: communityId
+          required: true
+          in: path
+          description: Community ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/GetCommunityDetailResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_21
+      summary: Get community detail
       tags: *ref_22
 info:
   title: API Docs
@@ -5168,11 +5347,67 @@ components:
         - followerCount
         - createdAt
         - updatedAt
+    IdolInfo:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        stageName:
+          type: string
+        bio:
+          type: string
+        avatarUrl:
+          type: string
+      required:
+        - id
+        - userId
+        - stageName
+    GetCommunityDetailResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        avatarUrl:
+          type: string
+        backgroundUrl:
+          type: string
+        followerCount:
+          type: number
+          description: Total number of followers in the community
+        isFollowing:
+          type: boolean
+          description: Indicates if the current user is following this community
+        idols:
+          description: List of idols in this community
+          type: array
+          items:
+            $ref: '#/components/schemas/IdolInfo'
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+        - followerCount
+        - isFollowing
+        - idols
+        - createdAt
+        - updatedAt
     JoinCommunityRequest:
       type: object
       properties:
         communityId:
           type: string
+          description: The ID of the community to join
       required:
         - communityId
     LeaveCommunityRequest:

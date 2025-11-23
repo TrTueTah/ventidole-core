@@ -7,6 +7,8 @@ import {
   PaginationResponse,
 } from '@shared/dto/pagination-response.dto';
 import { GetCommunitiesResponse } from './response/get-communities.response';
+import { BaseResponse } from '@shared/helper/response';
+import { GetCommunityDetailResponse } from './response/get-community-detail.response';
 
 @Injectable()
 export class CommunityService {
@@ -160,20 +162,33 @@ export class CommunityService {
       throw new NotFoundException('Community not found');
     }
 
-    // Check if user already joined
+    // Check if user already has a membership record (active or deleted)
     const existingMembership = await this.prisma.communityFollower.findFirst({
       where: {
         communityId: body.communityId,
         userId: userId,
-        isDeleted: false,
       },
     });
 
     if (existingMembership) {
+      // If membership exists but is deleted, restore it
+      if (existingMembership.isDeleted) {
+        await this.prisma.communityFollower.update({
+          where: {
+            id: existingMembership.id,
+          },
+          data: {
+            isDeleted: false,
+            deletedAt: null,
+          },
+        });
+        return { message: 'Successfully joined the community' };
+      }
+      // If membership exists and is active, user is already a member
       throw new BadRequestException('User is already a member of this community');
     }
 
-    // Add user to community
+    // Create new membership
     await this.prisma.communityFollower.create({
       data: {
         communityId: body.communityId,
@@ -212,5 +227,76 @@ export class CommunityService {
     });
 
     return { message: 'Successfully left the community' };
+  }
+
+  async getCommunityDetail(communityId: string, request: IRequest): Promise<BaseResponse<GetCommunityDetailResponse>> {
+    const userId = request.user.id;
+
+    // Get community with idol and follower information
+    const community = await this.prisma.community.findFirst({
+      where: {
+        id: communityId,
+        isActive: true,
+        isDeleted: false,
+      },
+      include: {
+        idols: {
+          select: {
+            id: true,
+            stageName: true,
+            avatarUrl: true,
+            bio: true,
+            userId: true,
+          },
+        },
+        followers: {
+          where: {
+            isDeleted: false,
+          },
+          select: {
+            userId: true,
+          },
+        },
+        _count: {
+          select: {
+            followers: {
+              where: {
+                isDeleted: false,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!community) {
+      throw new NotFoundException('Community not found');
+    }
+
+    // Check if current user is following this community
+    const isFollowing = community.followers.some(
+      (follower) => follower.userId === userId,
+    );
+
+    const response: GetCommunityDetailResponse = {
+      id: community.id,
+      name: community.name,
+      description: community.description ?? undefined,
+      avatarUrl: community.avatarUrl ?? undefined,
+      backgroundUrl: community.backgroundUrl ?? undefined,
+      followerCount: community._count.followers,
+      isFollowing,
+      idols: community.idols.map((idol) => ({
+        id: idol.id,
+        userId: idol.userId,
+        stageName: idol.stageName,
+        bio: idol.bio ?? undefined,
+        avatarUrl: idol.avatarUrl ?? undefined,
+      })),
+      createdAt: community.createdAt,
+      updatedAt: community.updatedAt,
+    };
+
+    return BaseResponse.of(response);
   }
 }

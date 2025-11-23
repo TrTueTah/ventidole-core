@@ -1,12 +1,13 @@
 import { ApiExtraModelsCustom, ApiPaginationResponse, ApiResponseCustom } from '@core/decorator/doc.decorator';
 import { Roles } from '@core/decorator/role.decorator';
-import { Body, Controller, Delete, Get, Post, Query, Req } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Post, Query, Req, Param } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ApiVersion } from '@shared/enum/api-version.enum';
 import { Role } from 'src/db/prisma/enums';
 import { communityResponses } from './response';
 import { CommunityService } from './community.service';
 import { GetCommunitiesResponse } from './response/get-communities.response';
+import { GetCommunityDetailResponse } from './response/get-community-detail.response';
 import { IRequest } from '@shared/interface/request.interface';
 import { GetCommunitiesRequest } from './request/get-communities.request';
 import { JoinCommunityRequest } from './request/join-community.request';
@@ -48,5 +49,16 @@ export class CommunityController {
   @ApiResponseCustom()
   leaveCommunity(@Body() body: LeaveCommunityRequest, @Req() request: IRequest) {
     return this.communityService.leaveCommunity(body, request);
+  }
+
+  @Get(':communityId')
+  @ApiOperation({
+    summary: 'Get community detail',
+    description: 'Get detailed information about a community including idols and follower count',
+  })
+  @ApiResponseCustom(GetCommunityDetailResponse)
+  @ApiParam({ name: 'communityId', description: 'Community ID' })
+  getCommunityDetail(@Param('communityId') communityId: string, @Req() request: IRequest) {
+    return this.communityService.getCommunityDetail(communityId, request);
   }
 }
