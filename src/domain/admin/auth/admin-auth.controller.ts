@@ -8,6 +8,7 @@ import { adminAuthResponses } from './response/index.responses';
 import { AdminLoginRequest } from './request/admin-login.request';
 import { AdminAuthResponse } from './response/admin-auth.response';
 import { AdminSignupRequest } from './request/admin-signup.request';
+import { RefreshTokenRequest } from '@domain/auth/request/refresh-token.request';
 
 @ApiTags('Admin Auth')
 @Controller({ path: 'admin/authentication', version: ApiVersion.V1 })
@@ -37,5 +38,16 @@ export class AdminAuthController {
     @Body() body: AdminSignupRequest,
   ) {
     return this.adminAuthService.adminSignup(body);
+  }
+
+  @Public()
+  @Post('refresh-token')
+  @ApiOperation({ summary: 'Admin refresh token' })
+  @ApiBody({ type: RefreshTokenRequest })
+  @ApiResponseCustom(AdminAuthResponse)
+  async refreshToken(
+    @Body() body: RefreshTokenRequest,
+  ) {
+    return this.adminAuthService.refreshNewToken(body);
   }
 }

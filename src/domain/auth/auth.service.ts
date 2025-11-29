@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { SignInRequest } from "./request/sign-in.request";
 import { SignUpRequest } from "./request/sign-up.request";
 import { SendVerificationRequest } from "./request/send-verification.request";
@@ -11,6 +11,7 @@ import { OtpService } from "@shared/service/otp/otp.service";
 import { TokenService } from "@shared/service/token/token.service";
 import { VerificationProducer } from "@shared/service/queue/verification/verification.producer";
 import { PrismaService } from "@shared/service/prisma/prisma.service";
+import { StreamChatService } from "@domain/stream-chat/stream-chat.service";
 import { CustomError } from "@shared/helper/error";
 import { ErrorCode } from "@shared/enum/error-code.enum";
 import { BaseResponse } from "@shared/helper/response";
@@ -28,6 +29,8 @@ import { UserModel } from "src/db/prisma/models";
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
@@ -35,10 +38,11 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly producer: VerificationProducer,
     private prisma: PrismaService,
+    private readonly streamChatService: StreamChatService,
   ) {}
   async signIn(request: SignInRequest) {
     try {
-      const user = await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findFirst({
         where: { email: request.email, isActive: true, isDeleted: false },
       });
       if (!user) throw new CustomError(ErrorCode.InvalidEmailOrPassword);
@@ -63,21 +67,29 @@ export class AuthService {
     try {
       await this.validateSignUp(request);
       const hashedPassword = await hashPassword(request.password);
-      
+
       // Create User and Fan in a transaction
       const user = await this.prisma.user.create({
         data: {
-          ...SignUpRequest.toCreateInput(request, hashedPassword),
-          fan: {
-            create: {
-              username: request.username,
-            },
-          },
-        },
-        include: {
-          fan: true,
+          email: request.email,
+          password: hashedPassword,
+          username: request.username,
+          role: "FAN",
         },
       });
+
+      // Create Stream Chat user (non-blocking - don't fail signup if this fails)
+      try {
+        await this.streamChatService.createOrUpdateUser(
+          user.id,
+          request.username || user.email,
+          user.avatarUrl || undefined,
+        );
+        this.logger.log(`Stream Chat user created for user: ${user.id}`);
+      } catch (streamError) {
+        this.logger.error(`Failed to create Stream Chat user during signup: ${streamError.message}`);
+        // Don't throw - allow signup to succeed even if Stream Chat fails
+      }
 
       const [accessToken, refreshToken] = await this.generateTokens(user);
 
@@ -86,7 +98,7 @@ export class AuthService {
       response.role = user.role;
       response.accessToken = accessToken;
       response.refreshToken = refreshToken;
-      
+
       return BaseResponse.of(response);
     } catch (error) {
       throw error;
@@ -234,7 +246,7 @@ export class AuthService {
         VerificationType.REGISTER_ACCOUNT,
       );
 
-      const userEmailExisted = await this.prisma.user.findUnique({
+      const userEmailExisted = await this.prisma.user.findFirst({
         where: { email, isActive: true, isDeleted: false },
         select: { id: true },
       });
@@ -242,8 +254,8 @@ export class AuthService {
       if (userEmailExisted) throw new CustomError(ErrorCode.ExistedEmail);
 
       // Check if username is already taken
-      const fanUsernameExisted = await this.prisma.fan.findUnique({
-        where: { username, isActive: true },
+      const fanUsernameExisted = await this.prisma.user.findFirst({
+        where: { username, isActive: true, isDeleted: false },
         select: { id: true },
       });
 

@@ -9,6 +9,7 @@ import { QueueVerificationModule } from "@shared/service/queue/verification/veri
 import { TokenModule } from "@shared/service/token/token.module";
 import { JwtStrategy } from "@shared/service/token/jwt.strategy";
 import { PrismaModule } from "@shared/service/prisma/prisma.module";
+import { StreamChatModule } from "@domain/stream-chat/stream-chat.module";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { PrismaModule } from "@shared/service/prisma/prisma.module";
     TokenModule,
     QueueVerificationModule,
     PrismaModule,
+    StreamChatModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

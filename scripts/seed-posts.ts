@@ -80,9 +80,69 @@ const fanPostContents = [
   },
 ];
 
+// Media URLs to add to all posts
+const mediaUrls = [
+  'https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg',
+  'https://res.cloudinary.com/dsc9afexw/image/upload/v1758008644/iK-Cji6J73Q-HD_nmbkfm.jpg',
+  'https://res.cloudinary.com/dsc9afexw/image/upload/v1762853124/273532258_1528902877562442_6813889931345818717_n_bqaajl.webp',
+];
+
 async function seedPosts() {
   try {
     console.log('🌱 Starting to seed posts...\n');
+
+    const postsCollection = firestore.collection('posts');
+    const postMediaCollection = firestore.collection('post_media');
+
+    // Delete all existing posts and media from Firestore
+    console.log('🗑️  Deleting all existing posts and media...');
+
+    // Delete posts
+    const existingPosts = await postsCollection.get();
+    const batchSize = 500;
+    let batch = firestore.batch();
+    let operationCount = 0;
+    let deletedPostsCount = 0;
+
+    for (const doc of existingPosts.docs) {
+      batch.delete(doc.ref);
+      operationCount++;
+      deletedPostsCount++;
+
+      if (operationCount === batchSize) {
+        await batch.commit();
+        batch = firestore.batch();
+        operationCount = 0;
+      }
+    }
+
+    if (operationCount > 0) {
+      await batch.commit();
+    }
+
+    // Delete media
+    const existingMedia = await postMediaCollection.get();
+    batch = firestore.batch();
+    operationCount = 0;
+    let deletedMediaCount = 0;
+
+    for (const doc of existingMedia.docs) {
+      batch.delete(doc.ref);
+      operationCount++;
+      deletedMediaCount++;
+
+      if (operationCount === batchSize) {
+        await batch.commit();
+        batch = firestore.batch();
+        operationCount = 0;
+      }
+    }
+
+    if (operationCount > 0) {
+      await batch.commit();
+    }
+
+    console.log(`   ✅ Deleted ${deletedPostsCount} existing posts and ${deletedMediaCount} media items\n`);
 
     // Get all communities with their idols and followers
     const communities = await prisma.community.findMany({
@@ -113,7 +173,6 @@ async function seedPosts() {
 
     let totalIdolPosts = 0;
     let totalFanPosts = 0;
-    const postsCollection = firestore.collection('posts');
 
     for (const community of communities) {
       console.log(`\n🏘️  Processing community: ${community.name}`);
@@ -129,12 +188,13 @@ async function seedPosts() {
 
           const postData = {
             userId: idol.userId,
+            communityId: community.id,
             content: postContent.content,
-            contentType: 'text',
+            contentType: 'mixed',
             hashtags: postContent.hashtags,
             location: null,
             visibility: 'public',
-            mediaCount: 0,
+            mediaCount: mediaUrls.length,
             likesCount: Math.floor(Math.random() * 500) + 50, // 50-550 likes
             commentsCount: Math.floor(Math.random() * 100) + 10, // 10-110 comments
             sharesCount: Math.floor(Math.random() * 50), // 0-50 shares
@@ -144,7 +204,21 @@ async function seedPosts() {
             isDeleted: false,
           };
 
-          await postsCollection.add(postData);
+          const postRef = await postsCollection.add(postData);
+          const postId = postRef.id;
+
+          // Create media in separate collection
+          for (let j = 0; j < mediaUrls.length; j++) {
+            await postMediaCollection.add({
+              postId,
+              url: mediaUrls[j],
+              type: 'image',
+              order: j,
+              uploadedBy: idol.userId,
+              createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            });
+          }
+
           totalIdolPosts++;
         }
       }
@@ -167,12 +241,13 @@ async function seedPosts() {
 
           const postData = {
             userId: fanUserId,
+            communityId: community.id,
             content: postContent.content,
-            contentType: 'text',
+            contentType: 'mixed',
             hashtags: postContent.hashtags,
             location: null,
             visibility: 'public',
-            mediaCount: 0,
+            mediaCount: mediaUrls.length,
             likesCount: Math.floor(Math.random() * 100) + 5, // 5-105 likes (less than idols)
             commentsCount: Math.floor(Math.random() * 30) + 2, // 2-32 comments
             sharesCount: Math.floor(Math.random() * 10), // 0-10 shares
@@ -182,7 +257,21 @@ async function seedPosts() {
             isDeleted: false,
           };
 
-          await postsCollection.add(postData);
+          const postRef = await postsCollection.add(postData);
+          const postId = postRef.id;
+
+          // Create media in separate collection
+          for (let j = 0; j < mediaUrls.length; j++) {
+            await postMediaCollection.add({
+              postId,
+              url: mediaUrls[j],
+              type: 'image',
+              order: j,
+              uploadedBy: fanUserId,
+              createdAt: admin.firestore.FieldValue.serverTimestamp(),
+            });
+          }
+
           totalFanPosts++;
         }
       }

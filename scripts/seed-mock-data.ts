@@ -15,6 +15,7 @@ async function seedMockData() {
       data: {
         email: 'admin@ventidole.com',
         password: hashedPassword,
+        username: 'admin',
         role: 'ADMIN',
         avatarUrl: 'https://i.pravatar.cc/150?img=1',
         backgroundUrl: 'https://picsum.photos/1200/400?random=1',
@@ -72,6 +73,7 @@ async function seedMockData() {
         data: {
           email: data.email,
           password: hashedPassword,
+          username: data.stageName.toLowerCase(),
           role: 'IDOL',
           avatarUrl: `https://i.pravatar.cc/150?img=${10 + i}`,
           backgroundUrl: `https://picsum.photos/1200/400?random=${10 + i}`,
@@ -101,6 +103,7 @@ async function seedMockData() {
         data: {
           email: `fan${i + 1}@ventidole.com`,
           password: hashedPassword,
+          username: `fan${i + 1}`,
           role: 'FAN',
           avatarUrl: `https://i.pravatar.cc/150?img=${30 + i}`,
           backgroundUrl: `https://picsum.photos/1200/400?random=${30 + i}`,

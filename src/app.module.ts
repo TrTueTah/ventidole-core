@@ -12,6 +12,7 @@ import { QueueModule } from "@shared/service/queue/queue.module";
 import { RedisModule } from "@shared/service/redis/redis.module";
 import { FileModule } from "@domain/file/file.module";
 import { CommunityModule } from "@domain/community/community.module";
+import { StreamChatModule } from "@domain/stream-chat/stream-chat.module";
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CommunityModule } from "@domain/community/community.module";
     CommentModule,
     ReplyModule,
     ChatModule,
+    StreamChatModule,
     AdminModule,
     CommunityModule,
   ],

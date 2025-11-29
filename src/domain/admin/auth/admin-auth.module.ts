@@ -3,18 +3,15 @@ import { AdminAuthController } from './admin-auth.controller';
 import { AdminAuthService } from './admin-auth.service';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
+import { TokenStrategyKey } from '@shared/enum/token.enum';
+import { TokenModule } from '@shared/service/token/token.module';
 
 @Module({
   imports: [
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '7d' },
-      }),
-    }),
+    JwtModule.register({}),
+    PassportModule.register({ defaultStrategy: TokenStrategyKey.Jwt }),
+    TokenModule,
   ],
   controllers: [AdminAuthController],
   providers: [AdminAuthService, PrismaService],

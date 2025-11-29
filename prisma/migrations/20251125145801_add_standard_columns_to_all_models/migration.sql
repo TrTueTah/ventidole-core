@@ -24,6 +24,7 @@ CREATE TABLE "user" (
     "deleted_at" TIMESTAMP(3),
     "metadata" JSONB,
     "email" VARCHAR(255) NOT NULL,
+    "username" VARCHAR(100) NOT NULL,
     "password" VARCHAR(255) NOT NULL,
     "role" "Role" NOT NULL,
     "deviceToken" VARCHAR(255),
@@ -40,6 +41,9 @@ CREATE TABLE "verification" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "version" INTEGER NOT NULL DEFAULT 0,
+    "is_deleted" BOOLEAN NOT NULL DEFAULT false,
+    "deleted_at" TIMESTAMP(3),
+    "metadata" JSONB,
     "type" "VerificationType" NOT NULL,
     "token" TEXT NOT NULL,
     "expires_at" TIMESTAMP(3) NOT NULL,
@@ -58,6 +62,9 @@ CREATE TABLE "social_account" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "version" INTEGER NOT NULL DEFAULT 0,
+    "is_deleted" BOOLEAN NOT NULL DEFAULT false,
+    "deleted_at" TIMESTAMP(3),
+    "metadata" JSONB,
     "provider" "SocialAccountProvider" NOT NULL,
     "provider_id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
@@ -72,6 +79,9 @@ CREATE TABLE "idol" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "version" INTEGER NOT NULL DEFAULT 0,
+    "is_deleted" BOOLEAN NOT NULL DEFAULT false,
+    "deleted_at" TIMESTAMP(3),
+    "metadata" JSONB,
     "stageName" VARCHAR(100) NOT NULL,
     "bio" VARCHAR(500),
     "avatar_url" VARCHAR(255),
@@ -123,6 +133,9 @@ CREATE TABLE "chat_channel" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "version" INTEGER NOT NULL DEFAULT 0,
+    "is_deleted" BOOLEAN NOT NULL DEFAULT false,
+    "deleted_at" TIMESTAMP(3),
+    "metadata" JSONB,
     "name" VARCHAR(255),
     "description" VARCHAR(500),
     "type" "ChatChannelType" NOT NULL,
@@ -142,6 +155,9 @@ CREATE TABLE "chat_participant" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "version" INTEGER NOT NULL DEFAULT 0,
+    "is_deleted" BOOLEAN NOT NULL DEFAULT false,
+    "deleted_at" TIMESTAMP(3),
+    "metadata" JSONB,
     "channelId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "role" "ChatRole" NOT NULL DEFAULT 'MEMBER',
@@ -216,16 +232,16 @@ ALTER TABLE "verification" ADD CONSTRAINT "verification_userId_fkey" FOREIGN KEY
 ALTER TABLE "social_account" ADD CONSTRAINT "social_account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "idol" ADD CONSTRAINT "idol_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "idol" ADD CONSTRAINT "idol_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "community"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "community_follower" ADD CONSTRAINT "community_follower_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "idol" ADD CONSTRAINT "idol_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "community_follower" ADD CONSTRAINT "community_follower_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "community"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "community_follower" ADD CONSTRAINT "community_follower_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "chat_channel" ADD CONSTRAINT "chat_channel_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "community"("id") ON DELETE CASCADE ON UPDATE CASCADE;

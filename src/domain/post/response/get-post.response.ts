@@ -9,6 +9,13 @@ export class PostDto {
   postId: string;
 
   @ApiProperty({
+    description: 'Community ID',
+    example: 'community-123',
+    type: String,
+  })
+  communityId: string;
+
+  @ApiProperty({
     description: 'User ID who created the post',
     example: 'user-123',
     type: String,

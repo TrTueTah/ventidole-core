@@ -20,6 +20,7 @@ model User {
   deletedAt           DateTime?           @map("deleted_at")
   metadata            Json?
   email               String              @unique(map: "user_email_unique_partial") @db.VarChar(255)
+  username            String              @map("username") @db.VarChar(100)
   password            String              @db.VarChar(255)
   role                Role
   deviceToken         String?             @db.VarChar(255)
@@ -40,6 +41,9 @@ model Verification {
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
   version     Int              @default(0)
+  isDeleted   Boolean          @default(false) @map("is_deleted")
+  deletedAt   DateTime?        @map("deleted_at")
+  metadata    Json?
   type        VerificationType
   token       String           @unique
   expiresAt   DateTime         @map("expires_at")
@@ -61,6 +65,9 @@ model SocialAccount {
   createdAt  DateTime              @default(now())
   updatedAt  DateTime              @updatedAt
   version    Int                   @default(0)
+  isDeleted  Boolean               @default(false) @map("is_deleted")
+  deletedAt  DateTime?             @map("deleted_at")
+  metadata   Json?
   provider   SocialAccountProvider
   providerId String                @map("provider_id")
   userId     String                @map("userId")
@@ -77,6 +84,9 @@ model Idol {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
   version       Int           @default(0)
+  isDeleted     Boolean       @default(false) @map("is_deleted")
+  deletedAt     DateTime?     @map("deleted_at")
+  metadata      Json?
   stageName     String        @map("stageName") @db.VarChar(100)
   bio           String?       @db.VarChar(500)
   avatarUrl     String?       @map("avatar_url") @db.VarChar(255)
@@ -136,6 +146,9 @@ model ChatChannel {
   createdAt      DateTime          @default(now())
   updatedAt      DateTime          @updatedAt
   version        Int               @default(0)
+  isDeleted      Boolean           @default(false) @map("is_deleted")
+  deletedAt      DateTime?         @map("deleted_at")
+  metadata       Json?
   name           String?           @db.VarChar(255)
   description    String?           @db.VarChar(500)
   type           ChatChannelType
@@ -161,6 +174,9 @@ model ChatParticipant {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   version     Int         @default(0)
+  isDeleted   Boolean     @default(false) @map("is_deleted")
+  deletedAt   DateTime?   @map("deleted_at")
+  metadata    Json?
   channelId   String      @map("channelId")
   userId      String      @map("userId")
   role        ChatRole    @default(MEMBER)

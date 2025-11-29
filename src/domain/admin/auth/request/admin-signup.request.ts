@@ -30,5 +30,5 @@ export class AdminSignupRequest {
   })
   @IsString()
   @IsNotEmpty()
-  name: string;
+  username: string;
 }

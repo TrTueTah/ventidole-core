@@ -641,6 +641,56 @@ paths:
                   - statusCode
                   - message
       tags: *ref_3
+  /stream-chat/token:
+    post:
+      operationId: StreamChatController_generateToken
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateTokenRequest'
+      responses:
+        '200':
+          description: Token generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: Missing userId
+        '500':
+          description: Token generation failed
+      security: &ref_4
+        - bearer: []
+      summary: Generate Stream Chat authentication token
+      tags: &ref_5
+        - Stream Chat
+  /stream-chat/user:
+    post:
+      operationId: StreamChatController_createOrUpdateUser
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        '200':
+          description: User created/updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Missing required fields
+        '500':
+          description: User creation/update failed
+      security: *ref_4
+      summary: Create or update Stream Chat user profile
+      tags: *ref_5
   /v1/user/me:
     get:
       operationId: UserController_getCurrentUser_v1
@@ -677,9 +727,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_4
+      security: &ref_6
         - bearer: []
-      tags: &ref_5
+      tags: &ref_7
         - User
   /v1/user/{userId}:
     get:
@@ -723,8 +773,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_4
-      tags: *ref_5
+      security: *ref_6
+      tags: *ref_7
   /v1/user/profile:
     patch:
       operationId: UserController_updateProfile_v1
@@ -767,8 +817,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_4
-      tags: *ref_5
+      security: *ref_6
+      tags: *ref_7
   /v1/user/fan:
     post:
       operationId: UserController_createFanProfile_v1
@@ -811,8 +861,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_4
-      tags: *ref_5
+      security: *ref_6
+      tags: *ref_7
     patch:
       operationId: UserController_updateFanProfile_v1
       parameters: []
@@ -854,8 +904,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_4
-      tags: *ref_5
+      security: *ref_6
+      tags: *ref_7
   /v1/user/idol:
     patch:
       operationId: UserController_updateIdolProfile_v1
@@ -898,8 +948,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_4
-      tags: *ref_5
+      security: *ref_6
+      tags: *ref_7
   /v1/user/update-status:
     post:
       operationId: UserController_updateStatus_v1
@@ -944,8 +994,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_4
-      tags: *ref_5
+      security: *ref_6
+      tags: *ref_7
   /v1/post:
     post:
       operationId: PostController_createPost_v1
@@ -988,9 +1038,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_6
+      security: &ref_8
         - bearer: []
-      tags: &ref_7
+      tags: &ref_9
         - Post
     get:
       operationId: PostController_getPosts_v1
@@ -1125,8 +1175,8 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_6
-      tags: *ref_7
+      security: *ref_8
+      tags: *ref_9
   /v1/post/{postId}:
     get:
       operationId: PostController_getPost_v1
@@ -1169,8 +1219,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_6
-      tags: *ref_7
+      security: *ref_8
+      tags: *ref_9
     patch:
       operationId: PostController_updatePost_v1
       parameters:
@@ -1218,8 +1268,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_6
-      tags: *ref_7
+      security: *ref_8
+      tags: *ref_9
     delete:
       operationId: PostController_deletePost_v1
       parameters:
@@ -1261,8 +1311,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_6
-      tags: *ref_7
+      security: *ref_8
+      tags: *ref_9
   /v1/post/{postId}/like:
     post:
       operationId: PostController_likePost_v1
@@ -1276,8 +1326,8 @@ paths:
       responses:
         '201':
           description: ''
-      security: *ref_6
-      tags: *ref_7
+      security: *ref_8
+      tags: *ref_9
     delete:
       operationId: PostController_unlikePost_v1
       parameters:
@@ -1290,8 +1340,8 @@ paths:
       responses:
         '200':
           description: ''
-      security: *ref_6
-      tags: *ref_7
+      security: *ref_8
+      tags: *ref_9
   /v1/post/community/{communityId}:
     get:
       operationId: PostController_getPostsByCommunity_v1
@@ -1432,8 +1482,8 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_6
-      tags: *ref_7
+      security: *ref_8
+      tags: *ref_9
   /v1/comment:
     post:
       operationId: CommentController_createComment_v1
@@ -1476,9 +1526,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_8
+      security: &ref_10
         - bearer: []
-      tags: &ref_9
+      tags: &ref_11
         - Comment
   /v1/comment/post/{postId}:
     get:
@@ -1583,8 +1633,8 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_8
-      tags: *ref_9
+      security: *ref_10
+      tags: *ref_11
   /v1/comment/{commentId}:
     get:
       operationId: CommentController_getComment_v1
@@ -1627,8 +1677,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_8
-      tags: *ref_9
+      security: *ref_10
+      tags: *ref_11
     patch:
       operationId: CommentController_updateComment_v1
       parameters:
@@ -1676,8 +1726,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_8
-      tags: *ref_9
+      security: *ref_10
+      tags: *ref_11
     delete:
       operationId: CommentController_deleteComment_v1
       parameters:
@@ -1719,8 +1769,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_8
-      tags: *ref_9
+      security: *ref_10
+      tags: *ref_11
   /v1/reply:
     post:
       operationId: ReplyController_createReply_v1
@@ -1763,9 +1813,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_10
+      security: &ref_12
         - bearer: []
-      tags: &ref_11
+      tags: &ref_13
         - Reply
   /v1/reply/comment/{commentId}:
     get:
@@ -1870,8 +1920,8 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_10
-      tags: *ref_11
+      security: *ref_12
+      tags: *ref_13
   /v1/reply/{replyId}:
     get:
       operationId: ReplyController_getReply_v1
@@ -1914,8 +1964,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_10
-      tags: *ref_11
+      security: *ref_12
+      tags: *ref_13
     patch:
       operationId: ReplyController_updateReply_v1
       parameters:
@@ -1963,8 +2013,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_10
-      tags: *ref_11
+      security: *ref_12
+      tags: *ref_13
     delete:
       operationId: ReplyController_deleteReply_v1
       parameters:
@@ -2006,8 +2056,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_10
-      tags: *ref_11
+      security: *ref_12
+      tags: *ref_13
   /chat/channels:
     post:
       operationId: ChatController_createChannel
@@ -2025,10 +2075,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChatChannelResponse'
-      security: &ref_12
+      security: &ref_14
         - bearer: []
       summary: Create a new chat channel
-      tags: &ref_13
+      tags: &ref_15
         - Chat
     get:
       operationId: ChatController_getMyChannels
@@ -2042,9 +2092,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ChatChannelResponse'
-      security: *ref_12
+      security: *ref_14
       summary: Get all channels for current user
-      tags: *ref_13
+      tags: *ref_15
   /chat/channels/{channelId}:
     get:
       operationId: ChatController_getChannelById
@@ -2061,9 +2111,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChatChannelResponse'
-      security: *ref_12
+      security: *ref_14
       summary: Get channel details by ID
-      tags: *ref_13
+      tags: *ref_15
   /chat/messages:
     post:
       operationId: ChatController_sendMessage
@@ -2081,9 +2131,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChatMessageResponse'
-      security: *ref_12
+      security: *ref_14
       summary: Send a message to a channel
-      tags: *ref_13
+      tags: *ref_15
     patch:
       operationId: ChatController_updateMessage
       parameters: []
@@ -2100,9 +2150,9 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ChatMessageResponse'
-      security: *ref_12
+      security: *ref_14
       summary: Update a message
-      tags: *ref_13
+      tags: *ref_15
     delete:
       operationId: ChatController_deleteMessage
       parameters: []
@@ -2115,9 +2165,9 @@ paths:
       responses:
         '200':
           description: ''
-      security: *ref_12
+      security: *ref_14
       summary: Delete a message
-      tags: *ref_13
+      tags: *ref_15
   /chat/channels/{channelId}/messages:
     get:
       operationId: ChatController_getMessages
@@ -2140,9 +2190,9 @@ paths:
       responses:
         '200':
           description: ''
-      security: *ref_12
+      security: *ref_14
       summary: Get messages from a channel with pagination
-      tags: *ref_13
+      tags: *ref_15
   /chat/channels/read:
     post:
       operationId: ChatController_markAsRead
@@ -2156,9 +2206,9 @@ paths:
       responses:
         '200':
           description: ''
-      security: *ref_12
+      security: *ref_14
       summary: Mark messages as read in a channel
-      tags: *ref_13
+      tags: *ref_15
   /chat/channels/participants:
     post:
       operationId: ChatController_addParticipants
@@ -2172,9 +2222,9 @@ paths:
       responses:
         '200':
           description: ''
-      security: *ref_12
+      security: *ref_14
       summary: Add participants to a channel
-      tags: *ref_13
+      tags: *ref_15
   /chat/channels/{channelId}/leave:
     post:
       operationId: ChatController_leaveChannel
@@ -2187,9 +2237,9 @@ paths:
       responses:
         '200':
           description: ''
-      security: *ref_12
+      security: *ref_14
       summary: Leave a channel
-      tags: *ref_13
+      tags: *ref_15
   /chat/channels/archive:
     post:
       operationId: ChatController_archiveChannel
@@ -2203,9 +2253,9 @@ paths:
       responses:
         '200':
           description: ''
-      security: *ref_12
+      security: *ref_14
       summary: Archive a channel
-      tags: *ref_13
+      tags: *ref_15
   /v1/admin/authentication/login:
     post:
       operationId: AdminAuthController_adminLogin_v1
@@ -2249,7 +2299,7 @@ paths:
                   - statusCode
                   - message
       summary: Admin login (bypass all verification)
-      tags: &ref_14
+      tags: &ref_16
         - Admin Auth
   /v1/admin/authentication/signup:
     post:
@@ -2294,7 +2344,51 @@ paths:
                   - statusCode
                   - message
       summary: Admin signup (bypass all verification, instantly active)
-      tags: *ref_14
+      tags: *ref_16
+  /v1/admin/authentication/refresh-token:
+    post:
+      operationId: AdminAuthController_refreshToken_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshTokenRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AdminAuthResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      summary: Admin refresh token
+      tags: *ref_16
   /v1/admin/communities:
     post:
       operationId: AdminCommunitiesController_createCommunity_v1
@@ -2312,10 +2406,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateCommunityResponse'
-      security: &ref_15
+      security: &ref_17
         - bearer: []
       summary: Create a new community (Admin only)
-      tags: &ref_16
+      tags: &ref_18
         - Admin Communities
     get:
       operationId: AdminCommunitiesController_getAllCommunities_v1
@@ -2412,9 +2506,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_15
+      security: *ref_17
       summary: Get all communities with pagination (Admin only)
-      tags: *ref_16
+      tags: *ref_18
   /v1/admin/idols:
     post:
       operationId: AdminIdolsController_createIdolAccount_v1
@@ -2435,7 +2529,7 @@ paths:
       security:
         - bearer: []
       summary: Create a new idol account (Admin only)
-      tags: &ref_17
+      tags: &ref_19
         - Admin Idols
     get:
       operationId: AdminIdolsController_getAllIdols_v1
@@ -2543,7 +2637,7 @@ paths:
       security:
         - bearer: []
       summary: Get all idols with pagination (Admin only)
-      tags: *ref_17
+      tags: *ref_19
   /v1/admin/users/fans:
     get:
       operationId: AdminUsersController_getAllFans_v1
@@ -2554,7 +2648,7 @@ paths:
       security:
         - bearer: []
       summary: Get all fans (Admin only)
-      tags: &ref_18
+      tags: &ref_20
         - Admin Users
   /v1/admin/users:
     get:
@@ -2566,7 +2660,7 @@ paths:
       security:
         - bearer: []
       summary: Get all users with profiles (Admin only)
-      tags: *ref_18
+      tags: *ref_20
   /v1/admin/users/{userId}/deactivate:
     patch:
       operationId: AdminUsersController_deactivateUser_v1
@@ -2583,7 +2677,7 @@ paths:
       security:
         - bearer: []
       summary: Deactivate a user account (Admin only)
-      tags: *ref_18
+      tags: *ref_20
   /v1/admin/users/{userId}/activate:
     patch:
       operationId: AdminUsersController_activateUser_v1
@@ -2600,7 +2694,7 @@ paths:
       security:
         - bearer: []
       summary: Activate a user account (Admin only)
-      tags: *ref_18
+      tags: *ref_20
   /v1/admin/users/{userId}:
     delete:
       operationId: AdminUsersController_deleteUser_v1
@@ -2617,7 +2711,7 @@ paths:
       security:
         - bearer: []
       summary: Delete a user account (Admin only)
-      tags: *ref_18
+      tags: *ref_20
   /v1/admin/statistics:
     get:
       operationId: AdminStatisticsController_getStatistics_v1
@@ -2647,10 +2741,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateProductResponse'
-      security: &ref_19
+      security: &ref_21
         - bearer: []
       summary: Create a new product (Admin only)
-      tags: &ref_20
+      tags: &ref_22
         - Admin Products
     get:
       operationId: ProductController_getAllProducts_v1
@@ -2763,9 +2857,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_19
+      security: *ref_21
       summary: Get all products with pagination (Admin only)
-      tags: *ref_20
+      tags: *ref_22
   /v1/community:
     get:
       description: >-
@@ -2866,10 +2960,10 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_21
+      security: &ref_23
         - bearer: []
       summary: Get communities
-      tags: &ref_22
+      tags: &ref_24
         - Community
   /v1/community/join:
     post:
@@ -2916,9 +3010,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_21
+      security: *ref_23
       summary: Join a community
-      tags: *ref_22
+      tags: *ref_24
   /v1/community/leave:
     delete:
       description: Leave a community by providing the community ID
@@ -2964,9 +3058,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_21
+      security: *ref_23
       summary: Leave a community
-      tags: *ref_22
+      tags: *ref_24
   /v1/community/{communityId}:
     get:
       description: >-
@@ -3012,9 +3106,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_21
+      security: *ref_23
       summary: Get community detail
-      tags: *ref_22
+      tags: *ref_24
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -3410,6 +3504,71 @@ components:
       required:
         - password
         - email
+    GenerateTokenRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: User ID for Stream Chat authentication
+          example: user123
+      required:
+        - userId
+    TokenResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Stream Chat authentication token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        apiKey:
+          type: string
+          description: Stream Chat API key
+          example: sy25rkkujgdv
+        userId:
+          type: string
+          description: User ID
+          example: user123
+      required:
+        - token
+        - apiKey
+        - userId
+    CreateUserRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: User ID for Stream Chat
+          example: user123
+        name:
+          type: string
+          description: Display name for the user
+          example: John Doe
+        image:
+          type: string
+          description: User profile image URL
+          example: https://example.com/avatar.jpg
+      required:
+        - userId
+        - name
+    UserResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Operation success status
+          example: true
+        message:
+          type: string
+          description: Success message
+          example: User created/updated successfully
+        userId:
+          type: string
+          description: User ID
+          example: user123
+      required:
+        - success
+        - message
+        - userId
     FanDto:
       type: object
       properties:
@@ -3747,6 +3906,10 @@ components:
           type: string
           description: Post ID
           example: post-clx123abc
+        communityId:
+          type: string
+          description: Community ID
+          example: community-123
         userId:
           type: string
           description: User ID who created the post
@@ -3799,6 +3962,7 @@ components:
             sharesCount: 0
       required:
         - postId
+        - communityId
         - userId
         - username
         - displayName
@@ -3816,6 +3980,10 @@ components:
           type: string
           description: Post ID
           example: post-clx123abc
+        communityId:
+          type: string
+          description: Community ID
+          example: community-123
         userId:
           type: string
           description: User ID who created the post
@@ -3838,14 +4006,14 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: &ref_23
+          example: &ref_25
             - https://storage.googleapis.com/bucket/image1.jpg
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: &ref_24
+          example: &ref_26
             - nature
             - sunset
           type: array
@@ -3885,6 +4053,7 @@ components:
           example: false
       required:
         - postId
+        - communityId
         - userId
         - displayName
         - content
@@ -3904,6 +4073,10 @@ components:
           type: string
           description: Post ID
           example: post-clx123abc
+        communityId:
+          type: string
+          description: Community ID
+          example: community-123
         userId:
           type: string
           description: User ID who created the post
@@ -3926,13 +4099,13 @@ components:
           example: 'Beautiful sunset at the beach! 🌅 #nature #sunset'
         mediaUrls:
           description: Media URLs
-          example: *ref_23
+          example: *ref_25
           type: array
           items:
             type: string
         hashtags:
           description: Hashtags
-          example: *ref_24
+          example: *ref_26
           type: array
           items:
             type: string
@@ -3970,6 +4143,7 @@ components:
           example: false
       required:
         - postId
+        - communityId
         - userId
         - displayName
         - content
@@ -4849,14 +5023,14 @@ components:
           type: string
           example: admin123
           description: Admin password (min 6 characters)
-        name:
+        username:
           type: string
           example: Admin Name
           description: Admin name/username
       required:
         - email
         - password
-        - name
+        - username
     CreateCommunityRequest:
       type: object
       properties:

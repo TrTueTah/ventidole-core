@@ -71,6 +71,7 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
     "socket.io": "^4.8.1",
+    "stream-chat": "^9.26.0",
     "swagger-themes": "^1.4.3",
     "winston": "^3.17.0"
   },

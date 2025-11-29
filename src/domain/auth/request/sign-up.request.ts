@@ -40,6 +40,7 @@ export class SignUpRequest {
     return {
       email: request.email,
       password: hashedPassword,
+      username: request.username,
       role: Role.FAN,
     } as UserModel;
   }

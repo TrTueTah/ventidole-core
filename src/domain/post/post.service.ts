@@ -26,24 +26,58 @@ export class PostService {
 
   /**
    * Create a new post
-   * 
-   * Architecture (Updated - Single Source of Truth):
-   * 1. Verify user exists in PostgreSQL (source of truth)
-   * 2. Create post in Firestore with ONLY userId (no denormalized data)
-   * 3. User info will be fetched fresh when retrieving posts
-   * 4. Return complete post data with user info
+   *
+   * Architecture (Updated - Unified Media Storage):
+   * 1. Verify user exists and get communityId from PostgreSQL (source of truth)
+   * 2. Create post in Firestore with userId and communityId (no media URLs in post doc)
+   * 3. Store media in separate post_media collection for better organization
+   * 4. User info and media will be fetched fresh when retrieving posts
+   * 5. Return complete post data with user info and media
    */
   async createPost(body: CreatePostRequest, request: IRequest): Promise<BaseResponse<CreatePostResponse>> {
     try {
       const { posts } = getCollection();
-      // 1. Verify user exists (source of truth check)
-      const userExists = await this.prisma.user.findUnique({
+      // 1. Verify user exists and get their community (source of truth check)
+      const user = await this.prisma.user.findUnique({
         where: { id: request.user.id, isActive: true, isDeleted: false },
-        select: { id: true },
+        select: {
+          id: true,
+          idol: {
+            select: {
+              communityId: true,
+            },
+          },
+        },
       });
 
-      if (!userExists) {
+      if (!user) {
         throw new NotFoundException('User not found');
+      }
+
+      // Get communityId - for idols, use their community; for fans, we need to get from followers
+      let communityId: string | null = null;
+
+      if (user.idol?.communityId) {
+        // User is an idol, use their community
+        communityId = user.idol.communityId;
+      } else {
+        // User is a fan, get the first community they follow
+        const communityFollower = await this.prisma.communityFollower.findFirst({
+          where: {
+            userId: request.user.id,
+            isDeleted: false,
+            isActive: true,
+          },
+          select: {
+            communityId: true,
+          },
+        });
+
+        communityId = communityFollower?.communityId || null;
+      }
+
+      if (!communityId) {
+        throw new BadRequestException('User must be part of a community to create posts');
       }
 
       // 2. Create post in Firestore (for real-time sync)
@@ -54,8 +88,9 @@ export class PostService {
       const now = admin.firestore.FieldValue.serverTimestamp();
 
       const postData = {
-        // ONLY store userId - user info fetched on-demand from PostgreSQL
+        // ONLY store userId and communityId
         userId: request.user.id,
+        communityId: communityId,
 
         // Post content
         content: body.content,
@@ -102,6 +137,7 @@ export class PostService {
 
       const response: CreatePostResponse = {
         postId,
+        communityId,
         userId: request.user.id,
         username: userInfo.username,
         displayName: userInfo.displayName,
@@ -414,10 +450,23 @@ export class PostService {
       };
 
       if (body.content !== undefined) updateData.content = body.content;
-      if (body.mediaUrls !== undefined) updateData.mediaUrls = body.mediaUrls;
       if (body.hashtags !== undefined) updateData.hashtags = body.hashtags;
       if (body.location !== undefined) updateData.location = body.location;
       if (body.visibility !== undefined) updateData.visibility = body.visibility;
+
+      // Handle media updates separately in post_media collection
+      if (body.mediaUrls !== undefined) {
+        // Delete existing media
+        await this.deletePostMedia(postId);
+
+        // Create new media if provided
+        if (body.mediaUrls.length > 0) {
+          await this.createPostMedia(postId, body.mediaUrls, request.user.id);
+        }
+
+        // Update media count
+        updateData.mediaCount = body.mediaUrls.length;
+      }
 
       // Update in Firestore
       await postRef.update(updateData);
@@ -544,14 +593,27 @@ export class PostService {
     // Fetch fresh user info from PostgreSQL (single source of truth)
     const userInfo = await this.getUserInfo(data.userId);
 
+    // Fetch media from post_media collection
+    const media = await this.getPostMedia(postId);
+    console.log('Media for post', postId, media);
+    let mediaUrls = media.map(m => m.url);
+
+    // Fallback: If no media found in post_media collection but mediaUrls exists in post document (old structure)
+    // This handles backward compatibility during migration
+    if (mediaUrls.length === 0 && data.mediaUrls && Array.isArray(data.mediaUrls)) {
+      mediaUrls = data.mediaUrls;
+      this.logger.warn(`Post ${postId} using legacy mediaUrls from post document. Consider running migration.`);
+    }
+
     return {
       postId,
+      communityId: data.communityId,
       userId: data.userId,
       displayName: userInfo.displayName,
       userEmail: userInfo.email,
       userAvatar: userInfo.avatarUrl || undefined,
       content: data.content,
-      mediaUrls: data.mediaUrls || [],
+      mediaUrls: mediaUrls,
       hashtags: data.hashtags || [],
       location: data.location,
       visibility: data.visibility,
@@ -690,6 +752,29 @@ export class PostService {
     } catch (error) {
       this.logger.error(`Failed to get media for post ${postId}`, error);
       return [];
+    }
+  }
+
+  /**
+   * Delete all media for a post from separate collection
+   */
+  private async deletePostMedia(postId: string): Promise<void> {
+    try {
+      const { postMedia } = getCollection();
+      const firestore = this.firebaseService.getFirestore();
+
+      const snapshot = await firestore
+        .collection(postMedia)
+        .where('postId', '==', postId)
+        .get();
+
+      const deletePromises = snapshot.docs.map((doc) => doc.ref.delete());
+      await Promise.all(deletePromises);
+
+      this.logger.log(`Deleted ${snapshot.docs.length} media items for post ${postId}`);
+    } catch (error) {
+      this.logger.error(`Failed to delete media for post ${postId}`, error);
+      throw error;
     }
   }
 
