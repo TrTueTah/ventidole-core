@@ -37,6 +37,8 @@ export enum ErrorCode {
   NotChannelParticipant = "NotChannelParticipant",
   NotChannelAdmin = "NotChannelAdmin",
   CannotSendToAnnouncementChannel = "CannotSendToAnnouncementChannel",
+  InternalServerError = "InternalServerError",
+  IdolNotFound = "IdolNotFound",
 }
 
 const ErrorCodeSet = new Set(Object.values(ErrorCode));

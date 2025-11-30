@@ -11,7 +11,6 @@ import { GetCommunityDetailResponse } from './response/get-community-detail.resp
 import { IRequest } from '@shared/interface/request.interface';
 import { GetCommunitiesRequest } from './request/get-communities.request';
 import { JoinCommunityRequest } from './request/join-community.request';
-import { LeaveCommunityRequest } from './request/leave-community.request';
 
 @ApiBearerAuth()
 @Roles(Role.FAN, Role.IDOL, Role.ADMIN)
@@ -41,14 +40,15 @@ export class CommunityController {
     return this.communityService.joinCommunity(body, request);
   }
 
-  @Delete('leave')
+  @Delete(':communityId/leave')
   @ApiOperation({
     summary: 'Leave a community',
     description: 'Leave a community by providing the community ID',
   })
   @ApiResponseCustom()
-  leaveCommunity(@Body() body: LeaveCommunityRequest, @Req() request: IRequest) {
-    return this.communityService.leaveCommunity(body, request);
+  @ApiParam({ name: 'communityId', description: 'Community ID' })
+  leaveCommunity(@Param('communityId') communityId: string, @Req() request: IRequest) {
+    return this.communityService.leaveCommunity({ communityId }, request);
   }
 
   @Get(':communityId')

@@ -185,6 +185,71 @@ export class ChatService {
   }
 
   /**
+   * Get chat channels by user ID
+   */
+  async getChatChannelByUserId(userId: string, request: IRequest): Promise<BaseResponse<ChatChannelResponse[]>> {
+    // Get the requesting user's ID
+    const requestingUserId = request.user.id;
+
+    // Find channels where both users are participants
+    const participants = await this.prisma.chatParticipant.findMany({
+      where: {
+        userId,
+        isActive: true,
+        channel: {
+          participants: {
+            some: {
+              userId: requestingUserId,
+              isActive: true,
+            },
+          },
+        },
+      },
+      include: {
+        channel: {
+          include: {
+            group: true,
+            idol: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    email: true,
+                    role: true,
+                  },
+                },
+              },
+            },
+            participants: {
+              include: {
+                user: {
+                  select: {
+                    id: true,
+                    email: true,
+                    role: true,
+                    isOnline: true,
+                    fan: true,
+                    idol: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        channel: {
+          lastMessageAt: 'desc',
+        },
+      },
+    });
+
+    const channels = participants.map(p => p.channel);
+
+    return BaseResponse.of(channels);
+  }
+
+  /**
    * Get channel by ID
    */
   async getChannelById(channelId: string, request: IRequest): Promise<BaseResponse<ChatChannelResponse>> {

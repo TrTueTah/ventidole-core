@@ -6,6 +6,7 @@ import { ErrorCode } from '@shared/enum/error-code.enum';
 import { BaseResponse } from '@shared/helper/response';
 import { TokenResponse } from './response/token.response';
 import { UserResponse } from './response/user.response';
+import { ENVIRONMENT } from '@core/config/env.config';
 
 @Injectable()
 export class StreamChatService {
@@ -14,8 +15,8 @@ export class StreamChatService {
   private readonly apiKey: string;
 
   constructor(private readonly configService: ConfigService) {
-    this.apiKey = this.configService.get<string>('STREAM_CHAT_API_KEY');
-    const secret = this.configService.get<string>('STREAM_CHAT_SECRET');
+    this.apiKey = ENVIRONMENT.STREAM_CHAT_API_KEY
+    const secret = ENVIRONMENT.STREAM_CHAT_SECRET;
 
     if (!this.apiKey || !secret) {
       this.logger.error('Stream Chat API key or secret not configured');

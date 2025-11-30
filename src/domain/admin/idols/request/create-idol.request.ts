@@ -38,13 +38,13 @@ export class CreateIdolRequest {
   stageName: string;
 
   @ApiProperty({
-    example: 'group-id-123',
-    description: 'Group ID that the idol belongs to',
+    example: 'community-id-123',
+    description: 'Community ID that the idol belongs to',
     type: String,
   })
   @IsString()
   @IsNotEmpty()
-  groupId: string;
+  communityId: string;
 
   @ApiPropertyOptional({
     example: 'https://storage.googleapis.com/bucket/avatars/idol-123.jpg',

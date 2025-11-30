@@ -1,7 +1,6 @@
 import { Controller, Post, Get, Body, Param, Query, UseGuards, Req, Patch, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ChatService } from './chat.service';
-import { ChatGateway } from './chat.gateway';
 import { JwtAuthGuard } from '@core/guard/jwt-auth.guard';
 import { IRequest } from '@shared/interface/request.interface';
 import { CreateChannelRequest } from './request/create-channel.request';
@@ -9,50 +8,44 @@ import { SendMessageRequest } from './request/send-message.request';
 import { AddParticipantsRequest } from './request/add-participants.request';
 import { MarkAsReadRequest } from './request/mark-as-read.request';
 import { UpdateMessageRequest } from './request/update-message.request';
-import { DeleteMessageRequest } from './request/delete-message.request';
 import { ArchiveChannelRequest } from './request/archive-channel.request';
 import { ChatChannelResponse, ChatMessageResponse } from './response/chat.response';
+import { PaginatedMessagesResponse } from './response/paginated-messages.response';
 import { BaseResponse } from '@shared/helper/response';
+import { ApiExtraModelsCustom, ApiResponseCustom } from '@core/decorator/doc.decorator';
+import { chatResponses } from './response';
 
 @ApiTags('Chat')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
+@ApiExtraModelsCustom(...chatResponses)
 @Controller('chat')
 export class ChatController {
   constructor(
     private readonly chatService: ChatService,
-    private readonly chatGateway: ChatGateway,
   ) {}
 
   @Post('channels')
   @ApiOperation({ summary: 'Create a new chat channel' })
-  @ApiResponse({ status: 201, type: ChatChannelResponse })
+  @ApiResponseCustom(ChatChannelResponse)
   async createChannel(
     @Body() body: CreateChannelRequest,
     @Req() request: IRequest,
   ): Promise<BaseResponse<ChatChannelResponse>> {
     const result = await this.chatService.createChannel(body, request);
-
-    // Notify participants via WebSocket
-    if (body.participantIds) {
-      body.participantIds.forEach(userId => {
-        this.chatGateway.emitNewChannel(userId, result.data);
-      });
-    }
-
     return result;
   }
 
   @Get('channels')
   @ApiOperation({ summary: 'Get all channels for current user' })
-  @ApiResponse({ status: 200, type: [ChatChannelResponse] })
+  @ApiResponseCustom(ChatChannelResponse, true)
   async getMyChannels(@Req() request: IRequest): Promise<BaseResponse<ChatChannelResponse[]>> {
     return this.chatService.getMyChannels(request);
   }
 
   @Get('channels/:channelId')
   @ApiOperation({ summary: 'Get channel details by ID' })
-  @ApiResponse({ status: 200, type: ChatChannelResponse })
+  @ApiResponseCustom(ChatChannelResponse)
   async getChannelById(
     @Param('channelId') channelId: string,
     @Req() request: IRequest,
@@ -62,22 +55,19 @@ export class ChatController {
 
   @Post('messages')
   @ApiOperation({ summary: 'Send a message to a channel' })
-  @ApiResponse({ status: 201, type: ChatMessageResponse })
+  @ApiResponseCustom(ChatMessageResponse)
   async sendMessage(
     @Body() body: SendMessageRequest,
     @Req() request: IRequest,
   ): Promise<BaseResponse<ChatMessageResponse>> {
     const result = await this.chatService.sendMessage(body, request);
 
-    // Broadcast message via WebSocket
-    this.chatGateway.emitNewMessage(body.channelId, result.data);
-
     return result;
   }
 
   @Get('channels/:channelId/messages')
   @ApiOperation({ summary: 'Get messages from a channel with pagination' })
-  @ApiResponse({ status: 200 })
+  @ApiResponseCustom(PaginatedMessagesResponse)
   async getMessages(
     @Param('channelId') channelId: string,
     @Query('limit') limit?: number,
@@ -94,7 +84,7 @@ export class ChatController {
 
   @Post('channels/read')
   @ApiOperation({ summary: 'Mark messages as read in a channel' })
-  @ApiResponse({ status: 200 })
+  @ApiResponseCustom()
   async markAsRead(
     @Body() body: MarkAsReadRequest,
     @Req() request: IRequest,
@@ -104,24 +94,19 @@ export class ChatController {
 
   @Post('channels/participants')
   @ApiOperation({ summary: 'Add participants to a channel' })
-  @ApiResponse({ status: 200 })
+  @ApiResponseCustom()
   async addParticipants(
     @Body() body: AddParticipantsRequest,
     @Req() request: IRequest,
   ): Promise<BaseResponse<{ added: number }>> {
     const result = await this.chatService.addParticipants(body, request);
 
-    // Notify new participants via WebSocket
-    body.userIds.forEach(userId => {
-      this.chatGateway.emitNewChannel(userId, { channelId: body.channelId });
-    });
-
     return result;
   }
 
   @Post('channels/:channelId/leave')
   @ApiOperation({ summary: 'Leave a channel' })
-  @ApiResponse({ status: 200 })
+  @ApiResponseCustom()
   async leaveChannel(
     @Param('channelId') channelId: string,
     @Req() request: IRequest,
@@ -131,44 +116,46 @@ export class ChatController {
 
   @Patch('messages')
   @ApiOperation({ summary: 'Update a message' })
-  @ApiResponse({ status: 200, type: ChatMessageResponse })
+  @ApiResponseCustom(ChatMessageResponse)
   async updateMessage(
     @Body() body: UpdateMessageRequest,
     @Req() request: IRequest,
   ): Promise<BaseResponse<ChatMessageResponse>> {
     const result = await this.chatService.updateMessage(body, request);
 
-    // Broadcast update via WebSocket
-    const messageData = result.data as any;
-    if (messageData?.channelId) {
-      this.chatGateway.emitMessageUpdate(messageData.channelId, result.data);
-    }
-
     return result;
   }
 
-  @Delete('messages')
+  @Delete('channels/:channelId/messages/:messageId')
   @ApiOperation({ summary: 'Delete a message' })
-  @ApiResponse({ status: 200 })
+  @ApiResponseCustom()
   async deleteMessage(
-    @Body() body: DeleteMessageRequest,
+    @Param('channelId') channelId: string,
+    @Param('messageId') messageId: string,
     @Req() request: IRequest,
   ): Promise<BaseResponse<{ messageId: string }>> {
-    const result = await this.chatService.deleteMessage(body, request);
-
-    // Broadcast deletion via WebSocket
-    this.chatGateway.emitMessageDeleted(body.channelId, body.messageId);
+    const result = await this.chatService.deleteMessage({ channelId, messageId }, request);
 
     return result;
   }
 
   @Post('channels/archive')
   @ApiOperation({ summary: 'Archive a channel' })
-  @ApiResponse({ status: 200 })
+  @ApiResponseCustom()
   async archiveChannel(
     @Body() body: ArchiveChannelRequest,
     @Req() request: IRequest,
   ): Promise<BaseResponse<unknown>> {
     return this.chatService.archiveChannel(body, request);
+  }
+
+  @Get('channels/user/:userId')
+  @ApiOperation({ summary: 'Get chat channels by user ID' })
+  @ApiResponseCustom(ChatChannelResponse, true)
+  async getChatChannelByUserId(
+    @Param('userId') userId: string,
+    @Req() request: IRequest,
+  ): Promise<BaseResponse<ChatChannelResponse[]>> {
+    return this.chatService.getChatChannelByUserId(userId, request);
   }
 }

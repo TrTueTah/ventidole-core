@@ -1,3 +1,4 @@
+import { CommunityDto } from '@domain/admin/communities/response/get-communities.response';
 import { ApiProperty } from '@nestjs/swagger';
 import { PageInfo } from '@shared/dto/pagination-response.dto';
 
@@ -30,23 +31,6 @@ export class UserSummaryDto {
   }
 }
 
-export class GroupSummaryDto {
-  @ApiProperty()
-  id: string;
-
-  @ApiProperty()
-  groupName: string;
-
-  @ApiProperty()
-  logoUrl?: string;
-
-  constructor(data: any) {
-    this.id = data.id;
-    this.groupName = data.name || data.groupName; // Map from Community.name
-    this.logoUrl = data.avatarUrl || data.logoUrl; // Map from Community.avatarUrl
-  }
-}
-
 export class IdolDto {
   @ApiProperty()
   id: string;
@@ -64,7 +48,7 @@ export class IdolDto {
   bio?: string;
 
   @ApiProperty()
-  groupId: string;
+  communityId: string;
 
   @ApiProperty()
   userId: string;
@@ -84,8 +68,8 @@ export class IdolDto {
   @ApiProperty({ type: UserSummaryDto })
   user: UserSummaryDto;
 
-  @ApiProperty({ type: GroupSummaryDto })
-  group: GroupSummaryDto;
+  @ApiProperty({ type: CommunityDto })
+  community: CommunityDto;
 
   constructor(data: any) {
     this.id = data.id;
@@ -93,14 +77,14 @@ export class IdolDto {
     this.avatarUrl = data.avatarUrl;
     this.backgroundUrl = data.backgroundUrl;
     this.bio = data.bio;
-    this.groupId = data.communityId || data.groupId; // Map from Idol.communityId
+    this.communityId = data.communityId;
     this.userId = data.userId;
     this.isActive = data.isActive;
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
     this.version = data.version;
     this.user = new UserSummaryDto(data.user);
-    this.group = new GroupSummaryDto(data.community || data.group); // Map from Idol.community
+    this.community = new CommunityDto(data.community);
   }
 }
 

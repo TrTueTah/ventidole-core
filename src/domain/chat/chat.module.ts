@@ -4,7 +4,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ChatController } from './chat.controller';
 import { ChatService } from './chat.service';
-import { ChatGateway } from './chat.gateway';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { FirebaseService } from '@shared/service/firebase/firebase.service';
 import { NotificationModule } from '@shared/service/notification/notification.module';
@@ -26,11 +25,10 @@ import { JwtStrategy } from '@shared/service/token/jwt.strategy';
   controllers: [ChatController],
   providers: [
     ChatService,
-    ChatGateway,
     PrismaService,
     FirebaseService,
     JwtStrategy,
   ],
-  exports: [ChatService, ChatGateway],
+  exports: [ChatService],
 })
 export class ChatModule {}

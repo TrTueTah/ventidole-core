@@ -653,15 +653,36 @@ paths:
               $ref: '#/components/schemas/GenerateTokenRequest'
       responses:
         '200':
-          description: Token generated successfully
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenResponse'
-        '400':
-          description: Missing userId
-        '500':
-          description: Token generation failed
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/TokenResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: &ref_4
         - bearer: []
       summary: Generate Stream Chat authentication token
@@ -679,15 +700,36 @@ paths:
               $ref: '#/components/schemas/CreateUserRequest'
       responses:
         '200':
-          description: User created/updated successfully
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserResponse'
-        '400':
-          description: Missing required fields
-        '500':
-          description: User creation/update failed
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UserResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: *ref_4
       summary: Create or update Stream Chat user profile
       tags: *ref_5
@@ -2069,12 +2111,37 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateChannelRequest'
       responses:
-        '201':
-          description: ''
+        '200':
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChatChannelResponse'
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/ChatChannelResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: &ref_14
         - bearer: []
       summary: Create a new chat channel
@@ -2085,13 +2152,38 @@ paths:
       parameters: []
       responses:
         '200':
-          description: ''
+          description: Successful Response
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ChatChannelResponse'
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChatChannelResponse'
+                    description: Response data array
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: *ref_14
       summary: Get all channels for current user
       tags: *ref_15
@@ -2106,11 +2198,36 @@ paths:
             type: string
       responses:
         '200':
-          description: ''
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChatChannelResponse'
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/ChatChannelResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: *ref_14
       summary: Get channel details by ID
       tags: *ref_15
@@ -2125,12 +2242,37 @@ paths:
             schema:
               $ref: '#/components/schemas/SendMessageRequest'
       responses:
-        '201':
-          description: ''
+        '200':
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChatMessageResponse'
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/ChatMessageResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: *ref_14
       summary: Send a message to a channel
       tags: *ref_15
@@ -2145,28 +2287,38 @@ paths:
               $ref: '#/components/schemas/UpdateMessageRequest'
       responses:
         '200':
-          description: ''
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ChatMessageResponse'
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/ChatMessageResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: *ref_14
       summary: Update a message
-      tags: *ref_15
-    delete:
-      operationId: ChatController_deleteMessage
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DeleteMessageRequest'
-      responses:
-        '200':
-          description: ''
-      security: *ref_14
-      summary: Delete a message
       tags: *ref_15
   /chat/channels/{channelId}/messages:
     get:
@@ -2189,7 +2341,36 @@ paths:
             type: string
       responses:
         '200':
-          description: ''
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/PaginatedMessagesResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: *ref_14
       summary: Get messages from a channel with pagination
       tags: *ref_15
@@ -2205,7 +2386,38 @@ paths:
               $ref: '#/components/schemas/MarkAsReadRequest'
       responses:
         '200':
-          description: ''
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: *ref_14
       summary: Mark messages as read in a channel
       tags: *ref_15
@@ -2221,7 +2433,38 @@ paths:
               $ref: '#/components/schemas/AddParticipantsRequest'
       responses:
         '200':
-          description: ''
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: *ref_14
       summary: Add participants to a channel
       tags: *ref_15
@@ -2236,9 +2479,91 @@ paths:
             type: string
       responses:
         '200':
-          description: ''
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: *ref_14
       summary: Leave a channel
+      tags: *ref_15
+  /chat/channels/{channelId}/messages/{messageId}:
+    delete:
+      operationId: ChatController_deleteMessage
+      parameters:
+        - name: channelId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: messageId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_14
+      summary: Delete a message
       tags: *ref_15
   /chat/channels/archive:
     post:
@@ -2252,9 +2577,86 @@ paths:
               $ref: '#/components/schemas/ArchiveChannelRequest'
       responses:
         '200':
-          description: ''
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: *ref_14
       summary: Archive a channel
+      tags: *ref_15
+  /chat/channels/user/{userId}:
+    get:
+      operationId: ChatController_getChatChannelByUserId
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChatChannelResponse'
+                    description: Response data array
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_14
+      summary: Get chat channels by user ID
       tags: *ref_15
   /v1/admin/authentication/login:
     post:
@@ -2520,12 +2922,37 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateIdolRequest'
       responses:
-        '201':
-          description: ''
+        '200':
+          description: Successful Response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateIdolResponse'
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/CreateIdolResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security:
         - bearer: []
       summary: Create a new idol account (Admin only)
@@ -2637,6 +3064,103 @@ paths:
       security:
         - bearer: []
       summary: Get all idols with pagination (Admin only)
+      tags: *ref_19
+  /v1/admin/idols/{idolId}:
+    get:
+      operationId: AdminIdolsController_getIdolDetail_v1
+      parameters:
+        - name: idolId
+          required: true
+          in: path
+          description: Idol ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/GetIdolDetailResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security:
+        - bearer: []
+      summary: Get idol detail by ID (Admin only)
+      tags: *ref_19
+    patch:
+      operationId: AdminIdolsController_updateIdol_v1
+      parameters:
+        - name: idolId
+          required: true
+          in: path
+          description: Idol ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIdolRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UpdateIdolResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security:
+        - bearer: []
+      summary: Update idol information (Admin only)
       tags: *ref_19
   /v1/admin/users/fans:
     get:
@@ -3013,17 +3537,17 @@ paths:
       security: *ref_23
       summary: Join a community
       tags: *ref_24
-  /v1/community/leave:
+  /v1/community/{communityId}/leave:
     delete:
       description: Leave a community by providing the community ID
       operationId: CommunityController_leaveCommunity_v1
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LeaveCommunityRequest'
+      parameters:
+        - name: communityId
+          required: true
+          in: path
+          description: Community ID
+          schema:
+            type: string
       responses:
         '200':
           description: Successful Response
@@ -3238,6 +3762,8 @@ components:
             - NotChannelParticipant
             - NotChannelAdmin
             - CannotSendToAnnouncementChannel
+            - InternalServerError
+            - IdolNotFound
           description: Error code (optional)
       required:
         - statusCode
@@ -3504,15 +4030,6 @@ components:
       required:
         - password
         - email
-    GenerateTokenRequest:
-      type: object
-      properties:
-        userId:
-          type: string
-          description: User ID for Stream Chat authentication
-          example: user123
-      required:
-        - userId
     TokenResponse:
       type: object
       properties:
@@ -3532,24 +4049,6 @@ components:
         - token
         - apiKey
         - userId
-    CreateUserRequest:
-      type: object
-      properties:
-        userId:
-          type: string
-          description: User ID for Stream Chat
-          example: user123
-        name:
-          type: string
-          description: Display name for the user
-          example: John Doe
-        image:
-          type: string
-          description: User profile image URL
-          example: https://example.com/avatar.jpg
-      required:
-        - userId
-        - name
     UserResponse:
       type: object
       properties:
@@ -3569,6 +4068,33 @@ components:
         - success
         - message
         - userId
+    GenerateTokenRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: User ID for Stream Chat authentication
+          example: user123
+      required:
+        - userId
+    CreateUserRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: User ID for Stream Chat
+          example: user123
+        name:
+          type: string
+          description: Display name for the user
+          example: John Doe
+        image:
+          type: string
+          description: User profile image URL
+          example: https://example.com/avatar.jpg
+      required:
+        - userId
+        - name
     FanDto:
       type: object
       properties:
@@ -3618,7 +4144,7 @@ components:
           type: string
         bio:
           type: string
-        groupId:
+        communityId:
           type: string
         userId:
           type: string
@@ -3634,22 +4160,22 @@ components:
           type: number
         user:
           $ref: '#/components/schemas/UserSummaryDto'
-        group:
-          $ref: '#/components/schemas/GroupSummaryDto'
+        community:
+          $ref: '#/components/schemas/CommunityDto'
       required:
         - id
         - stageName
         - avatarUrl
         - backgroundUrl
         - bio
-        - groupId
+        - communityId
         - userId
         - isActive
         - createdAt
         - updatedAt
         - version
         - user
-        - group
+        - community
     UserDto:
       type: object
       properties:
@@ -3792,22 +4318,12 @@ components:
     UpdateIdolResponse:
       type: object
       properties:
-        statusCode:
-          type: number
-          description: Status code
-          example: 200
-        message:
-          type: string
-          description: Response message
-          example: Idol profile updated successfully
-        data:
-          description: Updated idol profile data
+        idol:
+          description: Updated idol data
           allOf:
             - $ref: '#/components/schemas/IdolDto'
       required:
-        - statusCode
-        - message
-        - data
+        - idol
     UpdateUserRequest:
       type: object
       properties:
@@ -3868,20 +4384,19 @@ components:
       properties:
         stageName:
           type: string
-          example: StarLight
           description: Idol stage name
         avatarUrl:
           type: string
-          example: https://storage.googleapis.com/bucket/avatars/idol-123.jpg
           description: Avatar URL
         backgroundUrl:
           type: string
-          example: https://storage.googleapis.com/bucket/backgrounds/idol-123.jpg
-          description: Background image URL
+          description: Background URL
         bio:
           type: string
-          example: Professional singer and performer 🎤
-          description: Bio/description
+          description: Bio
+        communityId:
+          type: string
+          description: Community ID
     UpdateStatusRequest:
       type: object
       properties:
@@ -4752,39 +5267,6 @@ components:
           maxLength: 1000
       required:
         - content
-    CreateChannelRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Channel name (optional for direct messages)
-        description:
-          type: string
-          description: Channel description
-        type:
-          type: string
-          enum:
-            - DIRECT
-            - GROUP
-            - ANNOUNCEMENT
-          description: Type of chat channel
-        groupId:
-          type: string
-          description: Group ID (for group channels)
-        idolId:
-          type: string
-          description: Idol ID (for idol announcement channels)
-        isAnnouncement:
-          type: boolean
-          description: Whether this is an announcement channel
-          default: false
-        participantIds:
-          description: Array of user IDs to add as participants
-          type: array
-          items:
-            type: string
-      required:
-        - type
     ChatChannelResponse:
       type: object
       properties:
@@ -4833,41 +5315,6 @@ components:
         - lastMessageAt
         - createdAt
         - updatedAt
-    SendMessageRequest:
-      type: object
-      properties:
-        channelId:
-          type: string
-          description: Chat channel ID
-        type:
-          type: string
-          enum:
-            - TEXT
-            - IMAGE
-            - VIDEO
-            - AUDIO
-            - FILE
-            - SYSTEM
-          description: Type of message
-        content:
-          type: string
-          description: Message content
-        mediaUrl:
-          type: string
-          description: Media URL (for image, video, audio, file)
-        thumbnailUrl:
-          type: string
-          description: Thumbnail URL (for video)
-        metadata:
-          type: object
-          description: Additional metadata
-        replyTo:
-          type: string
-          description: Message ID to reply to
-      required:
-        - channelId
-        - type
-        - content
     ChatMessageResponse:
       type: object
       properties:
@@ -4919,6 +5366,112 @@ components:
         - createdAt
         - updatedAt
         - isDeleted
+    ChatParticipantResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        role:
+          type: string
+        lastReadAt:
+          format: date-time
+          type: string
+        unreadCount:
+          type: number
+        isMuted:
+          type: boolean
+        user:
+          type: object
+      required:
+        - id
+        - userId
+        - role
+        - lastReadAt
+        - unreadCount
+        - isMuted
+    PaginatedMessagesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessageResponse'
+        pagination:
+          type: object
+          description: Pagination metadata
+      required:
+        - data
+        - pagination
+    CreateChannelRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Channel name (optional for direct messages)
+        description:
+          type: string
+          description: Channel description
+        type:
+          type: string
+          enum:
+            - DIRECT
+            - GROUP
+            - ANNOUNCEMENT
+          description: Type of chat channel
+        groupId:
+          type: string
+          description: Group ID (for group channels)
+        idolId:
+          type: string
+          description: Idol ID (for idol announcement channels)
+        isAnnouncement:
+          type: boolean
+          description: Whether this is an announcement channel
+          default: false
+        participantIds:
+          description: Array of user IDs to add as participants
+          type: array
+          items:
+            type: string
+      required:
+        - type
+    SendMessageRequest:
+      type: object
+      properties:
+        channelId:
+          type: string
+          description: Chat channel ID
+        type:
+          type: string
+          enum:
+            - TEXT
+            - IMAGE
+            - VIDEO
+            - AUDIO
+            - FILE
+            - SYSTEM
+          description: Type of message
+        content:
+          type: string
+          description: Message content
+        mediaUrl:
+          type: string
+          description: Media URL (for image, video, audio, file)
+        thumbnailUrl:
+          type: string
+          description: Thumbnail URL (for video)
+        metadata:
+          type: object
+          description: Additional metadata
+        replyTo:
+          type: string
+          description: Message ID to reply to
+      required:
+        - channelId
+        - type
+        - content
     MarkAsReadRequest:
       type: object
       properties:
@@ -4956,18 +5509,6 @@ components:
       required:
         - messageId
         - content
-    DeleteMessageRequest:
-      type: object
-      properties:
-        messageId:
-          type: string
-          description: Message ID to delete
-        channelId:
-          type: string
-          description: Channel ID
-      required:
-        - messageId
-        - channelId
     ArchiveChannelRequest:
       type: object
       properties:
@@ -5147,50 +5688,6 @@ components:
         - createdAt
         - updatedAt
         - version
-        - idols
-        - _count
-    CreateIdolRequest:
-      type: object
-      properties:
-        email:
-          type: string
-          example: idol@example.com
-          description: Idol email for login
-        password:
-          type: string
-          example: Password@123456
-          description: >-
-            Idol password (min 8 chars, must contain uppercase, lowercase,
-            number and special char)
-        stageName:
-          type: string
-          example: Luna Star
-          description: Idol stage name
-        groupId:
-          type: string
-          example: group-id-123
-          description: Group ID that the idol belongs to
-        avatarUrl:
-          type: string
-          example: https://storage.googleapis.com/bucket/avatars/idol-123.jpg
-          description: Avatar URL
-        backgroundUrl:
-          type: string
-          example: https://storage.googleapis.com/bucket/backgrounds/idol-123.jpg
-          description: Background image URL
-        bio:
-          type: string
-          example: Professional singer and performer 🎤✨
-          description: Bio/description
-        deviceToken:
-          type: string
-          example: FCM_DEVICE_TOKEN_HERE
-          description: Device token for push notifications
-      required:
-        - email
-        - password
-        - stageName
-        - groupId
     CreatedIdolDto:
       type: object
       properties:
@@ -5204,7 +5701,7 @@ components:
           type: string
         bio:
           type: string
-        groupId:
+        communityId:
           type: string
         userId:
           type: string
@@ -5224,7 +5721,7 @@ components:
         - avatarUrl
         - backgroundUrl
         - bio
-        - groupId
+        - communityId
         - userId
         - isActive
         - createdAt
@@ -5275,19 +5772,93 @@ components:
         - isOnline
         - isActive
         - createdAt
-    GroupSummaryDto:
+    GetIdolDetailResponse:
       type: object
       properties:
         id:
           type: string
-        groupName:
+        stageName:
           type: string
-        logoUrl:
+        avatarUrl:
           type: string
+        backgroundUrl:
+          type: string
+        bio:
+          type: string
+        communityId:
+          type: string
+        userId:
+          type: string
+        isActive:
+          type: boolean
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        version:
+          type: number
+        user:
+          $ref: '#/components/schemas/UserSummaryDto'
+        community:
+          $ref: '#/components/schemas/CommunityDto'
       required:
         - id
-        - groupName
-        - logoUrl
+        - stageName
+        - avatarUrl
+        - backgroundUrl
+        - bio
+        - communityId
+        - userId
+        - isActive
+        - createdAt
+        - updatedAt
+        - version
+        - user
+        - community
+    CreateIdolRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          example: idol@example.com
+          description: Idol email for login
+        password:
+          type: string
+          example: Password@123456
+          description: >-
+            Idol password (min 8 chars, must contain uppercase, lowercase,
+            number and special char)
+        stageName:
+          type: string
+          example: Luna Star
+          description: Idol stage name
+        communityId:
+          type: string
+          example: community-id-123
+          description: Community ID that the idol belongs to
+        avatarUrl:
+          type: string
+          example: https://storage.googleapis.com/bucket/avatars/idol-123.jpg
+          description: Avatar URL
+        backgroundUrl:
+          type: string
+          example: https://storage.googleapis.com/bucket/backgrounds/idol-123.jpg
+          description: Background image URL
+        bio:
+          type: string
+          example: Professional singer and performer 🎤✨
+          description: Bio/description
+        deviceToken:
+          type: string
+          example: FCM_DEVICE_TOKEN_HERE
+          description: Device token for push notifications
+      required:
+        - email
+        - password
+        - stageName
+        - communityId
     CreateProductVariantRequest:
       type: object
       properties:
@@ -5604,13 +6175,5 @@ components:
         communityId:
           type: string
           description: The ID of the community to join
-      required:
-        - communityId
-    LeaveCommunityRequest:
-      type: object
-      properties:
-        communityId:
-          type: string
-          description: The ID of the community to leave
       required:
         - communityId

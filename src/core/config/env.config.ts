@@ -118,6 +118,14 @@ class EnvironmentVariable {
 
   @IsString()
   FIREBASE_CLIENT_EMAIL: string;
+
+  @IsString()
+  @IsNotEmpty()
+  STREAM_CHAT_API_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  STREAM_CHAT_SECRET: string;
 }
 
 export const ENVIRONMENT = {} as EnvironmentVariable;

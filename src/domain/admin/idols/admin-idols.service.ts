@@ -8,10 +8,12 @@ import { Role } from 'src/db/prisma/enums';
 import { TokenIssuer } from '@shared/enum/token.enum';
 import { ENVIRONMENT } from '@core/config/env.config';
 import * as bcrypt from 'bcryptjs';
-import { CreateIdolRequest, GetIdolsRequest } from './request/index.request';
+import { CreateIdolRequest, GetIdolsRequest, UpdateIdolRequest } from './request/index.request';
 import { PageInfo, PaginationResponse } from '@shared/dto/pagination-response.dto';
 import { IdolDto } from './response/get-idols.response';
 import { CreateIdolResponse } from './response/create-idol.response';
+import { UpdateIdolResponse } from './response/update-idol.response';
+import { GetIdolDetailResponse } from './response/get-idol-detail.response';
 
 @Injectable()
 export class AdminIdolsService {
@@ -36,7 +38,7 @@ export class AdminIdolsService {
 
     // Check if community exists
     const community = await this.prisma.community.findUnique({
-      where: { id: body.groupId },
+      where: { id: body.communityId },
     });
 
     if (!community) {
@@ -53,10 +55,11 @@ export class AdminIdolsService {
         password: hashedPassword,
         role: Role.IDOL,
         deviceToken: body.deviceToken,
+        username: body.stageName.toLowerCase().replace(/\s+/g, ''),
         idol: {
           create: {
             stageName: body.stageName,
-            communityId: body.groupId,
+            communityId: body.communityId,
             avatarUrl: body.avatarUrl,
             backgroundUrl: body.backgroundUrl,
             bio: body.bio,
@@ -156,5 +159,83 @@ export class AdminIdolsService {
     const idolDtos = idols.map(idol => new IdolDto(idol));
 
     return new PaginationResponse(idolDtos, paging);
+  }
+
+  /**
+   * Get idol detail by ID
+   */
+  async getIdolDetail(idolId: string) {
+    const idol = await this.prisma.idol.findUnique({
+      where: { id: idolId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            isActive: true,
+            createdAt: true,
+          },
+        },
+        community: true,
+      },
+    });
+
+    if (!idol) {
+      throw new CustomError(ErrorCode.IdolNotFound);
+    }
+
+    return BaseResponse.of(new GetIdolDetailResponse(idol));
+  }
+
+  /**
+   * Update idol information
+   */
+  async updateIdol(idolId: string, body: UpdateIdolRequest) {
+    // Check if idol exists
+    const existingIdol = await this.prisma.idol.findUnique({
+      where: { id: idolId },
+    });
+
+    if (!existingIdol) {
+      throw new CustomError(ErrorCode.IdolNotFound);
+    }
+
+    // If communityId is being updated, check if the new community exists
+    if (body.communityId && body.communityId !== existingIdol.communityId) {
+      const community = await this.prisma.community.findUnique({
+        where: { id: body.communityId },
+      });
+
+      if (!community) {
+        throw new CustomError(ErrorCode.ValidationFailed);
+      }
+    }
+
+    // Update idol
+    const updatedIdol = await this.prisma.idol.update({
+      where: { id: idolId },
+      data: {
+        ...(body.stageName && { stageName: body.stageName }),
+        ...(body.avatarUrl !== undefined && { avatarUrl: body.avatarUrl }),
+        ...(body.backgroundUrl !== undefined && { backgroundUrl: body.backgroundUrl }),
+        ...(body.bio !== undefined && { bio: body.bio }),
+        ...(body.communityId && { communityId: body.communityId }),
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            role: true,
+            isActive: true,
+            createdAt: true,
+          },
+        },
+        community: true,
+      },
+    });
+
+    return BaseResponse.of(new UpdateIdolResponse(updatedIdol));
   }
 }

@@ -17,7 +17,7 @@ export class CreatedIdolDto {
   bio?: string;
 
   @ApiProperty()
-  groupId: string;
+  communityId: string;
 
   @ApiProperty()
   userId: string;
@@ -40,7 +40,7 @@ export class CreatedIdolDto {
     this.avatarUrl = data.avatarUrl;
     this.backgroundUrl = data.backgroundUrl;
     this.bio = data.bio;
-    this.groupId = data.communityId || data.groupId; // Map from Idol.communityId
+    this.communityId = data.communityId;
     this.userId = data.userId;
     this.isActive = data.isActive;
     this.createdAt = data.createdAt;
