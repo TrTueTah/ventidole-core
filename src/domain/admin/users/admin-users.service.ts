@@ -3,6 +3,7 @@ import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { CustomError } from '@shared/helper/error';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { BaseResponse } from '@shared/helper/response';
+import { Role } from 'src/db/prisma/enums';
 
 @Injectable()
 export class AdminUsersService {
@@ -14,20 +15,8 @@ export class AdminUsersService {
    * Get all fans
    */
   async getAllFans() {
-    const fans = await this.prisma.fan.findMany({
-      where: { isActive: true },
-      include: {
-        user: {
-          select: {
-            id: true,
-            email: true,
-            role: true,
-            isOnline: true,
-            isActive: true,
-            createdAt: true,
-          },
-        },
-      },
+    const fans = await this.prisma.user.findMany({
+      where: { role: Role.FAN, isActive: true },
       orderBy: {
         createdAt: 'desc',
       },
@@ -43,12 +32,7 @@ export class AdminUsersService {
     const users = await this.prisma.user.findMany({
       where: { isDeleted: false },
       include: {
-        fan: true,
-        idol: {
-          include: {
-            group: true,
-          },
-        },
+        community: true,
       },
       orderBy: {
         createdAt: 'desc',

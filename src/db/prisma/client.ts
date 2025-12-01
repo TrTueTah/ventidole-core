@@ -61,11 +61,6 @@ export type Verification = Prisma.VerificationModel
  */
 export type SocialAccount = Prisma.SocialAccountModel
 /**
- * Model Idol
- * 
- */
-export type Idol = Prisma.IdolModel
-/**
  * Model Community
  * 
  */

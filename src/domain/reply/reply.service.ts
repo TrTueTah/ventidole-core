@@ -314,18 +314,8 @@ export class ReplyService {
       select: {
         id: true,
         email: true,
-        fan: {
-          select: {
-            username: true,
-            avatarUrl: true,
-          },
-        },
-        idol: {
-          select: {
-            stageName: true,
-            avatarUrl: true,
-          },
-        },
+        username: true,
+        avatarUrl: true,
       },
     });
 
@@ -338,15 +328,11 @@ export class ReplyService {
       };
     }
 
-    const username = user.fan?.username || user.idol?.stageName || 'unknown';
-    const displayName = user.fan?.username || user.idol?.stageName || 'Unknown User';
-    const avatarUrl = user.fan?.avatarUrl || user.idol?.avatarUrl || undefined;
-
     return {
       userId,
-      username,
-      displayName,
-      avatarUrl,
+      username: user.username || 'unknown',
+      displayName: user.username || 'Unknown User',
+      avatarUrl: user.avatarUrl || undefined,
     };
   }
 

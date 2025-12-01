@@ -28,14 +28,14 @@ export class CreateIdolRequest {
   password: string;
 
   @ApiProperty({
-    example: 'Luna Star',
-    description: 'Idol stage name',
+    example: 'luna_star',
+    description: 'Idol username',
     type: String,
   })
   @IsString()
   @IsNotEmpty()
   @MaxLength(100)
-  stageName: string;
+  username: string;
 
   @ApiProperty({
     example: 'community-id-123',

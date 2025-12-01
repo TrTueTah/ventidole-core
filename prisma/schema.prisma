@@ -26,9 +26,12 @@ model User {
   deviceToken         String?             @db.VarChar(255)
   avatarUrl           String?             @map("avatar_url") @db.VarChar(255)
   backgroundUrl       String?             @map("background_url") @db.VarChar(255)
+  bio                 String?             @db.VarChar(500)
+  communityId         String?             @map("communityId")
   chatParticipants    ChatParticipant[]
   followedCommunities CommunityFollower[]
-  idol                Idol?
+  community           Community?          @relation(fields: [communityId], references: [id], onDelete: SetNull)
+  chatChannels        ChatChannel[]
   socialAccounts      SocialAccount[]
   verifications       Verification[]
 
@@ -78,28 +81,6 @@ model SocialAccount {
   @@map("social_account")
 }
 
-model Idol {
-  id            String        @id @default(cuid())
-  isActive      Boolean       @default(true)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
-  version       Int           @default(0)
-  isDeleted     Boolean       @default(false) @map("is_deleted")
-  deletedAt     DateTime?     @map("deleted_at")
-  metadata      Json?
-  stageName     String        @map("stageName") @db.VarChar(100)
-  bio           String?       @db.VarChar(500)
-  avatarUrl     String?       @map("avatar_url") @db.VarChar(255)
-  backgroundUrl String?       @map("background_url") @db.VarChar(255)
-  userId        String        @unique @map("userId")
-  communityId   String        @map("communityId")
-  chatChannels  ChatChannel[]
-  community     Community     @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@map("idol")
-}
-
 model Community {
   id            String              @id @default(cuid())
   isActive      Boolean             @default(true)
@@ -115,7 +96,7 @@ model Community {
   description   String?             @db.VarChar(500)
   chatChannels  ChatChannel[]
   followers     CommunityFollower[]
-  idols         Idol[]
+  idols         User[]
 
   @@map("community")
 }
@@ -158,7 +139,7 @@ model ChatChannel {
   lastMessageAt  DateTime?         @map("last_message_at")
   firebaseDocId  String            @unique @map("firebase_doc_id") @db.VarChar(255)
   community      Community?        @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  idol           Idol?             @relation(fields: [idolId], references: [id], onDelete: Cascade)
+  idol           User?             @relation(fields: [idolId], references: [id], onDelete: Cascade)
   participants   ChatParticipant[]
 
   @@index([communityId])

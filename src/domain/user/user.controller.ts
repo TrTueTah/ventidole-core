@@ -6,14 +6,8 @@ import { userResponses } from "./response/index.response";
 import { UserService } from "./user.service";
 import { UpdateStatusRequest } from "./request/update-status.request";
 import { UpdateUserRequest } from "./request/update-user.request";
-import { UpdateFanRequest } from "./request/update-fan.request";
-import { CreateFanRequest } from "./request/create-fan.request";
-import { UpdateIdolRequest } from "./request/update-idol.request";
 import { GetUserResponse } from "./response/get-user.response";
 import { UpdateUserResponse } from "./response/update-user.response";
-import { UpdateFanResponse } from "./response/update-fan.response";
-import { CreateFanResponse } from "./response/create-fan.response";
-import { UpdateIdolResponse } from "./response/update-idol.response";
 import { Role } from "src/db/prisma/enums";
 import { Roles } from "@core/decorator/role.decorator";
 import { IRequest } from "@shared/interface/request.interface";
@@ -50,38 +44,6 @@ export class UserController {
     @Req() request: IRequest
   ) {
     return this.userService.updateProfile(body, request);
-  }
-
-  @Post('fan')
-  @ApiResponseCustom(CreateFanResponse)
-  @ApiBody({ type: CreateFanRequest })
-  createFanProfile(
-    @Body() body: CreateFanRequest,
-    @Req() request: IRequest
-  ) {
-    return this.userService.createFanProfile(body, request);
-  }
-
-  @Patch('fan')
-  @Roles(Role.FAN)
-  @ApiResponseCustom(UpdateFanResponse)
-  @ApiBody({ type: UpdateFanRequest })
-  updateFanProfile(
-    @Body() body: UpdateFanRequest,
-    @Req() request: IRequest
-  ) {
-    return this.userService.updateFanProfile(body, request);
-  }
-
-  @Patch('idol')
-  @Roles(Role.IDOL)
-  @ApiResponseCustom(UpdateIdolResponse)
-  @ApiBody({ type: UpdateIdolRequest })
-  updateIdolProfile(
-    @Body() body: UpdateIdolRequest,
-    @Req() request: IRequest
-  ) {
-    return this.userService.updateIdolProfile(body, request);
   }
 
   @Post('update-status')

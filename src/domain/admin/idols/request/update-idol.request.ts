@@ -2,10 +2,10 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateIdolRequest {
-  @ApiPropertyOptional({ description: 'Idol stage name' })
+  @ApiPropertyOptional({ description: 'Idol username' })
   @IsOptional()
   @IsString()
-  stageName?: string;
+  username?: string;
 
   @ApiPropertyOptional({ description: 'Avatar URL' })
   @IsOptional()

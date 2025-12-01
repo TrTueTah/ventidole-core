@@ -10,10 +10,10 @@ export class UserSummaryDto {
   email: string;
 
   @ApiProperty()
-  role: string;
+  username: string;
 
   @ApiProperty()
-  isOnline: boolean;
+  role: string;
 
   @ApiProperty()
   isActive: boolean;
@@ -24,8 +24,8 @@ export class UserSummaryDto {
   constructor(data: any) {
     this.id = data.id;
     this.email = data.email;
+    this.username = data.username;
     this.role = data.role;
-    this.isOnline = data.isOnline;
     this.isActive = data.isActive;
     this.createdAt = data.createdAt;
   }
@@ -36,7 +36,7 @@ export class IdolDto {
   id: string;
 
   @ApiProperty()
-  stageName: string;
+  username: string;
 
   @ApiProperty()
   avatarUrl?: string;
@@ -48,10 +48,7 @@ export class IdolDto {
   bio?: string;
 
   @ApiProperty()
-  communityId: string;
-
-  @ApiProperty()
-  userId: string;
+  communityId?: string;
 
   @ApiProperty()
   isActive: boolean;
@@ -66,25 +63,22 @@ export class IdolDto {
   version: number;
 
   @ApiProperty({ type: UserSummaryDto })
-  user: UserSummaryDto;
-
-  @ApiProperty({ type: CommunityDto })
-  community: CommunityDto;
+  community?: CommunityDto;
 
   constructor(data: any) {
     this.id = data.id;
-    this.stageName = data.stageName;
+    this.username = data.username;
     this.avatarUrl = data.avatarUrl;
     this.backgroundUrl = data.backgroundUrl;
     this.bio = data.bio;
     this.communityId = data.communityId;
-    this.userId = data.userId;
     this.isActive = data.isActive;
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
     this.version = data.version;
-    this.user = new UserSummaryDto(data.user);
-    this.community = new CommunityDto(data.community);
+    if (data.community) {
+      this.community = new CommunityDto(data.community);
+    }
   }
 }
 

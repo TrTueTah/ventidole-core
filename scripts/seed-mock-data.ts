@@ -53,17 +53,17 @@ async function seedMockData() {
     ]);
     console.log(`  ✅ Created ${communities.length} communities\n`);
 
-    // 3. Create Idol Users and Profiles
-    console.log('⭐ Creating idol users and profiles...');
+    // 3. Create Idol Users
+    console.log('⭐ Creating idol users...');
     const idolData = [
-      { email: 'jennie@ventidole.com', stageName: 'Jennie', communityId: communities[0].id, bio: 'Main rapper of BLACKPINK' },
-      { email: 'lisa@ventidole.com', stageName: 'Lisa', communityId: communities[0].id, bio: 'Main dancer of BLACKPINK' },
-      { email: 'jisoo@ventidole.com', stageName: 'Jisoo', communityId: communities[0].id, bio: 'Lead vocalist of BLACKPINK' },
-      { email: 'rose@ventidole.com', stageName: 'Rosé', communityId: communities[0].id, bio: 'Main vocalist of BLACKPINK' },
-      { email: 'rm@ventidole.com', stageName: 'RM', communityId: communities[1].id, bio: 'Leader and rapper of BTS' },
-      { email: 'jungkook@ventidole.com', stageName: 'Jungkook', communityId: communities[1].id, bio: 'Main vocalist of BTS' },
-      { email: 'nayeon@ventidole.com', stageName: 'Nayeon', communityId: communities[2].id, bio: 'Lead vocalist of TWICE' },
-      { email: 'sana@ventidole.com', stageName: 'Sana', communityId: communities[2].id, bio: 'Vocalist of TWICE' },
+      { email: 'jennie@ventidole.com', username: 'Jennie', communityId: communities[0].id, bio: 'Main rapper of BLACKPINK' },
+      { email: 'lisa@ventidole.com', username: 'Lisa', communityId: communities[0].id, bio: 'Main dancer of BLACKPINK' },
+      { email: 'jisoo@ventidole.com', username: 'Jisoo', communityId: communities[0].id, bio: 'Lead vocalist of BLACKPINK' },
+      { email: 'rose@ventidole.com', username: 'Rosé', communityId: communities[0].id, bio: 'Main vocalist of BLACKPINK' },
+      { email: 'rm@ventidole.com', username: 'RM', communityId: communities[1].id, bio: 'Leader and rapper of BTS' },
+      { email: 'jungkook@ventidole.com', username: 'Jungkook', communityId: communities[1].id, bio: 'Main vocalist of BTS' },
+      { email: 'nayeon@ventidole.com', username: 'Nayeon', communityId: communities[2].id, bio: 'Lead vocalist of TWICE' },
+      { email: 'sana@ventidole.com', username: 'Sana', communityId: communities[2].id, bio: 'Vocalist of TWICE' },
     ];
 
     const idols: any[] = [];
@@ -73,17 +73,8 @@ async function seedMockData() {
         data: {
           email: data.email,
           password: hashedPassword,
-          username: data.stageName.toLowerCase(),
+          username: data.username.toLowerCase(),
           role: 'IDOL',
-          avatarUrl: `https://i.pravatar.cc/150?img=${10 + i}`,
-          backgroundUrl: `https://picsum.photos/1200/400?random=${10 + i}`,
-        },
-      });
-
-      const idol = await prisma.idol.create({
-        data: {
-          userId: idolUser.id,
-          stageName: data.stageName,
           bio: data.bio,
           communityId: data.communityId,
           avatarUrl: `https://i.pravatar.cc/150?img=${10 + i}`,
@@ -91,7 +82,7 @@ async function seedMockData() {
         },
       });
 
-      idols.push({ user: idolUser, idol });
+      idols.push(idolUser);
     }
     console.log(`  ✅ Created ${idols.length} idol accounts\n`);
 
@@ -169,11 +160,11 @@ async function seedMockData() {
     }
 
     // Create direct message channels for each idol
-    for (const { idol } of idols) {
+    for (const idol of idols) {
       const channel = await prisma.chatChannel.create({
         data: {
-          name: `DM with ${idol.stageName}`,
-          description: `Direct messages with ${idol.stageName}`,
+          name: `DM with ${idol.username}`,
+          description: `Direct messages with ${idol.username}`,
           type: 'DIRECT',
           idolId: idol.id,
           isAnnouncement: false,
@@ -208,7 +199,7 @@ async function seedMockData() {
     }
 
     // Add idols as admins to their community channels
-    for (const { idol, user } of idols) {
+    for (const idol of idols) {
       const communityChannels = chatChannels.filter(
         ch => ch.communityId === idol.communityId
       );
@@ -217,7 +208,7 @@ async function seedMockData() {
         const participant = await prisma.chatParticipant.create({
           data: {
             channelId: channel.id,
-            userId: user.id,
+            userId: idol.id,
             role: 'ADMIN',
             unreadCount: 0,
           },
@@ -265,7 +256,6 @@ async function seedMockData() {
     console.log(`   - ${idols.length} Idols`);
     console.log(`   - ${fans.length} Fans`);
     console.log(`🏘️  Communities: ${communities.length}`);
-    console.log(`⭐ Idol Profiles: ${idols.length}`);
     console.log(`💙 Community Follows: ${followers.length}`);
     console.log(`💬 Chat Channels: ${chatChannels.length}`);
     console.log(`   - ${chatChannels.filter(c => c.type === 'ANNOUNCEMENT').length} Announcement channels`);
@@ -282,7 +272,7 @@ async function seedMockData() {
     console.log('  Password: admin123\n');
     console.log('Idol Accounts (password: admin123):');
     idolData.forEach(idol => {
-      console.log(`  - ${idol.email} (${idol.stageName})`);
+      console.log(`  - ${idol.email} (${idol.username})`);
     });
     console.log('\nFan Accounts (password: admin123):');
     console.log('  - fan1@ventidole.com to fan15@ventidole.com');

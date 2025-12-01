@@ -10,7 +10,6 @@
 export type * from './models/User'
 export type * from './models/Verification'
 export type * from './models/SocialAccount'
-export type * from './models/Idol'
 export type * from './models/Community'
 export type * from './models/CommunityFollower'
 export type * from './models/ChatChannel'

@@ -6,7 +6,7 @@ import { CustomError } from '@shared/helper/error';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { BaseResponse } from '@shared/helper/response';
 import { IRequest } from '@shared/interface/request.interface';
-import { ChatChannelType, ChatRole, ChatChannel, ChatParticipant } from 'src/db/prisma/enums';
+import { ChatChannelType, ChatRole, ChatChannel, ChatParticipant, Role } from 'src/db/prisma/enums';
 import { CreateChannelRequest } from './request/create-channel.request';
 import { SendMessageRequest } from './request/send-message.request';
 import { AddParticipantsRequest } from './request/add-participants.request';
@@ -60,8 +60,8 @@ export class ChatService {
 
     // For announcement channels, verify user is an idol
     if (body.isAnnouncement) {
-      const idol = await this.prisma.idol.findUnique({
-        where: { userId },
+      const idol = await this.prisma.user.findUnique({
+        where: { id: userId, role: Role.IDOL },
       });
 
       if (!idol) {

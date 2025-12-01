@@ -391,7 +391,6 @@ export const ModelName = {
   User: 'User',
   Verification: 'Verification',
   SocialAccount: 'SocialAccount',
-  Idol: 'Idol',
   Community: 'Community',
   CommunityFollower: 'CommunityFollower',
   ChatChannel: 'ChatChannel',
@@ -411,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "verification" | "socialAccount" | "idol" | "community" | "communityFollower" | "chatChannel" | "chatParticipant"
+    modelProps: "user" | "verification" | "socialAccount" | "community" | "communityFollower" | "chatChannel" | "chatParticipant"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -634,80 +633,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.SocialAccountCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.SocialAccountCountAggregateOutputType> | number
-        }
-      }
-    }
-    Idol: {
-      payload: Prisma.$IdolPayload<ExtArgs>
-      fields: Prisma.IdolFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.IdolFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdolPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.IdolFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdolPayload>
-        }
-        findFirst: {
-          args: Prisma.IdolFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdolPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.IdolFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdolPayload>
-        }
-        findMany: {
-          args: Prisma.IdolFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdolPayload>[]
-        }
-        create: {
-          args: Prisma.IdolCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdolPayload>
-        }
-        createMany: {
-          args: Prisma.IdolCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.IdolCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdolPayload>[]
-        }
-        delete: {
-          args: Prisma.IdolDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdolPayload>
-        }
-        update: {
-          args: Prisma.IdolUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdolPayload>
-        }
-        deleteMany: {
-          args: Prisma.IdolDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.IdolUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.IdolUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdolPayload>[]
-        }
-        upsert: {
-          args: Prisma.IdolUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$IdolPayload>
-        }
-        aggregate: {
-          args: Prisma.IdolAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregateIdol>
-        }
-        groupBy: {
-          args: Prisma.IdolGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.IdolGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.IdolCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.IdolCountAggregateOutputType> | number
         }
       }
     }
@@ -1061,7 +986,9 @@ export const UserScalarFieldEnum = {
   role: 'role',
   deviceToken: 'deviceToken',
   avatarUrl: 'avatarUrl',
-  backgroundUrl: 'backgroundUrl'
+  backgroundUrl: 'backgroundUrl',
+  bio: 'bio',
+  communityId: 'communityId'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -1103,26 +1030,6 @@ export const SocialAccountScalarFieldEnum = {
 } as const
 
 export type SocialAccountScalarFieldEnum = (typeof SocialAccountScalarFieldEnum)[keyof typeof SocialAccountScalarFieldEnum]
-
-
-export const IdolScalarFieldEnum = {
-  id: 'id',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  version: 'version',
-  isDeleted: 'isDeleted',
-  deletedAt: 'deletedAt',
-  metadata: 'metadata',
-  stageName: 'stageName',
-  bio: 'bio',
-  avatarUrl: 'avatarUrl',
-  backgroundUrl: 'backgroundUrl',
-  userId: 'userId',
-  communityId: 'communityId'
-} as const
-
-export type IdolScalarFieldEnum = (typeof IdolScalarFieldEnum)[keyof typeof IdolScalarFieldEnum]
 
 
 export const CommunityScalarFieldEnum = {
@@ -1484,7 +1391,6 @@ export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
   verification?: Prisma.VerificationOmit
   socialAccount?: Prisma.SocialAccountOmit
-  idol?: Prisma.IdolOmit
   community?: Prisma.CommunityOmit
   communityFollower?: Prisma.CommunityFollowerOmit
   chatChannel?: Prisma.ChatChannelOmit

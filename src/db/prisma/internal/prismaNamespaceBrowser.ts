@@ -51,7 +51,6 @@ export const ModelName = {
   User: 'User',
   Verification: 'Verification',
   SocialAccount: 'SocialAccount',
-  Idol: 'Idol',
   Community: 'Community',
   CommunityFollower: 'CommunityFollower',
   ChatChannel: 'ChatChannel',
@@ -89,7 +88,9 @@ export const UserScalarFieldEnum = {
   role: 'role',
   deviceToken: 'deviceToken',
   avatarUrl: 'avatarUrl',
-  backgroundUrl: 'backgroundUrl'
+  backgroundUrl: 'backgroundUrl',
+  bio: 'bio',
+  communityId: 'communityId'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -131,26 +132,6 @@ export const SocialAccountScalarFieldEnum = {
 } as const
 
 export type SocialAccountScalarFieldEnum = (typeof SocialAccountScalarFieldEnum)[keyof typeof SocialAccountScalarFieldEnum]
-
-
-export const IdolScalarFieldEnum = {
-  id: 'id',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  version: 'version',
-  isDeleted: 'isDeleted',
-  deletedAt: 'deletedAt',
-  metadata: 'metadata',
-  stageName: 'stageName',
-  bio: 'bio',
-  avatarUrl: 'avatarUrl',
-  backgroundUrl: 'backgroundUrl',
-  userId: 'userId',
-  communityId: 'communityId'
-} as const
-
-export type IdolScalarFieldEnum = (typeof IdolScalarFieldEnum)[keyof typeof IdolScalarFieldEnum]
 
 
 export const CommunityScalarFieldEnum = {

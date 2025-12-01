@@ -300,7 +300,7 @@ export type ChatChannelWhereInput = {
   lastMessageAt?: Prisma.DateTimeNullableFilter<"ChatChannel"> | Date | string | null
   firebaseDocId?: Prisma.StringFilter<"ChatChannel"> | string
   community?: Prisma.XOR<Prisma.CommunityNullableScalarRelationFilter, Prisma.CommunityWhereInput> | null
-  idol?: Prisma.XOR<Prisma.IdolNullableScalarRelationFilter, Prisma.IdolWhereInput> | null
+  idol?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   participants?: Prisma.ChatParticipantListRelationFilter
 }
 
@@ -322,7 +322,7 @@ export type ChatChannelOrderByWithRelationInput = {
   lastMessageAt?: Prisma.SortOrderInput | Prisma.SortOrder
   firebaseDocId?: Prisma.SortOrder
   community?: Prisma.CommunityOrderByWithRelationInput
-  idol?: Prisma.IdolOrderByWithRelationInput
+  idol?: Prisma.UserOrderByWithRelationInput
   participants?: Prisma.ChatParticipantOrderByRelationAggregateInput
 }
 
@@ -347,7 +347,7 @@ export type ChatChannelWhereUniqueInput = Prisma.AtLeast<{
   isAnnouncement?: Prisma.BoolFilter<"ChatChannel"> | boolean
   lastMessageAt?: Prisma.DateTimeNullableFilter<"ChatChannel"> | Date | string | null
   community?: Prisma.XOR<Prisma.CommunityNullableScalarRelationFilter, Prisma.CommunityWhereInput> | null
-  idol?: Prisma.XOR<Prisma.IdolNullableScalarRelationFilter, Prisma.IdolWhereInput> | null
+  idol?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   participants?: Prisma.ChatParticipantListRelationFilter
 }, "id" | "firebaseDocId">
 
@@ -413,7 +413,7 @@ export type ChatChannelCreateInput = {
   lastMessageAt?: Date | string | null
   firebaseDocId: string
   community?: Prisma.CommunityCreateNestedOneWithoutChatChannelsInput
-  idol?: Prisma.IdolCreateNestedOneWithoutChatChannelsInput
+  idol?: Prisma.UserCreateNestedOneWithoutChatChannelsInput
   participants?: Prisma.ChatParticipantCreateNestedManyWithoutChannelInput
 }
 
@@ -453,7 +453,7 @@ export type ChatChannelUpdateInput = {
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   firebaseDocId?: Prisma.StringFieldUpdateOperationsInput | string
   community?: Prisma.CommunityUpdateOneWithoutChatChannelsNestedInput
-  idol?: Prisma.IdolUpdateOneWithoutChatChannelsNestedInput
+  idol?: Prisma.UserUpdateOneWithoutChatChannelsNestedInput
   participants?: Prisma.ChatParticipantUpdateManyWithoutChannelNestedInput
 }
 
@@ -813,7 +813,7 @@ export type ChatChannelCreateWithoutCommunityInput = {
   isAnnouncement?: boolean
   lastMessageAt?: Date | string | null
   firebaseDocId: string
-  idol?: Prisma.IdolCreateNestedOneWithoutChatChannelsInput
+  idol?: Prisma.UserCreateNestedOneWithoutChatChannelsInput
   participants?: Prisma.ChatParticipantCreateNestedManyWithoutChannelInput
 }
 
@@ -878,7 +878,7 @@ export type ChatChannelCreateWithoutParticipantsInput = {
   lastMessageAt?: Date | string | null
   firebaseDocId: string
   community?: Prisma.CommunityCreateNestedOneWithoutChatChannelsInput
-  idol?: Prisma.IdolCreateNestedOneWithoutChatChannelsInput
+  idol?: Prisma.UserCreateNestedOneWithoutChatChannelsInput
 }
 
 export type ChatChannelUncheckedCreateWithoutParticipantsInput = {
@@ -932,7 +932,7 @@ export type ChatChannelUpdateWithoutParticipantsInput = {
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   firebaseDocId?: Prisma.StringFieldUpdateOperationsInput | string
   community?: Prisma.CommunityUpdateOneWithoutChatChannelsNestedInput
-  idol?: Prisma.IdolUpdateOneWithoutChatChannelsNestedInput
+  idol?: Prisma.UserUpdateOneWithoutChatChannelsNestedInput
 }
 
 export type ChatChannelUncheckedUpdateWithoutParticipantsInput = {
@@ -1061,7 +1061,7 @@ export type ChatChannelUpdateWithoutCommunityInput = {
   isAnnouncement?: Prisma.BoolFieldUpdateOperationsInput | boolean
   lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   firebaseDocId?: Prisma.StringFieldUpdateOperationsInput | string
-  idol?: Prisma.IdolUpdateOneWithoutChatChannelsNestedInput
+  idol?: Prisma.UserUpdateOneWithoutChatChannelsNestedInput
   participants?: Prisma.ChatParticipantUpdateManyWithoutChannelNestedInput
 }
 
@@ -1237,7 +1237,7 @@ export type $ChatChannelPayload<ExtArgs extends runtime.Types.Extensions.Interna
   name: "ChatChannel"
   objects: {
     community: Prisma.$CommunityPayload<ExtArgs> | null
-    idol: Prisma.$IdolPayload<ExtArgs> | null
+    idol: Prisma.$UserPayload<ExtArgs> | null
     participants: Prisma.$ChatParticipantPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1652,7 +1652,7 @@ readonly fields: ChatChannelFieldRefs;
 export interface Prisma__ChatChannelClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   community<T extends Prisma.ChatChannel$communityArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChatChannel$communityArgs<ExtArgs>>): Prisma.Prisma__CommunityClient<runtime.Types.Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-  idol<T extends Prisma.ChatChannel$idolArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChatChannel$idolArgs<ExtArgs>>): Prisma.Prisma__IdolClient<runtime.Types.Result.GetResult<Prisma.$IdolPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  idol<T extends Prisma.ChatChannel$idolArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChatChannel$idolArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   participants<T extends Prisma.ChatChannel$participantsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ChatChannel$participantsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ChatParticipantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2118,18 +2118,18 @@ export type ChatChannel$communityArgs<ExtArgs extends runtime.Types.Extensions.I
  */
 export type ChatChannel$idolArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   /**
-   * Select specific fields to fetch from the Idol
+   * Select specific fields to fetch from the User
    */
-  select?: Prisma.IdolSelect<ExtArgs> | null
+  select?: Prisma.UserSelect<ExtArgs> | null
   /**
-   * Omit specific fields from the Idol
+   * Omit specific fields from the User
    */
-  omit?: Prisma.IdolOmit<ExtArgs> | null
+  omit?: Prisma.UserOmit<ExtArgs> | null
   /**
    * Choose, which related nodes to fetch as well
    */
-  include?: Prisma.IdolInclude<ExtArgs> | null
-  where?: Prisma.IdolWhereInput
+  include?: Prisma.UserInclude<ExtArgs> | null
+  where?: Prisma.UserWhereInput
 }
 
 /**

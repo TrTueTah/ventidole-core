@@ -241,12 +241,14 @@ export class CommunityService {
       },
       include: {
         idols: {
+          where: {
+            isDeleted: false,
+          },
           select: {
             id: true,
-            stageName: true,
+            username: true,
             avatarUrl: true,
             bio: true,
-            userId: true,
           },
         },
         followers: {
@@ -288,8 +290,8 @@ export class CommunityService {
       isFollowing,
       idols: community.idols.map((idol) => ({
         id: idol.id,
-        userId: idol.userId,
-        stageName: idol.stageName,
+        userId: idol.id,
+        stageName: idol.username,
         bio: idol.bio ?? undefined,
         avatarUrl: idol.avatarUrl ?? undefined,
       })),

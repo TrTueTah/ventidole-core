@@ -48,30 +48,21 @@ export class AdminIdolsService {
     // Hash password
     const hashedPassword = await bcrypt.hash(body.password, 10);
 
-    // Create User and Idol in a transaction
+    // Create User with IDOL role in the community
     const user = await this.prisma.user.create({
       data: {
         email: body.email,
         password: hashedPassword,
         role: Role.IDOL,
         deviceToken: body.deviceToken,
-        username: body.stageName.toLowerCase().replace(/\s+/g, ''),
-        idol: {
-          create: {
-            stageName: body.stageName,
-            communityId: body.communityId,
-            avatarUrl: body.avatarUrl,
-            backgroundUrl: body.backgroundUrl,
-            bio: body.bio,
-          },
-        },
+        username: body.username,
+        bio: body.bio,
+        avatarUrl: body.avatarUrl,
+        backgroundUrl: body.backgroundUrl,
+        communityId: body.communityId,
       },
       include: {
-        idol: {
-          include: {
-            community: true,
-          },
-        },
+        community: true,
       },
     });
 
@@ -107,7 +98,7 @@ export class AdminIdolsService {
         user.id,
         user.email,
         user.role,
-        user.idol,
+        user,
         accessToken,
         refreshToken
       )
@@ -125,26 +116,29 @@ export class AdminIdolsService {
     orderByObj[sortBy] = sortOrder;
 
     const [idols, total] = await Promise.all([
-      this.prisma.idol.findMany({
-        where: { isActive: true, stageName: { contains: search, mode: 'insensitive' } },
+      this.prisma.user.findMany({
+        where: {
+          role: Role.IDOL,
+          isActive: true,
+          ...(search && {
+            OR: [
+              { username: { contains: search, mode: 'insensitive' } },
+              { email: { contains: search, mode: 'insensitive' } },
+            ]
+          })
+        },
         include: {
-          user: {
-            select: {
-              id: true,
-              email: true,
-              role: true,
-              isActive: true,
-              createdAt: true,
-            },
-          },
           community: true,
         },
         orderBy: orderByObj,
         skip: query.offset,
         take: limit,
       }),
-      this.prisma.idol.count({
-        where: { isActive: true },
+      this.prisma.user.count({
+        where: {
+          role: Role.IDOL,
+          isActive: true,
+        },
       }),
     ]);
 
@@ -165,18 +159,9 @@ export class AdminIdolsService {
    * Get idol detail by ID
    */
   async getIdolDetail(idolId: string) {
-    const idol = await this.prisma.idol.findUnique({
-      where: { id: idolId },
+    const idol = await this.prisma.user.findUnique({
+      where: { id: idolId, role: Role.IDOL },
       include: {
-        user: {
-          select: {
-            id: true,
-            email: true,
-            role: true,
-            isActive: true,
-            createdAt: true,
-          },
-        },
         community: true,
       },
     });
@@ -192,9 +177,9 @@ export class AdminIdolsService {
    * Update idol information
    */
   async updateIdol(idolId: string, body: UpdateIdolRequest) {
-    // Check if idol exists
-    const existingIdol = await this.prisma.idol.findUnique({
-      where: { id: idolId },
+    // Check if user exists and is an idol
+    const existingIdol = await this.prisma.user.findUnique({
+      where: { id: idolId, role: Role.IDOL },
     });
 
     if (!existingIdol) {
@@ -212,26 +197,17 @@ export class AdminIdolsService {
       }
     }
 
-    // Update idol
-    const updatedIdol = await this.prisma.idol.update({
+    // Update idol user
+    const updatedIdol = await this.prisma.user.update({
       where: { id: idolId },
       data: {
-        ...(body.stageName && { stageName: body.stageName }),
+        ...(body.username && { username: body.username }),
         ...(body.avatarUrl !== undefined && { avatarUrl: body.avatarUrl }),
         ...(body.backgroundUrl !== undefined && { backgroundUrl: body.backgroundUrl }),
         ...(body.bio !== undefined && { bio: body.bio }),
         ...(body.communityId && { communityId: body.communityId }),
       },
       include: {
-        user: {
-          select: {
-            id: true,
-            email: true,
-            role: true,
-            isActive: true,
-            createdAt: true,
-          },
-        },
         community: true,
       },
     });

@@ -5,7 +5,10 @@ export class CreatedIdolDto {
   id: string;
 
   @ApiProperty()
-  stageName: string;
+  username: string;
+
+  @ApiProperty()
+  email: string;
 
   @ApiProperty()
   avatarUrl?: string;
@@ -17,10 +20,7 @@ export class CreatedIdolDto {
   bio?: string;
 
   @ApiProperty()
-  communityId: string;
-
-  @ApiProperty()
-  userId: string;
+  communityId?: string;
 
   @ApiProperty()
   isActive: boolean;
@@ -36,12 +36,12 @@ export class CreatedIdolDto {
 
   constructor(data: any) {
     this.id = data.id;
-    this.stageName = data.stageName;
+    this.username = data.username;
+    this.email = data.email;
     this.avatarUrl = data.avatarUrl;
     this.backgroundUrl = data.backgroundUrl;
     this.bio = data.bio;
     this.communityId = data.communityId;
-    this.userId = data.userId;
     this.isActive = data.isActive;
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;

@@ -30,6 +30,8 @@ CREATE TABLE "user" (
     "deviceToken" VARCHAR(255),
     "avatar_url" VARCHAR(255),
     "background_url" VARCHAR(255),
+    "bio" VARCHAR(500),
+    "communityId" TEXT,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -70,26 +72,6 @@ CREATE TABLE "social_account" (
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "social_account_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "idol" (
-    "id" TEXT NOT NULL,
-    "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
-    "version" INTEGER NOT NULL DEFAULT 0,
-    "is_deleted" BOOLEAN NOT NULL DEFAULT false,
-    "deleted_at" TIMESTAMP(3),
-    "metadata" JSONB,
-    "stageName" VARCHAR(100) NOT NULL,
-    "bio" VARCHAR(500),
-    "avatar_url" VARCHAR(255),
-    "background_url" VARCHAR(255),
-    "userId" TEXT NOT NULL,
-    "communityId" TEXT NOT NULL,
-
-    CONSTRAINT "idol_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -190,9 +172,6 @@ CREATE INDEX "social_account_userId_idx" ON "social_account"("userId");
 CREATE UNIQUE INDEX "social_account_provider_provider_id_key" ON "social_account"("provider", "provider_id");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "idol_userId_key" ON "idol"("userId");
-
--- CreateIndex
 CREATE INDEX "community_follower_userId_idx" ON "community_follower"("userId");
 
 -- CreateIndex
@@ -226,16 +205,13 @@ CREATE INDEX "chat_participant_channelId_idx" ON "chat_participant"("channelId")
 CREATE UNIQUE INDEX "chat_participant_channelId_userId_key" ON "chat_participant"("channelId", "userId");
 
 -- AddForeignKey
+ALTER TABLE "user" ADD CONSTRAINT "user_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "community"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "verification" ADD CONSTRAINT "verification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "social_account" ADD CONSTRAINT "social_account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "idol" ADD CONSTRAINT "idol_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "community"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "idol" ADD CONSTRAINT "idol_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "community_follower" ADD CONSTRAINT "community_follower_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "community"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -247,7 +223,7 @@ ALTER TABLE "community_follower" ADD CONSTRAINT "community_follower_userId_fkey"
 ALTER TABLE "chat_channel" ADD CONSTRAINT "chat_channel_communityId_fkey" FOREIGN KEY ("communityId") REFERENCES "community"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "chat_channel" ADD CONSTRAINT "chat_channel_idolId_fkey" FOREIGN KEY ("idolId") REFERENCES "idol"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "chat_channel" ADD CONSTRAINT "chat_channel_idolId_fkey" FOREIGN KEY ("idolId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "chat_participant" ADD CONSTRAINT "chat_participant_channelId_fkey" FOREIGN KEY ("channelId") REFERENCES "chat_channel"("id") ON DELETE CASCADE ON UPDATE CASCADE;

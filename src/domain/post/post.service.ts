@@ -11,6 +11,7 @@ import { UpdatePostRequest } from './request/update-post.request';
 import { GetPostsRequest, PostAuthorFilter } from './request/get-posts.request';
 import { PageInfo, PaginationResponse } from '@shared/dto/pagination-response.dto';
 import { BaseResponse } from '@shared/helper/response';
+import { Role } from 'src/db/prisma/enums';
 import * as admin from 'firebase-admin';
 import { IRequest } from '@shared/interface/request.interface';
 import { getCollection } from '@shared/helper/get-collection';
@@ -638,12 +639,12 @@ export class PostService {
       const { notifications } = getCollection();
       const firestore = this.firebaseService.getFirestore();
 
-      // Get idol info and their community
-      const idol = await this.prisma.idol.findUnique({
-        where: { userId: idolUserId },
+      // Get idol (user with IDOL role) info and their community
+      const idol = await this.prisma.user.findUnique({
+        where: { id: idolUserId, role: Role.IDOL },
         select: {
           id: true,
-          stageName: true,
+          username: true,
           avatarUrl: true,
           communityId: true,
           community: {
@@ -662,7 +663,7 @@ export class PostService {
         },
       });
 
-      if (!idol || !idol.community.followers.length) {
+      if (!idol || !idol.community || !idol.community.followers.length) {
         this.logger.log(`No followers found for idol ${idolUserId}`);
         return;
       }
@@ -675,12 +676,12 @@ export class PostService {
         return firestore.collection(notifications).add({
           userId,
           actorId: idolUserId,
-          actorName: idol.stageName,
+          actorName: idol.username,
           actorAvatar: idol.avatarUrl || null,
           type: 'idol_post',
           contentId: postId,
           contentType: 'post',
-          message: `${idol.stageName} posted in ${idol.community.name}`,
+          message: `${idol.username} posted in ${idol.community.name}`,
           read: false,
           createdAt: admin.firestore.FieldValue.serverTimestamp(),
         });
