@@ -1,15 +1,14 @@
-import { Module, forwardRef } from "@nestjs/common";
-import { JwtModule } from "@nestjs/jwt";
-import { PassportModule } from "@nestjs/passport";
-import { AuthController } from "./auth.controller";
-import { AuthService } from "./auth.service";
-import { TokenStrategyKey } from "@shared/enum/token.enum";
-import { OtpModule } from "@shared/service/otp/otp.module";
-import { QueueVerificationModule } from "@shared/service/queue/verification/verification.module";
-import { TokenModule } from "@shared/service/token/token.module";
-import { JwtStrategy } from "@shared/service/token/jwt.strategy";
-import { PrismaModule } from "@shared/service/prisma/prisma.module";
-import { StreamChatModule } from "@domain/stream-chat/stream-chat.module";
+import { Module, forwardRef } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { TokenStrategyKey } from '@shared/enum/token.enum';
+import { OtpModule } from '@shared/service/otp/otp.module';
+import { QueueVerificationModule } from '@shared/service/queue/verification/verification.module';
+import { TokenModule } from '@shared/service/token/token.module';
+import { JwtStrategy } from '@shared/service/token/jwt.strategy';
+import { PrismaModule } from '@shared/service/prisma/prisma.module';
 
 @Module({
   imports: [
@@ -19,7 +18,6 @@ import { StreamChatModule } from "@domain/stream-chat/stream-chat.module";
     TokenModule,
     QueueVerificationModule,
     PrismaModule,
-    StreamChatModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],

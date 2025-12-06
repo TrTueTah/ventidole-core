@@ -1,31 +1,29 @@
-import { Injectable, Logger } from "@nestjs/common";
-import { SignInRequest } from "./request/sign-in.request";
-import { SignUpRequest } from "./request/sign-up.request";
-import { SendVerificationRequest } from "./request/send-verification.request";
-import { ConfirmVerificationRequest } from "./request/confirm-verification.request";
-import { RefreshTokenRequest } from "./request/refresh-token.request";
-import { ResetPasswordRequest } from "./request/reset-password.request";
-import { JwtService } from "@nestjs/jwt";
-import { RedisService } from "@shared/service/redis/redis.service";
-import { OtpService } from "@shared/service/otp/otp.service";
-import { TokenService } from "@shared/service/token/token.service";
-import { VerificationProducer } from "@shared/service/queue/verification/verification.producer";
-import { PrismaService } from "@shared/service/prisma/prisma.service";
-import { StreamChatService } from "@domain/stream-chat/stream-chat.service";
-import { CustomError } from "@shared/helper/error";
-import { ErrorCode } from "@shared/enum/error-code.enum";
-import { BaseResponse } from "@shared/helper/response";
-import { SignInResponse } from "./response/sign-in.response";
-import { hashPassword, verifyPassword } from "@shared/helper/hash";
-import { ENVIRONMENT } from "@core/config/env.config";
-import { RedisKey } from "@shared/enum/redis-key.enum";
-import moment from "moment";
-import { VerificationCodeResponse } from "./response/verification-code.response";
-import { ConfirmVerificationResponse } from "./response/confirm-verification.response";
-import { IJwtDecoded } from "@shared/interface/jwt-payload.interface";
-import { TokenIssuer } from "@shared/enum/token.enum";
-import { VerificationType } from "src/db/prisma/enums";
-import { UserModel } from "src/db/prisma/models";
+import { ENVIRONMENT } from '@core/config/env.config';
+import { Injectable, Logger } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ErrorCode } from '@shared/enum/error-code.enum';
+import { RedisKey } from '@shared/enum/redis-key.enum';
+import { TokenIssuer } from '@shared/enum/token.enum';
+import { CustomError } from '@shared/helper/error';
+import { hashPassword, verifyPassword } from '@shared/helper/hash';
+import { BaseResponse } from '@shared/helper/response';
+import { IJwtDecoded } from '@shared/interface/jwt-payload.interface';
+import { OtpService } from '@shared/service/otp/otp.service';
+import { PrismaService } from '@shared/service/prisma/prisma.service';
+import { RedisService } from '@shared/service/redis/redis.service';
+import { TokenService } from '@shared/service/token/token.service';
+import moment from 'moment';
+import { VerificationType } from 'src/db/prisma/enums';
+import { UserModel } from 'src/db/prisma/models';
+import { ConfirmVerificationRequest } from './request/confirm-verification.request';
+import { RefreshTokenRequest } from './request/refresh-token.request';
+import { ResetPasswordRequest } from './request/reset-password.request';
+import { SendVerificationRequest } from './request/send-verification.request';
+import { SignInRequest } from './request/sign-in.request';
+import { SignUpRequest } from './request/sign-up.request';
+import { ConfirmVerificationResponse } from './response/confirm-verification.response';
+import { SignInResponse } from './response/sign-in.response';
+import { VerificationCodeResponse } from './response/verification-code.response';
 
 @Injectable()
 export class AuthService {
@@ -36,9 +34,7 @@ export class AuthService {
     private readonly redisService: RedisService,
     private readonly otpService: OtpService,
     private readonly tokenService: TokenService,
-    private readonly producer: VerificationProducer,
     private prisma: PrismaService,
-    private readonly streamChatService: StreamChatService,
   ) {}
   async signIn(request: SignInRequest) {
     try {
@@ -74,22 +70,9 @@ export class AuthService {
           email: request.email,
           password: hashedPassword,
           username: request.username,
-          role: "FAN",
+          role: 'FAN',
         },
       });
-
-      // Create Stream Chat user (non-blocking - don't fail signup if this fails)
-      try {
-        await this.streamChatService.createOrUpdateUser(
-          user.id,
-          request.username || user.email,
-          user.avatarUrl || undefined,
-        );
-        this.logger.log(`Stream Chat user created for user: ${user.id}`);
-      } catch (streamError) {
-        this.logger.error(`Failed to create Stream Chat user during signup: ${streamError.message}`);
-        // Don't throw - allow signup to succeed even if Stream Chat fails
-      }
 
       const [accessToken, refreshToken] = await this.generateTokens(user);
 
@@ -140,9 +123,7 @@ export class AuthService {
           response.name = undefined;
         }
 
-        return user
-          ? BaseResponse.of(response)
-          : BaseResponse.ok();
+        return user ? BaseResponse.of(response) : BaseResponse.ok();
       }
 
       return BaseResponse.ok();
@@ -185,9 +166,8 @@ export class AuthService {
       });
       if (!user) throw new CustomError(ErrorCode.Unauthenticated);
 
-      const [newAccessToken, newRefreshToken] =
-        await this.generateTokens(user);
-      
+      const [newAccessToken, newRefreshToken] = await this.generateTokens(user);
+
       const response = new SignInResponse();
       response.id = user.id;
       response.role = user.role;
@@ -311,11 +291,10 @@ export class AuthService {
           isActive: true,
           isDeleted: false,
         },
-        select: { id: true }, 
+        select: { id: true },
       });
 
-      if (!userExisted)
-        throw new CustomError(ErrorCode.AccountNotFound, email);
+      if (!userExisted) throw new CustomError(ErrorCode.AccountNotFound, email);
     } catch (error) {
       throw error;
     }
