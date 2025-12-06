@@ -29,6 +29,28 @@ const ErrorMessage: Record<
   [ErrorCode.ExistedPhoneNumber]: 'Phone number already exists.',
   [ErrorCode.InvalidEmailOrPassword]: 'Email or password is incorrect.',
   [ErrorCode.InvalidTokenSecret]: 'Token secret is invalid.',
+  [ErrorCode.FileNotFound]: 'File not found.',
+  [ErrorCode.FileTooLarge]: 'File is too large.',
+  [ErrorCode.InvalidFileType]: 'Invalid file type.',
+  [ErrorCode.InvalidFileName]: 'Invalid file name.',
+  [ErrorCode.EmailAlreadyExists]: 'Email already exists.',
+  [ErrorCode.UsernameAlreadyExists]: 'Username already exists.',
+  [ErrorCode.ExistedUsername]: 'Username already exists.',
+  [ErrorCode.FanProfileNotFound]: 'Fan profile not found.',
+  [ErrorCode.IdolProfileNotFound]: 'Idol profile not found.',
+  [ErrorCode.ChatChannelNotFound]: 'Chat channel not found.',
+  [ErrorCode.NotChannelParticipant]: 'You are not a participant of this channel.',
+  [ErrorCode.NotChannelAdmin]: 'You are not an admin of this channel.',
+  [ErrorCode.CannotSendToAnnouncementChannel]:
+    'Cannot send messages to announcement channel.',
+  [ErrorCode.InternalServerError]: 'Internal server error.',
+  [ErrorCode.IdolNotFound]: 'Idol not found.',
+  [ErrorCode.PostNotFound]: 'Post not found.',
+  [ErrorCode.PostNotOwned]: 'You do not have permission to modify this post.',
+  [ErrorCode.CommentNotFound]: 'Comment not found.',
+  [ErrorCode.CommentNotOwned]:
+    'You do not have permission to modify this comment.',
+  [ErrorCode.CommentNotBelongToPost]: 'Comment does not belong to this post.',
 };
 
 export function getErrorMessage(code: ErrorCode, ...param: unknown[]): string {

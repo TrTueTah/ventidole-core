@@ -39,6 +39,11 @@ export enum ErrorCode {
   CannotSendToAnnouncementChannel = 'CannotSendToAnnouncementChannel',
   InternalServerError = 'InternalServerError',
   IdolNotFound = 'IdolNotFound',
+  PostNotFound = 'PostNotFound',
+  PostNotOwned = 'PostNotOwned',
+  CommentNotFound = 'CommentNotFound',
+  CommentNotOwned = 'CommentNotOwned',
+  CommentNotBelongToPost = 'CommentNotBelongToPost',
 }
 
 const ErrorCodeSet = new Set(Object.values(ErrorCode));

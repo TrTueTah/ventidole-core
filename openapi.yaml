@@ -641,6 +641,502 @@ paths:
                   - message
       security: *ref_1
       tags: *ref_2
+  /v1/user/posts:
+    get:
+      operationId: PostController_getPosts_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: &ref_4
+        - bearer: []
+      tags: &ref_5
+        - User Posts
+    post:
+      operationId: PostController_createPost_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/PostDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_4
+      tags: *ref_5
+  /v1/user/posts/{id}:
+    get:
+      operationId: PostController_getPostById_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/PostDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_4
+      tags: *ref_5
+    patch:
+      operationId: PostController_updatePost_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePostDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/PostDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_4
+      tags: *ref_5
+    delete:
+      operationId: PostController_deletePost_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_4
+      tags: *ref_5
+  /v1/user/comment/{postId}:
+    get:
+      operationId: CommentController_getCommentsByPostId_v1
+      parameters:
+        - name: postId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CommentDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: &ref_6
+        - bearer: []
+      tags: &ref_7
+        - User Comments
+    post:
+      operationId: CommentController_createComment_v1
+      parameters:
+        - name: postId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommentDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/CommentDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_6
+      tags: *ref_7
+  /v1/user/comment/{postId}/{id}:
+    patch:
+      operationId: CommentController_updateComment_v1
+      parameters:
+        - name: postId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCommentDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/CommentDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_6
+      tags: *ref_7
+    delete:
+      operationId: CommentController_deleteComment_v1
+      parameters:
+        - name: postId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_6
+      tags: *ref_7
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -772,6 +1268,11 @@ components:
             - CannotSendToAnnouncementChannel
             - InternalServerError
             - IdolNotFound
+            - PostNotFound
+            - PostNotOwned
+            - CommentNotFound
+            - CommentNotOwned
+            - CommentNotBelongToPost
           description: Error code (optional)
       required:
         - statusCode
@@ -1038,3 +1539,179 @@ components:
         - file
         - folder
         - customFileName
+    PostDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Post ID
+        content:
+          type: string
+          example: This is my post content
+          description: Post content
+        mediaUrls:
+          example:
+            - >-
+              https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
+            - >-
+              https://res.cloudinary.com/dsc9afexw/image/upload/v1763017396/BTS-scaled_wdnws5.jpg
+          description: Array of media URLs
+          nullable: true
+          type: array
+          items:
+            type: string
+        likeCount:
+          type: number
+          example: 100
+          description: Number of likes
+        commentCount:
+          type: number
+          example: 25
+          description: Number of comments
+        viewCount:
+          type: number
+          example: 500
+          description: Number of views
+        authorId:
+          type: string
+          example: clxxxxxxx
+          description: Author ID
+        author:
+          type: object
+          example:
+            id: clxxxxxxx
+            username: john_doe
+            avatarUrl: https://example.com/avatar.jpg
+          description: Author information
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Last update timestamp
+      required:
+        - id
+        - content
+        - likeCount
+        - commentCount
+        - viewCount
+        - authorId
+        - author
+        - createdAt
+        - updatedAt
+    CreatePostDto:
+      type: object
+      properties:
+        content:
+          type: string
+          example: This is my post content
+          description: Post content
+        mediaUrls:
+          example:
+            - >-
+              https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
+            - >-
+              https://res.cloudinary.com/dsc9afexw/image/upload/v1763017396/BTS-scaled_wdnws5.jpg
+          description: Array of media URLs
+          type: array
+          items:
+            type: string
+      required:
+        - content
+    UpdatePostDto:
+      type: object
+      properties:
+        content:
+          type: string
+          example: Updated post content
+          description: Post content
+        mediaUrls:
+          example:
+            - >-
+              https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
+            - >-
+              https://res.cloudinary.com/dsc9afexw/image/upload/v1763017396/BTS-scaled_wdnws5.jpg
+          description: Array of media URLs
+          type: array
+          items:
+            type: string
+    PageInfo:
+      type: object
+      properties: {}
+    CommentDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Comment ID
+        content:
+          type: string
+          example: This is a comment
+          description: Comment content
+        postId:
+          type: string
+          example: clxxxxxxx
+          description: Post ID
+        userId:
+          type: string
+          example: clxxxxxxx
+          description: User ID
+        user:
+          type: object
+          example:
+            id: clxxxxxxx
+            username: john_doe
+            avatarUrl: https://example.com/avatar.jpg
+          description: User information
+        parentId:
+          type: object
+          example: clxxxxxxx
+          description: Parent comment ID (for nested replies)
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Last update timestamp
+      required:
+        - id
+        - content
+        - postId
+        - userId
+        - user
+        - createdAt
+        - updatedAt
+    CreateCommentDto:
+      type: object
+      properties:
+        content:
+          type: string
+          example: This is a comment
+          description: Comment content
+          maxLength: 500
+        parentId:
+          type: string
+          example: clxxxxxxx
+          description: Parent comment ID (for nested replies)
+      required:
+        - content
+    UpdateCommentDto:
+      type: object
+      properties:
+        content:
+          type: string
+          example: Updated comment content
+          description: Comment content
+          maxLength: 500
+      required:
+        - content

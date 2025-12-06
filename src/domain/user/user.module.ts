@@ -1,4 +1,8 @@
 import { Module } from '@nestjs/common';
+import { PostModule } from './post/post.module';
+import { CommentModule } from './comment/comment.module';
 
-@Module({})
+@Module({
+  imports: [PostModule, CommentModule],
+})
 export class UserModule {}
