@@ -44,6 +44,9 @@ export enum ErrorCode {
   CommentNotFound = 'CommentNotFound',
   CommentNotOwned = 'CommentNotOwned',
   CommentNotBelongToPost = 'CommentNotBelongToPost',
+  CommunityNotFound = 'CommunityNotFound',
+  AlreadyJoinedCommunity = 'AlreadyJoinedCommunity',
+  NotJoinedCommunity = 'NotJoinedCommunity',
 }
 
 const ErrorCodeSet = new Set(Object.values(ErrorCode));

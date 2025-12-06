@@ -51,6 +51,9 @@ const ErrorMessage: Record<
   [ErrorCode.CommentNotOwned]:
     'You do not have permission to modify this comment.',
   [ErrorCode.CommentNotBelongToPost]: 'Comment does not belong to this post.',
+  [ErrorCode.CommunityNotFound]: 'Community not found.',
+  [ErrorCode.AlreadyJoinedCommunity]: 'You have already joined this community.',
+  [ErrorCode.NotJoinedCommunity]: 'You have not joined this community.',
 };
 
 export function getErrorMessage(code: ErrorCode, ...param: unknown[]): string {

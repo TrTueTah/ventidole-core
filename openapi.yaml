@@ -1137,6 +1137,299 @@ paths:
                   - message
       security: *ref_6
       tags: *ref_7
+  /v1/user/community:
+    get:
+      operationId: CommunityController_getAllCommunities_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CommunityDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: &ref_8
+        - bearer: []
+      tags: &ref_9
+        - User Communities
+  /v1/user/community/joined:
+    get:
+      operationId: CommunityController_getJoinedCommunities_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CommunityDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: *ref_8
+      tags: *ref_9
+  /v1/user/community/{id}/join:
+    post:
+      operationId: CommunityController_joinCommunity_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_8
+      tags: *ref_9
+  /v1/user/community/{id}/leave:
+    delete:
+      operationId: CommunityController_leaveCommunity_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_8
+      tags: *ref_9
+  /v1/user/community/{id}:
+    get:
+      operationId: CommunityController_getDetailCommunity_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/CommunityDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_8
+      tags: *ref_9
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -1273,6 +1566,9 @@ components:
             - CommentNotFound
             - CommentNotOwned
             - CommentNotBelongToPost
+            - CommunityNotFound
+            - AlreadyJoinedCommunity
+            - NotJoinedCommunity
           description: Error code (optional)
       required:
         - statusCode
@@ -1715,3 +2011,45 @@ components:
           maxLength: 500
       required:
         - content
+    CommunityDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Community ID
+        name:
+          type: string
+          example: K-Pop Fans Community
+          description: Community name
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Community avatar URL
+        backgroundUrl:
+          type: object
+          example: https://example.com/background.jpg
+          description: Community background URL
+        description:
+          type: object
+          example: A community for K-Pop fans
+          description: Community description
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Last update timestamp
+        isJoined:
+          type: boolean
+          example: true
+          description: Whether the current user has joined this community
+      required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
