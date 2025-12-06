@@ -29,11 +29,16 @@ model User {
   bio                 String?             @db.VarChar(500)
   communityId         String?             @map("communityId")
   chatParticipants    ChatParticipant[]
+  chatMessages        ChatMessage[]
   followedCommunities CommunityFollower[]
   community           Community?          @relation(fields: [communityId], references: [id], onDelete: SetNull)
   chatChannels        ChatChannel[]
   socialAccounts      SocialAccount[]
   verifications       Verification[]
+  posts               Post[]              @relation("PostAuthor")
+  comments            Comment[]
+  postLikes           PostLike[]
+  postViews           PostView[]
 
   @@map("user")
 }
@@ -141,6 +146,7 @@ model ChatChannel {
   community      Community?        @relation(fields: [communityId], references: [id], onDelete: Cascade)
   idol           User?             @relation(fields: [idolId], references: [id], onDelete: Cascade)
   participants   ChatParticipant[]
+  messages       ChatMessage[]
 
   @@index([communityId])
   @@index([idolId])
@@ -171,6 +177,126 @@ model ChatParticipant {
   @@index([userId])
   @@index([channelId])
   @@map("chat_participant")
+}
+
+model ChatMessage {
+  id        String      @id @default(cuid())
+  isActive  Boolean     @default(true)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  version   Int         @default(0)
+  isDeleted Boolean     @default(false) @map("is_deleted")
+  deletedAt DateTime?   @map("deleted_at")
+  metadata  Json?
+  content   String      @db.Text
+  channelId String      @map("channelId")
+  userId    String      @map("userId")
+  channel   ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([channelId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("chat_message")
+}
+
+model Post {
+  id        String    @id @default(cuid())
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  version   Int       @default(0)
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  deletedAt DateTime? @map("deleted_at")
+  metadata  Json?
+  content   String
+
+  // counters
+  likeCount    Int @default(0) @map("like_count")
+  commentCount Int @default(0) @map("comment_count")
+  viewCount    Int @default(0) @map("view_count")
+
+  // relations
+  authorId String     @map("authorId")
+  author   User       @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  likes    PostLike[]
+  comments Comment[]
+  views    PostView[]
+
+  @@index([authorId])
+  @@map("post")
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  version   Int       @default(0)
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  deletedAt DateTime? @map("deleted_at")
+  metadata  Json?
+  content   String    @db.VarChar(500)
+
+  // relations
+  postId String @map("postId")
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  userId String @map("userId")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  parentId String?   @map("parentId")
+  parent   Comment?  @relation("CommentToReply", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentToReply")
+
+  @@index([postId])
+  @@index([userId])
+  @@index([parentId])
+  @@map("comment")
+}
+
+model PostLike {
+  id        String    @id @default(cuid())
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  version   Int       @default(0)
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  deletedAt DateTime? @map("deleted_at")
+  metadata  Json?
+
+  postId String @map("postId")
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  userId String @map("userId")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([userId])
+  @@index([postId])
+  @@map("post_like")
+}
+
+model PostView {
+  id        String    @id @default(cuid())
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  version   Int       @default(0)
+  isDeleted Boolean   @default(false) @map("is_deleted")
+  deletedAt DateTime? @map("deleted_at")
+  metadata  Json?
+
+  postId String @map("postId")
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  userId String @map("userId")
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([userId])
+  @@index([postId])
+  @@map("post_view")
 }
 
 enum Role {

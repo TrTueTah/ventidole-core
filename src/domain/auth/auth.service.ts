@@ -105,7 +105,7 @@ export class AuthService {
   async confirmVerification(request: ConfirmVerificationRequest) {
     try {
       await this.otpService.confirmOtp(
-        request.email!,
+        request.email,
         request.code,
         request.verificationType,
       );

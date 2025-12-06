@@ -12,28 +12,39 @@ export class MultiDatabaseService {
     private firebaseService: FirebaseService,
   ) {}
 
-  async registerUser(email: string, name: string, password: string, fcmToken?: string) {
+  async registerUser(
+    email: string,
+    name: string,
+    password: string,
+    fcmToken?: string,
+  ) {
     const user = await this.prisma.account.create({
       data: { email, password, name, role: 'FAN' },
     });
 
     const firestore = this.firebaseService.getFirestore();
-    await firestore.collection('users').doc(user.id).set({
-      uid: user.id,
-      email: user.email,
-      displayName: user.name,
-      isOnline: true,
-      lastSeen: admin.firestore.FieldValue.serverTimestamp(),
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      fcmToken: fcmToken || null,
-    });
+    await firestore
+      .collection('users')
+      .doc(user.id)
+      .set({
+        uid: user.id,
+        email: user.email,
+        displayName: user.name,
+        isOnline: true,
+        lastSeen: admin.firestore.FieldValue.serverTimestamp(),
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        fcmToken: fcmToken || null,
+      });
 
     if (fcmToken) {
-      await firestore.collection('fcm_tokens').doc(user.id).set({
-        userId: user.id,
-        tokens: [fcmToken],
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
+      await firestore
+        .collection('fcm_tokens')
+        .doc(user.id)
+        .set({
+          userId: user.id,
+          tokens: [fcmToken],
+          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
     }
 
     return { user, firestoreProfile: true, fcmTokenSaved: !!fcmToken };
@@ -41,7 +52,7 @@ export class MultiDatabaseService {
 
   async sendChatMessage(roomId: string, senderId: string, message: string) {
     const firestore = this.firebaseService.getFirestore();
-    
+
     const messageRef = await firestore
       .collection('chat_rooms')
       .doc(roomId)
@@ -53,18 +64,21 @@ export class MultiDatabaseService {
         read: false,
       });
 
-    await firestore.collection('chat_rooms').doc(roomId).set({
-      lastMessage: message,
-      lastMessageAt: admin.firestore.FieldValue.serverTimestamp(),
-      lastMessageBy: senderId,
-    }, { merge: true });
+    await firestore.collection('chat_rooms').doc(roomId).set(
+      {
+        lastMessage: message,
+        lastMessageAt: admin.firestore.FieldValue.serverTimestamp(),
+        lastMessageBy: senderId,
+      },
+      { merge: true },
+    );
 
     return { messageId: messageRef.id, roomId };
   }
 
   async getChatMessages(roomId: string, limit: number = 50) {
     const firestore = this.firebaseService.getFirestore();
-    
+
     const messagesSnapshot = await firestore
       .collection('chat_rooms')
       .doc(roomId)
@@ -73,12 +87,12 @@ export class MultiDatabaseService {
       .limit(limit)
       .get();
 
-    return messagesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    return messagesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   }
 
   async updatePresence(userId: string, isOnline: boolean) {
     const firestore = this.firebaseService.getFirestore();
-    
+
     await firestore.collection('users').doc(userId).update({
       isOnline,
       lastSeen: admin.firestore.FieldValue.serverTimestamp(),
@@ -87,7 +101,12 @@ export class MultiDatabaseService {
     return { userId, isOnline };
   }
 
-  async sendPushNotification(userId: string, title: string, body: string, data?: Record<string, string>) {
+  async sendPushNotification(
+    userId: string,
+    title: string,
+    body: string,
+    data?: Record<string, string>,
+  ) {
     const messaging = this.firebaseService.getMessaging();
     const firestore = this.firebaseService.getFirestore();
 
@@ -106,7 +125,7 @@ export class MultiDatabaseService {
     }));
 
     const response = await messaging.sendEach(messages);
-    
+
     return {
       sent: response.successCount,
       failed: response.failureCount,
@@ -128,8 +147,8 @@ export class MultiDatabaseService {
 
     try {
       const firestore = this.firebaseService.getFirestore();
-      await firestore.collection('_health_check').doc('test').set({ 
-        timestamp: admin.firestore.FieldValue.serverTimestamp() 
+      await firestore.collection('_health_check').doc('test').set({
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
       });
       health.firestore = true;
     } catch (error) {

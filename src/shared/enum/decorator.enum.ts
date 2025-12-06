@@ -1,4 +1,4 @@
 export enum DecoratorKey {
-  Public = "public",
-  Roles = "roles",
+  Public = 'public',
+  Roles = 'roles',
 }

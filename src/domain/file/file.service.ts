@@ -41,7 +41,10 @@ export class FileService {
   }) {
     try {
       this.validateFile(uploadData);
-      const fileName = this.generateFileName(uploadData.originalName, uploadData.customFileName);
+      const fileName = this.generateFileName(
+        uploadData.originalName,
+        uploadData.customFileName,
+      );
       const filePath = `${uploadData.folder}/${fileName}`;
       const storage = this.firebaseService.getStorage();
       const bucket = storage.bucket();
@@ -56,7 +59,11 @@ export class FileService {
         },
       };
 
-      await file.save(uploadData.file, { metadata, public: true, validation: 'md5' });
+      await file.save(uploadData.file, {
+        metadata,
+        public: true,
+        validation: 'md5',
+      });
       await file.makePublic();
 
       const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filePath}`;
@@ -77,9 +84,15 @@ export class FileService {
     }
   }
 
-  async uploadMultipleFiles(files: Array<{ file: Buffer; originalName: string; mimeType: string }>, folder: string, userId?: string) {
+  async uploadMultipleFiles(
+    files: Array<{ file: Buffer; originalName: string; mimeType: string }>,
+    folder: string,
+    userId?: string,
+  ) {
     try {
-      const uploadPromises = files.map((fileData) => this.uploadFile({ ...fileData, folder, userId }));
+      const uploadPromises = files.map((fileData) =>
+        this.uploadFile({ ...fileData, folder, userId }),
+      );
       const results = await Promise.all(uploadPromises);
       return BaseResponse.of(results.map((r) => r.data));
     } catch (error) {
@@ -99,7 +112,10 @@ export class FileService {
       await file.delete();
       this.logger.log(`File deleted successfully: ${request.filePath}`);
 
-      return BaseResponse.of({ success: true, message: 'File deleted successfully' });
+      return BaseResponse.of({
+        success: true,
+        message: 'File deleted successfully',
+      });
     } catch (error) {
       this.logger.error('File deletion failed:', error);
       throw error;
@@ -108,9 +124,14 @@ export class FileService {
 
   async deleteMultipleFiles(filePaths: string[]) {
     try {
-      const deletePromises = filePaths.map((filePath) => this.deleteFile({ filePath }));
+      const deletePromises = filePaths.map((filePath) =>
+        this.deleteFile({ filePath }),
+      );
       await Promise.all(deletePromises);
-      return BaseResponse.of({ success: true, message: 'Files deleted successfully' });
+      return BaseResponse.of({
+        success: true,
+        message: 'Files deleted successfully',
+      });
     } catch (error) {
       throw error;
     }
@@ -204,7 +225,10 @@ export class FileService {
       const files = result.data?.files || [];
       if (files.length > 0) await this.deleteMultipleFiles(files);
       this.logger.log(`Folder deleted successfully: ${folder}`);
-      return BaseResponse.of({ success: true, message: 'Folder deleted successfully' });
+      return BaseResponse.of({
+        success: true,
+        message: 'Folder deleted successfully',
+      });
     } catch (error) {
       this.logger.error('Failed to delete folder:', error);
       throw error;
@@ -218,15 +242,23 @@ export class FileService {
     maxSizeInMB?: number;
     allowedMimeTypes?: string[];
   }): void {
-    const maxSize = (uploadData.maxSizeInMB || this.DEFAULT_MAX_SIZE_MB) * 1024 * 1024;
-    const allowedTypes = uploadData.allowedMimeTypes || this.DEFAULT_ALLOWED_TYPES;
+    const maxSize =
+      (uploadData.maxSizeInMB || this.DEFAULT_MAX_SIZE_MB) * 1024 * 1024;
+    const allowedTypes =
+      uploadData.allowedMimeTypes || this.DEFAULT_ALLOWED_TYPES;
 
-    if (uploadData.file.length > maxSize) throw new CustomError(ErrorCode.FileTooLarge);
-    if (!allowedTypes.includes(uploadData.mimeType)) throw new CustomError(ErrorCode.InvalidFileType);
-    if (!uploadData.originalName || uploadData.originalName.trim() === '') throw new CustomError(ErrorCode.InvalidFileName);
+    if (uploadData.file.length > maxSize)
+      throw new CustomError(ErrorCode.FileTooLarge);
+    if (!allowedTypes.includes(uploadData.mimeType))
+      throw new CustomError(ErrorCode.InvalidFileType);
+    if (!uploadData.originalName || uploadData.originalName.trim() === '')
+      throw new CustomError(ErrorCode.InvalidFileName);
   }
 
-  private generateFileName(originalName: string, customFileName?: string): string {
+  private generateFileName(
+    originalName: string,
+    customFileName?: string,
+  ): string {
     const timestamp = Date.now();
     const uuid = uuidv4();
     const extension = path.extname(originalName);

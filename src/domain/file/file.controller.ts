@@ -113,9 +113,7 @@ export class FileController {
 
   @Get('exists')
   @ApiResponseCustom()
-  fileExists(
-    @Query('filePath') filePath: string,
-  ) {
+  fileExists(@Query('filePath') filePath: string) {
     return this.fileService.fileExists(filePath);
   }
 

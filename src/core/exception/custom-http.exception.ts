@@ -1,4 +1,4 @@
-import { ErrorCode } from "@shared/enum/error-code.enum";
+import { ErrorCode } from '@shared/enum/error-code.enum';
 
 export class CustomHttpException<T> {
   errorCode: ErrorCode;

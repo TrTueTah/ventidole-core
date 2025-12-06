@@ -10,14 +10,14 @@ import { PrismaService } from '@shared/service/prisma/prisma.service';
 
 /**
  * File Module - Global module for file operations
- * 
+ *
  * Provides:
  * - File upload to Firebase Storage
  * - File deletion
  * - File URL generation (public and signed)
  * - File validation
  * - Multiple file operations
- * 
+ *
  * Uses Firebase Storage for cloud file management
  */
 @Global()

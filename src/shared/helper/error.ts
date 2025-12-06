@@ -1,5 +1,5 @@
-import { getErrorMessage } from "@shared/constant/error-message.constant";
-import { ErrorCode } from "@shared/enum/error-code.enum";
+import { getErrorMessage } from '@shared/constant/error-message.constant';
+import { ErrorCode } from '@shared/enum/error-code.enum';
 
 export class CustomError extends Error {
   public readonly errorCode: ErrorCode;

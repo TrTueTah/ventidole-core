@@ -1,4 +1,4 @@
-import * as bcrypt from "bcryptjs";
+import * as bcrypt from 'bcryptjs';
 
 export const hashPassword = async (password: string) => {
   try {
@@ -10,7 +10,10 @@ export const hashPassword = async (password: string) => {
   }
 };
 
-export const verifyPassword = async (password: string, hashedPassword: string) => {
+export const verifyPassword = async (
+  password: string,
+  hashedPassword: string,
+) => {
   try {
     return await bcrypt.compare(password, hashedPassword);
   } catch (error) {

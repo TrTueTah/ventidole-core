@@ -1,19 +1,23 @@
-import { ApiBodyCustom, ApiExtraModelsCustom, ApiResponseCustom } from "@core/decorator/doc.decorator";
-import { Public } from "@core/decorator/public.decorator";
-import { Body, Controller, Post } from "@nestjs/common";
-import { ApiBody, ApiTags } from "@nestjs/swagger";
-import { ApiVersion } from "@shared/enum/api-version.enum";
-import { AuthService } from "./auth.service";
-import { SignInResponse } from "./response/sign-in.response";
-import { SignInRequest } from "./request/sign-in.request";
-import { SignUpRequest } from "./request/sign-up.request";
-import { VerificationCodeResponse } from "./response/verification-code.response";
-import { SendVerificationRequest } from "./request/send-verification.request";
-import { ConfirmVerificationResponse } from "./response/confirm-verification.response";
-import { ConfirmVerificationRequest } from "./request/confirm-verification.request";
-import { RefreshTokenRequest } from "./request/refresh-token.request";
-import { ResetPasswordRequest } from "./request/reset-password.request";
-import { authResponses } from "./response/index.responses";
+import {
+  ApiBodyCustom,
+  ApiExtraModelsCustom,
+  ApiResponseCustom,
+} from '@core/decorator/doc.decorator';
+import { Public } from '@core/decorator/public.decorator';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiVersion } from '@shared/enum/api-version.enum';
+import { AuthService } from './auth.service';
+import { SignInResponse } from './response/sign-in.response';
+import { SignInRequest } from './request/sign-in.request';
+import { SignUpRequest } from './request/sign-up.request';
+import { VerificationCodeResponse } from './response/verification-code.response';
+import { SendVerificationRequest } from './request/send-verification.request';
+import { ConfirmVerificationResponse } from './response/confirm-verification.response';
+import { ConfirmVerificationRequest } from './request/confirm-verification.request';
+import { RefreshTokenRequest } from './request/refresh-token.request';
+import { ResetPasswordRequest } from './request/reset-password.request';
+import { authResponses } from './response/index.responses';
 
 @ApiTags('Authenticate')
 @ApiExtraModelsCustom(...authResponses)

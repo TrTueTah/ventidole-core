@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Role } from "src/db/prisma/enums";
+import { ApiProperty } from '@nestjs/swagger';
+import { Role } from 'src/db/prisma/enums';
 
 export class ConfirmVerificationResponse {
   @ApiProperty({

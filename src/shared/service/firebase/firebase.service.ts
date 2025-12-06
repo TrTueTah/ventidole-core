@@ -12,7 +12,7 @@ export class FirebaseService implements OnModuleInit {
     try {
       // Check if Firebase app already exists
       const existingApps = admin.apps;
-      
+
       if (existingApps && existingApps.length > 0 && existingApps[0]) {
         // Use existing Firebase app
         this.firebaseApp = existingApps[0];
@@ -25,7 +25,7 @@ export class FirebaseService implements OnModuleInit {
         projectId: ENVIRONMENT.FIREBASE_PROJECT_ID,
         privateKey: ENVIRONMENT.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
         clientEmail: ENVIRONMENT.FIREBASE_CLIENT_EMAIL,
-      }
+      };
 
       this.firebaseApp = admin.initializeApp({
         credential: admin.credential.cert(serviceAccount),
@@ -36,15 +36,18 @@ export class FirebaseService implements OnModuleInit {
       this.logger.log('[FIREBASE] Initialized successfully');
     } catch (error) {
       this.logger.error('[FIREBASE] Initialization failed:', error);
-      
+
       // Try to get existing app as fallback
       try {
         this.firebaseApp = admin.app();
         this.logger.log('[FIREBASE] Using default app as fallback');
       } catch (fallbackError) {
-        this.logger.error('[FIREBASE] Could not get fallback app:', fallbackError);
+        this.logger.error(
+          '[FIREBASE] Could not get fallback app:',
+          fallbackError,
+        );
       }
-      
+
       // Don't throw - allow app to start even if Firebase is not configured
     }
   }
@@ -84,7 +87,10 @@ export class FirebaseService implements OnModuleInit {
   }
 
   // Example: Send push notification
-  async sendPushNotification(token: string, notification: { title: string; body: string; data?: any }) {
+  async sendPushNotification(
+    token: string,
+    notification: { title: string; body: string; data?: any },
+  ) {
     const message: admin.messaging.Message = {
       token,
       notification: {

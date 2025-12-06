@@ -219,7 +219,185 @@ async function seedMockData() {
 
     console.log(`  ✅ Created ${participants.length} chat participants\n`);
 
-    // 8. Create Social Accounts (some users have Google/Facebook login)
+    // 8. Create Chat Messages
+    console.log('💬 Creating chat messages...');
+    const messages: any[] = [];
+    const messageTemplates = [
+      'Hello everyone!',
+      'How are you all doing today?',
+      'I love this community! 💕',
+      'Can\'t wait for the next event!',
+      'This is amazing!',
+      'Thank you for all your support!',
+      'You guys are the best! ❤️',
+      'Excited to share this with you all!',
+      'Great to be here!',
+      'Looking forward to connecting with everyone!',
+      'What a wonderful day!',
+      'Sending love to all fans! 💖',
+      'Stay healthy and happy!',
+      'Thanks for being here!',
+      'This community is incredible!',
+    ];
+
+    // Create 40-50 messages across different channels
+    const numMessages = Math.floor(Math.random() * 11) + 40; // 40-50 messages
+    for (let i = 0; i < numMessages; i++) {
+      const channel = chatChannels[Math.floor(Math.random() * chatChannels.length)];
+      // Get a participant from this channel
+      const channelParticipants = participants.filter(p => p.channelId === channel.id);
+
+      if (channelParticipants.length > 0) {
+        const participant = channelParticipants[Math.floor(Math.random() * channelParticipants.length)];
+        const message = await prisma.chatMessage.create({
+          data: {
+            content: messageTemplates[Math.floor(Math.random() * messageTemplates.length)],
+            channelId: channel.id,
+            userId: participant.userId,
+            createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000), // Random date within last 30 days
+          },
+        });
+        messages.push(message);
+      }
+    }
+    console.log(`  ✅ Created ${messages.length} chat messages\n`);
+
+    // 9. Create Posts
+    console.log('📝 Creating posts...');
+    const posts: any[] = [];
+    const postContents = [
+      'Just finished an amazing photoshoot today! Can\'t wait to share the results with you all! 📸✨',
+      'Thank you for all your support! You mean the world to me! 💕',
+      'New music coming soon! Stay tuned! 🎵',
+      'Behind the scenes from our latest project! 🎬',
+      'Grateful for this beautiful day and all of you! 🌟',
+      'Practice makes perfect! Working hard for the upcoming performance! 💪',
+      'Coffee time ☕ What\'s everyone up to today?',
+      'Throwback to some amazing memories! Missing these times! 📷',
+      'Feeling blessed and thankful! 🙏',
+      'Late night thoughts... What keeps you motivated?',
+      'Weekend vibes! How are you spending your weekend? 😊',
+      'New hair, who dis? 💇‍♀️✨',
+      'Just wrapped up rehearsals! Feeling excited! 🎤',
+      'Thank you for 1M followers! This is incredible! 🎉',
+      'Cooking experiments today... wish me luck! 👩‍🍳',
+      'Sunset views from the studio! 🌅',
+      'Quick selfie before showtime! 🤳',
+      'Reading your messages always makes my day! 💌',
+      'Guess where I am today? 🤔',
+      'Feeling inspired and creative today! 🎨',
+    ];
+
+    // Create 30-40 posts from idol users
+    const numPosts = Math.floor(Math.random() * 11) + 30; // 30-40 posts
+    for (let i = 0; i < numPosts; i++) {
+      const idol = idols[Math.floor(Math.random() * idols.length)];
+      const post = await prisma.post.create({
+        data: {
+          content: postContents[Math.floor(Math.random() * postContents.length)],
+          authorId: idol.id,
+          likeCount: Math.floor(Math.random() * 1000),
+          commentCount: Math.floor(Math.random() * 50),
+          viewCount: Math.floor(Math.random() * 5000),
+          createdAt: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000), // Random date within last 60 days
+        },
+      });
+      posts.push(post);
+    }
+    console.log(`  ✅ Created ${posts.length} posts\n`);
+
+    // 10. Create Comments
+    console.log('💬 Creating comments...');
+    const comments: any[] = [];
+    const commentTexts = [
+      'Amazing! 😍',
+      'Love this so much!',
+      'You look beautiful! ✨',
+      'Can\'t wait!',
+      'This is incredible!',
+      'So talented! 💕',
+      'Best idol ever!',
+      'Thank you for sharing!',
+      'This made my day!',
+      'Absolutely stunning!',
+      'You inspire me so much!',
+      'Keep up the great work!',
+      'We love you! ❤️',
+      'This is everything!',
+      'So proud of you!',
+    ];
+
+    // Create 40-50 comments on random posts
+    const numComments = Math.floor(Math.random() * 11) + 40; // 40-50 comments
+    for (let i = 0; i < numComments; i++) {
+      const post = posts[Math.floor(Math.random() * posts.length)];
+      const allUsers = [adminUser, ...idols, ...fans];
+      const commenter = allUsers[Math.floor(Math.random() * allUsers.length)];
+
+      const comment = await prisma.comment.create({
+        data: {
+          content: commentTexts[Math.floor(Math.random() * commentTexts.length)],
+          postId: post.id,
+          userId: commenter.id,
+          createdAt: new Date(post.createdAt.getTime() + Math.random() * 24 * 60 * 60 * 1000), // After post creation
+        },
+      });
+      comments.push(comment);
+    }
+    console.log(`  ✅ Created ${comments.length} comments\n`);
+
+    // 11. Create Post Likes
+    console.log('❤️ Creating post likes...');
+    const postLikes: any[] = [];
+
+    // Each fan likes 5-10 random posts
+    for (const fan of fans) {
+      const numLikes = Math.floor(Math.random() * 6) + 5; // 5-10 likes
+      const shuffledPosts = [...posts].sort(() => Math.random() - 0.5);
+
+      for (let i = 0; i < Math.min(numLikes, shuffledPosts.length); i++) {
+        try {
+          const like = await prisma.postLike.create({
+            data: {
+              postId: shuffledPosts[i].id,
+              userId: fan.id,
+            },
+          });
+          postLikes.push(like);
+        } catch (error) {
+          // Skip if duplicate
+        }
+      }
+    }
+    console.log(`  ✅ Created ${postLikes.length} post likes\n`);
+
+    // 12. Create Post Views
+    console.log('👁️ Creating post views...');
+    const postViews: any[] = [];
+
+    // Each user views 10-20 random posts
+    const allUsers = [adminUser, ...idols, ...fans];
+    for (const user of allUsers) {
+      const numViews = Math.floor(Math.random() * 11) + 10; // 10-20 views
+      const shuffledPosts = [...posts].sort(() => Math.random() - 0.5);
+
+      for (let i = 0; i < Math.min(numViews, shuffledPosts.length); i++) {
+        try {
+          const view = await prisma.postView.create({
+            data: {
+              postId: shuffledPosts[i].id,
+              userId: user.id,
+            },
+          });
+          postViews.push(view);
+        } catch (error) {
+          // Skip if duplicate
+        }
+      }
+    }
+    console.log(`  ✅ Created ${postViews.length} post views\n`);
+
+    // 13. Create Social Accounts (some users have Google/Facebook login)
     console.log('🔗 Creating social account links...');
     const socialAccounts: any[] = [];
 
@@ -262,6 +440,11 @@ async function seedMockData() {
     console.log(`   - ${chatChannels.filter(c => c.type === 'GROUP').length} Group channels`);
     console.log(`   - ${chatChannels.filter(c => c.type === 'DIRECT').length} Direct message channels`);
     console.log(`👥 Chat Participants: ${participants.length}`);
+    console.log(`💬 Chat Messages: ${messages.length}`);
+    console.log(`📝 Posts: ${posts.length}`);
+    console.log(`💬 Comments: ${comments.length}`);
+    console.log(`❤️ Post Likes: ${postLikes.length}`);
+    console.log(`👁️ Post Views: ${postViews.length}`);
     console.log(`🔗 Social Accounts: ${socialAccounts.length}`);
     console.log('═══════════════════════════════════════\n');
 

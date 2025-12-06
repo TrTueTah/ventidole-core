@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { FileFolder } from "@shared/enum/file.enum";
-import { IsEnum, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { FileFolder } from '@shared/enum/file.enum';
+import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UploadFileRequest {
   @ApiProperty({

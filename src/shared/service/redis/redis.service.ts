@@ -1,6 +1,6 @@
-import { REDIS_CLIENT } from "@core/config/redis.config";
-import { Inject, Injectable } from "@nestjs/common";
-import Redis from "ioredis";
+import { REDIS_CLIENT } from '@core/config/redis.config';
+import { Inject, Injectable } from '@nestjs/common';
+import Redis from 'ioredis';
 
 @Injectable()
 export class RedisService {
@@ -8,7 +8,8 @@ export class RedisService {
 
   async set<T>(key: string, value: T, ttlSeconds?: number): Promise<void> {
     const serializedValue = JSON.stringify(value);
-    if (ttlSeconds) await this.redis.set(key, serializedValue, "EX", ttlSeconds);
+    if (ttlSeconds)
+      await this.redis.set(key, serializedValue, 'EX', ttlSeconds);
     else await this.redis.set(key, serializedValue);
   }
 

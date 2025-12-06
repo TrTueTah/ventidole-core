@@ -1,7 +1,15 @@
 import { applyDecorators, Type } from '@nestjs/common';
-import { ApiBody, ApiExtraModels, ApiOkResponse, getSchemaPath } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiExtraModels,
+  ApiOkResponse,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { BaseResponse } from '@shared/helper/response';
-import { PaginationResponse, PageInfo } from '@shared/dto/pagination-response.dto';
+import {
+  PaginationResponse,
+  PageInfo,
+} from '@shared/dto/pagination-response.dto';
 
 export function ApiExtraModelsCustom(...models: Function[]) {
   return ApiExtraModels(BaseResponse, ...models);
@@ -16,44 +24,44 @@ export function ApiResponseCustom(ref?: string | Function, isArray = false) {
         statusCode: {
           type: 'number',
           example: 200,
-          description: 'HTTP status code'
+          description: 'HTTP status code',
         },
         message: {
           type: 'string',
           example: 'OK',
-          description: 'Response message'
+          description: 'Response message',
         },
         data: ref
           ? isArray
-            ? { 
-                type: 'array', 
+            ? {
+                type: 'array',
                 items: { $ref: getSchemaPath(ref) },
-                description: 'Response data array'
+                description: 'Response data array',
               }
-            : { 
+            : {
                 $ref: getSchemaPath(ref),
-                description: 'Response data'
+                description: 'Response data',
               }
-          : { 
+          : {
               type: 'object',
               nullable: true,
               example: null,
-              description: 'No data returned'
+              description: 'No data returned',
             },
         error: {
           type: 'object',
           nullable: true,
           example: null,
-          description: 'Error information (null on success)'
+          description: 'Error information (null on success)',
         },
         errorCode: {
           type: 'string',
           nullable: true,
           example: null,
-          description: 'Error code (null on success)'
-        }
+          description: 'Error code (null on success)',
+        },
       },
-      required: ['statusCode', 'message']
+      required: ['statusCode', 'message'],
     },
   });
 }
@@ -80,9 +88,9 @@ export function ApiBodyCustom<TModel extends Type<unknown>>(
 /**
  * Decorator for paginated response in Swagger documentation
  * Flattens pagination data at the same level as statusCode and message
- * 
+ *
  * @param model - The DTO model class for the data items
- * 
+ *
  * @example
  * @ApiPaginationResponse(PostDto)
  * async getPosts(@Query() query: PaginationDto) {
@@ -159,4 +167,3 @@ export function ApiPaginationResponse<TModel extends Type<unknown>>(
     }),
   );
 }
-

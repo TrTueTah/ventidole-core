@@ -1,4 +1,4 @@
-import { FirebaseCollectionNames } from "src/types/collection.types";
+import { FirebaseCollectionNames } from 'src/types/collection.types';
 
 export const getFirebaseCollectionNames = (): FirebaseCollectionNames => {
   return {

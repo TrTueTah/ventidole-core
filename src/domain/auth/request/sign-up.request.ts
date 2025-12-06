@@ -1,9 +1,15 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { REGEX_USER_PASSWORD } from "@shared/constant/regex.constant";
-import { Transform } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsString, Matches, MinLength } from "class-validator";
-import { Role } from "src/db/prisma/enums";
-import { UserModel } from "src/db/prisma/models";
+import { ApiProperty } from '@nestjs/swagger';
+import { REGEX_USER_PASSWORD } from '@shared/constant/regex.constant';
+import { Transform } from 'class-transformer';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
+import { Role } from 'src/db/prisma/enums';
+import { UserModel } from 'src/db/prisma/models';
 
 export class SignUpRequest {
   @ApiProperty({

@@ -1,9 +1,9 @@
-import { ENVIRONMENT } from "@core/config/env.config";
-import { DateTimeFormat } from "@shared/enum/date-format.enum";
-import { NodeEnv } from "@shared/enum/environment.enum";
-import chalk from "chalk";
-import moment from "moment-timezone";
-import { createLogger, format, LoggerOptions, transports } from "winston";
+import { ENVIRONMENT } from '@core/config/env.config';
+import { DateTimeFormat } from '@shared/enum/date-format.enum';
+import { NodeEnv } from '@shared/enum/environment.enum';
+import chalk from 'chalk';
+import moment from 'moment-timezone';
+import { createLogger, format, LoggerOptions, transports } from 'winston';
 
 enum LogLevel {
   Error = 'error',

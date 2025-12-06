@@ -1,12 +1,17 @@
-import { ENVIRONMENT } from "@core/config/env.config";
-import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from "@nestjs/common";
-import { NodeEnv } from "@shared/enum/environment.enum";
-import { WinstonLogger } from "@shared/service/logger/winston.logger";
-import chalk from "chalk";
-import { Response } from "express";
-import moment from "moment-timezone";
-import { Observable } from "rxjs";
-import { tap } from "rxjs/operators";
+import { ENVIRONMENT } from '@core/config/env.config';
+import {
+  CallHandler,
+  ExecutionContext,
+  Injectable,
+  NestInterceptor,
+} from '@nestjs/common';
+import { NodeEnv } from '@shared/enum/environment.enum';
+import { WinstonLogger } from '@shared/service/logger/winston.logger';
+import chalk from 'chalk';
+import { Response } from 'express';
+import moment from 'moment-timezone';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 
 const httpMethodColors = {
   GET: chalk.green.bold,
@@ -19,7 +24,9 @@ const httpMethodColors = {
 };
 
 const colorizeHttpMethod = (method: string) =>
-  httpMethodColors[method] ? httpMethodColors[method](method) : chalk.white.bold(method);
+  httpMethodColors[method]
+    ? httpMethodColors[method](method)
+    : chalk.white.bold(method);
 
 @Injectable()
 export class HttpLoggerInterceptor implements NestInterceptor {
@@ -41,15 +48,18 @@ export class HttpLoggerInterceptor implements NestInterceptor {
     return next.handle().pipe(
       tap((response: Response) => {
         const endTime = moment();
-        const duration = endTime.diff(startTime, "milliseconds");
+        const duration = endTime.diff(startTime, 'milliseconds');
 
         // NOTE: Don't log entire responses -> Leads to heavy performance
-        WinstonLogger.http(`${colorizeHttpMethod(method)} ${originalUrl} ${chalk.green(`${duration}ms`)}`, {
-          metadata: {
-            request: payload,
-            response: { statusCode: response.statusCode },
+        WinstonLogger.http(
+          `${colorizeHttpMethod(method)} ${originalUrl} ${chalk.green(`${duration}ms`)}`,
+          {
+            metadata: {
+              request: payload,
+              response: { statusCode: response.statusCode },
+            },
           },
-        });
+        );
       }),
     );
   }

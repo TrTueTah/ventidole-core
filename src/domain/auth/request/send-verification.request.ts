@@ -1,13 +1,13 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsEnum, IsNotEmpty } from "class-validator";
-import { VerificationType } from "src/db/prisma/enums";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsEnum, IsNotEmpty } from 'class-validator';
+import { VerificationType } from 'src/db/prisma/enums';
 
 export class SendVerificationRequest {
   @IsEmail()
   @IsNotEmpty()
-  @ApiProperty({ 
-    example: "user@example.com",
-    description: "Your email address",
+  @ApiProperty({
+    example: 'user@example.com',
+    description: 'Your email address',
     type: String,
   })
   email?: string;
@@ -16,7 +16,7 @@ export class SendVerificationRequest {
   @IsEnum(VerificationType)
   @ApiProperty({
     enum: VerificationType,
-    description: "Verification behavior",
+    description: 'Verification behavior',
     example: VerificationType.REGISTER_ACCOUNT,
   })
   verificationType: VerificationType;

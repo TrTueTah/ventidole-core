@@ -6,7 +6,7 @@ import { MultiDatabaseService } from './multi-database.service';
 /**
  * Multi-Database Module
  * Integrates PostgreSQL (Prisma) + Firebase for mobile apps
- * 
+ *
  * Features:
  * - User management (PostgreSQL)
  * - Real-time chat (Firebase Firestore)
@@ -15,10 +15,7 @@ import { MultiDatabaseService } from './multi-database.service';
  * - File storage (Firebase Storage)
  */
 @Module({
-  imports: [
-    FirebaseModule,
-    PrismaModule,
-  ],
+  imports: [FirebaseModule, PrismaModule],
   providers: [MultiDatabaseService],
   exports: [MultiDatabaseService],
 })

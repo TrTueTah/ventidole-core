@@ -1,7 +1,7 @@
-import { MailerOptions } from "@nestjs-modules/mailer";
+import { MailerOptions } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
-import { ENVIRONMENT } from "./env.config";
-import { cwd } from "process";
+import { ENVIRONMENT } from './env.config';
+import { cwd } from 'process';
 
 export const initMailConfig = (): MailerOptions => ({
   transport: {

@@ -1,8 +1,8 @@
-import { getMessage } from "@shared/constant/message.constant";
-import { MessageCode } from "@shared/enum/message-code.enum";
-import { WinstonLogger } from "@shared/service/logger/winston.logger";
-import { RedisOptions } from "ioredis";
-import { ENVIRONMENT } from "./env.config";
+import { getMessage } from '@shared/constant/message.constant';
+import { MessageCode } from '@shared/enum/message-code.enum';
+import { WinstonLogger } from '@shared/service/logger/winston.logger';
+import { RedisOptions } from 'ioredis';
+import { ENVIRONMENT } from './env.config';
 
 export const REDIS_CLIENT = 'REDIS_CLIENT';
 export const REDIS_MAX_RETRY_DURATION = 5 * 60 * 1000; // 5 minutes

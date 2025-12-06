@@ -1,12 +1,12 @@
-import { ENVIRONMENT } from "@core/config/env.config";
-import { Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { ErrorCode } from "@shared/enum/error-code.enum";
-import { TokenIssuer } from "@shared/enum/token.enum";
-import { CustomError } from "@shared/helper/error";
-import { IJwtPayload } from "@shared/interface/jwt-payload.interface";
-import md5 from "md5";
-import { UserModel } from "src/db/prisma/models";
+import { ENVIRONMENT } from '@core/config/env.config';
+import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import { ErrorCode } from '@shared/enum/error-code.enum';
+import { TokenIssuer } from '@shared/enum/token.enum';
+import { CustomError } from '@shared/helper/error';
+import { IJwtPayload } from '@shared/interface/jwt-payload.interface';
+import md5 from 'md5';
+import { UserModel } from 'src/db/prisma/models';
 
 @Injectable()
 export class TokenService {
@@ -49,7 +49,9 @@ export class TokenService {
   validateRefreshToken(token: string, refreshToken: string, secretKey: string) {
     try {
       const decryptedSecret = this.generateRefreshTokenSecret(token, secretKey);
-      const accountInfo = this.jwtService.verify<IJwtPayload>(refreshToken, { secret: decryptedSecret });
+      const accountInfo = this.jwtService.verify<IJwtPayload>(refreshToken, {
+        secret: decryptedSecret,
+      });
 
       return accountInfo;
     } catch (error) {

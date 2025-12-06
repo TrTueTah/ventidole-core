@@ -1,5 +1,5 @@
-import { QueueOptions } from "bullmq";
-import { ENVIRONMENT } from "./env.config";
+import { QueueOptions } from 'bullmq';
+import { ENVIRONMENT } from './env.config';
 
 export const initQueueConfig = (): QueueOptions => ({
   connection: {

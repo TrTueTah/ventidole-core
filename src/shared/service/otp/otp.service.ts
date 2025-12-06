@@ -1,15 +1,15 @@
-import { ENVIRONMENT } from "@core/config/env.config";
-import { RedisService } from "../redis/redis.service";
-import { VerificationProducer } from "../queue/verification/verification.producer";
-import { NodeEnv } from "@shared/enum/environment.enum";
-import { randomNumber } from "@shared/helper/random";
-import { RedisKey } from "@shared/enum/redis-key.enum";
-import { CustomError } from "@shared/helper/error";
-import { ErrorCode } from "@shared/enum/error-code.enum";
-import moment from "moment";
-import { PrismaService } from "../prisma/prisma.service";
-import { VerificationType } from "src/db/prisma/enums";
-import { Injectable } from "@nestjs/common";
+import { ENVIRONMENT } from '@core/config/env.config';
+import { RedisService } from '../redis/redis.service';
+import { VerificationProducer } from '../queue/verification/verification.producer';
+import { NodeEnv } from '@shared/enum/environment.enum';
+import { randomNumber } from '@shared/helper/random';
+import { RedisKey } from '@shared/enum/redis-key.enum';
+import { CustomError } from '@shared/helper/error';
+import { ErrorCode } from '@shared/enum/error-code.enum';
+import moment from 'moment';
+import { PrismaService } from '../prisma/prisma.service';
+import { VerificationType } from 'src/db/prisma/enums';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class OtpService {
@@ -97,11 +97,7 @@ export class OtpService {
     }
   }
 
-  async confirmOtp(
-    email: string,
-    inputOtp: string,
-    type: VerificationType,
-  ) {
+  async confirmOtp(email: string, inputOtp: string, type: VerificationType) {
     try {
       const otpKey = this.getOtpKey(email, type);
 

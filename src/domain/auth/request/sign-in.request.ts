@@ -1,6 +1,6 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { Transform } from "class-transformer";
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class SignInRequest {
   @ApiProperty({
@@ -13,10 +13,10 @@ export class SignInRequest {
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty({ 
-    example: 'Password@123456',   
-    description: 'Your password', 
-    type: String 
+  @ApiProperty({
+    example: 'Password@123456',
+    description: 'Your password',
+    type: String,
   })
   @IsString()
   @IsNotEmpty()

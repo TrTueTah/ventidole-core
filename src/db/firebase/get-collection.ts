@@ -1,4 +1,3 @@
-import { getFirebaseCollectionNames } from "@shared/service/collection/collections.service";
+import { getFirebaseCollectionNames } from '@shared/service/collection/collections.service';
 
-export const getCollection = () =>
-  getFirebaseCollectionNames();
+export const getCollection = () => getFirebaseCollectionNames();

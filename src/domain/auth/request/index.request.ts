@@ -1,9 +1,9 @@
-import { ConfirmVerificationRequest } from "./confirm-verification.request";
-import { RefreshTokenRequest } from "./refresh-token.request";
-import { ResetPasswordRequest } from "./reset-password.request";
-import { SendVerificationRequest } from "./send-verification.request";
-import { SignInRequest } from "./sign-in.request";
-import { SignUpRequest } from "./sign-up.request";
+import { ConfirmVerificationRequest } from './confirm-verification.request';
+import { RefreshTokenRequest } from './refresh-token.request';
+import { ResetPasswordRequest } from './reset-password.request';
+import { SendVerificationRequest } from './send-verification.request';
+import { SignInRequest } from './sign-in.request';
+import { SignUpRequest } from './sign-up.request';
 
 export const authRequests = [
   ConfirmVerificationRequest,
@@ -11,5 +11,5 @@ export const authRequests = [
   SignInRequest,
   SignUpRequest,
   RefreshTokenRequest,
-  ResetPasswordRequest
-]
+  ResetPasswordRequest,
+];
