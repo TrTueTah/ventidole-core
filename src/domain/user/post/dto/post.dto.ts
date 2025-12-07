@@ -1,4 +1,18 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export class PostAuthorDto {
+  @ApiProperty({ example: 'clxxxxxxx', description: 'Author ID' })
+  id: string;
+
+  @ApiProperty({ example: 'john_doe', description: 'Author username' })
+  username: string;
+
+  @ApiPropertyOptional({
+    example: 'https://example.com/avatar.jpg',
+    description: 'Author avatar URL',
+  })
+  avatarUrl?: string;
+}
 
 export class PostDto {
   @ApiProperty({ example: 'clxxxxxxx', description: 'Post ID' })
@@ -31,22 +45,23 @@ export class PostDto {
   @ApiProperty({ example: 500, description: 'Number of views' })
   viewCount: number;
 
+  @ApiProperty({
+    example: true,
+    description: 'Whether the current user has liked this post',
+  })
+  isLiked: boolean;
+
   @ApiProperty({ example: 'clxxxxxxx', description: 'Author ID' })
   authorId: string;
 
+  @ApiProperty({ type: PostAuthorDto, description: 'Author information' })
+  author: PostAuthorDto;
+
   @ApiProperty({
-    example: {
-      id: 'clxxxxxxx',
-      username: 'john_doe',
-      avatarUrl: 'https://example.com/avatar.jpg',
-    },
-    description: 'Author information',
+    example: 'clxxxxxxx',
+    description: 'Community ID',
   })
-  author: {
-    id: string;
-    username: string;
-    avatarUrl?: string;
-  };
+  communityId: string;
 
   @ApiProperty({
     example: '2024-01-01T00:00:00.000Z',

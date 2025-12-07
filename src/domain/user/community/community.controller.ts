@@ -20,26 +20,28 @@ import { BaseResponse } from '@shared/helper/response';
 import { IRequest } from '@shared/interface/request.interface';
 import { CommunityService } from './community.service';
 import { CommunityDetailDto } from './dto/community-detail.dto';
+import { CommunityListDto } from './dto/community-list.dto';
 import { CommunityDto } from './dto/community.dto';
+import { GetCommunitiesDto } from './dto/get-communities.dto';
 
 @ApiBearerAuth()
 @ApiTags('User Communities')
 @Controller({ path: 'user/community', version: ApiVersion.V1 })
-@ApiExtraModelsCustom(CommunityDto)
+@ApiExtraModelsCustom(CommunityDto, CommunityDetailDto, CommunityListDto)
 export class CommunityController {
   constructor(private readonly communityService: CommunityService) {}
 
   @Get()
-  @ApiPaginationResponse(CommunityDto)
+  @ApiPaginationResponse(CommunityListDto)
   async getAllCommunities(
     @Req() req: IRequest,
-    @Query() pagination: PaginationDto,
-  ): Promise<BaseResponse<PaginationResponse<CommunityDto>>> {
+    @Query() filters: GetCommunitiesDto,
+  ): Promise<PaginationResponse<CommunityListDto>> {
     const result = await this.communityService.getAllCommunities(
       req.user.id,
-      pagination,
+      filters,
     );
-    return BaseResponse.of(result);
+    return result;
   }
 
   @Get('joined')
@@ -47,12 +49,12 @@ export class CommunityController {
   async getJoinedCommunities(
     @Req() req: IRequest,
     @Query() pagination: PaginationDto,
-  ): Promise<BaseResponse<PaginationResponse<CommunityDto>>> {
+  ): Promise<PaginationResponse<CommunityDto>> {
     const result = await this.communityService.getJoinedCommunities(
       req.user.id,
       pagination,
     );
-    return BaseResponse.of(result);
+    return result;
   }
 
   @Post(':id/join')

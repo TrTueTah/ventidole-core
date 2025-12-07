@@ -657,6 +657,20 @@ paths:
           schema:
             example: 20
             type: number
+        - name: communityId
+          required: false
+          in: query
+          description: Filter posts by community ID
+          schema:
+            example: nestjs
+            type: string
+        - name: filter
+          required: false
+          in: query
+          description: Filter posts by user role
+          schema:
+            example: FAN
+            type: string
       responses:
         '200':
           description: Successful paginated response
@@ -791,7 +805,7 @@ paths:
                     example: OK
                     description: Response message
                   data:
-                    $ref: '#/components/schemas/PostDto'
+                    $ref: '#/components/schemas/PostDetailDto'
                     description: Response data
                   error:
                     type: object
@@ -858,6 +872,96 @@ paths:
       tags: *ref_5
     delete:
       operationId: PostController_deletePost_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_4
+      tags: *ref_5
+  /v1/user/posts/{id}/like:
+    post:
+      operationId: PostController_likePost_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_4
+      tags: *ref_5
+  /v1/user/posts/{id}/view:
+    post:
+      operationId: PostController_viewPost_v1
       parameters:
         - name: id
           required: true
@@ -1153,6 +1257,20 @@ paths:
           schema:
             example: 20
             type: number
+        - name: search
+          required: false
+          in: query
+          description: Filter communities by search keyword (name or description)
+          schema:
+            example: nestjs
+            type: string
+        - name: joined
+          required: false
+          in: query
+          description: Filter to show only joined communities
+          schema:
+            example: 'true'
+            type: string
       responses:
         '200':
           description: Successful paginated response
@@ -1172,7 +1290,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/CommunityDto'
+                      $ref: '#/components/schemas/CommunityListDto'
                     description: Array of data items
                   paging:
                     type: object
@@ -1835,6 +1953,24 @@ components:
         - file
         - folder
         - customFileName
+    PostAuthorDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Author ID
+        username:
+          type: string
+          example: john_doe
+          description: Author username
+        avatarUrl:
+          type: string
+          example: https://example.com/avatar.jpg
+          description: Author avatar URL
+      required:
+        - id
+        - username
     PostDto:
       type: object
       properties:
@@ -1847,7 +1983,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example:
+          example: &ref_10
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
             - >-
@@ -1869,17 +2005,22 @@ components:
           type: number
           example: 500
           description: Number of views
+        isLiked:
+          type: boolean
+          example: true
+          description: Whether the current user has liked this post
         authorId:
           type: string
           example: clxxxxxxx
           description: Author ID
         author:
-          type: object
-          example:
-            id: clxxxxxxx
-            username: john_doe
-            avatarUrl: https://example.com/avatar.jpg
           description: Author information
+          allOf:
+            - $ref: '#/components/schemas/PostAuthorDto'
+        communityId:
+          type: string
+          example: clxxxxxxx
+          description: Community ID
         createdAt:
           format: date-time
           type: string
@@ -1896,8 +2037,10 @@ components:
         - likeCount
         - commentCount
         - viewCount
+        - isLiked
         - authorId
         - author
+        - communityId
         - createdAt
         - updatedAt
     CreatePostDto:
@@ -1917,8 +2060,13 @@ components:
           type: array
           items:
             type: string
+        communityId:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: Community ID
       required:
         - content
+        - communityId
     UpdatePostDto:
       type: object
       properties:
@@ -1936,6 +2084,74 @@ components:
           type: array
           items:
             type: string
+    PostDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Post ID
+        content:
+          type: string
+          example: This is my post content
+          description: Post content
+        mediaUrls:
+          example: *ref_10
+          description: Array of media URLs
+          nullable: true
+          type: array
+          items:
+            type: string
+        likeCount:
+          type: number
+          example: 100
+          description: Number of likes
+        commentCount:
+          type: number
+          example: 25
+          description: Number of comments
+        viewCount:
+          type: number
+          example: 500
+          description: Number of views
+        isLiked:
+          type: boolean
+          example: true
+          description: Whether the current user has liked this post
+        authorId:
+          type: string
+          example: clxxxxxxx
+          description: Author ID
+        author:
+          description: Author information
+          allOf:
+            - $ref: '#/components/schemas/PostAuthorDto'
+        communityId:
+          type: string
+          example: clxxxxxxx
+          description: Community ID
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Last update timestamp
+      required:
+        - id
+        - content
+        - likeCount
+        - commentCount
+        - viewCount
+        - isLiked
+        - authorId
+        - author
+        - communityId
+        - createdAt
+        - updatedAt
     PageInfo:
       type: object
       properties: {}
@@ -2053,3 +2269,125 @@ components:
         - name
         - createdAt
         - updatedAt
+    IdolDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Idol ID
+        username:
+          type: string
+          example: john_idol
+          description: Idol username
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Idol avatar URL
+        bio:
+          type: object
+          example: Amazing idol from K-pop
+          description: Idol bio
+      required:
+        - id
+        - username
+    CommunityDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Community ID
+        name:
+          type: string
+          example: K-Pop Fans Community
+          description: Community name
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Community avatar URL
+        backgroundUrl:
+          type: object
+          example: https://example.com/background.jpg
+          description: Community background URL
+        description:
+          type: object
+          example: A community for K-Pop fans
+          description: Community description
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Last update timestamp
+        isJoined:
+          type: boolean
+          example: true
+          description: Whether the current user has joined this community
+        idols:
+          description: List of idols belonging to the community
+          type: array
+          items:
+            $ref: '#/components/schemas/IdolDto'
+      required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
+        - idols
+    CommunityListDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Community ID
+        name:
+          type: string
+          example: K-Pop Fans Community
+          description: Community name
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Community avatar URL
+        backgroundUrl:
+          type: object
+          example: https://example.com/background.jpg
+          description: Community background URL
+        description:
+          type: object
+          example: A community for K-Pop fans
+          description: Community description
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Last update timestamp
+        isJoined:
+          type: boolean
+          example: true
+          description: Whether the current user has joined this community
+        totalMember:
+          type: number
+          example: 150
+          description: Total number of members in the community
+        isNew:
+          type: boolean
+          example: false
+          description: Indicates if the community is new
+      required:
+        - id
+        - name
+        - createdAt
+        - updatedAt
+        - totalMember
+        - isNew

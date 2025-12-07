@@ -37,12 +37,12 @@ export class CommentController {
   async getCommentsByPostId(
     @Param('postId') postId: string,
     @Query() pagination: PaginationDto,
-  ): Promise<BaseResponse<PaginationResponse<CommentDto>>> {
+  ): Promise<PaginationResponse<CommentDto>> {
     const result = await this.commentService.getCommentsByPostId(
       postId,
       pagination,
     );
-    return BaseResponse.of(result);
+    return result;
   }
 
   @Post(':postId')

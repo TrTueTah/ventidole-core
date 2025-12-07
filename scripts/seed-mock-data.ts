@@ -1,6 +1,6 @@
+import * as bcrypt from 'bcryptjs';
 import 'dotenv/config';
 import { PrismaClient } from '../src/db/prisma/client';
-import * as bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
@@ -56,14 +56,54 @@ async function seedMockData() {
     // 3. Create Idol Users
     console.log('⭐ Creating idol users...');
     const idolData = [
-      { email: 'jennie@ventidole.com', username: 'Jennie', communityId: communities[0].id, bio: 'Main rapper of BLACKPINK' },
-      { email: 'lisa@ventidole.com', username: 'Lisa', communityId: communities[0].id, bio: 'Main dancer of BLACKPINK' },
-      { email: 'jisoo@ventidole.com', username: 'Jisoo', communityId: communities[0].id, bio: 'Lead vocalist of BLACKPINK' },
-      { email: 'rose@ventidole.com', username: 'Rosé', communityId: communities[0].id, bio: 'Main vocalist of BLACKPINK' },
-      { email: 'rm@ventidole.com', username: 'RM', communityId: communities[1].id, bio: 'Leader and rapper of BTS' },
-      { email: 'jungkook@ventidole.com', username: 'Jungkook', communityId: communities[1].id, bio: 'Main vocalist of BTS' },
-      { email: 'nayeon@ventidole.com', username: 'Nayeon', communityId: communities[2].id, bio: 'Lead vocalist of TWICE' },
-      { email: 'sana@ventidole.com', username: 'Sana', communityId: communities[2].id, bio: 'Vocalist of TWICE' },
+      {
+        email: 'jennie@ventidole.com',
+        username: 'Jennie',
+        communityId: communities[0].id,
+        bio: 'Main rapper of BLACKPINK',
+      },
+      {
+        email: 'lisa@ventidole.com',
+        username: 'Lisa',
+        communityId: communities[0].id,
+        bio: 'Main dancer of BLACKPINK',
+      },
+      {
+        email: 'jisoo@ventidole.com',
+        username: 'Jisoo',
+        communityId: communities[0].id,
+        bio: 'Lead vocalist of BLACKPINK',
+      },
+      {
+        email: 'rose@ventidole.com',
+        username: 'Rosé',
+        communityId: communities[0].id,
+        bio: 'Main vocalist of BLACKPINK',
+      },
+      {
+        email: 'rm@ventidole.com',
+        username: 'RM',
+        communityId: communities[1].id,
+        bio: 'Leader and rapper of BTS',
+      },
+      {
+        email: 'jungkook@ventidole.com',
+        username: 'Jungkook',
+        communityId: communities[1].id,
+        bio: 'Main vocalist of BTS',
+      },
+      {
+        email: 'nayeon@ventidole.com',
+        username: 'Nayeon',
+        communityId: communities[2].id,
+        bio: 'Lead vocalist of TWICE',
+      },
+      {
+        email: 'sana@ventidole.com',
+        username: 'Sana',
+        communityId: communities[2].id,
+        bio: 'Vocalist of TWICE',
+      },
     ];
 
     const idols: any[] = [];
@@ -111,7 +151,9 @@ async function seedMockData() {
     // Each fan follows 1-3 random communities
     for (const fan of fans) {
       const numFollows = Math.floor(Math.random() * 3) + 1; // 1-3 communities
-      const shuffledCommunities = [...communities].sort(() => Math.random() - 0.5);
+      const shuffledCommunities = [...communities].sort(
+        () => Math.random() - 0.5,
+      );
 
       for (let i = 0; i < numFollows; i++) {
         const follower = await prisma.communityFollower.create({
@@ -182,7 +224,7 @@ async function seedMockData() {
     // Add fans to community group chats (only if they follow the community)
     for (const follower of followers) {
       const communityGroupChat = chatChannels.find(
-        ch => ch.type === 'GROUP' && ch.communityId === follower.communityId
+        (ch) => ch.type === 'GROUP' && ch.communityId === follower.communityId,
       );
 
       if (communityGroupChat) {
@@ -201,7 +243,7 @@ async function seedMockData() {
     // Add idols as admins to their community channels
     for (const idol of idols) {
       const communityChannels = chatChannels.filter(
-        ch => ch.communityId === idol.communityId
+        (ch) => ch.communityId === idol.communityId,
       );
 
       for (const channel of communityChannels) {
@@ -226,7 +268,7 @@ async function seedMockData() {
       'Hello everyone!',
       'How are you all doing today?',
       'I love this community! 💕',
-      'Can\'t wait for the next event!',
+      "Can't wait for the next event!",
       'This is amazing!',
       'Thank you for all your support!',
       'You guys are the best! ❤️',
@@ -243,18 +285,29 @@ async function seedMockData() {
     // Create 40-50 messages across different channels
     const numMessages = Math.floor(Math.random() * 11) + 40; // 40-50 messages
     for (let i = 0; i < numMessages; i++) {
-      const channel = chatChannels[Math.floor(Math.random() * chatChannels.length)];
+      const channel =
+        chatChannels[Math.floor(Math.random() * chatChannels.length)];
       // Get a participant from this channel
-      const channelParticipants = participants.filter(p => p.channelId === channel.id);
+      const channelParticipants = participants.filter(
+        (p) => p.channelId === channel.id,
+      );
 
       if (channelParticipants.length > 0) {
-        const participant = channelParticipants[Math.floor(Math.random() * channelParticipants.length)];
+        const participant =
+          channelParticipants[
+            Math.floor(Math.random() * channelParticipants.length)
+          ];
         const message = await prisma.chatMessage.create({
           data: {
-            content: messageTemplates[Math.floor(Math.random() * messageTemplates.length)],
+            content:
+              messageTemplates[
+                Math.floor(Math.random() * messageTemplates.length)
+              ],
             channelId: channel.id,
             userId: participant.userId,
-            createdAt: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000), // Random date within last 30 days
+            createdAt: new Date(
+              Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000,
+            ), // Random date within last 30 days
           },
         });
         messages.push(message);
@@ -265,46 +318,109 @@ async function seedMockData() {
     // 9. Create Posts
     console.log('📝 Creating posts...');
     const posts: any[] = [];
-    const postContents = [
-      'Just finished an amazing photoshoot today! Can\'t wait to share the results with you all! 📸✨',
+    const idolPostContents = [
+      "Just finished an amazing photoshoot today! Can't wait to share the results with you all! 📸✨",
       'Thank you for all your support! You mean the world to me! 💕',
       'New music coming soon! Stay tuned! 🎵',
       'Behind the scenes from our latest project! 🎬',
       'Grateful for this beautiful day and all of you! 🌟',
       'Practice makes perfect! Working hard for the upcoming performance! 💪',
-      'Coffee time ☕ What\'s everyone up to today?',
+      'Just wrapped up rehearsals! Feeling excited! 🎤',
+      'Thank you for 1M followers! This is incredible! 🎉',
+      'Sunset views from the studio! 🌅',
+      'Quick selfie before showtime! 🤳',
+      'Reading your messages always makes my day! 💌',
+      'Feeling inspired and creative today! 🎨',
+    ];
+
+    const fanPostContents = [
+      "Coffee time ☕ What's everyone up to today?",
       'Throwback to some amazing memories! Missing these times! 📷',
       'Feeling blessed and thankful! 🙏',
       'Late night thoughts... What keeps you motivated?',
       'Weekend vibes! How are you spending your weekend? 😊',
       'New hair, who dis? 💇‍♀️✨',
-      'Just wrapped up rehearsals! Feeling excited! 🎤',
-      'Thank you for 1M followers! This is incredible! 🎉',
       'Cooking experiments today... wish me luck! 👩‍🍳',
-      'Sunset views from the studio! 🌅',
-      'Quick selfie before showtime! 🤳',
-      'Reading your messages always makes my day! 💌',
       'Guess where I am today? 🤔',
-      'Feeling inspired and creative today! 🎨',
+      'Beautiful day outside! 🌞',
+      'Just discovered this amazing song! 🎶',
+      'Movie night recommendations? 🎬',
+      'Finally finished that book! 📚',
     ];
 
-    // Create 30-40 posts from idol users
-    const numPosts = Math.floor(Math.random() * 11) + 30; // 30-40 posts
-    for (let i = 0; i < numPosts; i++) {
+    // Media URLs to be used in some posts
+    const availableMediaUrls = [
+      'https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg',
+      'https://res.cloudinary.com/dsc9afexw/image/upload/v1758008644/iK-Cji6J73Q-HD_nmbkfm.jpg',
+      'https://res.cloudinary.com/dsc9afexw/image/upload/v1762853124/273532258_1528902877562442_6813889931345818717_n_bqaajl.webp',
+    ];
+
+    // Helper function to randomly select media URLs (0-3 images)
+    const getRandomMediaUrls = (): string[] => {
+      const shouldHaveMedia = Math.random() > 0.4; // 60% chance of having media
+      if (!shouldHaveMedia) return [];
+
+      const numImages = Math.floor(Math.random() * 3) + 1; // 1-3 images
+      const shuffled = [...availableMediaUrls].sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, numImages);
+    };
+
+    // Create 20-25 posts from idol users
+    const numIdolPosts = Math.floor(Math.random() * 6) + 20; // 20-25 posts
+    for (let i = 0; i < numIdolPosts; i++) {
       const idol = idols[Math.floor(Math.random() * idols.length)];
       const post = await prisma.post.create({
         data: {
-          content: postContents[Math.floor(Math.random() * postContents.length)],
+          content:
+            idolPostContents[
+              Math.floor(Math.random() * idolPostContents.length)
+            ],
           authorId: idol.id,
-          likeCount: Math.floor(Math.random() * 1000),
-          commentCount: Math.floor(Math.random() * 50),
-          viewCount: Math.floor(Math.random() * 5000),
-          createdAt: new Date(Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000), // Random date within last 60 days
+          communityId: idol.communityId,
+          mediaUrls: getRandomMediaUrls(),
+          likeCount: 0, // Will be updated later
+          commentCount: 0, // Will be updated later
+          viewCount: 0, // Will be updated later
+          createdAt: new Date(
+            Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000,
+          ), // Random date within last 60 days
         },
       });
       posts.push(post);
     }
-    console.log(`  ✅ Created ${posts.length} posts\n`);
+
+    // Create 15-20 posts from fan users
+    const numFanPosts = Math.floor(Math.random() * 6) + 15; // 15-20 posts
+    for (let i = 0; i < numFanPosts; i++) {
+      const fan = fans[Math.floor(Math.random() * fans.length)];
+      // Get a community that this fan follows (if any)
+      const fanFollows = followers.filter((f) => f.userId === fan.id);
+      const communityId =
+        fanFollows.length > 0
+          ? fanFollows[Math.floor(Math.random() * fanFollows.length)]
+              .communityId
+          : null;
+
+      const post = await prisma.post.create({
+        data: {
+          content:
+            fanPostContents[Math.floor(Math.random() * fanPostContents.length)],
+          authorId: fan.id,
+          communityId: communityId,
+          mediaUrls: getRandomMediaUrls(),
+          likeCount: 0, // Will be updated later
+          commentCount: 0, // Will be updated later
+          viewCount: 0, // Will be updated later
+          createdAt: new Date(
+            Date.now() - Math.random() * 60 * 24 * 60 * 60 * 1000,
+          ), // Random date within last 60 days
+        },
+      });
+      posts.push(post);
+    }
+    console.log(
+      `  ✅ Created ${posts.length} posts (${numIdolPosts} from idols, ${numFanPosts} from fans)\n`,
+    );
 
     // 10. Create Comments
     console.log('💬 Creating comments...');
@@ -313,7 +429,7 @@ async function seedMockData() {
       'Amazing! 😍',
       'Love this so much!',
       'You look beautiful! ✨',
-      'Can\'t wait!',
+      "Can't wait!",
       'This is incredible!',
       'So talented! 💕',
       'Best idol ever!',
@@ -336,10 +452,13 @@ async function seedMockData() {
 
       const comment = await prisma.comment.create({
         data: {
-          content: commentTexts[Math.floor(Math.random() * commentTexts.length)],
+          content:
+            commentTexts[Math.floor(Math.random() * commentTexts.length)],
           postId: post.id,
           userId: commenter.id,
-          createdAt: new Date(post.createdAt.getTime() + Math.random() * 24 * 60 * 60 * 1000), // After post creation
+          createdAt: new Date(
+            post.createdAt.getTime() + Math.random() * 24 * 60 * 60 * 1000,
+          ), // After post creation
         },
       });
       comments.push(comment);
@@ -397,7 +516,39 @@ async function seedMockData() {
     }
     console.log(`  ✅ Created ${postViews.length} post views\n`);
 
-    // 13. Create Social Accounts (some users have Google/Facebook login)
+    // 13. Update Post Counts
+    console.log('🔄 Updating post counts based on actual data...');
+    let updatedPostsCount = 0;
+    for (const post of posts) {
+      // Count actual likes for this post
+      const actualLikeCount = await prisma.postLike.count({
+        where: { postId: post.id },
+      });
+
+      // Count actual comments for this post
+      const actualCommentCount = await prisma.comment.count({
+        where: { postId: post.id },
+      });
+
+      // Count actual views for this post
+      const actualViewCount = await prisma.postView.count({
+        where: { postId: post.id },
+      });
+
+      // Update the post with actual counts
+      await prisma.post.update({
+        where: { id: post.id },
+        data: {
+          likeCount: actualLikeCount,
+          commentCount: actualCommentCount,
+          viewCount: actualViewCount,
+        },
+      });
+      updatedPostsCount++;
+    }
+    console.log(`  ✅ Updated counts for ${updatedPostsCount} posts\n`);
+
+    // 14. Create Social Accounts (some users have Google/Facebook login)
     console.log('🔗 Creating social account links...');
     const socialAccounts: any[] = [];
 
@@ -436,12 +587,18 @@ async function seedMockData() {
     console.log(`🏘️  Communities: ${communities.length}`);
     console.log(`💙 Community Follows: ${followers.length}`);
     console.log(`💬 Chat Channels: ${chatChannels.length}`);
-    console.log(`   - ${chatChannels.filter(c => c.type === 'ANNOUNCEMENT').length} Announcement channels`);
-    console.log(`   - ${chatChannels.filter(c => c.type === 'GROUP').length} Group channels`);
-    console.log(`   - ${chatChannels.filter(c => c.type === 'DIRECT').length} Direct message channels`);
+    console.log(
+      `   - ${chatChannels.filter((c) => c.type === 'ANNOUNCEMENT').length} Announcement channels`,
+    );
+    console.log(
+      `   - ${chatChannels.filter((c) => c.type === 'GROUP').length} Group channels`,
+    );
+    console.log(
+      `   - ${chatChannels.filter((c) => c.type === 'DIRECT').length} Direct message channels`,
+    );
     console.log(`👥 Chat Participants: ${participants.length}`);
     console.log(`💬 Chat Messages: ${messages.length}`);
-    console.log(`📝 Posts: ${posts.length}`);
+    console.log(`📝 Posts: ${posts.length} (with accurate counts)`);
     console.log(`💬 Comments: ${comments.length}`);
     console.log(`❤️ Post Likes: ${postLikes.length}`);
     console.log(`👁️ Post Views: ${postViews.length}`);
@@ -454,7 +611,7 @@ async function seedMockData() {
     console.log('  Email: admin@ventidole.com');
     console.log('  Password: admin123\n');
     console.log('Idol Accounts (password: admin123):');
-    idolData.forEach(idol => {
+    idolData.forEach((idol) => {
       console.log(`  - ${idol.email} (${idol.username})`);
     });
     console.log('\nFan Accounts (password: admin123):');
@@ -462,7 +619,6 @@ async function seedMockData() {
     console.log('═══════════════════════════════════════\n');
 
     console.log('✅ Mock data seeding completed successfully!\n');
-
   } catch (error) {
     console.error('❌ Error seeding mock data:', error);
     throw error;

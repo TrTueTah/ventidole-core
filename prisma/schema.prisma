@@ -102,6 +102,7 @@ model Community {
   chatChannels  ChatChannel[]
   followers     CommunityFollower[]
   idols         User[]
+  posts         Post[]
 
   @@map("community")
 }
@@ -127,51 +128,43 @@ model CommunityFollower {
 }
 
 model ChatChannel {
-  id             String            @id @default(cuid())
-  isActive       Boolean           @default(true)
-  createdAt      DateTime          @default(now())
-  updatedAt      DateTime          @updatedAt
-  version        Int               @default(0)
-  isDeleted      Boolean           @default(false) @map("is_deleted")
-  deletedAt      DateTime?         @map("deleted_at")
-  metadata       Json?
-  name           String?           @db.VarChar(255)
-  description    String?           @db.VarChar(500)
-  type           ChatChannelType
-  communityId    String?           @map("communityId")
-  idolId         String?           @map("idolId")
-  isAnnouncement Boolean           @default(false) @map("is_announcement")
-  lastMessageAt  DateTime?         @map("last_message_at")
-  firebaseDocId  String            @unique @map("firebase_doc_id") @db.VarChar(255)
-  community      Community?        @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  idol           User?             @relation(fields: [idolId], references: [id], onDelete: Cascade)
-  participants   ChatParticipant[]
-  messages       ChatMessage[]
+  id          String    @id @default(cuid())
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  version     Int       @default(0)
+  isDeleted   Boolean   @default(false) @map("is_deleted")
+  deletedAt   DateTime? @map("deleted_at")
+  metadata    Json?
+  name        String?   @db.VarChar(255)
+  description String?   @db.VarChar(500)
+  communityId String?   @map("communityId")
+  idolId      String?   @map("idolId")
+
+  community    Community?        @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  idol         User?             @relation(fields: [idolId], references: [id], onDelete: Cascade)
+  participants ChatParticipant[]
+  messages     ChatMessage[]
 
   @@index([communityId])
   @@index([idolId])
-  @@index([type])
-  @@index([lastMessageAt])
   @@map("chat_channel")
 }
 
 model ChatParticipant {
-  id          String      @id @default(cuid())
-  isActive    Boolean     @default(true)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  version     Int         @default(0)
-  isDeleted   Boolean     @default(false) @map("is_deleted")
-  deletedAt   DateTime?   @map("deleted_at")
-  metadata    Json?
-  channelId   String      @map("channelId")
-  userId      String      @map("userId")
-  role        ChatRole    @default(MEMBER)
-  lastReadAt  DateTime?   @map("last_read_at")
-  unreadCount Int         @default(0) @map("unread_count")
-  isMuted     Boolean     @default(false) @map("is_muted")
-  channel     ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id             String      @id @default(cuid())
+  isActive       Boolean     @default(true)
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  version        Int         @default(0)
+  isDeleted      Boolean     @default(false) @map("is_deleted")
+  deletedAt      DateTime?   @map("deleted_at")
+  metadata       Json?
+  channelId      String      @map("channelId")
+  userId         String      @map("userId")
+  canSendMessage Boolean     @default(true) @map("can_send_message")
+  channel        ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([channelId, userId])
   @@index([userId])
@@ -218,13 +211,18 @@ model Post {
   viewCount    Int @default(0) @map("view_count")
 
   // relations
-  authorId String     @map("authorId")
-  author   User       @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  authorId String @map("authorId")
+  author   User   @relation("PostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+
+  communityId String    @map("communityId")
+  community   Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+
   likes    PostLike[]
   comments Comment[]
   views    PostView[]
 
   @@index([authorId])
+  @@index([communityId])
   @@map("post")
 }
 
@@ -316,12 +314,6 @@ enum VerificationType {
 enum SocialAccountProvider {
   GOOGLE
   FACEBOOK
-}
-
-enum ChatChannelType {
-  DIRECT
-  GROUP
-  ANNOUNCEMENT
 }
 
 enum ChatRole {

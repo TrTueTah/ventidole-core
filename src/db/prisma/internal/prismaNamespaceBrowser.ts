@@ -246,7 +246,8 @@ export const PostScalarFieldEnum = {
   likeCount: 'likeCount',
   commentCount: 'commentCount',
   viewCount: 'viewCount',
-  authorId: 'authorId'
+  authorId: 'authorId',
+  communityId: 'communityId'
 } as const
 
 export type PostScalarFieldEnum = (typeof PostScalarFieldEnum)[keyof typeof PostScalarFieldEnum]

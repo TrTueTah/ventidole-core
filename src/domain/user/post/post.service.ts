@@ -1,31 +1,48 @@
 import { Injectable } from '@nestjs/common';
-import { PaginationDto } from '@shared/dto/pagination-request.dto';
 import {
   PageInfo,
   PaginationResponse,
 } from '@shared/dto/pagination-response.dto';
-import { PrismaService } from '@shared/service/prisma/prisma.service';
-import { PostDto } from './dto/post.dto';
-import { CreatePostDto } from './dto/create-post.dto';
-import { UpdatePostDto } from './dto/update-post.dto';
-import { CustomError } from '@shared/helper/error';
 import { ErrorCode } from '@shared/enum/error-code.enum';
+import { CustomError } from '@shared/helper/error';
+import { PrismaService } from '@shared/service/prisma/prisma.service';
+import { CreatePostDto } from './dto/create-post.dto';
+import { GetPostsDto } from './dto/get-posts.dto';
+import { PostDetailDto } from './dto/post-detail.dto';
+import { PostDto } from './dto/post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
 export class PostService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getPosts(
-    pagination: PaginationDto,
+    filters: GetPostsDto,
+    userId?: string,
   ): Promise<PaginationResponse<PostDto>> {
-    const { offset, limit, page } = pagination;
+    const { offset, limit, page, communityId, filter } = filters;
+
+    // Build where clause
+    const whereClause: Record<string, unknown> = {
+      isDeleted: false,
+      isActive: true,
+    };
+
+    // Add community filter
+    if (communityId) {
+      whereClause.communityId = communityId;
+    }
+
+    // Add user role filter
+    if (filter) {
+      whereClause.author = {
+        role: filter,
+      };
+    }
 
     const [rawPosts, total] = await Promise.all([
       this.prisma.post.findMany({
-        where: {
-          isDeleted: false,
-          isActive: true,
-        },
+        where: whereClause,
         select: {
           id: true,
           content: true,
@@ -34,6 +51,7 @@ export class PostService {
           commentCount: true,
           viewCount: true,
           authorId: true,
+          communityId: true,
           author: {
             select: {
               id: true,
@@ -51,20 +69,32 @@ export class PostService {
         take: limit,
       }),
       this.prisma.post.count({
-        where: {
-          isDeleted: false,
-          isActive: true,
-        },
+        where: whereClause,
       }),
     ]);
 
-    // Transform mediaUrls from JSON to array
+    // Get like status for each post if userId is provided
+    let likedPostIds: Set<string> = new Set();
+    if (userId && rawPosts.length > 0) {
+      const likes = await this.prisma.postLike.findMany({
+        where: {
+          userId,
+          postId: {
+            in: rawPosts.map((post) => post.id),
+          },
+        },
+        select: {
+          postId: true,
+        },
+      });
+      likedPostIds = new Set(likes.map((like) => like.postId));
+    }
+
+    // Transform mediaUrls from JSON to array and add isLiked status
     const posts = rawPosts.map((post) => {
       let mediaUrls: string[] | null = null;
 
       if (post.mediaUrls) {
-        console.log('Raw mediaUrls:', post.mediaUrls);
-
         if (Array.isArray(post.mediaUrls)) {
           mediaUrls = post.mediaUrls.every((item) => typeof item === 'string')
             ? (post.mediaUrls as string[])
@@ -87,6 +117,7 @@ export class PostService {
       return {
         ...post,
         mediaUrls,
+        isLiked: likedPostIds.has(post.id),
       };
     });
 
@@ -95,7 +126,7 @@ export class PostService {
     return new PaginationResponse(posts, pageInfo);
   }
 
-  async getPostById(postId: string): Promise<PostDto> {
+  async getPostById(postId: string, userId?: string): Promise<PostDetailDto> {
     const post = await this.prisma.post.findFirst({
       where: {
         id: postId,
@@ -119,11 +150,26 @@ export class PostService {
         },
         createdAt: true,
         updatedAt: true,
+        communityId: true,
       },
     });
 
     if (!post) {
       throw new CustomError(ErrorCode.PostNotFound);
+    }
+
+    // Check if user has liked this post
+    let isLiked = false;
+    if (userId) {
+      const like = await this.prisma.postLike.findUnique({
+        where: {
+          postId_userId: {
+            postId,
+            userId,
+          },
+        },
+      });
+      isLiked = !!like;
     }
 
     // Transform mediaUrls from JSON to array
@@ -158,12 +204,14 @@ export class PostService {
       likeCount: post.likeCount,
       commentCount: post.commentCount,
       viewCount: post.viewCount,
+      isLiked,
       authorId: post.authorId,
       author: {
         id: post.author.id,
         username: post.author.username,
         avatarUrl: post.author.avatarUrl ?? undefined,
       },
+      communityId: post.communityId,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
     };
@@ -173,13 +221,14 @@ export class PostService {
     userId: string,
     createPostDto: CreatePostDto,
   ): Promise<PostDto> {
-    const { content, mediaUrls } = createPostDto;
+    const { content, mediaUrls, communityId } = createPostDto;
 
     const post = await this.prisma.post.create({
       data: {
         content,
         mediaUrls: mediaUrls ? mediaUrls : undefined,
         authorId: userId,
+        communityId: communityId,
       },
       select: {
         id: true,
@@ -189,6 +238,7 @@ export class PostService {
         commentCount: true,
         viewCount: true,
         authorId: true,
+        communityId: true,
         author: {
           select: {
             id: true,
@@ -233,12 +283,14 @@ export class PostService {
       likeCount: post.likeCount,
       commentCount: post.commentCount,
       viewCount: post.viewCount,
+      isLiked: false, // User just created the post, they haven't liked it yet
       authorId: post.authorId,
       author: {
         id: post.author.id,
         username: post.author.username,
         avatarUrl: post.author.avatarUrl ?? undefined,
       },
+      communityId: post.communityId,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
     };
@@ -291,6 +343,7 @@ export class PostService {
         commentCount: true,
         viewCount: true,
         authorId: true,
+        communityId: true,
         author: {
           select: {
             id: true,
@@ -300,6 +353,16 @@ export class PostService {
         },
         createdAt: true,
         updatedAt: true,
+      },
+    });
+
+    // Check if user has liked this post
+    const like = await this.prisma.postLike.findUnique({
+      where: {
+        postId_userId: {
+          postId,
+          userId,
+        },
       },
     });
 
@@ -335,7 +398,9 @@ export class PostService {
       likeCount: post.likeCount,
       commentCount: post.commentCount,
       viewCount: post.viewCount,
+      isLiked: !!like,
       authorId: post.authorId,
+      communityId: post.communityId,
       author: {
         id: post.author.id,
         username: post.author.username,
@@ -372,5 +437,120 @@ export class PostService {
         deletedAt: new Date(),
       },
     });
+  }
+
+  async likePost(userId: string, postId: string): Promise<{ liked: boolean }> {
+    // Check if post exists
+    const post = await this.prisma.post.findFirst({
+      where: {
+        id: postId,
+        isDeleted: false,
+        isActive: true,
+      },
+    });
+
+    if (!post) {
+      throw new CustomError(ErrorCode.PostNotFound);
+    }
+
+    // Check if user already liked the post
+    const existingLike = await this.prisma.postLike.findUnique({
+      where: {
+        postId_userId: {
+          postId,
+          userId,
+        },
+      },
+    });
+
+    if (existingLike) {
+      // Unlike: Delete the like and decrement count
+      await this.prisma.$transaction([
+        this.prisma.postLike.delete({
+          where: {
+            postId_userId: {
+              postId,
+              userId,
+            },
+          },
+        }),
+        this.prisma.post.update({
+          where: { id: postId },
+          data: {
+            likeCount: {
+              decrement: 1,
+            },
+          },
+        }),
+      ]);
+
+      return { liked: false };
+    } else {
+      // Like: Create the like and increment count
+      await this.prisma.$transaction([
+        this.prisma.postLike.create({
+          data: {
+            postId,
+            userId,
+          },
+        }),
+        this.prisma.post.update({
+          where: { id: postId },
+          data: {
+            likeCount: {
+              increment: 1,
+            },
+          },
+        }),
+      ]);
+
+      return { liked: true };
+    }
+  }
+
+  async viewPost(userId: string, postId: string): Promise<void> {
+    // Check if post exists
+    const post = await this.prisma.post.findFirst({
+      where: {
+        id: postId,
+        isDeleted: false,
+        isActive: true,
+      },
+    });
+
+    if (!post) {
+      throw new CustomError(ErrorCode.PostNotFound);
+    }
+
+    // Check if user already viewed the post
+    const existingView = await this.prisma.postView.findUnique({
+      where: {
+        postId_userId: {
+          postId,
+          userId,
+        },
+      },
+    });
+
+    // Only create view if it doesn't exist
+    if (!existingView) {
+      await this.prisma.$transaction([
+        this.prisma.postView.create({
+          data: {
+            postId,
+            userId,
+          },
+        }),
+        this.prisma.post.update({
+          where: { id: postId },
+          data: {
+            viewCount: {
+              increment: 1,
+            },
+          },
+        }),
+      ]);
+    }
+    // If view already exists, do nothing (idempotent)
   }
 }

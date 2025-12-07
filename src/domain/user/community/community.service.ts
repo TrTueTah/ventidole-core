@@ -8,7 +8,9 @@ import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { CommunityDetailDto } from './dto/community-detail.dto';
+import { CommunityListDto } from './dto/community-list.dto';
 import { CommunityDto } from './dto/community.dto';
+import { GetCommunitiesDto } from './dto/get-communities.dto';
 
 @Injectable()
 export class CommunityService {
@@ -16,16 +18,38 @@ export class CommunityService {
 
   async getAllCommunities(
     userId: string,
-    pagination: PaginationDto,
-  ): Promise<PaginationResponse<CommunityDto>> {
-    const { offset, limit, page } = pagination;
+    filters: GetCommunitiesDto,
+  ): Promise<PaginationResponse<CommunityListDto>> {
+    const { offset, limit, page, search, joined } = filters;
 
-    const [communities, total] = await Promise.all([
-      this.prisma.community.findMany({
-        where: {
+    // Build where clause
+    const whereClause: Record<string, unknown> = {
+      isDeleted: false,
+      isActive: true,
+    };
+
+    // Add search filter
+    if (search) {
+      whereClause.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { description: { contains: search, mode: 'insensitive' } },
+      ];
+    }
+
+    // Add joined filter
+    if (joined === 'true') {
+      whereClause.followers = {
+        some: {
+          userId,
           isDeleted: false,
           isActive: true,
         },
+      };
+    }
+
+    const [communities, total] = await Promise.all([
+      this.prisma.community.findMany({
+        where: whereClause,
         select: {
           id: true,
           name: true,
@@ -36,11 +60,12 @@ export class CommunityService {
           updatedAt: true,
           followers: {
             where: {
-              userId,
               isDeleted: false,
+              isActive: true,
             },
             select: {
               id: true,
+              userId: true,
             },
           },
         },
@@ -51,10 +76,7 @@ export class CommunityService {
         take: limit,
       }),
       this.prisma.community.count({
-        where: {
-          isDeleted: false,
-          isActive: true,
-        },
+        where: whereClause,
       }),
     ]);
 
@@ -66,7 +88,11 @@ export class CommunityService {
       description: community.description,
       createdAt: community.createdAt,
       updatedAt: community.updatedAt,
-      isJoined: community.followers.length > 0,
+      isJoined: community.followers.some((f) => f.userId === userId),
+      totalMember: community.followers.length,
+      isNew:
+        new Date().getTime() - community.createdAt.getTime() <
+        7 * 24 * 60 * 60 * 1000,
     }));
 
     const pageInfo = new PageInfo(page, limit, total);
@@ -203,12 +229,8 @@ export class CommunityService {
     }
 
     // Soft delete the follower relationship
-    await this.prisma.communityFollower.update({
-      where: { id: follower.id },
-      data: {
-        isDeleted: true,
-        deletedAt: new Date(),
-      },
+    await this.prisma.communityFollower.delete({
+      where: { id: follower.id, userId: userId },
     });
   }
 

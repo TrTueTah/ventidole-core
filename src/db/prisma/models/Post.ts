@@ -52,6 +52,7 @@ export type PostMinAggregateOutputType = {
   commentCount: number | null
   viewCount: number | null
   authorId: string | null
+  communityId: string | null
 }
 
 export type PostMaxAggregateOutputType = {
@@ -67,6 +68,7 @@ export type PostMaxAggregateOutputType = {
   commentCount: number | null
   viewCount: number | null
   authorId: string | null
+  communityId: string | null
 }
 
 export type PostCountAggregateOutputType = {
@@ -84,6 +86,7 @@ export type PostCountAggregateOutputType = {
   commentCount: number
   viewCount: number
   authorId: number
+  communityId: number
   _all: number
 }
 
@@ -115,6 +118,7 @@ export type PostMinAggregateInputType = {
   commentCount?: true
   viewCount?: true
   authorId?: true
+  communityId?: true
 }
 
 export type PostMaxAggregateInputType = {
@@ -130,6 +134,7 @@ export type PostMaxAggregateInputType = {
   commentCount?: true
   viewCount?: true
   authorId?: true
+  communityId?: true
 }
 
 export type PostCountAggregateInputType = {
@@ -147,6 +152,7 @@ export type PostCountAggregateInputType = {
   commentCount?: true
   viewCount?: true
   authorId?: true
+  communityId?: true
   _all?: true
 }
 
@@ -251,6 +257,7 @@ export type PostGroupByOutputType = {
   commentCount: number
   viewCount: number
   authorId: string
+  communityId: string
   _count: PostCountAggregateOutputType | null
   _avg: PostAvgAggregateOutputType | null
   _sum: PostSumAggregateOutputType | null
@@ -291,7 +298,9 @@ export type PostWhereInput = {
   commentCount?: Prisma.IntFilter<"Post"> | number
   viewCount?: Prisma.IntFilter<"Post"> | number
   authorId?: Prisma.StringFilter<"Post"> | string
+  communityId?: Prisma.StringFilter<"Post"> | string
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  community?: Prisma.XOR<Prisma.CommunityScalarRelationFilter, Prisma.CommunityWhereInput>
   likes?: Prisma.PostLikeListRelationFilter
   comments?: Prisma.CommentListRelationFilter
   views?: Prisma.PostViewListRelationFilter
@@ -312,7 +321,9 @@ export type PostOrderByWithRelationInput = {
   commentCount?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  communityId?: Prisma.SortOrder
   author?: Prisma.UserOrderByWithRelationInput
+  community?: Prisma.CommunityOrderByWithRelationInput
   likes?: Prisma.PostLikeOrderByRelationAggregateInput
   comments?: Prisma.CommentOrderByRelationAggregateInput
   views?: Prisma.PostViewOrderByRelationAggregateInput
@@ -336,7 +347,9 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   commentCount?: Prisma.IntFilter<"Post"> | number
   viewCount?: Prisma.IntFilter<"Post"> | number
   authorId?: Prisma.StringFilter<"Post"> | string
+  communityId?: Prisma.StringFilter<"Post"> | string
   author?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  community?: Prisma.XOR<Prisma.CommunityScalarRelationFilter, Prisma.CommunityWhereInput>
   likes?: Prisma.PostLikeListRelationFilter
   comments?: Prisma.CommentListRelationFilter
   views?: Prisma.PostViewListRelationFilter
@@ -357,6 +370,7 @@ export type PostOrderByWithAggregationInput = {
   commentCount?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  communityId?: Prisma.SortOrder
   _count?: Prisma.PostCountOrderByAggregateInput
   _avg?: Prisma.PostAvgOrderByAggregateInput
   _max?: Prisma.PostMaxOrderByAggregateInput
@@ -382,6 +396,7 @@ export type PostScalarWhereWithAggregatesInput = {
   commentCount?: Prisma.IntWithAggregatesFilter<"Post"> | number
   viewCount?: Prisma.IntWithAggregatesFilter<"Post"> | number
   authorId?: Prisma.StringWithAggregatesFilter<"Post"> | string
+  communityId?: Prisma.StringWithAggregatesFilter<"Post"> | string
 }
 
 export type PostCreateInput = {
@@ -399,6 +414,7 @@ export type PostCreateInput = {
   commentCount?: number
   viewCount?: number
   author: Prisma.UserCreateNestedOneWithoutPostsInput
+  community: Prisma.CommunityCreateNestedOneWithoutPostsInput
   likes?: Prisma.PostLikeCreateNestedManyWithoutPostInput
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
   views?: Prisma.PostViewCreateNestedManyWithoutPostInput
@@ -419,6 +435,7 @@ export type PostUncheckedCreateInput = {
   commentCount?: number
   viewCount?: number
   authorId: string
+  communityId: string
   likes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutPostInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
   views?: Prisma.PostViewUncheckedCreateNestedManyWithoutPostInput
@@ -439,6 +456,7 @@ export type PostUpdateInput = {
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
+  community?: Prisma.CommunityUpdateOneRequiredWithoutPostsNestedInput
   likes?: Prisma.PostLikeUpdateManyWithoutPostNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
   views?: Prisma.PostViewUpdateManyWithoutPostNestedInput
@@ -459,6 +477,7 @@ export type PostUncheckedUpdateInput = {
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  communityId?: Prisma.StringFieldUpdateOperationsInput | string
   likes?: Prisma.PostLikeUncheckedUpdateManyWithoutPostNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
   views?: Prisma.PostViewUncheckedUpdateManyWithoutPostNestedInput
@@ -479,6 +498,7 @@ export type PostCreateManyInput = {
   commentCount?: number
   viewCount?: number
   authorId: string
+  communityId: string
 }
 
 export type PostUpdateManyMutationInput = {
@@ -512,6 +532,7 @@ export type PostUncheckedUpdateManyInput = {
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  communityId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PostListRelationFilter = {
@@ -539,6 +560,7 @@ export type PostCountOrderByAggregateInput = {
   commentCount?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  communityId?: Prisma.SortOrder
 }
 
 export type PostAvgOrderByAggregateInput = {
@@ -561,6 +583,7 @@ export type PostMaxOrderByAggregateInput = {
   commentCount?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  communityId?: Prisma.SortOrder
 }
 
 export type PostMinOrderByAggregateInput = {
@@ -576,6 +599,7 @@ export type PostMinOrderByAggregateInput = {
   commentCount?: Prisma.SortOrder
   viewCount?: Prisma.SortOrder
   authorId?: Prisma.SortOrder
+  communityId?: Prisma.SortOrder
 }
 
 export type PostSumOrderByAggregateInput = {
@@ -629,6 +653,48 @@ export type PostUncheckedUpdateManyWithoutAuthorNestedInput = {
   connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
   update?: Prisma.PostUpdateWithWhereUniqueWithoutAuthorInput | Prisma.PostUpdateWithWhereUniqueWithoutAuthorInput[]
   updateMany?: Prisma.PostUpdateManyWithWhereWithoutAuthorInput | Prisma.PostUpdateManyWithWhereWithoutAuthorInput[]
+  deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
+}
+
+export type PostCreateNestedManyWithoutCommunityInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutCommunityInput, Prisma.PostUncheckedCreateWithoutCommunityInput> | Prisma.PostCreateWithoutCommunityInput[] | Prisma.PostUncheckedCreateWithoutCommunityInput[]
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutCommunityInput | Prisma.PostCreateOrConnectWithoutCommunityInput[]
+  createMany?: Prisma.PostCreateManyCommunityInputEnvelope
+  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+}
+
+export type PostUncheckedCreateNestedManyWithoutCommunityInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutCommunityInput, Prisma.PostUncheckedCreateWithoutCommunityInput> | Prisma.PostCreateWithoutCommunityInput[] | Prisma.PostUncheckedCreateWithoutCommunityInput[]
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutCommunityInput | Prisma.PostCreateOrConnectWithoutCommunityInput[]
+  createMany?: Prisma.PostCreateManyCommunityInputEnvelope
+  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+}
+
+export type PostUpdateManyWithoutCommunityNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutCommunityInput, Prisma.PostUncheckedCreateWithoutCommunityInput> | Prisma.PostCreateWithoutCommunityInput[] | Prisma.PostUncheckedCreateWithoutCommunityInput[]
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutCommunityInput | Prisma.PostCreateOrConnectWithoutCommunityInput[]
+  upsert?: Prisma.PostUpsertWithWhereUniqueWithoutCommunityInput | Prisma.PostUpsertWithWhereUniqueWithoutCommunityInput[]
+  createMany?: Prisma.PostCreateManyCommunityInputEnvelope
+  set?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  disconnect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  delete?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  update?: Prisma.PostUpdateWithWhereUniqueWithoutCommunityInput | Prisma.PostUpdateWithWhereUniqueWithoutCommunityInput[]
+  updateMany?: Prisma.PostUpdateManyWithWhereWithoutCommunityInput | Prisma.PostUpdateManyWithWhereWithoutCommunityInput[]
+  deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
+}
+
+export type PostUncheckedUpdateManyWithoutCommunityNestedInput = {
+  create?: Prisma.XOR<Prisma.PostCreateWithoutCommunityInput, Prisma.PostUncheckedCreateWithoutCommunityInput> | Prisma.PostCreateWithoutCommunityInput[] | Prisma.PostUncheckedCreateWithoutCommunityInput[]
+  connectOrCreate?: Prisma.PostCreateOrConnectWithoutCommunityInput | Prisma.PostCreateOrConnectWithoutCommunityInput[]
+  upsert?: Prisma.PostUpsertWithWhereUniqueWithoutCommunityInput | Prisma.PostUpsertWithWhereUniqueWithoutCommunityInput[]
+  createMany?: Prisma.PostCreateManyCommunityInputEnvelope
+  set?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  disconnect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  delete?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  connect?: Prisma.PostWhereUniqueInput | Prisma.PostWhereUniqueInput[]
+  update?: Prisma.PostUpdateWithWhereUniqueWithoutCommunityInput | Prisma.PostUpdateWithWhereUniqueWithoutCommunityInput[]
+  updateMany?: Prisma.PostUpdateManyWithWhereWithoutCommunityInput | Prisma.PostUpdateManyWithWhereWithoutCommunityInput[]
   deleteMany?: Prisma.PostScalarWhereInput | Prisma.PostScalarWhereInput[]
 }
 
@@ -688,6 +754,7 @@ export type PostCreateWithoutAuthorInput = {
   likeCount?: number
   commentCount?: number
   viewCount?: number
+  community: Prisma.CommunityCreateNestedOneWithoutPostsInput
   likes?: Prisma.PostLikeCreateNestedManyWithoutPostInput
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
   views?: Prisma.PostViewCreateNestedManyWithoutPostInput
@@ -707,6 +774,7 @@ export type PostUncheckedCreateWithoutAuthorInput = {
   likeCount?: number
   commentCount?: number
   viewCount?: number
+  communityId: string
   likes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutPostInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
   views?: Prisma.PostViewUncheckedCreateNestedManyWithoutPostInput
@@ -756,6 +824,73 @@ export type PostScalarWhereInput = {
   commentCount?: Prisma.IntFilter<"Post"> | number
   viewCount?: Prisma.IntFilter<"Post"> | number
   authorId?: Prisma.StringFilter<"Post"> | string
+  communityId?: Prisma.StringFilter<"Post"> | string
+}
+
+export type PostCreateWithoutCommunityInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  content: string
+  mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  likeCount?: number
+  commentCount?: number
+  viewCount?: number
+  author: Prisma.UserCreateNestedOneWithoutPostsInput
+  likes?: Prisma.PostLikeCreateNestedManyWithoutPostInput
+  comments?: Prisma.CommentCreateNestedManyWithoutPostInput
+  views?: Prisma.PostViewCreateNestedManyWithoutPostInput
+}
+
+export type PostUncheckedCreateWithoutCommunityInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  content: string
+  mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  likeCount?: number
+  commentCount?: number
+  viewCount?: number
+  authorId: string
+  likes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutPostInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
+  views?: Prisma.PostViewUncheckedCreateNestedManyWithoutPostInput
+}
+
+export type PostCreateOrConnectWithoutCommunityInput = {
+  where: Prisma.PostWhereUniqueInput
+  create: Prisma.XOR<Prisma.PostCreateWithoutCommunityInput, Prisma.PostUncheckedCreateWithoutCommunityInput>
+}
+
+export type PostCreateManyCommunityInputEnvelope = {
+  data: Prisma.PostCreateManyCommunityInput | Prisma.PostCreateManyCommunityInput[]
+  skipDuplicates?: boolean
+}
+
+export type PostUpsertWithWhereUniqueWithoutCommunityInput = {
+  where: Prisma.PostWhereUniqueInput
+  update: Prisma.XOR<Prisma.PostUpdateWithoutCommunityInput, Prisma.PostUncheckedUpdateWithoutCommunityInput>
+  create: Prisma.XOR<Prisma.PostCreateWithoutCommunityInput, Prisma.PostUncheckedCreateWithoutCommunityInput>
+}
+
+export type PostUpdateWithWhereUniqueWithoutCommunityInput = {
+  where: Prisma.PostWhereUniqueInput
+  data: Prisma.XOR<Prisma.PostUpdateWithoutCommunityInput, Prisma.PostUncheckedUpdateWithoutCommunityInput>
+}
+
+export type PostUpdateManyWithWhereWithoutCommunityInput = {
+  where: Prisma.PostScalarWhereInput
+  data: Prisma.XOR<Prisma.PostUpdateManyMutationInput, Prisma.PostUncheckedUpdateManyWithoutCommunityInput>
 }
 
 export type PostCreateWithoutCommentsInput = {
@@ -773,6 +908,7 @@ export type PostCreateWithoutCommentsInput = {
   commentCount?: number
   viewCount?: number
   author: Prisma.UserCreateNestedOneWithoutPostsInput
+  community: Prisma.CommunityCreateNestedOneWithoutPostsInput
   likes?: Prisma.PostLikeCreateNestedManyWithoutPostInput
   views?: Prisma.PostViewCreateNestedManyWithoutPostInput
 }
@@ -792,6 +928,7 @@ export type PostUncheckedCreateWithoutCommentsInput = {
   commentCount?: number
   viewCount?: number
   authorId: string
+  communityId: string
   likes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutPostInput
   views?: Prisma.PostViewUncheckedCreateNestedManyWithoutPostInput
 }
@@ -827,6 +964,7 @@ export type PostUpdateWithoutCommentsInput = {
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
+  community?: Prisma.CommunityUpdateOneRequiredWithoutPostsNestedInput
   likes?: Prisma.PostLikeUpdateManyWithoutPostNestedInput
   views?: Prisma.PostViewUpdateManyWithoutPostNestedInput
 }
@@ -846,6 +984,7 @@ export type PostUncheckedUpdateWithoutCommentsInput = {
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  communityId?: Prisma.StringFieldUpdateOperationsInput | string
   likes?: Prisma.PostLikeUncheckedUpdateManyWithoutPostNestedInput
   views?: Prisma.PostViewUncheckedUpdateManyWithoutPostNestedInput
 }
@@ -865,6 +1004,7 @@ export type PostCreateWithoutLikesInput = {
   commentCount?: number
   viewCount?: number
   author: Prisma.UserCreateNestedOneWithoutPostsInput
+  community: Prisma.CommunityCreateNestedOneWithoutPostsInput
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
   views?: Prisma.PostViewCreateNestedManyWithoutPostInput
 }
@@ -884,6 +1024,7 @@ export type PostUncheckedCreateWithoutLikesInput = {
   commentCount?: number
   viewCount?: number
   authorId: string
+  communityId: string
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
   views?: Prisma.PostViewUncheckedCreateNestedManyWithoutPostInput
 }
@@ -919,6 +1060,7 @@ export type PostUpdateWithoutLikesInput = {
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
+  community?: Prisma.CommunityUpdateOneRequiredWithoutPostsNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
   views?: Prisma.PostViewUpdateManyWithoutPostNestedInput
 }
@@ -938,6 +1080,7 @@ export type PostUncheckedUpdateWithoutLikesInput = {
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  communityId?: Prisma.StringFieldUpdateOperationsInput | string
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
   views?: Prisma.PostViewUncheckedUpdateManyWithoutPostNestedInput
 }
@@ -957,6 +1100,7 @@ export type PostCreateWithoutViewsInput = {
   commentCount?: number
   viewCount?: number
   author: Prisma.UserCreateNestedOneWithoutPostsInput
+  community: Prisma.CommunityCreateNestedOneWithoutPostsInput
   likes?: Prisma.PostLikeCreateNestedManyWithoutPostInput
   comments?: Prisma.CommentCreateNestedManyWithoutPostInput
 }
@@ -976,6 +1120,7 @@ export type PostUncheckedCreateWithoutViewsInput = {
   commentCount?: number
   viewCount?: number
   authorId: string
+  communityId: string
   likes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutPostInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutPostInput
 }
@@ -1011,6 +1156,7 @@ export type PostUpdateWithoutViewsInput = {
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
+  community?: Prisma.CommunityUpdateOneRequiredWithoutPostsNestedInput
   likes?: Prisma.PostLikeUpdateManyWithoutPostNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
 }
@@ -1030,6 +1176,7 @@ export type PostUncheckedUpdateWithoutViewsInput = {
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
   authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  communityId?: Prisma.StringFieldUpdateOperationsInput | string
   likes?: Prisma.PostLikeUncheckedUpdateManyWithoutPostNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
 }
@@ -1048,6 +1195,7 @@ export type PostCreateManyAuthorInput = {
   likeCount?: number
   commentCount?: number
   viewCount?: number
+  communityId: string
 }
 
 export type PostUpdateWithoutAuthorInput = {
@@ -1064,6 +1212,7 @@ export type PostUpdateWithoutAuthorInput = {
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  community?: Prisma.CommunityUpdateOneRequiredWithoutPostsNestedInput
   likes?: Prisma.PostLikeUpdateManyWithoutPostNestedInput
   comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
   views?: Prisma.PostViewUpdateManyWithoutPostNestedInput
@@ -1083,6 +1232,7 @@ export type PostUncheckedUpdateWithoutAuthorInput = {
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.StringFieldUpdateOperationsInput | string
   likes?: Prisma.PostLikeUncheckedUpdateManyWithoutPostNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
   views?: Prisma.PostViewUncheckedUpdateManyWithoutPostNestedInput
@@ -1102,6 +1252,81 @@ export type PostUncheckedUpdateManyWithoutAuthorInput = {
   likeCount?: Prisma.IntFieldUpdateOperationsInput | number
   commentCount?: Prisma.IntFieldUpdateOperationsInput | number
   viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  communityId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type PostCreateManyCommunityInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  content: string
+  mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  likeCount?: number
+  commentCount?: number
+  viewCount?: number
+  authorId: string
+}
+
+export type PostUpdateWithoutCommunityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  author?: Prisma.UserUpdateOneRequiredWithoutPostsNestedInput
+  likes?: Prisma.PostLikeUpdateManyWithoutPostNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutPostNestedInput
+  views?: Prisma.PostViewUpdateManyWithoutPostNestedInput
+}
+
+export type PostUncheckedUpdateWithoutCommunityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
+  likes?: Prisma.PostLikeUncheckedUpdateManyWithoutPostNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutPostNestedInput
+  views?: Prisma.PostViewUncheckedUpdateManyWithoutPostNestedInput
+}
+
+export type PostUncheckedUpdateManyWithoutCommunityInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  content?: Prisma.StringFieldUpdateOperationsInput | string
+  mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  likeCount?: Prisma.IntFieldUpdateOperationsInput | number
+  commentCount?: Prisma.IntFieldUpdateOperationsInput | number
+  viewCount?: Prisma.IntFieldUpdateOperationsInput | number
+  authorId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -1168,7 +1393,9 @@ export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   commentCount?: boolean
   viewCount?: boolean
   authorId?: boolean
+  communityId?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
   likes?: boolean | Prisma.Post$likesArgs<ExtArgs>
   comments?: boolean | Prisma.Post$commentsArgs<ExtArgs>
   views?: boolean | Prisma.Post$viewsArgs<ExtArgs>
@@ -1190,7 +1417,9 @@ export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   commentCount?: boolean
   viewCount?: boolean
   authorId?: boolean
+  communityId?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["post"]>
 
 export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1208,7 +1437,9 @@ export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   commentCount?: boolean
   viewCount?: boolean
   authorId?: boolean
+  communityId?: boolean
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["post"]>
 
 export type PostSelectScalar = {
@@ -1226,11 +1457,13 @@ export type PostSelectScalar = {
   commentCount?: boolean
   viewCount?: boolean
   authorId?: boolean
+  communityId?: boolean
 }
 
-export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "isDeleted" | "deletedAt" | "metadata" | "content" | "mediaUrls" | "likeCount" | "commentCount" | "viewCount" | "authorId", ExtArgs["result"]["post"]>
+export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "isDeleted" | "deletedAt" | "metadata" | "content" | "mediaUrls" | "likeCount" | "commentCount" | "viewCount" | "authorId" | "communityId", ExtArgs["result"]["post"]>
 export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
   likes?: boolean | Prisma.Post$likesArgs<ExtArgs>
   comments?: boolean | Prisma.Post$commentsArgs<ExtArgs>
   views?: boolean | Prisma.Post$viewsArgs<ExtArgs>
@@ -1238,15 +1471,18 @@ export type PostInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
 }
 export type PostIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
 }
 export type PostIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   author?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  community?: boolean | Prisma.CommunityDefaultArgs<ExtArgs>
 }
 
 export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Post"
   objects: {
     author: Prisma.$UserPayload<ExtArgs>
+    community: Prisma.$CommunityPayload<ExtArgs>
     likes: Prisma.$PostLikePayload<ExtArgs>[]
     comments: Prisma.$CommentPayload<ExtArgs>[]
     views: Prisma.$PostViewPayload<ExtArgs>[]
@@ -1266,6 +1502,7 @@ export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     commentCount: number
     viewCount: number
     authorId: string
+    communityId: string
   }, ExtArgs["result"]["post"]>
   composites: {}
 }
@@ -1661,6 +1898,7 @@ readonly fields: PostFieldRefs;
 export interface Prisma__PostClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   author<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  community<T extends Prisma.CommunityDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CommunityDefaultArgs<ExtArgs>>): Prisma.Prisma__CommunityClient<runtime.Types.Result.GetResult<Prisma.$CommunityPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   likes<T extends Prisma.Post$likesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$likesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   comments<T extends Prisma.Post$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   views<T extends Prisma.Post$viewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Post$viewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -1707,6 +1945,7 @@ export interface PostFieldRefs {
   readonly commentCount: Prisma.FieldRef<"Post", 'Int'>
   readonly viewCount: Prisma.FieldRef<"Post", 'Int'>
   readonly authorId: Prisma.FieldRef<"Post", 'String'>
+  readonly communityId: Prisma.FieldRef<"Post", 'String'>
 }
     
 

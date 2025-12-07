@@ -2,22 +2,22 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsOptional, IsString } from 'class-validator';
 import { PaginationDto } from '@shared/dto/pagination-request.dto';
 
-export class GetPostsDto extends PaginationDto {
+export class GetCommunitiesDto extends PaginationDto {
   @ApiPropertyOptional({
     required: false,
     example: 'nestjs',
-    description: 'Filter posts by community ID',
+    description: 'Filter communities by search keyword (name or description)',
   })
   @IsOptional()
   @IsString()
-  communityId?: string;
+  search?: string;
 
   @ApiPropertyOptional({
     required: false,
-    example: 'FAN',
-    description: 'Filter posts by user role',
+    example: 'true',
+    description: 'Filter to show only joined communities',
   })
   @IsOptional()
   @IsString()
-  filter?: string;
+  joined?: string;
 }
