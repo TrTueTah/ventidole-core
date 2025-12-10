@@ -37,162 +37,160 @@ export class AuthService {
     private prisma: PrismaService,
   ) {}
   async signIn(request: SignInRequest) {
-    try {
-      const user = await this.prisma.user.findFirst({
-        where: { email: request.email, isActive: true, isDeleted: false },
-      });
-      if (!user) throw new CustomError(ErrorCode.InvalidEmailOrPassword);
+    const user = await this.prisma.user.findFirst({
+      where: { email: request.email, isActive: true, isDeleted: false },
+    });
+    if (!user) throw new CustomError(ErrorCode.InvalidEmailOrPassword);
 
-      await this.validatePassword(user, request.password);
+    await this.validatePassword(user, request.password);
 
-      const [accessToken, refreshToken] = await this.generateTokens(user);
+    const [accessToken, refreshToken] = await this.generateTokens(user);
 
-      const response = new SignInResponse();
-      response.id = user.id;
-      response.role = user.role;
-      response.accessToken = accessToken;
-      response.refreshToken = refreshToken;
+    const response = new SignInResponse();
+    response.id = user.id;
+    response.role = user.role;
+    response.accessToken = accessToken;
+    response.refreshToken = refreshToken;
 
-      return BaseResponse.of(response);
-    } catch (error) {
-      throw error;
-    }
+    return BaseResponse.of(response);
+  }
+
+  async adminSignIn(request: SignInRequest) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email: request.email,
+        isActive: true,
+        isDeleted: false,
+        role: 'ADMIN',
+      },
+    });
+    if (!user) throw new CustomError(ErrorCode.InvalidEmailOrPassword);
+
+    await this.validatePassword(user, request.password);
+
+    const [accessToken, refreshToken] = await this.generateTokens(user);
+
+    const response = new SignInResponse();
+    response.id = user.id;
+    response.role = user.role;
+    response.accessToken = accessToken;
+    response.refreshToken = refreshToken;
+
+    return BaseResponse.of(response);
   }
 
   async signUp(request: SignUpRequest) {
-    try {
-      await this.validateSignUp(request);
-      const hashedPassword = await hashPassword(request.password);
+    await this.validateSignUp(request);
+    const hashedPassword = await hashPassword(request.password);
 
-      // Create User and Fan in a transaction
-      const user = await this.prisma.user.create({
-        data: {
-          email: request.email,
-          password: hashedPassword,
-          username: request.username,
-          role: 'FAN',
-        },
-      });
+    // Create User and Fan in a transaction
+    const user = await this.prisma.user.create({
+      data: {
+        email: request.email,
+        password: hashedPassword,
+        username: request.username,
+        role: 'FAN',
+      },
+    });
 
-      const [accessToken, refreshToken] = await this.generateTokens(user);
+    const [accessToken, refreshToken] = await this.generateTokens(user);
 
-      const response = new SignInResponse();
-      response.id = user.id;
-      response.role = user.role;
-      response.accessToken = accessToken;
-      response.refreshToken = refreshToken;
+    const response = new SignInResponse();
+    response.id = user.id;
+    response.role = user.role;
+    response.accessToken = accessToken;
+    response.refreshToken = refreshToken;
 
-      return BaseResponse.of(response);
-    } catch (error) {
-      throw error;
-    }
+    return BaseResponse.of(response);
   }
 
   async sendVerification(request: SendVerificationRequest) {
-    try {
-      const expireAt = await this.otpService.sendOtp(
-        request.email!,
-        request.verificationType,
-      );
-      return BaseResponse.of(
-        VerificationCodeResponse.transformOtpData(expireAt),
-      );
-    } catch (error) {
-      throw error;
-    }
+    const expireAt = await this.otpService.sendOtp(
+      request.email!,
+      request.verificationType,
+    );
+    return BaseResponse.of(VerificationCodeResponse.transformOtpData(expireAt));
   }
 
   async confirmVerification(request: ConfirmVerificationRequest) {
-    try {
-      await this.otpService.confirmOtp(
-        request.email,
-        request.code,
-        request.verificationType,
-      );
+    await this.otpService.confirmOtp(
+      request.email,
+      request.code,
+      request.verificationType,
+    );
 
-      if (request.verificationType === VerificationType.FIND_EMAIL) {
-        const user = await this.prisma.user.findFirst({
-          where: { email: request.email, isDeleted: false },
-        });
-        const response = new ConfirmVerificationResponse();
-        if (user) {
-          response.id = user.id;
-          response.role = user.role;
-          response.email = user.email;
-          // Note: User model doesn't have 'name' field - it's in Fan/Idol models
-          response.name = undefined;
-        }
-
-        return user ? BaseResponse.of(response) : BaseResponse.ok();
+    if (request.verificationType === VerificationType.FIND_EMAIL) {
+      const user = await this.prisma.user.findFirst({
+        where: { email: request.email, isDeleted: false },
+      });
+      const response = new ConfirmVerificationResponse();
+      if (user) {
+        response.id = user.id;
+        response.role = user.role;
+        response.email = user.email;
+        // Note: User model doesn't have 'name' field - it's in Fan/Idol models
+        response.name = undefined;
       }
 
-      return BaseResponse.ok();
-    } catch (error) {
-      throw error;
+      return user ? BaseResponse.of(response) : BaseResponse.ok();
     }
+
+    return BaseResponse.ok();
   }
 
   async refreshNewToken(request: RefreshTokenRequest) {
-    try {
-      const { token, refreshToken } = request;
+    const { token, refreshToken } = request;
 
-      const decodedToken = this.jwtService.decode<IJwtDecoded>(token, {
-        complete: true,
-      });
-      if (!decodedToken || typeof decodedToken !== 'object')
-        throw new CustomError(ErrorCode.InvalidDecodeToken);
+    const decodedToken = this.jwtService.decode<IJwtDecoded>(token, {
+      complete: true,
+    });
+    if (!decodedToken || typeof decodedToken !== 'object')
+      throw new CustomError(ErrorCode.InvalidDecodeToken);
 
-      let secret = '';
+    let secret = '';
 
-      if (decodedToken.payload.iss === TokenIssuer.Access)
-        secret = ENVIRONMENT.JWT_SECRET;
-      else if (decodedToken.payload.iss === TokenIssuer.Sensitive)
-        secret = ENVIRONMENT.JWT_SENSITIVE_SECRET;
+    if (decodedToken.payload.iss === TokenIssuer.Access)
+      secret = ENVIRONMENT.JWT_SECRET;
+    else if (decodedToken.payload.iss === TokenIssuer.Sensitive)
+      secret = ENVIRONMENT.JWT_SENSITIVE_SECRET;
 
-      if (!secret) throw new CustomError(ErrorCode.InvalidTokenSecret);
+    if (!secret) throw new CustomError(ErrorCode.InvalidTokenSecret);
 
-      const refreshTokenPayload = this.tokenService.validateRefreshToken(
-        token,
-        refreshToken,
-        secret,
-      );
+    const refreshTokenPayload = this.tokenService.validateRefreshToken(
+      token,
+      refreshToken,
+      secret,
+    );
 
-      const user = await this.prisma.user.findFirst({
-        where: {
-          id: refreshTokenPayload.sub,
-          isActive: true,
-          isDeleted: false,
-        },
-      });
-      if (!user) throw new CustomError(ErrorCode.Unauthenticated);
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: refreshTokenPayload.sub,
+        isActive: true,
+        isDeleted: false,
+      },
+    });
+    if (!user) throw new CustomError(ErrorCode.Unauthenticated);
 
-      const [newAccessToken, newRefreshToken] = await this.generateTokens(user);
+    const [newAccessToken, newRefreshToken] = await this.generateTokens(user);
 
-      const response = new SignInResponse();
-      response.id = user.id;
-      response.role = user.role;
-      response.accessToken = newAccessToken;
-      response.refreshToken = newRefreshToken;
-      return BaseResponse.of(response);
-    } catch (error) {
-      throw error;
-    }
+    const response = new SignInResponse();
+    response.id = user.id;
+    response.role = user.role;
+    response.accessToken = newAccessToken;
+    response.refreshToken = newRefreshToken;
+    return BaseResponse.of(response);
   }
 
   async resetPassword(request: ResetPasswordRequest) {
-    try {
-      const { email, password } = request;
-      await this.validateResetPassword(request);
-      const hashedPassword = await hashPassword(password);
+    const { email, password } = request;
+    await this.validateResetPassword(request);
+    const hashedPassword = await hashPassword(password);
 
-      await this.prisma.user.update({
-        where: { email },
-        data: { password: hashedPassword },
-      });
-      return BaseResponse.ok();
-    } catch (error) {
-      throw error;
-    }
+    await this.prisma.user.update({
+      where: { email },
+      data: { password: hashedPassword },
+    });
+    return BaseResponse.ok();
   }
 
   private async validatePassword(user: UserModel, password: string) {
@@ -218,85 +216,70 @@ export class AuthService {
   }
 
   private async validateSignUp(request: SignUpRequest) {
-    try {
-      const { email, username } = request;
+    const { email, username } = request;
 
-      await this.validatePrevVerification(
-        email,
-        VerificationType.REGISTER_ACCOUNT,
-      );
+    await this.validatePrevVerification(
+      email,
+      VerificationType.REGISTER_ACCOUNT,
+    );
 
-      const userEmailExisted = await this.prisma.user.findFirst({
-        where: { email, isActive: true, isDeleted: false },
-        select: { id: true },
-      });
+    const userEmailExisted = await this.prisma.user.findFirst({
+      where: { email, isActive: true, isDeleted: false },
+      select: { id: true },
+    });
 
-      if (userEmailExisted) throw new CustomError(ErrorCode.ExistedEmail);
+    if (userEmailExisted) throw new CustomError(ErrorCode.ExistedEmail);
 
-      // Check if username is already taken
-      const fanUsernameExisted = await this.prisma.user.findFirst({
-        where: { username, isActive: true, isDeleted: false },
-        select: { id: true },
-      });
+    // Check if username is already taken
+    const fanUsernameExisted = await this.prisma.user.findFirst({
+      where: { username, isActive: true, isDeleted: false },
+      select: { id: true },
+    });
 
-      if (fanUsernameExisted) throw new CustomError(ErrorCode.ExistedUsername);
-    } catch (error) {
-      throw error;
-    }
+    if (fanUsernameExisted) throw new CustomError(ErrorCode.ExistedUsername);
   }
 
   private async validatePrevVerification(
     email: string,
     type: VerificationType,
   ) {
-    try {
-      const prevVerification = await this.prisma.verification.findFirst({
-        where: { email, type, isActive: false },
-        orderBy: { createdAt: 'desc' },
-      });
+    const prevVerification = await this.prisma.verification.findFirst({
+      where: { email, type, isActive: false },
+      orderBy: { createdAt: 'desc' },
+    });
 
-      if (!prevVerification)
-        throw new CustomError(ErrorCode.VerificationNotFound);
-      if (
-        moment().isAfter(
-          moment
-            .unix(
-              prevVerification.confirmedAt
-                ? Math.floor(
-                    new Date(prevVerification.confirmedAt).getTime() / 1000,
-                  )
-                : 0,
-            )
-            .add({ seconds: ENVIRONMENT.VERIFICATION_SESSION }),
-        )
+    if (!prevVerification)
+      throw new CustomError(ErrorCode.VerificationNotFound);
+    if (
+      moment().isAfter(
+        moment
+          .unix(
+            prevVerification.confirmedAt
+              ? Math.floor(
+                  new Date(prevVerification.confirmedAt).getTime() / 1000,
+                )
+              : 0,
+          )
+          .add({ seconds: ENVIRONMENT.VERIFICATION_SESSION }),
       )
-        throw new CustomError(ErrorCode.VerificationSessionExpired);
-    } catch (error) {
-      throw error;
-    }
+    )
+      throw new CustomError(ErrorCode.VerificationSessionExpired);
   }
 
   private async validateResetPassword(request: ResetPasswordRequest) {
-    try {
-      const { email } = request;
+    const { email } = request;
 
-      await this.validatePrevVerification(
+    await this.validatePrevVerification(email, VerificationType.RESET_PASSWORD);
+
+    const userExisted = await this.prisma.user.findFirst({
+      where: {
         email,
-        VerificationType.RESET_PASSWORD,
-      );
+        isActive: true,
+        isDeleted: false,
+      },
+      select: { id: true },
+    });
 
-      const userExisted = await this.prisma.user.findFirst({
-        where: {
-          email,
-          isActive: true,
-          isDeleted: false,
-        },
-        select: { id: true },
-      });
-
-      if (!userExisted) throw new CustomError(ErrorCode.AccountNotFound, email);
-    } catch (error) {
-      throw error;
-    }
+    if (!userExisted) throw new CustomError(ErrorCode.AccountNotFound, email);
   }
 }

@@ -7,7 +7,7 @@ import {
   MaxLength,
 } from 'class-validator';
 
-export class CreateUserDto {
+export class CreateStreamUserDto {
   @ApiProperty({
     description: 'User ID',
     example: 'user_123',

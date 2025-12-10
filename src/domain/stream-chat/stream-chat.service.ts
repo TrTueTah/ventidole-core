@@ -3,7 +3,7 @@ import getStreamChatClient, {
 } from '@core/config/stream-chat.config';
 import { Injectable, Logger } from '@nestjs/common';
 import { CreateChannelDto } from './dto/create-channel.dto';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateStreamUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class StreamChatService {
@@ -33,7 +33,7 @@ export class StreamChatService {
   /**
    * Create or update a user in Stream Chat
    */
-  async createOrUpdateUser(data: CreateUserDto) {
+  async createOrUpdateUser(data: CreateStreamUserDto) {
     try {
       const streamChatClient = getStreamChatClient();
       const user = await streamChatClient.upsertUser({

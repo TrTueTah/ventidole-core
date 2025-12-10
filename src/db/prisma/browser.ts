@@ -76,3 +76,48 @@ export type PostLike = Prisma.PostLikeModel
  * 
  */
 export type PostView = Prisma.PostViewModel
+/**
+ * Model Shop
+ * 
+ */
+export type Shop = Prisma.ShopModel
+/**
+ * Model ProductType
+ * 
+ */
+export type ProductType = Prisma.ProductTypeModel
+/**
+ * Model Product
+ * 
+ */
+export type Product = Prisma.ProductModel
+/**
+ * Model ProductVariant
+ * 
+ */
+export type ProductVariant = Prisma.ProductVariantModel
+/**
+ * Model Cart
+ * 
+ */
+export type Cart = Prisma.CartModel
+/**
+ * Model CartItem
+ * 
+ */
+export type CartItem = Prisma.CartItemModel
+/**
+ * Model Order
+ * 
+ */
+export type Order = Prisma.OrderModel
+/**
+ * Model OrderItem
+ * 
+ */
+export type OrderItem = Prisma.OrderItemModel
+/**
+ * Model PaymentTransaction
+ * 
+ */
+export type PaymentTransaction = Prisma.PaymentTransactionModel

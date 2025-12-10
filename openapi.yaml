@@ -261,6 +261,49 @@ paths:
                   - statusCode
                   - message
       tags: *ref_0
+  /v1/auth/admin/sign-in:
+    post:
+      operationId: AuthController_adminSignIn_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignInRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/SignInResponse'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      tags: *ref_0
   /v1/file/upload:
     post:
       operationId: FileController_uploadFile_v1
@@ -1787,6 +1830,606 @@ paths:
       security: *ref_12
       summary: Send a message to a channel
       tags: *ref_13
+  /v1/admin/user:
+    get:
+      operationId: AdminUserController_getAllUsers_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Search by email or username
+          schema:
+            example: john
+            type: string
+        - name: role
+          required: false
+          in: query
+          description: Filter by role
+          schema:
+            type: string
+            enum:
+              - FAN
+              - ADMIN
+              - IDOL
+        - name: isActive
+          required: false
+          in: query
+          description: Filter by active status
+          schema:
+            example: 'true'
+            type: string
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            example: createdAt
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+              - email
+              - username
+              - role
+        - name: sortOrder
+          required: false
+          in: query
+          description: Sort order
+          schema:
+            example: desc
+            type: string
+            enum:
+              - asc
+              - desc
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: &ref_14
+        - bearer: []
+      tags: &ref_15
+        - Admin User Management
+    post:
+      operationId: AdminUserController_createUser_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UserDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_14
+      tags: *ref_15
+  /v1/admin/user/{id}:
+    get:
+      operationId: AdminUserController_getUserById_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UserDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_14
+      tags: *ref_15
+    patch:
+      operationId: AdminUserController_updateUser_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UserDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_14
+      tags: *ref_15
+    delete:
+      operationId: AdminUserController_deleteUser_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_14
+      tags: *ref_15
+  /v1/admin/community:
+    get:
+      operationId: AdminCommunityController_getAllCommunities_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Search by community name or description
+          schema:
+            example: K-Pop
+            type: string
+        - name: isActive
+          required: false
+          in: query
+          description: Filter by active status
+          schema:
+            example: 'true'
+            type: string
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            example: createdAt
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+              - name
+        - name: sortOrder
+          required: false
+          in: query
+          description: Sort order
+          schema:
+            example: desc
+            type: string
+            enum:
+              - asc
+              - desc
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CommunityDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: &ref_16
+        - bearer: []
+      tags: &ref_17
+        - Admin Community Management
+    post:
+      operationId: AdminCommunityController_createCommunity_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCommunityDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/CommunityDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_16
+      tags: *ref_17
+  /v1/admin/community/{id}:
+    get:
+      operationId: AdminCommunityController_getCommunityById_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/CommunityDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_16
+      tags: *ref_17
+    patch:
+      operationId: AdminCommunityController_updateCommunity_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCommunityDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/CommunityDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_16
+      tags: *ref_17
+    delete:
+      operationId: AdminCommunityController_deleteCommunity_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_16
+      tags: *ref_17
   /v1/stream-chat/token:
     post:
       operationId: StreamChatController_generateToken_v1
@@ -1829,10 +2472,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_14
+      security: &ref_18
         - bearer: []
       summary: Generate Stream Chat authentication token
-      tags: &ref_15
+      tags: &ref_19
         - Stream Chat
   /v1/stream-chat/users:
     post:
@@ -1843,7 +2486,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateUserDto'
+              $ref: '#/components/schemas/CreateStreamUserDto'
       responses:
         '200':
           description: Successful Response
@@ -1876,9 +2519,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_14
+      security: *ref_18
       summary: Create or update user in Stream Chat
-      tags: *ref_15
+      tags: *ref_19
   /v1/stream-chat/users/{userId}:
     delete:
       operationId: StreamChatController_deleteUser_v1
@@ -1922,9 +2565,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_14
+      security: *ref_18
       summary: Delete user from Stream Chat
-      tags: *ref_15
+      tags: *ref_19
   /v1/stream-chat/channels:
     post:
       operationId: StreamChatController_createChannel_v1
@@ -1967,9 +2610,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_14
+      security: *ref_18
       summary: Create a new channel
-      tags: *ref_15
+      tags: *ref_19
   /v1/stream-chat/channels/{userId}:
     get:
       operationId: StreamChatController_getUserChannels_v1
@@ -2013,9 +2656,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_14
+      security: *ref_18
       summary: Get all channels for a user
-      tags: *ref_15
+      tags: *ref_19
   /v1/stream-chat/channels/{channelType}/{channelId}:
     delete:
       operationId: StreamChatController_deleteChannel_v1
@@ -2064,9 +2707,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_14
+      security: *ref_18
       summary: Delete a channel
-      tags: *ref_15
+      tags: *ref_19
   /v1/stream-chat/channels/{channelType}/{channelId}/members:
     post:
       operationId: StreamChatController_addMembers_v1
@@ -2121,9 +2764,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_14
+      security: *ref_18
       summary: Add members to a channel
-      tags: *ref_15
+      tags: *ref_19
     delete:
       operationId: StreamChatController_removeMembers_v1
       parameters:
@@ -2177,9 +2820,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_14
+      security: *ref_18
       summary: Remove members from a channel
-      tags: *ref_15
+      tags: *ref_19
   /v1/stream-chat/channels/{channelType}/{channelId}/messages:
     get:
       operationId: StreamChatController_getMessages_v1
@@ -2233,9 +2876,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_14
+      security: *ref_18
       summary: Get channel messages
-      tags: *ref_15
+      tags: *ref_19
     post:
       operationId: StreamChatController_sendMessage_v1
       parameters:
@@ -2289,9 +2932,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_14
+      security: *ref_18
       summary: Send a message to a channel
-      tags: *ref_15
+      tags: *ref_19
   /v1/knock/token:
     post:
       operationId: KnockController_generateToken_v1
@@ -2328,10 +2971,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_16
+      security: &ref_20
         - bearer: []
       summary: Generate Knock authentication token for client SDK
-      tags: &ref_17
+      tags: &ref_21
         - Knock Notifications
   /v1/knock/fcm-token:
     post:
@@ -2378,9 +3021,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_16
+      security: *ref_20
       summary: Register FCM token for push notifications
-      tags: *ref_17
+      tags: *ref_21
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -2872,7 +3515,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: &ref_18
+          example: &ref_22
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
             - >-
@@ -2985,7 +3628,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: *ref_18
+          example: *ref_22
           description: Array of media URLs
           nullable: true
           type: array
@@ -3139,6 +3782,10 @@ components:
           type: object
           example: A community for K-Pop fans
           description: Community description
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the community is active
         createdAt:
           format: date-time
           type: string
@@ -3149,13 +3796,10 @@ components:
           type: string
           example: '2024-01-01T00:00:00.000Z'
           description: Last update timestamp
-        isJoined:
-          type: boolean
-          example: true
-          description: Whether the current user has joined this community
       required:
         - id
         - name
+        - isActive
         - createdAt
         - updatedAt
     IdolDto:
@@ -3203,6 +3847,10 @@ components:
           type: object
           example: A community for K-Pop fans
           description: Community description
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the community is active
         createdAt:
           format: date-time
           type: string
@@ -3213,21 +3861,22 @@ components:
           type: string
           example: '2024-01-01T00:00:00.000Z'
           description: Last update timestamp
-        isJoined:
-          type: boolean
-          example: true
-          description: Whether the current user has joined this community
-        idols:
-          description: List of idols belonging to the community
-          type: array
-          items:
-            $ref: '#/components/schemas/IdolDto'
+        totalMembers:
+          type: number
+          example: 100
+          description: Total members in the community
+        totalPosts:
+          type: number
+          example: 50
+          description: Total posts in the community
       required:
         - id
         - name
+        - isActive
         - createdAt
         - updatedAt
-        - idols
+        - totalMembers
+        - totalPosts
     CommunityListDto:
       type: object
       properties:
@@ -3404,6 +4053,227 @@ components:
           type: string
           example: msg_123
           description: Message ID to start from (for pagination)
+    CommunityInfoDto:
+      type: object
+      properties:
+        id:
+          type: object
+          example: clxxxxxxx
+          description: Community ID
+        name:
+          type: object
+          example: K-Pop Fans Community
+          description: Community name
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Community avatar URL
+        backgroundUrl:
+          type: object
+          example: https://example.com/background.jpg
+          description: Community background URL
+        description:
+          type: object
+          example: A community for K-Pop fans
+          description: Community description
+        totalMembers:
+          type: number
+          example: 100
+          description: Total members in the community
+    UserDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: User ID
+        email:
+          type: string
+          example: user@example.com
+          description: User email
+        username:
+          type: string
+          example: john_doe
+          description: Username
+        role:
+          type: string
+          example: USER
+          description: User role
+          enum:
+            - FAN
+            - ADMIN
+            - IDOL
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: User avatar URL
+        backgroundUrl:
+          type: object
+          example: https://example.com/background.jpg
+          description: User background URL
+        bio:
+          type: object
+          example: A short bio about me
+          description: User bio
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the user is active
+        isOnline:
+          type: boolean
+          example: false
+          description: Whether the user is online
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Last update timestamp
+        community:
+          description: Community information (only for IDOL role)
+          allOf:
+            - $ref: '#/components/schemas/CommunityInfoDto'
+      required:
+        - id
+        - email
+        - username
+        - role
+        - isActive
+        - isOnline
+        - createdAt
+        - updatedAt
+    CreateUserDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@example.com
+          description: User email
+        username:
+          type: string
+          example: john_doe
+          description: Username
+        password:
+          type: string
+          example: password123
+          description: User password
+        role:
+          type: string
+          example: FAN
+          description: User role
+          enum:
+            - FAN
+            - ADMIN
+            - IDOL
+          default: FAN
+        avatarUrl:
+          type: string
+          example: https://example.com/avatar.jpg
+          description: User avatar URL
+        backgroundUrl:
+          type: string
+          example: https://example.com/background.jpg
+          description: User background URL
+        bio:
+          type: string
+          example: A short bio about me
+          description: User bio
+        communityId:
+          type: string
+          example: clxxxxxxx
+          description: Community ID (required for FAN role)
+      required:
+        - email
+        - username
+        - password
+        - role
+    UpdateUserDto:
+      type: object
+      properties:
+        email:
+          type: string
+          example: user@example.com
+          description: User email
+        username:
+          type: string
+          example: john_doe
+          description: Username
+        password:
+          type: string
+          example: password123
+          description: User password
+        role:
+          type: string
+          example: USER
+          description: User role
+          enum:
+            - FAN
+            - ADMIN
+            - IDOL
+        avatarUrl:
+          type: string
+          example: https://example.com/avatar.jpg
+          description: User avatar URL
+        backgroundUrl:
+          type: string
+          example: https://example.com/background.jpg
+          description: User background URL
+        bio:
+          type: string
+          example: A short bio about me
+          description: User bio
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the user is active
+    CreateCommunityDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: K-Pop Fans Community
+          description: Community name
+        avatarUrl:
+          type: string
+          example: https://example.com/avatar.jpg
+          description: Community avatar URL
+        backgroundUrl:
+          type: string
+          example: https://example.com/background.jpg
+          description: Community background URL
+        description:
+          type: string
+          example: A community for K-Pop fans
+          description: Community description
+      required:
+        - name
+    UpdateCommunityDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: K-Pop Fans Community
+          description: Community name
+        avatarUrl:
+          type: string
+          example: https://example.com/avatar.jpg
+          description: Community avatar URL
+        backgroundUrl:
+          type: string
+          example: https://example.com/background.jpg
+          description: Community background URL
+        description:
+          type: string
+          example: A community for K-Pop fans
+          description: Community description
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the community is active
     TokenDto:
       type: object
       properties:
@@ -3423,7 +4293,7 @@ components:
         - token
         - apiKey
         - userId
-    CreateUserDto:
+    CreateStreamUserDto:
       type: object
       properties:
         userId:

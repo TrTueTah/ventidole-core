@@ -326,6 +326,10 @@ export type UserWhereInput = {
   comments?: Prisma.CommentListRelationFilter
   postLikes?: Prisma.PostLikeListRelationFilter
   postViews?: Prisma.PostViewListRelationFilter
+  shops?: Prisma.ShopListRelationFilter
+  carts?: Prisma.CartListRelationFilter
+  orders?: Prisma.OrderListRelationFilter
+  paymentTransactions?: Prisma.PaymentTransactionListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -358,6 +362,10 @@ export type UserOrderByWithRelationInput = {
   comments?: Prisma.CommentOrderByRelationAggregateInput
   postLikes?: Prisma.PostLikeOrderByRelationAggregateInput
   postViews?: Prisma.PostViewOrderByRelationAggregateInput
+  shops?: Prisma.ShopOrderByRelationAggregateInput
+  carts?: Prisma.CartOrderByRelationAggregateInput
+  orders?: Prisma.OrderOrderByRelationAggregateInput
+  paymentTransactions?: Prisma.PaymentTransactionOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -393,6 +401,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   comments?: Prisma.CommentListRelationFilter
   postLikes?: Prisma.PostLikeListRelationFilter
   postViews?: Prisma.PostViewListRelationFilter
+  shops?: Prisma.ShopListRelationFilter
+  carts?: Prisma.CartListRelationFilter
+  orders?: Prisma.OrderListRelationFilter
+  paymentTransactions?: Prisma.PaymentTransactionListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -474,6 +486,10 @@ export type UserCreateInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -505,6 +521,10 @@ export type UserUncheckedCreateInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -536,6 +556,10 @@ export type UserUpdateInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -567,6 +591,10 @@ export type UserUncheckedUpdateInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -938,6 +966,62 @@ export type UserUpdateOneRequiredWithoutPostViewsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPostViewsInput, Prisma.UserUpdateWithoutPostViewsInput>, Prisma.UserUncheckedUpdateWithoutPostViewsInput>
 }
 
+export type UserCreateNestedOneWithoutShopsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutShopsInput, Prisma.UserUncheckedCreateWithoutShopsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutShopsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutShopsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutShopsInput, Prisma.UserUncheckedCreateWithoutShopsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutShopsInput
+  upsert?: Prisma.UserUpsertWithoutShopsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutShopsInput, Prisma.UserUpdateWithoutShopsInput>, Prisma.UserUncheckedUpdateWithoutShopsInput>
+}
+
+export type UserCreateNestedOneWithoutCartsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCartsInput, Prisma.UserUncheckedCreateWithoutCartsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCartsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCartsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCartsInput, Prisma.UserUncheckedCreateWithoutCartsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCartsInput
+  upsert?: Prisma.UserUpsertWithoutCartsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCartsInput, Prisma.UserUpdateWithoutCartsInput>, Prisma.UserUncheckedUpdateWithoutCartsInput>
+}
+
+export type UserCreateNestedOneWithoutOrdersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrdersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutOrdersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutOrdersInput
+  upsert?: Prisma.UserUpsertWithoutOrdersInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutOrdersInput, Prisma.UserUpdateWithoutOrdersInput>, Prisma.UserUncheckedUpdateWithoutOrdersInput>
+}
+
+export type UserCreateNestedOneWithoutPaymentTransactionsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentTransactionsInput, Prisma.UserUncheckedCreateWithoutPaymentTransactionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentTransactionsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPaymentTransactionsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentTransactionsInput, Prisma.UserUncheckedCreateWithoutPaymentTransactionsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentTransactionsInput
+  upsert?: Prisma.UserUpsertWithoutPaymentTransactionsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPaymentTransactionsInput, Prisma.UserUpdateWithoutPaymentTransactionsInput>, Prisma.UserUncheckedUpdateWithoutPaymentTransactionsInput>
+}
+
 export type UserCreateWithoutVerificationsInput = {
   id?: string
   isActive?: boolean
@@ -966,6 +1050,10 @@ export type UserCreateWithoutVerificationsInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVerificationsInput = {
@@ -996,6 +1084,10 @@ export type UserUncheckedCreateWithoutVerificationsInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVerificationsInput = {
@@ -1042,6 +1134,10 @@ export type UserUpdateWithoutVerificationsInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVerificationsInput = {
@@ -1072,6 +1168,10 @@ export type UserUncheckedUpdateWithoutVerificationsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSocialAccountsInput = {
@@ -1102,6 +1202,10 @@ export type UserCreateWithoutSocialAccountsInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSocialAccountsInput = {
@@ -1132,6 +1236,10 @@ export type UserUncheckedCreateWithoutSocialAccountsInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSocialAccountsInput = {
@@ -1178,6 +1286,10 @@ export type UserUpdateWithoutSocialAccountsInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSocialAccountsInput = {
@@ -1208,6 +1320,10 @@ export type UserUncheckedUpdateWithoutSocialAccountsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommunityInput = {
@@ -1238,6 +1354,10 @@ export type UserCreateWithoutCommunityInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommunityInput = {
@@ -1268,6 +1388,10 @@ export type UserUncheckedCreateWithoutCommunityInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommunityInput = {
@@ -1348,6 +1472,10 @@ export type UserCreateWithoutFollowedCommunitiesInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFollowedCommunitiesInput = {
@@ -1378,6 +1506,10 @@ export type UserUncheckedCreateWithoutFollowedCommunitiesInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFollowedCommunitiesInput = {
@@ -1424,6 +1556,10 @@ export type UserUpdateWithoutFollowedCommunitiesInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFollowedCommunitiesInput = {
@@ -1454,6 +1590,10 @@ export type UserUncheckedUpdateWithoutFollowedCommunitiesInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutChatChannelsInput = {
@@ -1484,6 +1624,10 @@ export type UserCreateWithoutChatChannelsInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutChatChannelsInput = {
@@ -1514,6 +1658,10 @@ export type UserUncheckedCreateWithoutChatChannelsInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutChatChannelsInput = {
@@ -1560,6 +1708,10 @@ export type UserUpdateWithoutChatChannelsInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChatChannelsInput = {
@@ -1590,6 +1742,10 @@ export type UserUncheckedUpdateWithoutChatChannelsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutChatParticipantsInput = {
@@ -1620,6 +1776,10 @@ export type UserCreateWithoutChatParticipantsInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutChatParticipantsInput = {
@@ -1650,6 +1810,10 @@ export type UserUncheckedCreateWithoutChatParticipantsInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutChatParticipantsInput = {
@@ -1696,6 +1860,10 @@ export type UserUpdateWithoutChatParticipantsInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChatParticipantsInput = {
@@ -1726,6 +1894,10 @@ export type UserUncheckedUpdateWithoutChatParticipantsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutChatMessagesInput = {
@@ -1756,6 +1928,10 @@ export type UserCreateWithoutChatMessagesInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutChatMessagesInput = {
@@ -1786,6 +1962,10 @@ export type UserUncheckedCreateWithoutChatMessagesInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutChatMessagesInput = {
@@ -1832,6 +2012,10 @@ export type UserUpdateWithoutChatMessagesInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutChatMessagesInput = {
@@ -1862,6 +2046,10 @@ export type UserUncheckedUpdateWithoutChatMessagesInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPostsInput = {
@@ -1892,6 +2080,10 @@ export type UserCreateWithoutPostsInput = {
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPostsInput = {
@@ -1922,6 +2114,10 @@ export type UserUncheckedCreateWithoutPostsInput = {
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPostsInput = {
@@ -1968,6 +2164,10 @@ export type UserUpdateWithoutPostsInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostsInput = {
@@ -1998,6 +2198,10 @@ export type UserUncheckedUpdateWithoutPostsInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCommentsInput = {
@@ -2028,6 +2232,10 @@ export type UserCreateWithoutCommentsInput = {
   posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCommentsInput = {
@@ -2058,6 +2266,10 @@ export type UserUncheckedCreateWithoutCommentsInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCommentsInput = {
@@ -2104,6 +2316,10 @@ export type UserUpdateWithoutCommentsInput = {
   posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommentsInput = {
@@ -2134,6 +2350,10 @@ export type UserUncheckedUpdateWithoutCommentsInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPostLikesInput = {
@@ -2164,6 +2384,10 @@ export type UserCreateWithoutPostLikesInput = {
   posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPostLikesInput = {
@@ -2194,6 +2418,10 @@ export type UserUncheckedCreateWithoutPostLikesInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPostLikesInput = {
@@ -2240,6 +2468,10 @@ export type UserUpdateWithoutPostLikesInput = {
   posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostLikesInput = {
@@ -2270,6 +2502,10 @@ export type UserUncheckedUpdateWithoutPostLikesInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPostViewsInput = {
@@ -2300,6 +2536,10 @@ export type UserCreateWithoutPostViewsInput = {
   posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
   comments?: Prisma.CommentCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPostViewsInput = {
@@ -2330,6 +2570,10 @@ export type UserUncheckedCreateWithoutPostViewsInput = {
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
   comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
   postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPostViewsInput = {
@@ -2376,6 +2620,10 @@ export type UserUpdateWithoutPostViewsInput = {
   posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPostViewsInput = {
@@ -2406,6 +2654,618 @@ export type UserUncheckedUpdateWithoutPostViewsInput = {
   posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutShopsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email: string
+  username: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  bio?: string | null
+  isOnline?: boolean
+  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
+  followedCommunities?: Prisma.CommunityFollowerCreateNestedManyWithoutUserInput
+  community?: Prisma.CommunityCreateNestedOneWithoutIdolsInput
+  chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutIdolInput
+  socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
+  postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutShopsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email: string
+  username: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  bio?: string | null
+  communityId?: string | null
+  isOnline?: boolean
+  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutUserInput
+  chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutIdolInput
+  socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
+  postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutShopsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutShopsInput, Prisma.UserUncheckedCreateWithoutShopsInput>
+}
+
+export type UserUpsertWithoutShopsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutShopsInput, Prisma.UserUncheckedUpdateWithoutShopsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutShopsInput, Prisma.UserUncheckedCreateWithoutShopsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutShopsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutShopsInput, Prisma.UserUncheckedUpdateWithoutShopsInput>
+}
+
+export type UserUpdateWithoutShopsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUpdateManyWithoutUserNestedInput
+  community?: Prisma.CommunityUpdateOneWithoutIdolsNestedInput
+  chatChannels?: Prisma.ChatChannelUpdateManyWithoutIdolNestedInput
+  socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
+  postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutShopsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutUserNestedInput
+  chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutIdolNestedInput
+  socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
+  postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutCartsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email: string
+  username: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  bio?: string | null
+  isOnline?: boolean
+  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
+  followedCommunities?: Prisma.CommunityFollowerCreateNestedManyWithoutUserInput
+  community?: Prisma.CommunityCreateNestedOneWithoutIdolsInput
+  chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutIdolInput
+  socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
+  postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutCartsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email: string
+  username: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  bio?: string | null
+  communityId?: string | null
+  isOnline?: boolean
+  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutUserInput
+  chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutIdolInput
+  socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
+  postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutCartsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCartsInput, Prisma.UserUncheckedCreateWithoutCartsInput>
+}
+
+export type UserUpsertWithoutCartsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCartsInput, Prisma.UserUncheckedUpdateWithoutCartsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCartsInput, Prisma.UserUncheckedCreateWithoutCartsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCartsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCartsInput, Prisma.UserUncheckedUpdateWithoutCartsInput>
+}
+
+export type UserUpdateWithoutCartsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUpdateManyWithoutUserNestedInput
+  community?: Prisma.CommunityUpdateOneWithoutIdolsNestedInput
+  chatChannels?: Prisma.ChatChannelUpdateManyWithoutIdolNestedInput
+  socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
+  postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCartsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutUserNestedInput
+  chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutIdolNestedInput
+  socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
+  postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutOrdersInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email: string
+  username: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  bio?: string | null
+  isOnline?: boolean
+  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
+  followedCommunities?: Prisma.CommunityFollowerCreateNestedManyWithoutUserInput
+  community?: Prisma.CommunityCreateNestedOneWithoutIdolsInput
+  chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutIdolInput
+  socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
+  postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutOrdersInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email: string
+  username: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  bio?: string | null
+  communityId?: string | null
+  isOnline?: boolean
+  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutUserInput
+  chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutIdolInput
+  socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
+  postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutOrdersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
+}
+
+export type UserUpsertWithoutOrdersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutOrdersInput, Prisma.UserUncheckedUpdateWithoutOrdersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutOrdersInput, Prisma.UserUncheckedCreateWithoutOrdersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutOrdersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutOrdersInput, Prisma.UserUncheckedUpdateWithoutOrdersInput>
+}
+
+export type UserUpdateWithoutOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUpdateManyWithoutUserNestedInput
+  community?: Prisma.CommunityUpdateOneWithoutIdolsNestedInput
+  chatChannels?: Prisma.ChatChannelUpdateManyWithoutIdolNestedInput
+  socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
+  postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutUserNestedInput
+  chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutIdolNestedInput
+  socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
+  postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPaymentTransactionsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email: string
+  username: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  bio?: string | null
+  isOnline?: boolean
+  chatParticipants?: Prisma.ChatParticipantCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageCreateNestedManyWithoutUserInput
+  followedCommunities?: Prisma.CommunityFollowerCreateNestedManyWithoutUserInput
+  community?: Prisma.CommunityCreateNestedOneWithoutIdolsInput
+  chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutIdolInput
+  socialAccounts?: Prisma.SocialAccountCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentCreateNestedManyWithoutUserInput
+  postLikes?: Prisma.PostLikeCreateNestedManyWithoutUserInput
+  postViews?: Prisma.PostViewCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPaymentTransactionsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email: string
+  username: string
+  password: string
+  role: $Enums.Role
+  deviceToken?: string | null
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  bio?: string | null
+  communityId?: string | null
+  isOnline?: boolean
+  chatParticipants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutUserInput
+  chatMessages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutUserInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutUserInput
+  chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutIdolInput
+  socialAccounts?: Prisma.SocialAccountUncheckedCreateNestedManyWithoutUserInput
+  verifications?: Prisma.VerificationUncheckedCreateNestedManyWithoutUserInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutAuthorInput
+  comments?: Prisma.CommentUncheckedCreateNestedManyWithoutUserInput
+  postLikes?: Prisma.PostLikeUncheckedCreateNestedManyWithoutUserInput
+  postViews?: Prisma.PostViewUncheckedCreateNestedManyWithoutUserInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutIdolInput
+  carts?: Prisma.CartUncheckedCreateNestedManyWithoutUserInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPaymentTransactionsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPaymentTransactionsInput, Prisma.UserUncheckedCreateWithoutPaymentTransactionsInput>
+}
+
+export type UserUpsertWithoutPaymentTransactionsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPaymentTransactionsInput, Prisma.UserUncheckedUpdateWithoutPaymentTransactionsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPaymentTransactionsInput, Prisma.UserUncheckedCreateWithoutPaymentTransactionsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPaymentTransactionsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPaymentTransactionsInput, Prisma.UserUncheckedUpdateWithoutPaymentTransactionsInput>
+}
+
+export type UserUpdateWithoutPaymentTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatParticipants?: Prisma.ChatParticipantUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUpdateManyWithoutUserNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUpdateManyWithoutUserNestedInput
+  community?: Prisma.CommunityUpdateOneWithoutIdolsNestedInput
+  chatChannels?: Prisma.ChatChannelUpdateManyWithoutIdolNestedInput
+  socialAccounts?: Prisma.SocialAccountUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
+  postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
+  postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPaymentTransactionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  deviceToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  bio?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isOnline?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  chatParticipants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutUserNestedInput
+  chatMessages?: Prisma.ChatMessageUncheckedUpdateManyWithoutUserNestedInput
+  followedCommunities?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutUserNestedInput
+  chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutIdolNestedInput
+  socialAccounts?: Prisma.SocialAccountUncheckedUpdateManyWithoutUserNestedInput
+  verifications?: Prisma.VerificationUncheckedUpdateManyWithoutUserNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutAuthorNestedInput
+  comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
+  postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
+  postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyCommunityInput = {
@@ -2456,6 +3316,10 @@ export type UserUpdateWithoutCommunityInput = {
   comments?: Prisma.CommentUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCommunityInput = {
@@ -2486,6 +3350,10 @@ export type UserUncheckedUpdateWithoutCommunityInput = {
   comments?: Prisma.CommentUncheckedUpdateManyWithoutUserNestedInput
   postLikes?: Prisma.PostLikeUncheckedUpdateManyWithoutUserNestedInput
   postViews?: Prisma.PostViewUncheckedUpdateManyWithoutUserNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutIdolNestedInput
+  carts?: Prisma.CartUncheckedUpdateManyWithoutUserNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutUserNestedInput
+  paymentTransactions?: Prisma.PaymentTransactionUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateManyWithoutCommunityInput = {
@@ -2524,6 +3392,10 @@ export type UserCountOutputType = {
   comments: number
   postLikes: number
   postViews: number
+  shops: number
+  carts: number
+  orders: number
+  paymentTransactions: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2537,6 +3409,10 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   comments?: boolean | UserCountOutputTypeCountCommentsArgs
   postLikes?: boolean | UserCountOutputTypeCountPostLikesArgs
   postViews?: boolean | UserCountOutputTypeCountPostViewsArgs
+  shops?: boolean | UserCountOutputTypeCountShopsArgs
+  carts?: boolean | UserCountOutputTypeCountCartsArgs
+  orders?: boolean | UserCountOutputTypeCountOrdersArgs
+  paymentTransactions?: boolean | UserCountOutputTypeCountPaymentTransactionsArgs
 }
 
 /**
@@ -2619,6 +3495,34 @@ export type UserCountOutputTypeCountPostViewsArgs<ExtArgs extends runtime.Types.
   where?: Prisma.PostViewWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountShopsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ShopWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCartsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.CartWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrderWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountPaymentTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentTransactionWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -2650,6 +3554,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   postLikes?: boolean | Prisma.User$postLikesArgs<ExtArgs>
   postViews?: boolean | Prisma.User$postViewsArgs<ExtArgs>
+  shops?: boolean | Prisma.User$shopsArgs<ExtArgs>
+  carts?: boolean | Prisma.User$cartsArgs<ExtArgs>
+  orders?: boolean | Prisma.User$ordersArgs<ExtArgs>
+  paymentTransactions?: boolean | Prisma.User$paymentTransactionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2731,6 +3639,10 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   comments?: boolean | Prisma.User$commentsArgs<ExtArgs>
   postLikes?: boolean | Prisma.User$postLikesArgs<ExtArgs>
   postViews?: boolean | Prisma.User$postViewsArgs<ExtArgs>
+  shops?: boolean | Prisma.User$shopsArgs<ExtArgs>
+  carts?: boolean | Prisma.User$cartsArgs<ExtArgs>
+  orders?: boolean | Prisma.User$ordersArgs<ExtArgs>
+  paymentTransactions?: boolean | Prisma.User$paymentTransactionsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2754,6 +3666,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     comments: Prisma.$CommentPayload<ExtArgs>[]
     postLikes: Prisma.$PostLikePayload<ExtArgs>[]
     postViews: Prisma.$PostViewPayload<ExtArgs>[]
+    shops: Prisma.$ShopPayload<ExtArgs>[]
+    carts: Prisma.$CartPayload<ExtArgs>[]
+    orders: Prisma.$OrderPayload<ExtArgs>[]
+    paymentTransactions: Prisma.$PaymentTransactionPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3179,6 +4095,10 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   comments<T extends Prisma.User$commentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$commentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   postLikes<T extends Prisma.User$postLikesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$postLikesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostLikePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   postViews<T extends Prisma.User$postViewsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$postViewsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostViewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  shops<T extends Prisma.User$shopsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$shopsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShopPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  carts<T extends Prisma.User$cartsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$cartsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CartPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  orders<T extends Prisma.User$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  paymentTransactions<T extends Prisma.User$paymentTransactionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentTransactionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentTransactionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3878,6 +4798,102 @@ export type User$postViewsArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.PostViewScalarFieldEnum | Prisma.PostViewScalarFieldEnum[]
+}
+
+/**
+ * User.shops
+ */
+export type User$shopsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Shop
+   */
+  select?: Prisma.ShopSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Shop
+   */
+  omit?: Prisma.ShopOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ShopInclude<ExtArgs> | null
+  where?: Prisma.ShopWhereInput
+  orderBy?: Prisma.ShopOrderByWithRelationInput | Prisma.ShopOrderByWithRelationInput[]
+  cursor?: Prisma.ShopWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ShopScalarFieldEnum | Prisma.ShopScalarFieldEnum[]
+}
+
+/**
+ * User.carts
+ */
+export type User$cartsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Cart
+   */
+  select?: Prisma.CartSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Cart
+   */
+  omit?: Prisma.CartOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.CartInclude<ExtArgs> | null
+  where?: Prisma.CartWhereInput
+  orderBy?: Prisma.CartOrderByWithRelationInput | Prisma.CartOrderByWithRelationInput[]
+  cursor?: Prisma.CartWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.CartScalarFieldEnum | Prisma.CartScalarFieldEnum[]
+}
+
+/**
+ * User.orders
+ */
+export type User$ordersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Order
+   */
+  select?: Prisma.OrderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Order
+   */
+  omit?: Prisma.OrderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderInclude<ExtArgs> | null
+  where?: Prisma.OrderWhereInput
+  orderBy?: Prisma.OrderOrderByWithRelationInput | Prisma.OrderOrderByWithRelationInput[]
+  cursor?: Prisma.OrderWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrderScalarFieldEnum | Prisma.OrderScalarFieldEnum[]
+}
+
+/**
+ * User.paymentTransactions
+ */
+export type User$paymentTransactionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PaymentTransaction
+   */
+  select?: Prisma.PaymentTransactionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PaymentTransaction
+   */
+  omit?: Prisma.PaymentTransactionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentTransactionInclude<ExtArgs> | null
+  where?: Prisma.PaymentTransactionWhereInput
+  orderBy?: Prisma.PaymentTransactionOrderByWithRelationInput | Prisma.PaymentTransactionOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentTransactionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentTransactionScalarFieldEnum | Prisma.PaymentTransactionScalarFieldEnum[]
 }
 
 /**

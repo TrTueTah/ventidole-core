@@ -16,7 +16,7 @@ import { ApiVersion } from '@shared/enum/api-version.enum';
 import { BaseResponse } from '@shared/helper/response';
 import { ChannelDto } from './dto/channel.dto';
 import { CreateChannelDto } from './dto/create-channel.dto';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateStreamUserDto } from './dto/create-user.dto';
 import { GenerateTokenDto } from './dto/generate-token.dto';
 import { ManageMembersDto } from './dto/manage-members.dto';
 import { SendMessageDto } from './dto/send-message.dto';
@@ -31,7 +31,7 @@ import { StreamChatService } from './stream-chat.service';
   TokenDto,
   UserDto,
   ChannelDto,
-  CreateUserDto,
+  CreateStreamUserDto,
   CreateChannelDto,
   GenerateTokenDto,
   ManageMembersDto,
@@ -54,7 +54,7 @@ export class StreamChatController {
   @ApiResponseCustom(UserDto)
   @ApiOperation({ summary: 'Create or update user in Stream Chat' })
   async createUser(
-    @Body() request: CreateUserDto,
+    @Body() request: CreateStreamUserDto,
   ): Promise<BaseResponse<UserDto>> {
     const user = await this.streamChatService.createOrUpdateUser(request);
     return BaseResponse.of(user.users[request.userId] as UserDto);

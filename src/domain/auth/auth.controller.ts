@@ -1,5 +1,4 @@
 import {
-  ApiBodyCustom,
   ApiExtraModelsCustom,
   ApiResponseCustom,
 } from '@core/decorator/doc.decorator';
@@ -8,16 +7,16 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
 import { ApiVersion } from '@shared/enum/api-version.enum';
 import { AuthService } from './auth.service';
-import { SignInResponse } from './response/sign-in.response';
-import { SignInRequest } from './request/sign-in.request';
-import { SignUpRequest } from './request/sign-up.request';
-import { VerificationCodeResponse } from './response/verification-code.response';
-import { SendVerificationRequest } from './request/send-verification.request';
-import { ConfirmVerificationResponse } from './response/confirm-verification.response';
 import { ConfirmVerificationRequest } from './request/confirm-verification.request';
 import { RefreshTokenRequest } from './request/refresh-token.request';
 import { ResetPasswordRequest } from './request/reset-password.request';
+import { SendVerificationRequest } from './request/send-verification.request';
+import { SignInRequest } from './request/sign-in.request';
+import { SignUpRequest } from './request/sign-up.request';
+import { ConfirmVerificationResponse } from './response/confirm-verification.response';
 import { authResponses } from './response/index.responses';
+import { SignInResponse } from './response/sign-in.response';
+import { VerificationCodeResponse } from './response/verification-code.response';
 
 @ApiTags('Authenticate')
 @ApiExtraModelsCustom(...authResponses)
@@ -71,5 +70,13 @@ export class AuthController {
   @ApiBody({ type: ResetPasswordRequest })
   resetPassword(@Body() request: ResetPasswordRequest) {
     return this.authService.resetPassword(request);
+  }
+
+  @Public()
+  @Post('admin/sign-in')
+  @ApiResponseCustom(SignInResponse)
+  @ApiBody({ type: SignInRequest })
+  adminSignIn(@Body() request: SignInRequest) {
+    return this.authService.signIn(request);
   }
 }
