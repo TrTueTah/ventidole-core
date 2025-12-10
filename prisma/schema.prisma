@@ -28,6 +28,7 @@ model User {
   backgroundUrl       String?             @map("background_url") @db.VarChar(255)
   bio                 String?             @db.VarChar(500)
   communityId         String?             @map("communityId")
+  isOnline            Boolean             @default(false) @map("is_online")
   chatParticipants    ChatParticipant[]
   chatMessages        ChatMessage[]
   followedCommunities CommunityFollower[]

@@ -27,12 +27,10 @@ export type AggregateChatParticipant = {
 
 export type ChatParticipantAvgAggregateOutputType = {
   version: number | null
-  unreadCount: number | null
 }
 
 export type ChatParticipantSumAggregateOutputType = {
   version: number | null
-  unreadCount: number | null
 }
 
 export type ChatParticipantMinAggregateOutputType = {
@@ -45,10 +43,7 @@ export type ChatParticipantMinAggregateOutputType = {
   deletedAt: Date | null
   channelId: string | null
   userId: string | null
-  role: $Enums.ChatRole | null
-  lastReadAt: Date | null
-  unreadCount: number | null
-  isMuted: boolean | null
+  canSendMessage: boolean | null
 }
 
 export type ChatParticipantMaxAggregateOutputType = {
@@ -61,10 +56,7 @@ export type ChatParticipantMaxAggregateOutputType = {
   deletedAt: Date | null
   channelId: string | null
   userId: string | null
-  role: $Enums.ChatRole | null
-  lastReadAt: Date | null
-  unreadCount: number | null
-  isMuted: boolean | null
+  canSendMessage: boolean | null
 }
 
 export type ChatParticipantCountAggregateOutputType = {
@@ -78,22 +70,17 @@ export type ChatParticipantCountAggregateOutputType = {
   metadata: number
   channelId: number
   userId: number
-  role: number
-  lastReadAt: number
-  unreadCount: number
-  isMuted: number
+  canSendMessage: number
   _all: number
 }
 
 
 export type ChatParticipantAvgAggregateInputType = {
   version?: true
-  unreadCount?: true
 }
 
 export type ChatParticipantSumAggregateInputType = {
   version?: true
-  unreadCount?: true
 }
 
 export type ChatParticipantMinAggregateInputType = {
@@ -106,10 +93,7 @@ export type ChatParticipantMinAggregateInputType = {
   deletedAt?: true
   channelId?: true
   userId?: true
-  role?: true
-  lastReadAt?: true
-  unreadCount?: true
-  isMuted?: true
+  canSendMessage?: true
 }
 
 export type ChatParticipantMaxAggregateInputType = {
@@ -122,10 +106,7 @@ export type ChatParticipantMaxAggregateInputType = {
   deletedAt?: true
   channelId?: true
   userId?: true
-  role?: true
-  lastReadAt?: true
-  unreadCount?: true
-  isMuted?: true
+  canSendMessage?: true
 }
 
 export type ChatParticipantCountAggregateInputType = {
@@ -139,10 +120,7 @@ export type ChatParticipantCountAggregateInputType = {
   metadata?: true
   channelId?: true
   userId?: true
-  role?: true
-  lastReadAt?: true
-  unreadCount?: true
-  isMuted?: true
+  canSendMessage?: true
   _all?: true
 }
 
@@ -243,10 +221,7 @@ export type ChatParticipantGroupByOutputType = {
   metadata: runtime.JsonValue | null
   channelId: string
   userId: string
-  role: $Enums.ChatRole
-  lastReadAt: Date | null
-  unreadCount: number
-  isMuted: boolean
+  canSendMessage: boolean
   _count: ChatParticipantCountAggregateOutputType | null
   _avg: ChatParticipantAvgAggregateOutputType | null
   _sum: ChatParticipantSumAggregateOutputType | null
@@ -283,10 +258,7 @@ export type ChatParticipantWhereInput = {
   metadata?: Prisma.JsonNullableFilter<"ChatParticipant">
   channelId?: Prisma.StringFilter<"ChatParticipant"> | string
   userId?: Prisma.StringFilter<"ChatParticipant"> | string
-  role?: Prisma.EnumChatRoleFilter<"ChatParticipant"> | $Enums.ChatRole
-  lastReadAt?: Prisma.DateTimeNullableFilter<"ChatParticipant"> | Date | string | null
-  unreadCount?: Prisma.IntFilter<"ChatParticipant"> | number
-  isMuted?: Prisma.BoolFilter<"ChatParticipant"> | boolean
+  canSendMessage?: Prisma.BoolFilter<"ChatParticipant"> | boolean
   channel?: Prisma.XOR<Prisma.ChatChannelScalarRelationFilter, Prisma.ChatChannelWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
@@ -302,10 +274,7 @@ export type ChatParticipantOrderByWithRelationInput = {
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   channelId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  lastReadAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  unreadCount?: Prisma.SortOrder
-  isMuted?: Prisma.SortOrder
+  canSendMessage?: Prisma.SortOrder
   channel?: Prisma.ChatChannelOrderByWithRelationInput
   user?: Prisma.UserOrderByWithRelationInput
 }
@@ -325,10 +294,7 @@ export type ChatParticipantWhereUniqueInput = Prisma.AtLeast<{
   metadata?: Prisma.JsonNullableFilter<"ChatParticipant">
   channelId?: Prisma.StringFilter<"ChatParticipant"> | string
   userId?: Prisma.StringFilter<"ChatParticipant"> | string
-  role?: Prisma.EnumChatRoleFilter<"ChatParticipant"> | $Enums.ChatRole
-  lastReadAt?: Prisma.DateTimeNullableFilter<"ChatParticipant"> | Date | string | null
-  unreadCount?: Prisma.IntFilter<"ChatParticipant"> | number
-  isMuted?: Prisma.BoolFilter<"ChatParticipant"> | boolean
+  canSendMessage?: Prisma.BoolFilter<"ChatParticipant"> | boolean
   channel?: Prisma.XOR<Prisma.ChatChannelScalarRelationFilter, Prisma.ChatChannelWhereInput>
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id" | "channelId_userId">
@@ -344,10 +310,7 @@ export type ChatParticipantOrderByWithAggregationInput = {
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
   channelId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  lastReadAt?: Prisma.SortOrderInput | Prisma.SortOrder
-  unreadCount?: Prisma.SortOrder
-  isMuted?: Prisma.SortOrder
+  canSendMessage?: Prisma.SortOrder
   _count?: Prisma.ChatParticipantCountOrderByAggregateInput
   _avg?: Prisma.ChatParticipantAvgOrderByAggregateInput
   _max?: Prisma.ChatParticipantMaxOrderByAggregateInput
@@ -369,10 +332,7 @@ export type ChatParticipantScalarWhereWithAggregatesInput = {
   metadata?: Prisma.JsonNullableWithAggregatesFilter<"ChatParticipant">
   channelId?: Prisma.StringWithAggregatesFilter<"ChatParticipant"> | string
   userId?: Prisma.StringWithAggregatesFilter<"ChatParticipant"> | string
-  role?: Prisma.EnumChatRoleWithAggregatesFilter<"ChatParticipant"> | $Enums.ChatRole
-  lastReadAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ChatParticipant"> | Date | string | null
-  unreadCount?: Prisma.IntWithAggregatesFilter<"ChatParticipant"> | number
-  isMuted?: Prisma.BoolWithAggregatesFilter<"ChatParticipant"> | boolean
+  canSendMessage?: Prisma.BoolWithAggregatesFilter<"ChatParticipant"> | boolean
 }
 
 export type ChatParticipantCreateInput = {
@@ -384,10 +344,7 @@ export type ChatParticipantCreateInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  role?: $Enums.ChatRole
-  lastReadAt?: Date | string | null
-  unreadCount?: number
-  isMuted?: boolean
+  canSendMessage?: boolean
   channel: Prisma.ChatChannelCreateNestedOneWithoutParticipantsInput
   user: Prisma.UserCreateNestedOneWithoutChatParticipantsInput
 }
@@ -403,10 +360,7 @@ export type ChatParticipantUncheckedCreateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   channelId: string
   userId: string
-  role?: $Enums.ChatRole
-  lastReadAt?: Date | string | null
-  unreadCount?: number
-  isMuted?: boolean
+  canSendMessage?: boolean
 }
 
 export type ChatParticipantUpdateInput = {
@@ -418,10 +372,7 @@ export type ChatParticipantUpdateInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  role?: Prisma.EnumChatRoleFieldUpdateOperationsInput | $Enums.ChatRole
-  lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
-  isMuted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canSendMessage?: Prisma.BoolFieldUpdateOperationsInput | boolean
   channel?: Prisma.ChatChannelUpdateOneRequiredWithoutParticipantsNestedInput
   user?: Prisma.UserUpdateOneRequiredWithoutChatParticipantsNestedInput
 }
@@ -437,10 +388,7 @@ export type ChatParticipantUncheckedUpdateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   channelId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumChatRoleFieldUpdateOperationsInput | $Enums.ChatRole
-  lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
-  isMuted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canSendMessage?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ChatParticipantCreateManyInput = {
@@ -454,10 +402,7 @@ export type ChatParticipantCreateManyInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   channelId: string
   userId: string
-  role?: $Enums.ChatRole
-  lastReadAt?: Date | string | null
-  unreadCount?: number
-  isMuted?: boolean
+  canSendMessage?: boolean
 }
 
 export type ChatParticipantUpdateManyMutationInput = {
@@ -469,10 +414,7 @@ export type ChatParticipantUpdateManyMutationInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  role?: Prisma.EnumChatRoleFieldUpdateOperationsInput | $Enums.ChatRole
-  lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
-  isMuted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canSendMessage?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ChatParticipantUncheckedUpdateManyInput = {
@@ -486,10 +428,7 @@ export type ChatParticipantUncheckedUpdateManyInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   channelId?: Prisma.StringFieldUpdateOperationsInput | string
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumChatRoleFieldUpdateOperationsInput | $Enums.ChatRole
-  lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
-  isMuted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canSendMessage?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ChatParticipantListRelationFilter = {
@@ -518,15 +457,11 @@ export type ChatParticipantCountOrderByAggregateInput = {
   metadata?: Prisma.SortOrder
   channelId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  lastReadAt?: Prisma.SortOrder
-  unreadCount?: Prisma.SortOrder
-  isMuted?: Prisma.SortOrder
+  canSendMessage?: Prisma.SortOrder
 }
 
 export type ChatParticipantAvgOrderByAggregateInput = {
   version?: Prisma.SortOrder
-  unreadCount?: Prisma.SortOrder
 }
 
 export type ChatParticipantMaxOrderByAggregateInput = {
@@ -539,10 +474,7 @@ export type ChatParticipantMaxOrderByAggregateInput = {
   deletedAt?: Prisma.SortOrder
   channelId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  lastReadAt?: Prisma.SortOrder
-  unreadCount?: Prisma.SortOrder
-  isMuted?: Prisma.SortOrder
+  canSendMessage?: Prisma.SortOrder
 }
 
 export type ChatParticipantMinOrderByAggregateInput = {
@@ -555,15 +487,11 @@ export type ChatParticipantMinOrderByAggregateInput = {
   deletedAt?: Prisma.SortOrder
   channelId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  lastReadAt?: Prisma.SortOrder
-  unreadCount?: Prisma.SortOrder
-  isMuted?: Prisma.SortOrder
+  canSendMessage?: Prisma.SortOrder
 }
 
 export type ChatParticipantSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
-  unreadCount?: Prisma.SortOrder
 }
 
 export type ChatParticipantCreateNestedManyWithoutUserInput = {
@@ -650,10 +578,6 @@ export type ChatParticipantUncheckedUpdateManyWithoutChannelNestedInput = {
   deleteMany?: Prisma.ChatParticipantScalarWhereInput | Prisma.ChatParticipantScalarWhereInput[]
 }
 
-export type EnumChatRoleFieldUpdateOperationsInput = {
-  set?: $Enums.ChatRole
-}
-
 export type ChatParticipantCreateWithoutUserInput = {
   id?: string
   isActive?: boolean
@@ -663,10 +587,7 @@ export type ChatParticipantCreateWithoutUserInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  role?: $Enums.ChatRole
-  lastReadAt?: Date | string | null
-  unreadCount?: number
-  isMuted?: boolean
+  canSendMessage?: boolean
   channel: Prisma.ChatChannelCreateNestedOneWithoutParticipantsInput
 }
 
@@ -680,10 +601,7 @@ export type ChatParticipantUncheckedCreateWithoutUserInput = {
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   channelId: string
-  role?: $Enums.ChatRole
-  lastReadAt?: Date | string | null
-  unreadCount?: number
-  isMuted?: boolean
+  canSendMessage?: boolean
 }
 
 export type ChatParticipantCreateOrConnectWithoutUserInput = {
@@ -726,10 +644,7 @@ export type ChatParticipantScalarWhereInput = {
   metadata?: Prisma.JsonNullableFilter<"ChatParticipant">
   channelId?: Prisma.StringFilter<"ChatParticipant"> | string
   userId?: Prisma.StringFilter<"ChatParticipant"> | string
-  role?: Prisma.EnumChatRoleFilter<"ChatParticipant"> | $Enums.ChatRole
-  lastReadAt?: Prisma.DateTimeNullableFilter<"ChatParticipant"> | Date | string | null
-  unreadCount?: Prisma.IntFilter<"ChatParticipant"> | number
-  isMuted?: Prisma.BoolFilter<"ChatParticipant"> | boolean
+  canSendMessage?: Prisma.BoolFilter<"ChatParticipant"> | boolean
 }
 
 export type ChatParticipantCreateWithoutChannelInput = {
@@ -741,10 +656,7 @@ export type ChatParticipantCreateWithoutChannelInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  role?: $Enums.ChatRole
-  lastReadAt?: Date | string | null
-  unreadCount?: number
-  isMuted?: boolean
+  canSendMessage?: boolean
   user: Prisma.UserCreateNestedOneWithoutChatParticipantsInput
 }
 
@@ -758,10 +670,7 @@ export type ChatParticipantUncheckedCreateWithoutChannelInput = {
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId: string
-  role?: $Enums.ChatRole
-  lastReadAt?: Date | string | null
-  unreadCount?: number
-  isMuted?: boolean
+  canSendMessage?: boolean
 }
 
 export type ChatParticipantCreateOrConnectWithoutChannelInput = {
@@ -800,10 +709,7 @@ export type ChatParticipantCreateManyUserInput = {
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   channelId: string
-  role?: $Enums.ChatRole
-  lastReadAt?: Date | string | null
-  unreadCount?: number
-  isMuted?: boolean
+  canSendMessage?: boolean
 }
 
 export type ChatParticipantUpdateWithoutUserInput = {
@@ -815,10 +721,7 @@ export type ChatParticipantUpdateWithoutUserInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  role?: Prisma.EnumChatRoleFieldUpdateOperationsInput | $Enums.ChatRole
-  lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
-  isMuted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canSendMessage?: Prisma.BoolFieldUpdateOperationsInput | boolean
   channel?: Prisma.ChatChannelUpdateOneRequiredWithoutParticipantsNestedInput
 }
 
@@ -832,10 +735,7 @@ export type ChatParticipantUncheckedUpdateWithoutUserInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   channelId?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumChatRoleFieldUpdateOperationsInput | $Enums.ChatRole
-  lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
-  isMuted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canSendMessage?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ChatParticipantUncheckedUpdateManyWithoutUserInput = {
@@ -848,10 +748,7 @@ export type ChatParticipantUncheckedUpdateManyWithoutUserInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   channelId?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumChatRoleFieldUpdateOperationsInput | $Enums.ChatRole
-  lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
-  isMuted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canSendMessage?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ChatParticipantCreateManyChannelInput = {
@@ -864,10 +761,7 @@ export type ChatParticipantCreateManyChannelInput = {
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId: string
-  role?: $Enums.ChatRole
-  lastReadAt?: Date | string | null
-  unreadCount?: number
-  isMuted?: boolean
+  canSendMessage?: boolean
 }
 
 export type ChatParticipantUpdateWithoutChannelInput = {
@@ -879,10 +773,7 @@ export type ChatParticipantUpdateWithoutChannelInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
-  role?: Prisma.EnumChatRoleFieldUpdateOperationsInput | $Enums.ChatRole
-  lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
-  isMuted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canSendMessage?: Prisma.BoolFieldUpdateOperationsInput | boolean
   user?: Prisma.UserUpdateOneRequiredWithoutChatParticipantsNestedInput
 }
 
@@ -896,10 +787,7 @@ export type ChatParticipantUncheckedUpdateWithoutChannelInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumChatRoleFieldUpdateOperationsInput | $Enums.ChatRole
-  lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
-  isMuted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canSendMessage?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 export type ChatParticipantUncheckedUpdateManyWithoutChannelInput = {
@@ -912,10 +800,7 @@ export type ChatParticipantUncheckedUpdateManyWithoutChannelInput = {
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   userId?: Prisma.StringFieldUpdateOperationsInput | string
-  role?: Prisma.EnumChatRoleFieldUpdateOperationsInput | $Enums.ChatRole
-  lastReadAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  unreadCount?: Prisma.IntFieldUpdateOperationsInput | number
-  isMuted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  canSendMessage?: Prisma.BoolFieldUpdateOperationsInput | boolean
 }
 
 
@@ -931,10 +816,7 @@ export type ChatParticipantSelect<ExtArgs extends runtime.Types.Extensions.Inter
   metadata?: boolean
   channelId?: boolean
   userId?: boolean
-  role?: boolean
-  lastReadAt?: boolean
-  unreadCount?: boolean
-  isMuted?: boolean
+  canSendMessage?: boolean
   channel?: boolean | Prisma.ChatChannelDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["chatParticipant"]>
@@ -950,10 +832,7 @@ export type ChatParticipantSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   metadata?: boolean
   channelId?: boolean
   userId?: boolean
-  role?: boolean
-  lastReadAt?: boolean
-  unreadCount?: boolean
-  isMuted?: boolean
+  canSendMessage?: boolean
   channel?: boolean | Prisma.ChatChannelDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["chatParticipant"]>
@@ -969,10 +848,7 @@ export type ChatParticipantSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   metadata?: boolean
   channelId?: boolean
   userId?: boolean
-  role?: boolean
-  lastReadAt?: boolean
-  unreadCount?: boolean
-  isMuted?: boolean
+  canSendMessage?: boolean
   channel?: boolean | Prisma.ChatChannelDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["chatParticipant"]>
@@ -988,13 +864,10 @@ export type ChatParticipantSelectScalar = {
   metadata?: boolean
   channelId?: boolean
   userId?: boolean
-  role?: boolean
-  lastReadAt?: boolean
-  unreadCount?: boolean
-  isMuted?: boolean
+  canSendMessage?: boolean
 }
 
-export type ChatParticipantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "isDeleted" | "deletedAt" | "metadata" | "channelId" | "userId" | "role" | "lastReadAt" | "unreadCount" | "isMuted", ExtArgs["result"]["chatParticipant"]>
+export type ChatParticipantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "isDeleted" | "deletedAt" | "metadata" | "channelId" | "userId" | "canSendMessage", ExtArgs["result"]["chatParticipant"]>
 export type ChatParticipantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   channel?: boolean | Prisma.ChatChannelDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -1025,10 +898,7 @@ export type $ChatParticipantPayload<ExtArgs extends runtime.Types.Extensions.Int
     metadata: runtime.JsonValue | null
     channelId: string
     userId: string
-    role: $Enums.ChatRole
-    lastReadAt: Date | null
-    unreadCount: number
-    isMuted: boolean
+    canSendMessage: boolean
   }, ExtArgs["result"]["chatParticipant"]>
   composites: {}
 }
@@ -1464,10 +1334,7 @@ export interface ChatParticipantFieldRefs {
   readonly metadata: Prisma.FieldRef<"ChatParticipant", 'Json'>
   readonly channelId: Prisma.FieldRef<"ChatParticipant", 'String'>
   readonly userId: Prisma.FieldRef<"ChatParticipant", 'String'>
-  readonly role: Prisma.FieldRef<"ChatParticipant", 'ChatRole'>
-  readonly lastReadAt: Prisma.FieldRef<"ChatParticipant", 'DateTime'>
-  readonly unreadCount: Prisma.FieldRef<"ChatParticipant", 'Int'>
-  readonly isMuted: Prisma.FieldRef<"ChatParticipant", 'Boolean'>
+  readonly canSendMessage: Prisma.FieldRef<"ChatParticipant", 'Boolean'>
 }
     
 

@@ -1363,7 +1363,8 @@ export const UserScalarFieldEnum = {
   avatarUrl: 'avatarUrl',
   backgroundUrl: 'backgroundUrl',
   bio: 'bio',
-  communityId: 'communityId'
+  communityId: 'communityId',
+  isOnline: 'isOnline'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -1452,12 +1453,8 @@ export const ChatChannelScalarFieldEnum = {
   metadata: 'metadata',
   name: 'name',
   description: 'description',
-  type: 'type',
   communityId: 'communityId',
-  idolId: 'idolId',
-  isAnnouncement: 'isAnnouncement',
-  lastMessageAt: 'lastMessageAt',
-  firebaseDocId: 'firebaseDocId'
+  idolId: 'idolId'
 } as const
 
 export type ChatChannelScalarFieldEnum = (typeof ChatChannelScalarFieldEnum)[keyof typeof ChatChannelScalarFieldEnum]
@@ -1474,10 +1471,7 @@ export const ChatParticipantScalarFieldEnum = {
   metadata: 'metadata',
   channelId: 'channelId',
   userId: 'userId',
-  role: 'role',
-  lastReadAt: 'lastReadAt',
-  unreadCount: 'unreadCount',
-  isMuted: 'isMuted'
+  canSendMessage: 'canSendMessage'
 } as const
 
 export type ChatParticipantScalarFieldEnum = (typeof ChatParticipantScalarFieldEnum)[keyof typeof ChatParticipantScalarFieldEnum]
@@ -1720,34 +1714,6 @@ export type EnumSocialAccountProviderFieldRefInput<$PrismaModel> = FieldRefInput
  * Reference to a field of type 'SocialAccountProvider[]'
  */
 export type ListEnumSocialAccountProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SocialAccountProvider[]'>
-    
-
-
-/**
- * Reference to a field of type 'ChatChannelType'
- */
-export type EnumChatChannelTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatChannelType'>
-    
-
-
-/**
- * Reference to a field of type 'ChatChannelType[]'
- */
-export type ListEnumChatChannelTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatChannelType[]'>
-    
-
-
-/**
- * Reference to a field of type 'ChatRole'
- */
-export type EnumChatRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatRole'>
-    
-
-
-/**
- * Reference to a field of type 'ChatRole[]'
- */
-export type ListEnumChatRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ChatRole[]'>
     
 
 

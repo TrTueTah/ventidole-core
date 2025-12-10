@@ -126,6 +126,23 @@ class EnvironmentVariable {
   @IsString()
   @IsNotEmpty()
   STREAM_CHAT_SECRET: string;
+
+  @IsString()
+  @IsNotEmpty()
+  KNOCK_SECRET_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  KNOCK_SIGNING_KEY: string;
+
+  @IsString()
+  KNOCK_PUSH_CHANNEL_ID: string;
+
+  @IsString()
+  KNOCK_IN_APP_CHANNEL_ID: string;
+
+  @IsString()
+  KNOCK_IN_APP_NOTIFICATION_WORKFLOW_KEY: string;
 }
 
 export const ENVIRONMENT = {} as EnvironmentVariable;

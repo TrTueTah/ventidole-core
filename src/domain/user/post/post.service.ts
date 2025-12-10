@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   PageInfo,
   PaginationResponse,
 } from '@shared/dto/pagination-response.dto';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsDto } from './dto/get-posts.dto';
@@ -14,7 +15,12 @@ import { UpdatePostDto } from './dto/update-post.dto';
 
 @Injectable()
 export class PostService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(PostService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly knockWorkflowService: KnockWorkflowService,
+  ) {}
 
   async getPosts(
     filters: GetPostsDto,
@@ -273,6 +279,71 @@ export class PostService {
         transformedMediaUrls = values.every((v) => typeof v === 'string')
           ? values
           : null;
+      }
+    }
+
+    // Notify community followers if post is in a community
+    if (post.communityId) {
+      try {
+        const [community, followers] = await Promise.all([
+          this.prisma.community.findUnique({
+            where: { id: post.communityId },
+            select: { name: true },
+          }),
+          this.prisma.communityFollower.findMany({
+            where: {
+              communityId: post.communityId,
+              userId: { not: userId }, // Exclude the author
+              isActive: true,
+              isDeleted: false,
+            },
+            select: {
+              userId: true,
+              user: {
+                select: {
+                  id: true,
+                  email: true,
+                  username: true,
+                  avatarUrl: true,
+                },
+              },
+            },
+          }),
+        ]);
+
+        if (community && followers.length > 0) {
+          // Map followers to recipient objects with user data for Knock
+          const recipients = followers.map((f) => ({
+            id: f.userId,
+            name: f.user.username,
+            email: f.user.email,
+            avatar: f.user.avatarUrl || undefined,
+          }));
+
+          // Extract first 150 characters as excerpt
+          const postExcerpt = post.content
+            ? post.content.substring(0, 150) +
+              (post.content.length > 150 ? '...' : '')
+            : undefined;
+
+          await this.knockWorkflowService.notifyCommunityNewPost({
+            members: recipients,
+            communityId: post.communityId,
+            communityName: community.name,
+            postId: post.id,
+            postTitle: postExcerpt || 'New post',
+            author: {
+              id: post.author.id,
+              name: post.author.username,
+              avatar: post.author.avatarUrl ?? undefined,
+            },
+          });
+        }
+      } catch (error) {
+        // Log error but don't fail post creation
+        this.logger.warn(
+          `Failed to send community post notifications for post ${post.id}: ${error.message}`,
+        );
       }
     }
 

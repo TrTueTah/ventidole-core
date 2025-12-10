@@ -47,6 +47,22 @@ export enum ErrorCode {
   CommunityNotFound = 'CommunityNotFound',
   AlreadyJoinedCommunity = 'AlreadyJoinedCommunity',
   NotJoinedCommunity = 'NotJoinedCommunity',
+  ChatChannelRetrievalFailed = 'ChatChannelRetrievalFailed',
+  ChatMessageRetrievalFailed = 'ChatMessageRetrievalFailed',
+  ChatMessageSendFailed = 'ChatMessageSendFailed',
+  ChatChannelAccessDenied = 'ChatChannelAccessDenied',
+  InvalidChannelId = 'InvalidChannelId',
+  KnockTokenGenerationFailed = 'KnockTokenGenerationFailed',
+  KnockNotificationSendFailed = 'KnockNotificationSendFailed',
+  KnockWorkflowTriggerFailed = 'KnockWorkflowTriggerFailed',
+  KnockUserUpsertFailed = 'KnockUserUpsertFailed',
+  KnockPreferencesFetchFailed = 'KnockPreferencesFetchFailed',
+  KnockPreferencesUpdateFailed = 'KnockPreferencesUpdateFailed',
+  KnockChannelDataUpdateFailed = 'KnockChannelDataUpdateFailed',
+  KnockPushChannelNotConfigured = 'KnockPushChannelNotConfigured',
+  KnockFcmTokenRegistrationFailed = 'KnockFcmTokenRegistrationFailed',
+  InvalidFcmToken = 'InvalidFcmToken',
+  UserNotFound = 'UserNotFound',
 }
 
 const ErrorCodeSet = new Set(Object.values(ErrorCode));
