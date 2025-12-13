@@ -2430,6 +2430,307 @@ paths:
                   - message
       security: *ref_16
       tags: *ref_17
+  /v1/admin/shop:
+    get:
+      operationId: AdminShopController_getAllShops_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Search by shop name
+          schema:
+            example: shop
+            type: string
+        - name: communityId
+          required: false
+          in: query
+          description: Filter by community ID
+          schema:
+            example: clxxxxxxx
+            type: string
+        - name: isActive
+          required: false
+          in: query
+          description: Filter by active status
+          schema:
+            example: 'true'
+            type: string
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            example: createdAt
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+              - name
+        - name: sortOrder
+          required: false
+          in: query
+          description: Sort order
+          schema:
+            example: desc
+            type: string
+            enum:
+              - asc
+              - desc
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShopDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: &ref_18
+        - bearer: []
+      tags: &ref_19
+        - Admin Shop Management
+    post:
+      operationId: AdminShopController_createShop_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateShopDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/ShopDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_18
+      tags: *ref_19
+  /v1/admin/shop/{id}:
+    get:
+      operationId: AdminShopController_getShopById_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/ShopDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_18
+      tags: *ref_19
+    patch:
+      operationId: AdminShopController_updateShop_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateShopDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/ShopDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_18
+      tags: *ref_19
+    delete:
+      operationId: AdminShopController_deleteShop_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_18
+      tags: *ref_19
   /v1/stream-chat/token:
     post:
       operationId: StreamChatController_generateToken_v1
@@ -2472,10 +2773,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_18
+      security: &ref_20
         - bearer: []
       summary: Generate Stream Chat authentication token
-      tags: &ref_19
+      tags: &ref_21
         - Stream Chat
   /v1/stream-chat/users:
     post:
@@ -2519,9 +2820,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
+      security: *ref_20
       summary: Create or update user in Stream Chat
-      tags: *ref_19
+      tags: *ref_21
   /v1/stream-chat/users/{userId}:
     delete:
       operationId: StreamChatController_deleteUser_v1
@@ -2565,9 +2866,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
+      security: *ref_20
       summary: Delete user from Stream Chat
-      tags: *ref_19
+      tags: *ref_21
   /v1/stream-chat/channels:
     post:
       operationId: StreamChatController_createChannel_v1
@@ -2610,9 +2911,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
+      security: *ref_20
       summary: Create a new channel
-      tags: *ref_19
+      tags: *ref_21
   /v1/stream-chat/channels/{userId}:
     get:
       operationId: StreamChatController_getUserChannels_v1
@@ -2656,9 +2957,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
+      security: *ref_20
       summary: Get all channels for a user
-      tags: *ref_19
+      tags: *ref_21
   /v1/stream-chat/channels/{channelType}/{channelId}:
     delete:
       operationId: StreamChatController_deleteChannel_v1
@@ -2707,9 +3008,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
+      security: *ref_20
       summary: Delete a channel
-      tags: *ref_19
+      tags: *ref_21
   /v1/stream-chat/channels/{channelType}/{channelId}/members:
     post:
       operationId: StreamChatController_addMembers_v1
@@ -2764,9 +3065,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
+      security: *ref_20
       summary: Add members to a channel
-      tags: *ref_19
+      tags: *ref_21
     delete:
       operationId: StreamChatController_removeMembers_v1
       parameters:
@@ -2820,9 +3121,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
+      security: *ref_20
       summary: Remove members from a channel
-      tags: *ref_19
+      tags: *ref_21
   /v1/stream-chat/channels/{channelType}/{channelId}/messages:
     get:
       operationId: StreamChatController_getMessages_v1
@@ -2876,9 +3177,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
+      security: *ref_20
       summary: Get channel messages
-      tags: *ref_19
+      tags: *ref_21
     post:
       operationId: StreamChatController_sendMessage_v1
       parameters:
@@ -2932,9 +3233,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
+      security: *ref_20
       summary: Send a message to a channel
-      tags: *ref_19
+      tags: *ref_21
   /v1/knock/token:
     post:
       operationId: KnockController_generateToken_v1
@@ -2971,10 +3272,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_20
+      security: &ref_22
         - bearer: []
       summary: Generate Knock authentication token for client SDK
-      tags: &ref_21
+      tags: &ref_23
         - Knock Notifications
   /v1/knock/fcm-token:
     post:
@@ -3021,9 +3322,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
+      security: *ref_22
       summary: Register FCM token for push notifications
-      tags: *ref_21
+      tags: *ref_23
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -3515,7 +3816,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: &ref_22
+          example: &ref_24
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
             - >-
@@ -3628,7 +3929,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: *ref_22
+          example: *ref_24
           description: Array of media URLs
           nullable: true
           type: array
@@ -4274,6 +4575,168 @@ components:
           type: boolean
           example: true
           description: Whether the community is active
+    ShopCommunityDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Community ID
+        name:
+          type: string
+          example: My Community
+          description: Community name
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Avatar URL
+      required:
+        - id
+        - name
+    ShopDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Shop ID
+        name:
+          type: string
+          example: My Shop
+          description: Shop name
+        description:
+          type: object
+          example: A shop description
+          description: Shop description
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Shop avatar URL
+        community:
+          description: Community information
+          allOf:
+            - $ref: '#/components/schemas/ShopCommunityDto'
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the shop is active
+        createdAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Created at
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Updated at
+      required:
+        - id
+        - name
+        - community
+        - isActive
+        - createdAt
+        - updatedAt
+    ShopDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Shop ID
+        name:
+          type: string
+          example: My Shop
+          description: Shop name
+        description:
+          type: object
+          example: A shop description
+          description: Shop description
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Shop avatar URL
+        communityId:
+          type: string
+          example: clxxxxxxx
+          description: Community ID
+        community:
+          description: Community details
+          allOf:
+            - $ref: '#/components/schemas/ShopCommunityDto'
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the shop is active
+        createdAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Created at
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Updated at
+        metadata:
+          type: object
+          example:
+            key: value
+          description: Additional metadata
+        version:
+          type: number
+          example: 0
+          description: Version
+      required:
+        - id
+        - name
+        - communityId
+        - community
+        - isActive
+        - createdAt
+        - updatedAt
+        - version
+    CreateShopDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: My Shop
+          description: Shop name
+        description:
+          type: string
+          example: A shop description
+          description: Shop description
+        avatarUrl:
+          type: string
+          example: https://example.com/avatar.jpg
+          description: Shop avatar URL
+        communityId:
+          type: string
+          example: clxxxxxxx
+          description: Community ID
+      required:
+        - name
+        - communityId
+    UpdateShopDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: My Shop
+          description: Shop name
+        description:
+          type: string
+          example: A shop description
+          description: Shop description
+        avatarUrl:
+          type: string
+          example: https://example.com/avatar.jpg
+          description: Shop avatar URL
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the shop is active
     TokenDto:
       type: object
       properties:

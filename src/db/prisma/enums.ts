@@ -41,3 +41,25 @@ export const ChatRole = {
 } as const
 
 export type ChatRole = (typeof ChatRole)[keyof typeof ChatRole]
+
+
+export const OrderStatus = {
+  pending: 'pending',
+  paid: 'paid',
+  shipping: 'shipping',
+  delivered: 'delivered',
+  cancelled: 'cancelled',
+  refunded: 'refunded'
+} as const
+
+export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
+
+
+export const PaymentTransactionStatus = {
+  pending: 'pending',
+  success: 'success',
+  failed: 'failed',
+  refunded: 'refunded'
+} as const
+
+export type PaymentTransactionStatus = (typeof PaymentTransactionStatus)[keyof typeof PaymentTransactionStatus]

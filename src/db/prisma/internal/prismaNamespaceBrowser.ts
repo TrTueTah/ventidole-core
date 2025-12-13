@@ -315,10 +315,11 @@ export const ShopScalarFieldEnum = {
   isDeleted: 'isDeleted',
   deletedAt: 'deletedAt',
   metadata: 'metadata',
-  idolId: 'idolId',
+  communityId: 'communityId',
   name: 'name',
   description: 'description',
-  avatarUrl: 'avatarUrl'
+  avatarUrl: 'avatarUrl',
+  userId: 'userId'
 } as const
 
 export type ShopScalarFieldEnum = (typeof ShopScalarFieldEnum)[keyof typeof ShopScalarFieldEnum]

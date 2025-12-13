@@ -2249,10 +2249,11 @@ export const ShopScalarFieldEnum = {
   isDeleted: 'isDeleted',
   deletedAt: 'deletedAt',
   metadata: 'metadata',
-  idolId: 'idolId',
+  communityId: 'communityId',
   name: 'name',
   description: 'description',
-  avatarUrl: 'avatarUrl'
+  avatarUrl: 'avatarUrl',
+  userId: 'userId'
 } as const
 
 export type ShopScalarFieldEnum = (typeof ShopScalarFieldEnum)[keyof typeof ShopScalarFieldEnum]
@@ -2575,6 +2576,34 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'OrderStatus'
+ */
+export type EnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'OrderStatus[]'
+ */
+export type ListEnumOrderStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrderStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'PaymentTransactionStatus'
+ */
+export type EnumPaymentTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentTransactionStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'PaymentTransactionStatus[]'
+ */
+export type ListEnumPaymentTransactionStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentTransactionStatus[]'>
     
 
 /**

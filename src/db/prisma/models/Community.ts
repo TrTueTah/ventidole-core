@@ -271,6 +271,7 @@ export type CommunityWhereInput = {
   followers?: Prisma.CommunityFollowerListRelationFilter
   idols?: Prisma.UserListRelationFilter
   posts?: Prisma.PostListRelationFilter
+  shops?: Prisma.ShopListRelationFilter
 }
 
 export type CommunityOrderByWithRelationInput = {
@@ -290,6 +291,7 @@ export type CommunityOrderByWithRelationInput = {
   followers?: Prisma.CommunityFollowerOrderByRelationAggregateInput
   idols?: Prisma.UserOrderByRelationAggregateInput
   posts?: Prisma.PostOrderByRelationAggregateInput
+  shops?: Prisma.ShopOrderByRelationAggregateInput
 }
 
 export type CommunityWhereUniqueInput = Prisma.AtLeast<{
@@ -312,6 +314,7 @@ export type CommunityWhereUniqueInput = Prisma.AtLeast<{
   followers?: Prisma.CommunityFollowerListRelationFilter
   idols?: Prisma.UserListRelationFilter
   posts?: Prisma.PostListRelationFilter
+  shops?: Prisma.ShopListRelationFilter
 }, "id">
 
 export type CommunityOrderByWithAggregationInput = {
@@ -369,6 +372,7 @@ export type CommunityCreateInput = {
   followers?: Prisma.CommunityFollowerCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+  shops?: Prisma.ShopCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityUncheckedCreateInput = {
@@ -388,6 +392,7 @@ export type CommunityUncheckedCreateInput = {
   followers?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityUpdateInput = {
@@ -407,6 +412,7 @@ export type CommunityUpdateInput = {
   followers?: Prisma.CommunityFollowerUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityUncheckedUpdateInput = {
@@ -426,6 +432,7 @@ export type CommunityUncheckedUpdateInput = {
   followers?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityCreateManyInput = {
@@ -594,6 +601,20 @@ export type CommunityUpdateOneRequiredWithoutPostsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CommunityUpdateToOneWithWhereWithoutPostsInput, Prisma.CommunityUpdateWithoutPostsInput>, Prisma.CommunityUncheckedUpdateWithoutPostsInput>
 }
 
+export type CommunityCreateNestedOneWithoutShopsInput = {
+  create?: Prisma.XOR<Prisma.CommunityCreateWithoutShopsInput, Prisma.CommunityUncheckedCreateWithoutShopsInput>
+  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutShopsInput
+  connect?: Prisma.CommunityWhereUniqueInput
+}
+
+export type CommunityUpdateOneRequiredWithoutShopsNestedInput = {
+  create?: Prisma.XOR<Prisma.CommunityCreateWithoutShopsInput, Prisma.CommunityUncheckedCreateWithoutShopsInput>
+  connectOrCreate?: Prisma.CommunityCreateOrConnectWithoutShopsInput
+  upsert?: Prisma.CommunityUpsertWithoutShopsInput
+  connect?: Prisma.CommunityWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.CommunityUpdateToOneWithWhereWithoutShopsInput, Prisma.CommunityUpdateWithoutShopsInput>, Prisma.CommunityUncheckedUpdateWithoutShopsInput>
+}
+
 export type CommunityCreateWithoutIdolsInput = {
   id?: string
   isActive?: boolean
@@ -610,6 +631,7 @@ export type CommunityCreateWithoutIdolsInput = {
   chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutCommunityInput
   followers?: Prisma.CommunityFollowerCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+  shops?: Prisma.ShopCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityUncheckedCreateWithoutIdolsInput = {
@@ -628,6 +650,7 @@ export type CommunityUncheckedCreateWithoutIdolsInput = {
   chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutCommunityInput
   followers?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityCreateOrConnectWithoutIdolsInput = {
@@ -662,6 +685,7 @@ export type CommunityUpdateWithoutIdolsInput = {
   chatChannels?: Prisma.ChatChannelUpdateManyWithoutCommunityNestedInput
   followers?: Prisma.CommunityFollowerUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityUncheckedUpdateWithoutIdolsInput = {
@@ -680,6 +704,7 @@ export type CommunityUncheckedUpdateWithoutIdolsInput = {
   chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutCommunityNestedInput
   followers?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityCreateWithoutFollowersInput = {
@@ -698,6 +723,7 @@ export type CommunityCreateWithoutFollowersInput = {
   chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+  shops?: Prisma.ShopCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityUncheckedCreateWithoutFollowersInput = {
@@ -716,6 +742,7 @@ export type CommunityUncheckedCreateWithoutFollowersInput = {
   chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityCreateOrConnectWithoutFollowersInput = {
@@ -750,6 +777,7 @@ export type CommunityUpdateWithoutFollowersInput = {
   chatChannels?: Prisma.ChatChannelUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityUncheckedUpdateWithoutFollowersInput = {
@@ -768,6 +796,7 @@ export type CommunityUncheckedUpdateWithoutFollowersInput = {
   chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityCreateWithoutChatChannelsInput = {
@@ -786,6 +815,7 @@ export type CommunityCreateWithoutChatChannelsInput = {
   followers?: Prisma.CommunityFollowerCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+  shops?: Prisma.ShopCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityUncheckedCreateWithoutChatChannelsInput = {
@@ -804,6 +834,7 @@ export type CommunityUncheckedCreateWithoutChatChannelsInput = {
   followers?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityCreateOrConnectWithoutChatChannelsInput = {
@@ -838,6 +869,7 @@ export type CommunityUpdateWithoutChatChannelsInput = {
   followers?: Prisma.CommunityFollowerUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityUncheckedUpdateWithoutChatChannelsInput = {
@@ -856,6 +888,7 @@ export type CommunityUncheckedUpdateWithoutChatChannelsInput = {
   followers?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityCreateWithoutPostsInput = {
@@ -874,6 +907,7 @@ export type CommunityCreateWithoutPostsInput = {
   chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutCommunityInput
   followers?: Prisma.CommunityFollowerCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserCreateNestedManyWithoutCommunityInput
+  shops?: Prisma.ShopCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityUncheckedCreateWithoutPostsInput = {
@@ -892,6 +926,7 @@ export type CommunityUncheckedCreateWithoutPostsInput = {
   chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutCommunityInput
   followers?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserUncheckedCreateNestedManyWithoutCommunityInput
+  shops?: Prisma.ShopUncheckedCreateNestedManyWithoutCommunityInput
 }
 
 export type CommunityCreateOrConnectWithoutPostsInput = {
@@ -926,6 +961,7 @@ export type CommunityUpdateWithoutPostsInput = {
   chatChannels?: Prisma.ChatChannelUpdateManyWithoutCommunityNestedInput
   followers?: Prisma.CommunityFollowerUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUpdateManyWithoutCommunityNestedInput
+  shops?: Prisma.ShopUpdateManyWithoutCommunityNestedInput
 }
 
 export type CommunityUncheckedUpdateWithoutPostsInput = {
@@ -944,6 +980,99 @@ export type CommunityUncheckedUpdateWithoutPostsInput = {
   chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutCommunityNestedInput
   followers?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUncheckedUpdateManyWithoutCommunityNestedInput
+  shops?: Prisma.ShopUncheckedUpdateManyWithoutCommunityNestedInput
+}
+
+export type CommunityCreateWithoutShopsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  name: string
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  description?: string | null
+  chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutCommunityInput
+  followers?: Prisma.CommunityFollowerCreateNestedManyWithoutCommunityInput
+  idols?: Prisma.UserCreateNestedManyWithoutCommunityInput
+  posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
+}
+
+export type CommunityUncheckedCreateWithoutShopsInput = {
+  id?: string
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  version?: number
+  isDeleted?: boolean
+  deletedAt?: Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  name: string
+  avatarUrl?: string | null
+  backgroundUrl?: string | null
+  description?: string | null
+  chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutCommunityInput
+  followers?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutCommunityInput
+  idols?: Prisma.UserUncheckedCreateNestedManyWithoutCommunityInput
+  posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
+}
+
+export type CommunityCreateOrConnectWithoutShopsInput = {
+  where: Prisma.CommunityWhereUniqueInput
+  create: Prisma.XOR<Prisma.CommunityCreateWithoutShopsInput, Prisma.CommunityUncheckedCreateWithoutShopsInput>
+}
+
+export type CommunityUpsertWithoutShopsInput = {
+  update: Prisma.XOR<Prisma.CommunityUpdateWithoutShopsInput, Prisma.CommunityUncheckedUpdateWithoutShopsInput>
+  create: Prisma.XOR<Prisma.CommunityCreateWithoutShopsInput, Prisma.CommunityUncheckedCreateWithoutShopsInput>
+  where?: Prisma.CommunityWhereInput
+}
+
+export type CommunityUpdateToOneWithWhereWithoutShopsInput = {
+  where?: Prisma.CommunityWhereInput
+  data: Prisma.XOR<Prisma.CommunityUpdateWithoutShopsInput, Prisma.CommunityUncheckedUpdateWithoutShopsInput>
+}
+
+export type CommunityUpdateWithoutShopsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chatChannels?: Prisma.ChatChannelUpdateManyWithoutCommunityNestedInput
+  followers?: Prisma.CommunityFollowerUpdateManyWithoutCommunityNestedInput
+  idols?: Prisma.UserUpdateManyWithoutCommunityNestedInput
+  posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
+}
+
+export type CommunityUncheckedUpdateWithoutShopsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  version?: Prisma.IntFieldUpdateOperationsInput | number
+  isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutCommunityNestedInput
+  followers?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutCommunityNestedInput
+  idols?: Prisma.UserUncheckedUpdateManyWithoutCommunityNestedInput
+  posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
 }
 
 
@@ -956,6 +1085,7 @@ export type CommunityCountOutputType = {
   followers: number
   idols: number
   posts: number
+  shops: number
 }
 
 export type CommunityCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -963,6 +1093,7 @@ export type CommunityCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensi
   followers?: boolean | CommunityCountOutputTypeCountFollowersArgs
   idols?: boolean | CommunityCountOutputTypeCountIdolsArgs
   posts?: boolean | CommunityCountOutputTypeCountPostsArgs
+  shops?: boolean | CommunityCountOutputTypeCountShopsArgs
 }
 
 /**
@@ -1003,6 +1134,13 @@ export type CommunityCountOutputTypeCountPostsArgs<ExtArgs extends runtime.Types
   where?: Prisma.PostWhereInput
 }
 
+/**
+ * CommunityCountOutputType without action
+ */
+export type CommunityCountOutputTypeCountShopsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ShopWhereInput
+}
+
 
 export type CommunitySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1021,6 +1159,7 @@ export type CommunitySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   followers?: boolean | Prisma.Community$followersArgs<ExtArgs>
   idols?: boolean | Prisma.Community$idolsArgs<ExtArgs>
   posts?: boolean | Prisma.Community$postsArgs<ExtArgs>
+  shops?: boolean | Prisma.Community$shopsArgs<ExtArgs>
   _count?: boolean | Prisma.CommunityCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["community"]>
 
@@ -1075,6 +1214,7 @@ export type CommunityInclude<ExtArgs extends runtime.Types.Extensions.InternalAr
   followers?: boolean | Prisma.Community$followersArgs<ExtArgs>
   idols?: boolean | Prisma.Community$idolsArgs<ExtArgs>
   posts?: boolean | Prisma.Community$postsArgs<ExtArgs>
+  shops?: boolean | Prisma.Community$shopsArgs<ExtArgs>
   _count?: boolean | Prisma.CommunityCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CommunityIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1087,6 +1227,7 @@ export type $CommunityPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     followers: Prisma.$CommunityFollowerPayload<ExtArgs>[]
     idols: Prisma.$UserPayload<ExtArgs>[]
     posts: Prisma.$PostPayload<ExtArgs>[]
+    shops: Prisma.$ShopPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1499,6 +1640,7 @@ export interface Prisma__CommunityClient<T, Null = never, ExtArgs extends runtim
   followers<T extends Prisma.Community$followersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Community$followersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CommunityFollowerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   idols<T extends Prisma.Community$idolsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Community$idolsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   posts<T extends Prisma.Community$postsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Community$postsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PostPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  shops<T extends Prisma.Community$shopsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Community$shopsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShopPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2021,6 +2163,30 @@ export type Community$postsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.PostScalarFieldEnum | Prisma.PostScalarFieldEnum[]
+}
+
+/**
+ * Community.shops
+ */
+export type Community$shopsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Shop
+   */
+  select?: Prisma.ShopSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Shop
+   */
+  omit?: Prisma.ShopOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ShopInclude<ExtArgs> | null
+  where?: Prisma.ShopWhereInput
+  orderBy?: Prisma.ShopOrderByWithRelationInput | Prisma.ShopOrderByWithRelationInput[]
+  cursor?: Prisma.ShopWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ShopScalarFieldEnum | Prisma.ShopScalarFieldEnum[]
 }
 
 /**

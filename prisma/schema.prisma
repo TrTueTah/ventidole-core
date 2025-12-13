@@ -108,6 +108,7 @@ model Community {
   followers     CommunityFollower[]
   idols         User[]
   posts         Post[]
+  shops         Shop[]
 
   @@map("community")
 }
@@ -326,6 +327,22 @@ enum ChatRole {
   MEMBER
 }
 
+enum OrderStatus {
+  pending
+  paid
+  shipping
+  delivered
+  cancelled
+  refunded
+}
+
+enum PaymentTransactionStatus {
+  pending
+  success
+  failed
+  refunded
+}
+
 model Shop {
   id          String    @id @default(cuid())
   isActive    Boolean   @default(true)
@@ -335,15 +352,17 @@ model Shop {
   isDeleted   Boolean   @default(false) @map("is_deleted")
   deletedAt   DateTime? @map("deleted_at")
   metadata    Json?
-  idolId      String    @map("idolId")
+  communityId String    @map("community_id")
   name        String    @db.VarChar(255)
   description String?   @db.Text
   avatarUrl   String?   @map("avatar_url") @db.VarChar(255)
 
-  idol     User      @relation(fields: [idolId], references: [id], onDelete: Cascade)
-  products Product[]
+  community Community @relation(fields: [communityId], references: [id], onDelete: Cascade)
+  products  Product[]
+  User      User?     @relation(fields: [userId], references: [id])
+  userId    String?
 
-  @@index([idolId])
+  @@index([communityId])
   @@map("shop")
 }
 
@@ -456,20 +475,20 @@ model CartItem {
 }
 
 model Order {
-  id              String    @id @default(cuid())
-  isActive        Boolean   @default(true)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  version         Int       @default(0)
-  isDeleted       Boolean   @default(false) @map("is_deleted")
-  deletedAt       DateTime? @map("deleted_at")
+  id              String      @id @default(cuid())
+  isActive        Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  version         Int         @default(0)
+  isDeleted       Boolean     @default(false) @map("is_deleted")
+  deletedAt       DateTime?   @map("deleted_at")
   metadata        Json?
-  userId          String    @map("user_id")
-  totalAmount     Float     @map("total_amount")
-  status          String    @db.VarChar(50)
-  shippingAddress Json      @map("shipping_address")
-  paymentMethod   String    @map("payment_method") @db.VarChar(50)
-  paidAt          DateTime? @map("paid_at")
+  userId          String      @map("user_id")
+  totalAmount     Float       @map("total_amount")
+  status          OrderStatus
+  shippingAddress Json        @map("shipping_address")
+  paymentMethod   String      @map("payment_method") @db.VarChar(50)
+  paidAt          DateTime?   @map("paid_at")
 
   user                User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   items               OrderItem[]
@@ -506,21 +525,21 @@ model OrderItem {
 }
 
 model PaymentTransaction {
-  id            String    @id @default(cuid())
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  version       Int       @default(0)
-  isDeleted     Boolean   @default(false) @map("is_deleted")
-  deletedAt     DateTime? @map("deleted_at")
+  id            String                   @id @default(cuid())
+  isActive      Boolean                  @default(true)
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+  version       Int                      @default(0)
+  isDeleted     Boolean                  @default(false) @map("is_deleted")
+  deletedAt     DateTime?                @map("deleted_at")
   metadata      Json?
-  orderId       String    @map("orderId")
-  userId        String    @map("userId")
+  orderId       String                   @map("orderId")
+  userId        String                   @map("userId")
   amount        Float
-  provider      String    @db.VarChar(100)
-  providerTxnId String?   @map("provider_txn_id") @db.VarChar(255)
-  status        String    @db.VarChar(50)
-  paidAt        DateTime? @map("paid_at")
+  provider      String                   @db.VarChar(100)
+  providerTxnId String?                  @map("provider_txn_id") @db.VarChar(255)
+  status        PaymentTransactionStatus
+  paidAt        DateTime?                @map("paid_at")
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
