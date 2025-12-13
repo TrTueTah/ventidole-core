@@ -2731,6 +2731,316 @@ paths:
                   - message
       security: *ref_18
       tags: *ref_19
+  /v1/admin/product:
+    get:
+      operationId: AdminProductController_getAllProducts_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Search by product name
+          schema:
+            example: shirt
+            type: string
+        - name: shopId
+          required: false
+          in: query
+          description: Filter by shop ID
+          schema:
+            example: clxxxxxxx
+            type: string
+        - name: typeId
+          required: false
+          in: query
+          description: Filter by product type ID
+          schema:
+            example: clxxxxxxx
+            type: string
+        - name: isActive
+          required: false
+          in: query
+          description: Filter by active status
+          schema:
+            example: 'true'
+            type: string
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            example: createdAt
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+              - name
+              - price
+              - stock
+        - name: sortOrder
+          required: false
+          in: query
+          description: Sort order
+          schema:
+            example: desc
+            type: string
+            enum:
+              - asc
+              - desc
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: &ref_20
+        - bearer: []
+      tags: &ref_21
+        - Admin Product Management
+    post:
+      operationId: AdminProductController_createProduct_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/ProductDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_20
+      tags: *ref_21
+  /v1/admin/product/{id}:
+    get:
+      operationId: AdminProductController_getProductById_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/ProductDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_20
+      tags: *ref_21
+    patch:
+      operationId: AdminProductController_updateProduct_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/ProductDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_20
+      tags: *ref_21
+    delete:
+      operationId: AdminProductController_deleteProduct_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_20
+      tags: *ref_21
   /v1/stream-chat/token:
     post:
       operationId: StreamChatController_generateToken_v1
@@ -2773,10 +3083,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_20
+      security: &ref_22
         - bearer: []
       summary: Generate Stream Chat authentication token
-      tags: &ref_21
+      tags: &ref_23
         - Stream Chat
   /v1/stream-chat/users:
     post:
@@ -2820,9 +3130,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
+      security: *ref_22
       summary: Create or update user in Stream Chat
-      tags: *ref_21
+      tags: *ref_23
   /v1/stream-chat/users/{userId}:
     delete:
       operationId: StreamChatController_deleteUser_v1
@@ -2866,9 +3176,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
+      security: *ref_22
       summary: Delete user from Stream Chat
-      tags: *ref_21
+      tags: *ref_23
   /v1/stream-chat/channels:
     post:
       operationId: StreamChatController_createChannel_v1
@@ -2911,9 +3221,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
+      security: *ref_22
       summary: Create a new channel
-      tags: *ref_21
+      tags: *ref_23
   /v1/stream-chat/channels/{userId}:
     get:
       operationId: StreamChatController_getUserChannels_v1
@@ -2957,9 +3267,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
+      security: *ref_22
       summary: Get all channels for a user
-      tags: *ref_21
+      tags: *ref_23
   /v1/stream-chat/channels/{channelType}/{channelId}:
     delete:
       operationId: StreamChatController_deleteChannel_v1
@@ -3008,9 +3318,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
+      security: *ref_22
       summary: Delete a channel
-      tags: *ref_21
+      tags: *ref_23
   /v1/stream-chat/channels/{channelType}/{channelId}/members:
     post:
       operationId: StreamChatController_addMembers_v1
@@ -3065,9 +3375,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
+      security: *ref_22
       summary: Add members to a channel
-      tags: *ref_21
+      tags: *ref_23
     delete:
       operationId: StreamChatController_removeMembers_v1
       parameters:
@@ -3121,9 +3431,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
+      security: *ref_22
       summary: Remove members from a channel
-      tags: *ref_21
+      tags: *ref_23
   /v1/stream-chat/channels/{channelType}/{channelId}/messages:
     get:
       operationId: StreamChatController_getMessages_v1
@@ -3177,9 +3487,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
+      security: *ref_22
       summary: Get channel messages
-      tags: *ref_21
+      tags: *ref_23
     post:
       operationId: StreamChatController_sendMessage_v1
       parameters:
@@ -3233,9 +3543,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
+      security: *ref_22
       summary: Send a message to a channel
-      tags: *ref_21
+      tags: *ref_23
   /v1/knock/token:
     post:
       operationId: KnockController_generateToken_v1
@@ -3272,10 +3582,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_22
+      security: &ref_24
         - bearer: []
       summary: Generate Knock authentication token for client SDK
-      tags: &ref_23
+      tags: &ref_25
         - Knock Notifications
   /v1/knock/fcm-token:
     post:
@@ -3322,9 +3632,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
+      security: *ref_24
       summary: Register FCM token for push notifications
-      tags: *ref_23
+      tags: *ref_25
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -3816,7 +4126,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: &ref_24
+          example: &ref_26
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
             - >-
@@ -3929,7 +4239,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: *ref_24
+          example: *ref_26
           description: Array of media URLs
           nullable: true
           type: array
@@ -4737,6 +5047,275 @@ components:
           type: boolean
           example: true
           description: Whether the shop is active
+    ProductShopDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Shop ID
+        name:
+          type: string
+          example: My Shop
+          description: Shop name
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Shop avatar URL
+      required:
+        - id
+        - name
+    ProductTypeDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Product Type ID
+        name:
+          type: string
+          example: Clothing
+          description: Product type name
+      required:
+        - id
+        - name
+    ProductDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Product ID
+        name:
+          type: string
+          example: Official T-Shirt
+          description: Product name
+        description:
+          type: object
+          example: Official merchandise T-Shirt
+          description: Product description
+        price:
+          type: number
+          example: 29.99
+          description: Product price
+        stock:
+          type: number
+          example: 100
+          description: Stock quantity
+        mediaUrls:
+          type: object
+          example:
+            - https://example.com/image1.jpg
+            - https://example.com/image2.jpg
+          description: Product media URLs
+        shop:
+          description: Shop information
+          allOf:
+            - $ref: '#/components/schemas/ProductShopDto'
+        type:
+          description: Product type information
+          allOf:
+            - $ref: '#/components/schemas/ProductTypeDto'
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the product is active
+        createdAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Created at
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Updated at
+      required:
+        - id
+        - name
+        - price
+        - stock
+        - shop
+        - isActive
+        - createdAt
+        - updatedAt
+    ProductDetailShopDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Shop ID
+        name:
+          type: string
+          example: My Shop
+          description: Shop name
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Shop avatar URL
+      required:
+        - id
+        - name
+    ProductDetailTypeDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Product Type ID
+        name:
+          type: string
+          example: Clothing
+          description: Product type name
+      required:
+        - id
+        - name
+    ProductDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Product ID
+        name:
+          type: string
+          example: Official T-Shirt
+          description: Product name
+        description:
+          type: object
+          example: Official merchandise T-Shirt
+          description: Product description
+        price:
+          type: number
+          example: 29.99
+          description: Product price
+        stock:
+          type: number
+          example: 100
+          description: Stock quantity
+        mediaUrls:
+          type: object
+          example:
+            - https://example.com/image1.jpg
+            - https://example.com/image2.jpg
+          description: Product media URLs
+        shop:
+          description: Shop information
+          allOf:
+            - $ref: '#/components/schemas/ProductDetailShopDto'
+        type:
+          description: Product type information
+          allOf:
+            - $ref: '#/components/schemas/ProductDetailTypeDto'
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the product is active
+        createdAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Created at
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Updated at
+        metadata:
+          type: object
+          example:
+            key: value
+          description: Additional metadata
+        version:
+          type: number
+          example: 0
+          description: Version
+      required:
+        - id
+        - name
+        - price
+        - stock
+        - shop
+        - isActive
+        - createdAt
+        - updatedAt
+        - version
+    CreateProductDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Official T-Shirt
+          description: Product name
+        description:
+          type: string
+          example: Official merchandise T-Shirt
+          description: Product description
+        price:
+          type: number
+          example: 29.99
+          description: Product price
+        stock:
+          type: number
+          example: 100
+          description: Stock quantity
+        mediaUrls:
+          example:
+            - https://example.com/image1.jpg
+            - https://example.com/image2.jpg
+          description: Product media URLs
+          type: array
+          items:
+            type: string
+        shopId:
+          type: string
+          example: clxxxxxxx
+          description: Shop ID
+        typeId:
+          type: string
+          example: clxxxxxxx
+          description: Product Type ID
+      required:
+        - name
+        - price
+        - stock
+        - shopId
+    UpdateProductDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Official T-Shirt
+          description: Product name
+        description:
+          type: string
+          example: Official merchandise T-Shirt
+          description: Product description
+        price:
+          type: number
+          example: 29.99
+          description: Product price
+        stock:
+          type: number
+          example: 100
+          description: Stock quantity
+        mediaUrls:
+          example:
+            - https://example.com/image1.jpg
+            - https://example.com/image2.jpg
+          description: Product media URLs
+          type: array
+          items:
+            type: string
+        typeId:
+          type: string
+          example: clxxxxxxx
+          description: Product Type ID
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the product is active
     TokenDto:
       type: object
       properties:
