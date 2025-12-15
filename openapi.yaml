@@ -3041,6 +3041,329 @@ paths:
                   - message
       security: *ref_20
       tags: *ref_21
+  /v1/admin/order:
+    get:
+      operationId: AdminOrderController_getAllOrders_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Search by order ID, username, or email
+          schema:
+            example: john
+            type: string
+        - name: userId
+          required: false
+          in: query
+          description: Filter by user ID
+          schema:
+            example: clxxxxxxx
+            type: string
+        - name: status
+          required: false
+          in: query
+          description: Filter by order status
+          schema:
+            example: pending
+            type: string
+            enum:
+              - pending
+              - paid
+              - shipping
+              - delivered
+              - cancelled
+              - refunded
+        - name: paymentMethod
+          required: false
+          in: query
+          description: Filter by payment method
+          schema:
+            example: credit_card
+            type: string
+        - name: isActive
+          required: false
+          in: query
+          description: Filter by active status
+          schema:
+            example: 'true'
+            type: string
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            example: createdAt
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+              - totalAmount
+              - paidAt
+        - name: sortOrder
+          required: false
+          in: query
+          description: Sort order
+          schema:
+            example: desc
+            type: string
+            enum:
+              - asc
+              - desc
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrderDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: &ref_22
+        - bearer: []
+      tags: &ref_23
+        - Admin Order Management
+    post:
+      operationId: AdminOrderController_createOrder_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/OrderDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_22
+      tags: *ref_23
+  /v1/admin/order/{id}:
+    get:
+      operationId: AdminOrderController_getOrderById_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/OrderDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_22
+      tags: *ref_23
+    patch:
+      operationId: AdminOrderController_updateOrder_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/OrderDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_22
+      tags: *ref_23
+    delete:
+      operationId: AdminOrderController_deleteOrder_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_22
+      tags: *ref_23
   /v1/stream-chat/token:
     post:
       operationId: StreamChatController_generateToken_v1
@@ -3083,10 +3406,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_22
+      security: &ref_24
         - bearer: []
       summary: Generate Stream Chat authentication token
-      tags: &ref_23
+      tags: &ref_25
         - Stream Chat
   /v1/stream-chat/users:
     post:
@@ -3130,9 +3453,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
+      security: *ref_24
       summary: Create or update user in Stream Chat
-      tags: *ref_23
+      tags: *ref_25
   /v1/stream-chat/users/{userId}:
     delete:
       operationId: StreamChatController_deleteUser_v1
@@ -3176,9 +3499,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
+      security: *ref_24
       summary: Delete user from Stream Chat
-      tags: *ref_23
+      tags: *ref_25
   /v1/stream-chat/channels:
     post:
       operationId: StreamChatController_createChannel_v1
@@ -3221,9 +3544,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
+      security: *ref_24
       summary: Create a new channel
-      tags: *ref_23
+      tags: *ref_25
   /v1/stream-chat/channels/{userId}:
     get:
       operationId: StreamChatController_getUserChannels_v1
@@ -3267,9 +3590,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
+      security: *ref_24
       summary: Get all channels for a user
-      tags: *ref_23
+      tags: *ref_25
   /v1/stream-chat/channels/{channelType}/{channelId}:
     delete:
       operationId: StreamChatController_deleteChannel_v1
@@ -3318,9 +3641,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
+      security: *ref_24
       summary: Delete a channel
-      tags: *ref_23
+      tags: *ref_25
   /v1/stream-chat/channels/{channelType}/{channelId}/members:
     post:
       operationId: StreamChatController_addMembers_v1
@@ -3375,9 +3698,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
+      security: *ref_24
       summary: Add members to a channel
-      tags: *ref_23
+      tags: *ref_25
     delete:
       operationId: StreamChatController_removeMembers_v1
       parameters:
@@ -3431,9 +3754,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
+      security: *ref_24
       summary: Remove members from a channel
-      tags: *ref_23
+      tags: *ref_25
   /v1/stream-chat/channels/{channelType}/{channelId}/messages:
     get:
       operationId: StreamChatController_getMessages_v1
@@ -3487,9 +3810,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
+      security: *ref_24
       summary: Get channel messages
-      tags: *ref_23
+      tags: *ref_25
     post:
       operationId: StreamChatController_sendMessage_v1
       parameters:
@@ -3543,9 +3866,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
+      security: *ref_24
       summary: Send a message to a channel
-      tags: *ref_23
+      tags: *ref_25
   /v1/knock/token:
     post:
       operationId: KnockController_generateToken_v1
@@ -3582,10 +3905,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_24
+      security: &ref_26
         - bearer: []
       summary: Generate Knock authentication token for client SDK
-      tags: &ref_25
+      tags: &ref_27
         - Knock Notifications
   /v1/knock/fcm-token:
     post:
@@ -3632,9 +3955,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_24
+      security: *ref_26
       summary: Register FCM token for push notifications
-      tags: *ref_25
+      tags: *ref_27
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -4126,7 +4449,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: &ref_26
+          example: &ref_28
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
             - >-
@@ -4239,7 +4562,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: *ref_26
+          example: *ref_28
           description: Array of media URLs
           nullable: true
           type: array
@@ -5316,6 +5639,341 @@ components:
           type: boolean
           example: true
           description: Whether the product is active
+    OrderUserDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: User ID
+        username:
+          type: string
+          example: john_doe
+          description: Username
+        email:
+          type: string
+          example: user@example.com
+          description: Email
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Avatar URL
+      required:
+        - id
+        - username
+        - email
+    OrderDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Order ID
+        user:
+          description: User information
+          allOf:
+            - $ref: '#/components/schemas/OrderUserDto'
+        totalAmount:
+          type: number
+          example: 59.98
+          description: Total amount
+        status:
+          type: string
+          example: pending
+          description: Order status
+          enum:
+            - pending
+            - paid
+            - shipping
+            - delivered
+            - cancelled
+            - refunded
+        paymentMethod:
+          type: string
+          example: credit_card
+          description: Payment method
+        paidAt:
+          type: object
+          example: '2023-01-01T00:00:00.000Z'
+          description: Paid at
+        itemCount:
+          type: number
+          example: 2
+          description: Number of items
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the order is active
+        createdAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Created at
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Updated at
+      required:
+        - id
+        - user
+        - totalAmount
+        - status
+        - paymentMethod
+        - itemCount
+        - isActive
+        - createdAt
+        - updatedAt
+    OrderDetailUserDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: User ID
+        username:
+          type: string
+          example: john_doe
+          description: Username
+        email:
+          type: string
+          example: user@example.com
+          description: Email
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Avatar URL
+      required:
+        - id
+        - username
+        - email
+    OrderDetailItemDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Order Item ID
+        productId:
+          type: string
+          example: clxxxxxxx
+          description: Product ID
+        productName:
+          type: string
+          example: Official T-Shirt
+          description: Product name
+        variantId:
+          type: object
+          example: clxxxxxxx
+          description: Variant ID
+        variantName:
+          type: object
+          example: Size L
+          description: Variant name
+        price:
+          type: number
+          example: 29.99
+          description: Price
+        quantity:
+          type: number
+          example: 2
+          description: Quantity
+      required:
+        - id
+        - productId
+        - productName
+        - price
+        - quantity
+    OrderDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Order ID
+        user:
+          description: User information
+          allOf:
+            - $ref: '#/components/schemas/OrderDetailUserDto'
+        totalAmount:
+          type: number
+          example: 59.98
+          description: Total amount
+        status:
+          type: string
+          example: pending
+          description: Order status
+          enum:
+            - pending
+            - paid
+            - shipping
+            - delivered
+            - cancelled
+            - refunded
+        shippingAddress:
+          type: object
+          example:
+            street: 123 Main St
+            city: New York
+            state: NY
+            zipCode: '10001'
+            country: USA
+          description: Shipping address
+        paymentMethod:
+          type: string
+          example: credit_card
+          description: Payment method
+        paidAt:
+          type: object
+          example: '2023-01-01T00:00:00.000Z'
+          description: Paid at
+        items:
+          description: Order items
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderDetailItemDto'
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the order is active
+        createdAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Created at
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Updated at
+        metadata:
+          type: object
+          example:
+            key: value
+          description: Additional metadata
+        version:
+          type: number
+          example: 0
+          description: Version
+      required:
+        - id
+        - user
+        - totalAmount
+        - status
+        - shippingAddress
+        - paymentMethod
+        - items
+        - isActive
+        - createdAt
+        - updatedAt
+        - version
+    CreateOrderItemDto:
+      type: object
+      properties:
+        productId:
+          type: string
+          example: clxxxxxxx
+          description: Product ID
+        variantId:
+          type: string
+          example: clxxxxxxx
+          description: Variant ID
+        price:
+          type: number
+          example: 29.99
+          description: Price
+        quantity:
+          type: number
+          example: 2
+          description: Quantity
+      required:
+        - productId
+        - price
+        - quantity
+    CreateOrderDto:
+      type: object
+      properties:
+        userId:
+          type: string
+          example: clxxxxxxx
+          description: User ID
+        totalAmount:
+          type: number
+          example: 59.98
+          description: Total amount
+        status:
+          type: string
+          example: pending
+          description: Order status
+          enum:
+            - pending
+            - paid
+            - shipping
+            - delivered
+            - cancelled
+            - refunded
+          default: pending
+        shippingAddress:
+          type: object
+          example:
+            street: 123 Main St
+            city: New York
+            state: NY
+            zipCode: '10001'
+            country: USA
+          description: Shipping address
+        paymentMethod:
+          type: string
+          example: credit_card
+          description: Payment method
+        items:
+          example:
+            - productId: clxxxxxxx
+              variantId: clxxxxxxx
+              price: 29.99
+              quantity: 2
+          description: Order items
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateOrderItemDto'
+      required:
+        - userId
+        - totalAmount
+        - status
+        - shippingAddress
+        - paymentMethod
+        - items
+    UpdateOrderDto:
+      type: object
+      properties:
+        status:
+          type: string
+          example: pending
+          description: Order status
+          enum:
+            - pending
+            - paid
+            - shipping
+            - delivered
+            - cancelled
+            - refunded
+        shippingAddress:
+          type: object
+          example:
+            street: 123 Main St
+            city: New York
+            state: NY
+            zipCode: '10001'
+            country: USA
+          description: Shipping address
+        paymentMethod:
+          type: string
+          example: credit_card
+          description: Payment method
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the order is active
     TokenDto:
       type: object
       properties:
