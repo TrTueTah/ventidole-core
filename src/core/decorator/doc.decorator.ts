@@ -5,11 +5,8 @@ import {
   ApiOkResponse,
   getSchemaPath,
 } from '@nestjs/swagger';
+import { PageInfo } from '@shared/dto/pagination-response.dto';
 import { BaseResponse } from '@shared/helper/response';
-import {
-  PaginationResponse,
-  PageInfo,
-} from '@shared/dto/pagination-response.dto';
 
 export function ApiExtraModelsCustom(...models: Function[]) {
   return ApiExtraModels(BaseResponse, ...models);

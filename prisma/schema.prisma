@@ -394,6 +394,7 @@ model Product {
   shopId      String    @map("shopId")
   name        String    @db.VarChar(255)
   description String?   @db.Text
+  note        String?   @db.Text  
   price       Float
   stock       Int
   mediaUrls   Json?     @map("media_urls")

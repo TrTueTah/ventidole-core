@@ -3,11 +3,12 @@ import { ChatModule } from './chat/chat.module';
 import { CommentModule } from './comment/comment.module';
 import { CommunityModule } from './community/community.module';
 import { PostModule } from './post/post.module';
+import { ShopModule } from './shop/shop.module';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [PostModule, CommentModule, CommunityModule, ChatModule],
+  imports: [PostModule, CommentModule, CommunityModule, ChatModule, ShopModule],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

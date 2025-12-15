@@ -48,6 +48,7 @@ export type ProductMinAggregateOutputType = {
   shopId: string | null
   name: string | null
   description: string | null
+  note: string | null
   price: number | null
   stock: number | null
   typeId: string | null
@@ -64,6 +65,7 @@ export type ProductMaxAggregateOutputType = {
   shopId: string | null
   name: string | null
   description: string | null
+  note: string | null
   price: number | null
   stock: number | null
   typeId: string | null
@@ -81,6 +83,7 @@ export type ProductCountAggregateOutputType = {
   shopId: number
   name: number
   description: number
+  note: number
   price: number
   stock: number
   mediaUrls: number
@@ -112,6 +115,7 @@ export type ProductMinAggregateInputType = {
   shopId?: true
   name?: true
   description?: true
+  note?: true
   price?: true
   stock?: true
   typeId?: true
@@ -128,6 +132,7 @@ export type ProductMaxAggregateInputType = {
   shopId?: true
   name?: true
   description?: true
+  note?: true
   price?: true
   stock?: true
   typeId?: true
@@ -145,6 +150,7 @@ export type ProductCountAggregateInputType = {
   shopId?: true
   name?: true
   description?: true
+  note?: true
   price?: true
   stock?: true
   mediaUrls?: true
@@ -250,6 +256,7 @@ export type ProductGroupByOutputType = {
   shopId: string
   name: string
   description: string | null
+  note: string | null
   price: number
   stock: number
   mediaUrls: runtime.JsonValue | null
@@ -291,6 +298,7 @@ export type ProductWhereInput = {
   shopId?: Prisma.StringFilter<"Product"> | string
   name?: Prisma.StringFilter<"Product"> | string
   description?: Prisma.StringNullableFilter<"Product"> | string | null
+  note?: Prisma.StringNullableFilter<"Product"> | string | null
   price?: Prisma.FloatFilter<"Product"> | number
   stock?: Prisma.IntFilter<"Product"> | number
   mediaUrls?: Prisma.JsonNullableFilter<"Product">
@@ -314,6 +322,7 @@ export type ProductOrderByWithRelationInput = {
   shopId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  note?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   mediaUrls?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -340,6 +349,7 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   shopId?: Prisma.StringFilter<"Product"> | string
   name?: Prisma.StringFilter<"Product"> | string
   description?: Prisma.StringNullableFilter<"Product"> | string | null
+  note?: Prisma.StringNullableFilter<"Product"> | string | null
   price?: Prisma.FloatFilter<"Product"> | number
   stock?: Prisma.IntFilter<"Product"> | number
   mediaUrls?: Prisma.JsonNullableFilter<"Product">
@@ -363,6 +373,7 @@ export type ProductOrderByWithAggregationInput = {
   shopId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  note?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   mediaUrls?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -389,6 +400,7 @@ export type ProductScalarWhereWithAggregatesInput = {
   shopId?: Prisma.StringWithAggregatesFilter<"Product"> | string
   name?: Prisma.StringWithAggregatesFilter<"Product"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
+  note?: Prisma.StringNullableWithAggregatesFilter<"Product"> | string | null
   price?: Prisma.FloatWithAggregatesFilter<"Product"> | number
   stock?: Prisma.IntWithAggregatesFilter<"Product"> | number
   mediaUrls?: Prisma.JsonNullableWithAggregatesFilter<"Product">
@@ -406,6 +418,7 @@ export type ProductCreateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -428,6 +441,7 @@ export type ProductUncheckedCreateInput = {
   shopId: string
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -448,6 +462,7 @@ export type ProductUpdateInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -470,6 +485,7 @@ export type ProductUncheckedUpdateInput = {
   shopId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -491,6 +507,7 @@ export type ProductCreateManyInput = {
   shopId: string
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -508,6 +525,7 @@ export type ProductUpdateManyMutationInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -525,6 +543,7 @@ export type ProductUncheckedUpdateManyInput = {
   shopId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -553,6 +572,7 @@ export type ProductCountOrderByAggregateInput = {
   shopId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  note?: Prisma.SortOrder
   price?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   mediaUrls?: Prisma.SortOrder
@@ -576,6 +596,7 @@ export type ProductMaxOrderByAggregateInput = {
   shopId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  note?: Prisma.SortOrder
   price?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   typeId?: Prisma.SortOrder
@@ -592,6 +613,7 @@ export type ProductMinOrderByAggregateInput = {
   shopId?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  note?: Prisma.SortOrder
   price?: Prisma.SortOrder
   stock?: Prisma.SortOrder
   typeId?: Prisma.SortOrder
@@ -753,6 +775,7 @@ export type ProductCreateWithoutShopInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -773,6 +796,7 @@ export type ProductUncheckedCreateWithoutShopInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -823,6 +847,7 @@ export type ProductScalarWhereInput = {
   shopId?: Prisma.StringFilter<"Product"> | string
   name?: Prisma.StringFilter<"Product"> | string
   description?: Prisma.StringNullableFilter<"Product"> | string | null
+  note?: Prisma.StringNullableFilter<"Product"> | string | null
   price?: Prisma.FloatFilter<"Product"> | number
   stock?: Prisma.IntFilter<"Product"> | number
   mediaUrls?: Prisma.JsonNullableFilter<"Product">
@@ -840,6 +865,7 @@ export type ProductCreateWithoutTypeInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -861,6 +887,7 @@ export type ProductUncheckedCreateWithoutTypeInput = {
   shopId: string
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -906,6 +933,7 @@ export type ProductCreateWithoutVariantsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -927,6 +955,7 @@ export type ProductUncheckedCreateWithoutVariantsInput = {
   shopId: string
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -962,6 +991,7 @@ export type ProductUpdateWithoutVariantsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -983,6 +1013,7 @@ export type ProductUncheckedUpdateWithoutVariantsInput = {
   shopId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1002,6 +1033,7 @@ export type ProductCreateWithoutCartItemsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1023,6 +1055,7 @@ export type ProductUncheckedCreateWithoutCartItemsInput = {
   shopId: string
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1058,6 +1091,7 @@ export type ProductUpdateWithoutCartItemsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1079,6 +1113,7 @@ export type ProductUncheckedUpdateWithoutCartItemsInput = {
   shopId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1098,6 +1133,7 @@ export type ProductCreateWithoutOrderItemsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1119,6 +1155,7 @@ export type ProductUncheckedCreateWithoutOrderItemsInput = {
   shopId: string
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1154,6 +1191,7 @@ export type ProductUpdateWithoutOrderItemsInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1175,6 +1213,7 @@ export type ProductUncheckedUpdateWithoutOrderItemsInput = {
   shopId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1194,6 +1233,7 @@ export type ProductCreateManyShopInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1211,6 +1251,7 @@ export type ProductUpdateWithoutShopInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1231,6 +1272,7 @@ export type ProductUncheckedUpdateWithoutShopInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1251,6 +1293,7 @@ export type ProductUncheckedUpdateManyWithoutShopInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1269,6 +1312,7 @@ export type ProductCreateManyTypeInput = {
   shopId: string
   name: string
   description?: string | null
+  note?: string | null
   price: number
   stock: number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1285,6 +1329,7 @@ export type ProductUpdateWithoutTypeInput = {
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1306,6 +1351,7 @@ export type ProductUncheckedUpdateWithoutTypeInput = {
   shopId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1326,6 +1372,7 @@ export type ProductUncheckedUpdateManyWithoutTypeInput = {
   shopId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  note?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.FloatFieldUpdateOperationsInput | number
   stock?: Prisma.IntFieldUpdateOperationsInput | number
   mediaUrls?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -1392,6 +1439,7 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   shopId?: boolean
   name?: boolean
   description?: boolean
+  note?: boolean
   price?: boolean
   stock?: boolean
   mediaUrls?: boolean
@@ -1416,6 +1464,7 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   shopId?: boolean
   name?: boolean
   description?: boolean
+  note?: boolean
   price?: boolean
   stock?: boolean
   mediaUrls?: boolean
@@ -1436,6 +1485,7 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   shopId?: boolean
   name?: boolean
   description?: boolean
+  note?: boolean
   price?: boolean
   stock?: boolean
   mediaUrls?: boolean
@@ -1456,13 +1506,14 @@ export type ProductSelectScalar = {
   shopId?: boolean
   name?: boolean
   description?: boolean
+  note?: boolean
   price?: boolean
   stock?: boolean
   mediaUrls?: boolean
   typeId?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "isDeleted" | "deletedAt" | "metadata" | "shopId" | "name" | "description" | "price" | "stock" | "mediaUrls" | "typeId", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "isDeleted" | "deletedAt" | "metadata" | "shopId" | "name" | "description" | "note" | "price" | "stock" | "mediaUrls" | "typeId", ExtArgs["result"]["product"]>
 export type ProductInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   shop?: boolean | Prisma.ShopDefaultArgs<ExtArgs>
   type?: boolean | Prisma.Product$typeArgs<ExtArgs>
@@ -1501,6 +1552,7 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     shopId: string
     name: string
     description: string | null
+    note: string | null
     price: number
     stock: number
     mediaUrls: runtime.JsonValue | null
@@ -1944,6 +1996,7 @@ export interface ProductFieldRefs {
   readonly shopId: Prisma.FieldRef<"Product", 'String'>
   readonly name: Prisma.FieldRef<"Product", 'String'>
   readonly description: Prisma.FieldRef<"Product", 'String'>
+  readonly note: Prisma.FieldRef<"Product", 'String'>
   readonly price: Prisma.FieldRef<"Product", 'Float'>
   readonly stock: Prisma.FieldRef<"Product", 'Int'>
   readonly mediaUrls: Prisma.FieldRef<"Product", 'Json'>

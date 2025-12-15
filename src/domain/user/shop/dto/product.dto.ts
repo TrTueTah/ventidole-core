@@ -1,34 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class AdminProductShopDto {
-  @ApiProperty({ example: 'clxxxxxxx', description: 'Shop ID' })
-  id: string;
-
-  @ApiProperty({
-    example: 'My Shop',
-    description: 'Shop name',
-  })
-  name: string;
-
-  @ApiPropertyOptional({
-    example: 'https://example.com/avatar.jpg',
-    description: 'Shop avatar URL',
-  })
-  avatarUrl?: string | null;
-}
-
-export class AdminProductTypeDto {
-  @ApiProperty({ example: 'clxxxxxxx', description: 'Product Type ID' })
-  id: string;
-
-  @ApiProperty({
-    example: 'Clothing',
-    description: 'Product type name',
-  })
-  name: string;
-}
-
-export class AdminProductDto {
+export class UserProductDto {
   @ApiProperty({ example: 'clxxxxxxx', description: 'Product ID' })
   id: string;
 
@@ -65,18 +37,6 @@ export class AdminProductDto {
   })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   mediaUrls?: any;
-
-  @ApiProperty({
-    description: 'Shop information',
-    type: () => AdminProductShopDto,
-  })
-  shop: AdminProductShopDto;
-
-  @ApiPropertyOptional({
-    description: 'Product type information',
-    type: () => AdminProductTypeDto,
-  })
-  type?: AdminProductTypeDto | null;
 
   @ApiProperty({
     example: true,

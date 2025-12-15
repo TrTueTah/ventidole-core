@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class AdminProductVariantDto {
+export class UserProductVariantDto {
   @ApiProperty({ example: 'clxxxxxxx', description: 'Variant ID' })
   id: string;
 
@@ -41,7 +41,7 @@ export class AdminProductVariantDto {
   updatedAt: Date;
 }
 
-export class AdminProductDetailShopDto {
+export class UserProductDetailShopDto {
   @ApiProperty({ example: 'clxxxxxxx', description: 'Shop ID' })
   id: string;
 
@@ -58,7 +58,7 @@ export class AdminProductDetailShopDto {
   avatarUrl?: string | null;
 }
 
-export class AdminProductDetailTypeDto {
+export class UserProductDetailTypeDto {
   @ApiProperty({ example: 'clxxxxxxx', description: 'Product Type ID' })
   id: string;
 
@@ -69,7 +69,7 @@ export class AdminProductDetailTypeDto {
   name: string;
 }
 
-export class AdminProductDetailDto {
+export class UserProductDetailDto {
   @ApiProperty({ example: 'clxxxxxxx', description: 'Product ID' })
   id: string;
 
@@ -84,6 +84,12 @@ export class AdminProductDetailDto {
     description: 'Product description',
   })
   description?: string | null;
+
+  @ApiPropertyOptional({
+    example: 'Official merchandise T-Shirt',
+    description: 'Product note',
+  })
+  note?: string | null;
 
   @ApiProperty({
     example: 29.99,
@@ -109,21 +115,21 @@ export class AdminProductDetailDto {
 
   @ApiProperty({
     description: 'Shop information',
-    type: () => AdminProductDetailShopDto,
+    type: () => UserProductDetailShopDto,
   })
-  shop: AdminProductDetailShopDto;
+  shop: UserProductDetailShopDto;
 
   @ApiPropertyOptional({
     description: 'Product type information',
-    type: () => AdminProductDetailTypeDto,
+    type: () => UserProductDetailTypeDto,
   })
-  type?: AdminProductDetailTypeDto | null;
+  type?: UserProductDetailTypeDto | null;
 
   @ApiProperty({
     description: 'Product variants',
-    type: () => [AdminProductVariantDto],
+    type: () => [UserProductVariantDto],
   })
-  variants: AdminProductVariantDto[];
+  variants: UserProductVariantDto[];
 
   @ApiProperty({
     example: true,
@@ -142,17 +148,4 @@ export class AdminProductDetailDto {
     description: 'Updated at',
   })
   updatedAt: Date;
-
-  @ApiPropertyOptional({
-    example: { key: 'value' },
-    description: 'Additional metadata',
-  })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metadata?: Record<string, any> | null;
-
-  @ApiProperty({
-    example: 0,
-    description: 'Version',
-  })
-  version: number;
 }

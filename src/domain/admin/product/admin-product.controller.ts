@@ -20,16 +20,30 @@ import { BaseResponse } from '@shared/helper/response';
 import { AdminProductService } from './admin-product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { GetProductsDto } from './dto/get-products.dto';
-import { ProductDetailDto } from './dto/product-detail.dto';
-import { ProductDto } from './dto/product.dto';
+import {
+  AdminProductDetailDto,
+  AdminProductDetailShopDto,
+  AdminProductDetailTypeDto,
+  AdminProductVariantDto,
+} from './dto/product-detail.dto';
+import {
+  AdminProductDto,
+  AdminProductShopDto,
+  AdminProductTypeDto,
+} from './dto/product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
 @ApiBearerAuth()
 @ApiTags('Admin Product Management')
 @Controller({ path: 'admin/product', version: ApiVersion.V1 })
 @ApiExtraModelsCustom(
-  ProductDto,
-  ProductDetailDto,
+  AdminProductDto,
+  AdminProductShopDto,
+  AdminProductTypeDto,
+  AdminProductDetailDto,
+  AdminProductVariantDto,
+  AdminProductDetailShopDto,
+  AdminProductDetailTypeDto,
   CreateProductDto,
   UpdateProductDto,
 )
@@ -37,39 +51,39 @@ export class AdminProductController {
   constructor(private readonly adminProductService: AdminProductService) {}
 
   @Get()
-  @ApiPaginationResponse(ProductDto)
+  @ApiPaginationResponse(AdminProductDto)
   async getAllProducts(
     @Query() filters: GetProductsDto,
-  ): Promise<PaginationResponse<ProductDto>> {
+  ): Promise<PaginationResponse<AdminProductDto>> {
     const result = await this.adminProductService.getAllProducts(filters);
     return result;
   }
 
   @Get(':id')
-  @ApiResponseCustom(ProductDetailDto)
+  @ApiResponseCustom(AdminProductDetailDto)
   async getProductById(
     @Param('id') id: string,
-  ): Promise<BaseResponse<ProductDetailDto>> {
+  ): Promise<BaseResponse<AdminProductDetailDto>> {
     const result = await this.adminProductService.getProductById(id);
     return BaseResponse.of(result);
   }
 
   @Post()
-  @ApiResponseCustom(ProductDto)
+  @ApiResponseCustom(AdminProductDto)
   async createProduct(
     @Body() createProductDto: CreateProductDto,
-  ): Promise<BaseResponse<ProductDto>> {
+  ): Promise<BaseResponse<AdminProductDto>> {
     const result =
       await this.adminProductService.createProduct(createProductDto);
     return BaseResponse.of(result);
   }
 
   @Patch(':id')
-  @ApiResponseCustom(ProductDto)
+  @ApiResponseCustom(AdminProductDto)
   async updateProduct(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
-  ): Promise<BaseResponse<ProductDto>> {
+  ): Promise<BaseResponse<AdminProductDto>> {
     const result = await this.adminProductService.updateProduct(
       id,
       updateProductDto,
