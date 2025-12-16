@@ -63,6 +63,20 @@ export enum ErrorCode {
   KnockFcmTokenRegistrationFailed = 'KnockFcmTokenRegistrationFailed',
   InvalidFcmToken = 'InvalidFcmToken',
   UserNotFound = 'UserNotFound',
+  // Order & Payment
+  OrderNotFound = 'OrderNotFound',
+  OrderAccessDenied = 'OrderAccessDenied',
+  OrderInvalidStatus = 'OrderInvalidStatus',
+  OrderCannotRetryPayment = 'OrderCannotRetryPayment',
+  OrderAlreadyPaid = 'OrderAlreadyPaid',
+  OrderItemsEmpty = 'OrderItemsEmpty',
+  OrderProductInvalid = 'OrderProductInvalid',
+  OrderProductUnavailable = 'OrderProductUnavailable',
+  OrderVariantNotFound = 'OrderVariantNotFound',
+  OrderInsufficientStock = 'OrderInsufficientStock',
+  PaymentTransactionNotFound = 'PaymentTransactionNotFound',
+  PaymentTransactionCreateFailed = 'PaymentTransactionCreateFailed',
+  PaymentWebhookSignatureInvalid = 'PaymentWebhookSignatureInvalid',
 }
 
 const ErrorCodeSet = new Set(Object.values(ErrorCode));

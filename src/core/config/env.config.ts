@@ -143,6 +143,22 @@ class EnvironmentVariable {
 
   @IsString()
   KNOCK_IN_APP_NOTIFICATION_WORKFLOW_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  PAYOS_API_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  PAYOS_CLIENT_ID: string;
+
+  @IsString()
+  @IsNotEmpty()
+  PAYOS_CHECKSUM_KEY: string;
+
+  @IsString()
+  @IsNotEmpty()
+  FRONTEND_URL: string;
 }
 
 export const ENVIRONMENT = {} as EnvironmentVariable;

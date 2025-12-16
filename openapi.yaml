@@ -3465,12 +3465,13 @@ paths:
             example: pending
             type: string
             enum:
-              - pending
-              - paid
-              - shipping
-              - delivered
-              - cancelled
-              - refunded
+              - PENDING_PAYMENT
+              - CONFIRMED
+              - PAID
+              - SHIPPING
+              - DELIVERED
+              - CANCELED
+              - EXPIRED
         - name: paymentMethod
           required: false
           in: query
@@ -3750,6 +3751,173 @@ paths:
                   - message
       security: *ref_24
       tags: *ref_25
+  /v1/orders/confirm:
+    post:
+      description: >-
+        Entry point for order creation. Creates order with PENDING_PAYMENT
+        (CREDIT) or CONFIRMED (COD) status. For CREDIT, returns PayOS payment
+        link.
+      operationId: OrderController_confirmOrder_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmOrderDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/OrderResponseDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: &ref_26
+        - bearer: []
+      summary: Confirm order and create payment
+      tags: &ref_27
+        - Orders
+  /v1/orders/{orderId}/retry-payment:
+    post:
+      description: >-
+        Creates a new payment transaction with new orderCode and PayOS link.
+        Only works for CREDIT orders in PENDING_PAYMENT status.
+      operationId: OrderController_retryPayment_v1
+      parameters:
+        - name: orderId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/OrderResponseDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_26
+      summary: Retry payment for PENDING_PAYMENT order
+      tags: *ref_27
+  /v1/orders/{orderId}:
+    get:
+      description: >-
+        Frontend polling endpoint to check order payment status. Returns current
+        order status and payment info if applicable.
+      operationId: OrderController_getOrderStatus_v1
+      parameters:
+        - name: orderId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/OrderResponseDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_26
+      summary: Get order status
+      tags: *ref_27
+  /webhooks/payos:
+    post:
+      description: >-
+        Webhook endpoint for PayOS payment confirmations. Must be publicly
+        accessible, HTTPS, and respond within 5 seconds. No authentication
+        required.
+      operationId: WebhookController_handlePayOSWebhook
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayOSWebhookDto'
+      responses:
+        '200':
+          description: Webhook processed successfully
+        '400':
+          description: Invalid signature or webhook data
+      summary: PayOS payment webhook
+      tags:
+        - Webhooks
   /v1/stream-chat/token:
     post:
       operationId: StreamChatController_generateToken_v1
@@ -3792,10 +3960,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_26
+      security: &ref_28
         - bearer: []
       summary: Generate Stream Chat authentication token
-      tags: &ref_27
+      tags: &ref_29
         - Stream Chat
   /v1/stream-chat/users:
     post:
@@ -3839,9 +4007,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
+      security: *ref_28
       summary: Create or update user in Stream Chat
-      tags: *ref_27
+      tags: *ref_29
   /v1/stream-chat/users/{userId}:
     delete:
       operationId: StreamChatController_deleteUser_v1
@@ -3885,9 +4053,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
+      security: *ref_28
       summary: Delete user from Stream Chat
-      tags: *ref_27
+      tags: *ref_29
   /v1/stream-chat/channels:
     post:
       operationId: StreamChatController_createChannel_v1
@@ -3930,9 +4098,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
+      security: *ref_28
       summary: Create a new channel
-      tags: *ref_27
+      tags: *ref_29
   /v1/stream-chat/channels/{userId}:
     get:
       operationId: StreamChatController_getUserChannels_v1
@@ -3976,9 +4144,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
+      security: *ref_28
       summary: Get all channels for a user
-      tags: *ref_27
+      tags: *ref_29
   /v1/stream-chat/channels/{channelType}/{channelId}:
     delete:
       operationId: StreamChatController_deleteChannel_v1
@@ -4027,9 +4195,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
+      security: *ref_28
       summary: Delete a channel
-      tags: *ref_27
+      tags: *ref_29
   /v1/stream-chat/channels/{channelType}/{channelId}/members:
     post:
       operationId: StreamChatController_addMembers_v1
@@ -4084,9 +4252,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
+      security: *ref_28
       summary: Add members to a channel
-      tags: *ref_27
+      tags: *ref_29
     delete:
       operationId: StreamChatController_removeMembers_v1
       parameters:
@@ -4140,9 +4308,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
+      security: *ref_28
       summary: Remove members from a channel
-      tags: *ref_27
+      tags: *ref_29
   /v1/stream-chat/channels/{channelType}/{channelId}/messages:
     get:
       operationId: StreamChatController_getMessages_v1
@@ -4196,9 +4364,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
+      security: *ref_28
       summary: Get channel messages
-      tags: *ref_27
+      tags: *ref_29
     post:
       operationId: StreamChatController_sendMessage_v1
       parameters:
@@ -4252,9 +4420,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
+      security: *ref_28
       summary: Send a message to a channel
-      tags: *ref_27
+      tags: *ref_29
   /v1/knock/token:
     post:
       operationId: KnockController_generateToken_v1
@@ -4291,10 +4459,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_28
+      security: &ref_30
         - bearer: []
       summary: Generate Knock authentication token for client SDK
-      tags: &ref_29
+      tags: &ref_31
         - Knock Notifications
   /v1/knock/fcm-token:
     post:
@@ -4341,9 +4509,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
+      security: *ref_30
       summary: Register FCM token for push notifications
-      tags: *ref_29
+      tags: *ref_31
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -4499,6 +4667,19 @@ components:
             - KnockFcmTokenRegistrationFailed
             - InvalidFcmToken
             - UserNotFound
+            - OrderNotFound
+            - OrderAccessDenied
+            - OrderInvalidStatus
+            - OrderCannotRetryPayment
+            - OrderAlreadyPaid
+            - OrderItemsEmpty
+            - OrderProductInvalid
+            - OrderProductUnavailable
+            - OrderVariantNotFound
+            - OrderInsufficientStock
+            - PaymentTransactionNotFound
+            - PaymentTransactionCreateFailed
+            - PaymentWebhookSignatureInvalid
           description: Error code (optional)
       required:
         - statusCode
@@ -4835,7 +5016,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: &ref_30
+          example: &ref_32
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
             - >-
@@ -4948,7 +5129,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: *ref_30
+          example: *ref_32
           description: Array of media URLs
           nullable: true
           type: array
@@ -6585,12 +6766,13 @@ components:
           example: pending
           description: Order status
           enum:
-            - pending
-            - paid
-            - shipping
-            - delivered
-            - cancelled
-            - refunded
+            - PENDING_PAYMENT
+            - CONFIRMED
+            - PAID
+            - SHIPPING
+            - DELIVERED
+            - CANCELED
+            - EXPIRED
         paymentMethod:
           type: string
           example: credit_card
@@ -6707,12 +6889,13 @@ components:
           example: pending
           description: Order status
           enum:
-            - pending
-            - paid
-            - shipping
-            - delivered
-            - cancelled
-            - refunded
+            - PENDING_PAYMENT
+            - CONFIRMED
+            - PAID
+            - SHIPPING
+            - DELIVERED
+            - CANCELED
+            - EXPIRED
         shippingAddress:
           type: object
           example:
@@ -6809,13 +6992,13 @@ components:
           example: pending
           description: Order status
           enum:
-            - pending
-            - paid
-            - shipping
-            - delivered
-            - cancelled
-            - refunded
-          default: pending
+            - PENDING_PAYMENT
+            - CONFIRMED
+            - PAID
+            - SHIPPING
+            - DELIVERED
+            - CANCELED
+            - EXPIRED
         shippingAddress:
           type: object
           example:
@@ -6854,12 +7037,13 @@ components:
           example: pending
           description: Order status
           enum:
-            - pending
-            - paid
-            - shipping
-            - delivered
-            - cancelled
-            - refunded
+            - PENDING_PAYMENT
+            - CONFIRMED
+            - PAID
+            - SHIPPING
+            - DELIVERED
+            - CANCELED
+            - EXPIRED
         shippingAddress:
           type: object
           example:
@@ -6877,6 +7061,159 @@ components:
           type: boolean
           example: true
           description: Whether the order is active
+    OrderItemDto:
+      type: object
+      properties:
+        productId:
+          type: string
+          description: Product ID
+          example: cm1abc123xyz
+        variantId:
+          type: string
+          description: Product variant ID (optional)
+          example: cm1variant123
+        quantity:
+          type: number
+          description: Quantity
+          example: 2
+          minimum: 1
+      required:
+        - productId
+        - quantity
+    ConfirmOrderDto:
+      type: object
+      properties:
+        items:
+          description: Order items
+          example:
+            - productId: cm1abc123xyz
+              quantity: 2
+            - productId: cm1def456uvw
+              variantId: cm1variant789
+              quantity: 1
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItemDto'
+        paymentMethod:
+          type: string
+          description: Payment method
+          enum:
+            - CREDIT
+            - COD
+          example: CREDIT
+        shippingAddressId:
+          type: string
+          description: Shipping address ID
+          example: cm1address123
+      required:
+        - items
+        - paymentMethod
+        - shippingAddressId
+    PaymentInfoDto:
+      type: object
+      properties:
+        provider:
+          type: string
+          description: Payment provider
+          example: PAYOS
+        orderCode:
+          type: number
+          description: PayOS order code (numeric)
+          example: 123456
+        paymentLinkId:
+          type: string
+          description: Payment link ID from PayOS
+          example: abc123xyz
+        checkoutUrl:
+          type: string
+          description: Checkout URL for payment
+          example: https://pay.payos.vn/abc123xyz
+        qrCode:
+          type: string
+          description: QR code in base64 format
+          example: data:image/png;base64,...
+      required:
+        - provider
+        - orderCode
+        - paymentLinkId
+        - checkoutUrl
+        - qrCode
+    OrderResponseDto:
+      type: object
+      properties:
+        orderId:
+          type: string
+          description: Order ID
+          example: cm1order123xyz
+        status:
+          type: object
+          description: Order status
+          example: PENDING_PAYMENT
+        paymentMethod:
+          type: object
+          description: Payment method
+          example: CREDIT
+        totalAmount:
+          type: number
+          description: Total amount
+          example: 150000
+        payment:
+          description: Payment information (only for CREDIT)
+          allOf:
+            - $ref: '#/components/schemas/PaymentInfoDto'
+        createdAt:
+          format: date-time
+          type: string
+          description: Order creation timestamp
+      required:
+        - orderId
+        - status
+        - paymentMethod
+        - totalAmount
+        - createdAt
+    PayOSWebhookDataDto:
+      type: object
+      properties:
+        orderCode:
+          type: number
+          description: Order code from PayOS
+          example: 123456
+        amount:
+          type: number
+          description: Paid amount
+          example: 10000
+        status:
+          type: string
+          description: Payment status
+          example: PAID
+      required:
+        - orderCode
+        - amount
+        - status
+    PayOSWebhookDto:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Response code
+          example: '00'
+        desc:
+          type: string
+          description: Description
+          example: success
+        data:
+          description: Webhook data
+          allOf:
+            - $ref: '#/components/schemas/PayOSWebhookDataDto'
+        signature:
+          type: string
+          description: HMAC SHA256 signature
+          example: abc123...
+      required:
+        - code
+        - desc
+        - data
+        - signature
     TokenDto:
       type: object
       properties:

@@ -39,7 +39,8 @@ const ErrorMessage: Record<
   [ErrorCode.FanProfileNotFound]: 'Fan profile not found.',
   [ErrorCode.IdolProfileNotFound]: 'Idol profile not found.',
   [ErrorCode.ChatChannelNotFound]: 'Chat channel not found.',
-  [ErrorCode.NotChannelParticipant]: 'You are not a participant of this channel.',
+  [ErrorCode.NotChannelParticipant]:
+    'You are not a participant of this channel.',
   [ErrorCode.NotChannelAdmin]: 'You are not an admin of this channel.',
   [ErrorCode.CannotSendToAnnouncementChannel]:
     'Cannot send messages to announcement channel.',
@@ -54,6 +55,27 @@ const ErrorMessage: Record<
   [ErrorCode.CommunityNotFound]: 'Community not found.',
   [ErrorCode.AlreadyJoinedCommunity]: 'You have already joined this community.',
   [ErrorCode.NotJoinedCommunity]: 'You have not joined this community.',
+  // Order & Payment
+  [ErrorCode.OrderNotFound]: 'Order not found.',
+  [ErrorCode.OrderAccessDenied]:
+    'You do not have permission to access this order.',
+  [ErrorCode.OrderInvalidStatus]: 'Order status is invalid for this operation.',
+  [ErrorCode.OrderCannotRetryPayment]:
+    'Only PENDING_PAYMENT orders with CREDIT payment method can retry payment.',
+  [ErrorCode.OrderAlreadyPaid]: 'Order already has a successful payment.',
+  [ErrorCode.OrderItemsEmpty]: 'Order must contain at least one valid item.',
+  [ErrorCode.OrderProductInvalid]: 'Some products are invalid or unavailable.',
+  [ErrorCode.OrderProductUnavailable]: (productId: string) =>
+    `Product ${productId} not found.`,
+  [ErrorCode.OrderVariantNotFound]: (variantId: string) =>
+    `Variant ${variantId} not found.`,
+  [ErrorCode.OrderInsufficientStock]: (name: string) =>
+    `Insufficient stock for ${name}.`,
+  [ErrorCode.PaymentTransactionNotFound]: (orderCode: number) =>
+    `Payment transaction with orderCode ${orderCode} not found.`,
+  [ErrorCode.PaymentTransactionCreateFailed]:
+    'Failed to create payment transaction.',
+  [ErrorCode.PaymentWebhookSignatureInvalid]: 'Invalid webhook signature.',
 };
 
 export function getErrorMessage(code: ErrorCode, ...param: unknown[]): string {

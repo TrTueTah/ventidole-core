@@ -44,22 +44,32 @@ export type ChatRole = (typeof ChatRole)[keyof typeof ChatRole]
 
 
 export const OrderStatus = {
-  pending: 'pending',
-  paid: 'paid',
-  shipping: 'shipping',
-  delivered: 'delivered',
-  cancelled: 'cancelled',
-  refunded: 'refunded'
+  PENDING_PAYMENT: 'PENDING_PAYMENT',
+  CONFIRMED: 'CONFIRMED',
+  PAID: 'PAID',
+  SHIPPING: 'SHIPPING',
+  DELIVERED: 'DELIVERED',
+  CANCELED: 'CANCELED',
+  EXPIRED: 'EXPIRED'
 } as const
 
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
 
 
 export const PaymentTransactionStatus = {
-  pending: 'pending',
-  success: 'success',
-  failed: 'failed',
-  refunded: 'refunded'
+  PENDING: 'PENDING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  CANCELED: 'CANCELED',
+  EXPIRED: 'EXPIRED'
 } as const
 
 export type PaymentTransactionStatus = (typeof PaymentTransactionStatus)[keyof typeof PaymentTransactionStatus]
+
+
+export const PaymentMethod = {
+  CREDIT: 'CREDIT',
+  COD: 'COD'
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]

@@ -465,9 +465,13 @@ export const PaymentTransactionScalarFieldEnum = {
   userId: 'userId',
   amount: 'amount',
   provider: 'provider',
+  orderCode: 'orderCode',
+  paymentLinkId: 'paymentLinkId',
   providerTxnId: 'providerTxnId',
   status: 'status',
-  paidAt: 'paidAt'
+  paidAt: 'paidAt',
+  checkoutUrl: 'checkoutUrl',
+  qrCode: 'qrCode'
 } as const
 
 export type PaymentTransactionScalarFieldEnum = (typeof PaymentTransactionScalarFieldEnum)[keyof typeof PaymentTransactionScalarFieldEnum]
