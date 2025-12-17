@@ -38,12 +38,12 @@ export class WebhookController {
     WinstonLogger.info('PayOS webhook received', {
       metadata: {
         orderCode: webhook.data.orderCode,
-        status: webhook.data.status,
         amount: webhook.data.amount,
       },
     });
 
     // CRITICAL: Verify webhook signature
+    // PayOS signs all fields in webhook.data, not the top-level fields
     const isValid = this.paymentGateway.verifyWebhookSignature(
       webhook.data,
       webhook.signature,
@@ -60,33 +60,16 @@ export class WebhookController {
     }
 
     // Extract webhook data
-    const { orderCode, status, amount } = webhook.data;
+    const { orderCode, amount } = webhook.data;
+    // Note: PayOS webhook doesn't include 'status' field, payment is PAID when webhook is received
 
     try {
-      // Handle different payment statuses
-      switch (status) {
-        case 'PAID':
-          await this.orderService.handlePaymentSuccess(orderCode);
-          WinstonLogger.info('Payment success handled', {
-            metadata: { orderCode, amount },
-          });
-          break;
-
-        case 'FAILED':
-        case 'CANCELED':
-        case 'EXPIRED':
-          // Optionally handle failed/canceled/expired payments
-          WinstonLogger.info('Payment not successful', {
-            metadata: { orderCode, status },
-          });
-          // You can add logic to mark transaction as failed/canceled/expired
-          break;
-
-        default:
-          WinstonLogger.warn('Unknown payment status from webhook', {
-            metadata: { orderCode, status },
-          });
-      }
+      // PayOS webhook is only sent for successful payments (code: "00")
+      // Handle payment success
+      await this.orderService.handlePaymentSuccess(orderCode);
+      WinstonLogger.info('Payment success handled', {
+        metadata: { orderCode, amount },
+      });
 
       return { success: true };
     } catch (error) {

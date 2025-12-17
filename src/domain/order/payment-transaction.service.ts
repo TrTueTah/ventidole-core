@@ -1,4 +1,3 @@
-import { ENVIRONMENT } from '@core/config/env.config';
 import { Injectable } from '@nestjs/common';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
@@ -20,14 +19,17 @@ export class PaymentTransactionService {
   /**
    * Generate unique orderCode for PayOS
    * Uses current timestamp with random suffix to ensure uniqueness
+   * Must fit within INT4 (max: 2,147,483,647)
    * @returns Unique numeric orderCode
    */
   private generateOrderCode(): number {
     const timestamp = Date.now();
     const random = Math.floor(Math.random() * 1000);
-    // Take last 9 digits of timestamp and append 3-digit random
+    // Use last 7 digits of timestamp (max ~9,999,999) + 3-digit random (max 999)
+    // This creates a max value of ~9,999,999,999 but we need to keep it under 2,147,483,647
+    // So we'll use last 6 digits of timestamp + 3-digit random = 9 digits max (999,999,999)
     const orderCode = parseInt(
-      `${timestamp.toString().slice(-9)}${random.toString().padStart(3, '0')}`,
+      `${timestamp.toString().slice(-6)}${random.toString().padStart(3, '0')}`,
     );
     return orderCode;
   }
@@ -67,13 +69,31 @@ export class PaymentTransactionService {
     }
 
     // Create PayOS payment link
-    const payosResponse = await this.payosService.createPayment({
-      orderCode,
-      amount,
-      description,
-      cancelUrl: `${ENVIRONMENT.FRONTEND_URL}/orders/${orderId}/cancel`,
-      returnUrl: `${ENVIRONMENT.FRONTEND_URL}/orders/${orderId}`,
-    });
+    let payosResponse;
+    try {
+      // TODO: Remove hardcoded amount - PayOS requires integer amounts (VND)
+      payosResponse = await this.payosService.createPayment({
+        orderCode,
+        amount: 2000,
+        description,
+        // cancelUrl: `${ENVIRONMENT.FRONTEND_URL}/orders/${orderId}/cancel`,
+        // returnUrl: `${ENVIRONMENT.FRONTEND_URL}/orders/${orderId}`,
+        cancelUrl: 'https://www.google.com/?hl=vi',
+        returnUrl: 'https://www.google.com/?hl=vi',
+      });
+    } catch (error) {
+      WinstonLogger.error('PayOS service error', {
+        metadata: {
+          orderId,
+          orderCode,
+          error: error.message,
+        },
+      });
+      throw new CustomError(
+        ErrorCode.PaymentTransactionCreateFailed,
+        `Failed to create payment link: ${error.message}`,
+      );
+    }
 
     // Create payment transaction record
     const transaction = await this.prisma.paymentTransaction.create({

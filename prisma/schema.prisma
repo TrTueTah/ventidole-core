@@ -44,6 +44,7 @@ model User {
   carts               Cart[]
   orders              Order[]
   paymentTransactions PaymentTransaction[]
+  addresses           Address[]
 
   @@map("user")
 }
@@ -561,4 +562,78 @@ model PaymentTransaction {
   @@index([status])
   @@index([orderCode])
   @@map("payment_transaction")
+}
+
+model Province {
+  id           String    @id @default(cuid())
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  version      Int       @default(0)
+  isDeleted    Boolean   @default(false) @map("is_deleted")
+  deletedAt    DateTime? @map("deleted_at")
+  metadata     Json?
+  name         String    @db.VarChar(255)
+  code         Int       @unique
+  divisionType String    @map("division_type") @db.VarChar(100)
+  phoneCode    Int       @map("phone_code")
+  codename     String    @db.VarChar(255)
+
+  districts District[]
+  addresses Address[]
+
+  @@index([code])
+  @@map("province")
+}
+
+model District {
+  id           String    @id @default(cuid())
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  version      Int       @default(0)
+  isDeleted    Boolean   @default(false) @map("is_deleted")
+  deletedAt    DateTime? @map("deleted_at")
+  metadata     Json?
+  name         String    @db.VarChar(255)
+  code         Int       @unique
+  codename     String    @db.VarChar(255)
+  divisionType String    @map("division_type") @db.VarChar(100)
+  provinceCode Int       @map("province_code")
+
+  province  Province  @relation(fields: [provinceCode], references: [code], onDelete: Cascade)
+  addresses Address[]
+
+  @@index([code])
+  @@index([provinceCode])
+  @@map("district")
+}
+
+model Address {
+  id            String    @id @default(cuid())
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  version       Int       @default(0)
+  isDeleted     Boolean   @default(false) @map("is_deleted")
+  deletedAt     DateTime? @map("deleted_at")
+  metadata      Json?
+  userId        String    @map("user_id")
+  firstName     String    @map("first_name") @db.VarChar(100)
+  lastName      String    @map("last_name") @db.VarChar(100)
+  phoneNumber      String    @map("phone_number") @db.VarChar(20)
+  provinceCode     Int       @map("province_code")
+  districtCode     Int       @map("district_code")
+  detailAddress    String    @map("detail_address") @db.Text
+  isDefaultAddress Boolean   @default(false) @map("is_default_address")
+  options          Json?
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  province Province @relation(fields: [provinceCode], references: [code], onDelete: Restrict)
+  district District @relation(fields: [districtCode], references: [code], onDelete: Restrict)
+
+  @@index([userId])
+  @@index([provinceCode])
+  @@index([districtCode])
+  @@map("address")
 }

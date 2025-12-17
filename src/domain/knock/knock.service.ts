@@ -7,6 +7,7 @@ import { signUserToken } from '@knocklabs/node';
 import { Injectable, Logger } from '@nestjs/common';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { GenerateKnockTokenDto } from './dto/generate-token.dto';
 import { RegisterFcmTokenResponseDto } from './dto/register-fcm-token.dto';
@@ -17,7 +18,10 @@ import { WorkflowResponseDto } from './dto/workflow-response.dto';
 export class KnockService {
   private readonly logger = new Logger(KnockService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly knockWorkflowService: KnockWorkflowService,
+  ) {}
 
   /**
    * Register FCM token for push notifications
@@ -147,21 +151,31 @@ export class KnockService {
       const knockClient = getKnockClient();
       const workflowKey = getKnockInAppWorkflowKey();
 
-      const payload = {
-        recipients: data.recipients,
-        data: {
+      // Check if workflow key is configured
+      if (!workflowKey) {
+        this.logger.warn(
+          'Knock workflow key not configured - skipping notification',
+          {
+            recipients: data.recipients,
+            title: data.title,
+          },
+        );
+        return {
+          success: false,
+          workflowRunId: undefined,
+        };
+      }
+
+      // Use workflow service to ensure recipients exist and trigger workflow
+      const workflowRunId = await this.knockWorkflowService.triggerWorkflow(
+        workflowKey,
+        data.recipients,
+        {
           title: data.title,
           text: data.text,
           metadata: data.metadata || {},
         },
-        actor: data.actorId
-          ? { id: data.actorId }
-          : { id: 'system', name: 'System' },
-      };
-
-      const response = await knockClient.workflows.trigger(
-        workflowKey,
-        payload,
+        data.actorId ? { id: data.actorId } : { id: 'system', name: 'System' },
       );
 
       this.logger.log(
@@ -170,11 +184,24 @@ export class KnockService {
 
       return {
         success: true,
-        workflowRunId: response.workflow_run_id,
+        workflowRunId: workflowRunId,
       };
     } catch (error) {
-      this.logger.error('Error sending in-app notification:', error.message);
-      throw new CustomError(ErrorCode.KnockNotificationSendFailed);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+
+      this.logger.error('Error sending in-app notification:', {
+        error: errorMessage,
+        recipients: data.recipients,
+        title: data.title,
+      });
+
+      // Don't throw error - let the calling code handle it gracefully
+      // This prevents notification failures from blocking main business logic
+      return {
+        success: false,
+        workflowRunId: undefined,
+      };
     }
   }
 }

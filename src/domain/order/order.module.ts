@@ -1,3 +1,4 @@
+import { KnockModule } from '@domain/knock/knock.module';
 import { Module } from '@nestjs/common';
 import { PaymentGatewayModule } from '@shared/service/payment-gateway/payment-gateway.module';
 import { PrismaModule } from '@shared/service/prisma/prisma.module';
@@ -27,7 +28,7 @@ import { WebhookController } from './webhook.controller';
  * - PaymentTransactionService: Payment transaction management
  */
 @Module({
-  imports: [PrismaModule, PaymentGatewayModule],
+  imports: [PrismaModule, PaymentGatewayModule, KnockModule],
   controllers: [OrderController, WebhookController],
   providers: [OrderService, PaymentTransactionService],
   exports: [OrderService, PaymentTransactionService],

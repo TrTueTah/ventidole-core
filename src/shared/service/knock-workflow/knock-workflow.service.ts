@@ -227,6 +227,30 @@ export class KnockWorkflowService {
   }
 
   /**
+   * Notify user for an in-app notification
+   */
+
+  async notifyInAppNotification(params: {
+    userId: string;
+    title: string;
+    text: string;
+    metadata?: NotificationMetadata;
+    actor?: WorkflowActor;
+  }): Promise<string> {
+    return this.triggerWorkflow(
+      'in-app-notification',
+      [params.userId],
+      {
+        title: params.title,
+        text: params.text,
+        url: params.metadata?.url || '/notifications',
+        ...params.metadata,
+      },
+      params.actor || { id: 'system', name: 'System' },
+    );
+  }
+
+  /**
    * Notify user about community invitation
    */
   async notifyCommunityInvite(params: {

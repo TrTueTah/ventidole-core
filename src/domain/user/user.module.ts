@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { AddressModule } from './address/address.module';
 import { ChatModule } from './chat/chat.module';
 import { CommentModule } from './comment/comment.module';
 import { CommunityModule } from './community/community.module';
@@ -8,7 +9,14 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
 @Module({
-  imports: [PostModule, CommentModule, CommunityModule, ChatModule, ShopModule],
+  imports: [
+    PostModule,
+    CommentModule,
+    CommunityModule,
+    ChatModule,
+    ShopModule,
+    AddressModule,
+  ],
   controllers: [UserController],
   providers: [UserService],
   exports: [UserService],

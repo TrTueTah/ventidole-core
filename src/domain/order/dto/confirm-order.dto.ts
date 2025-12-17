@@ -3,9 +3,11 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsEnum,
+  IsInt,
   IsNotEmpty,
+  IsOptional,
   IsString,
-  IsUUID,
+  Min,
   ValidateNested,
 } from 'class-validator';
 
@@ -17,7 +19,7 @@ export enum PaymentMethod {
 export class OrderItemDto {
   @ApiProperty({ description: 'Product ID', example: 'cm1abc123xyz' })
   @IsNotEmpty()
-  @IsUUID()
+  @IsString()
   productId: string;
 
   @ApiProperty({
@@ -25,11 +27,14 @@ export class OrderItemDto {
     example: 'cm1variant123',
     required: false,
   })
-  @IsUUID()
+  @IsOptional()
+  @IsString()
   variantId?: string;
 
   @ApiProperty({ description: 'Quantity', example: 2, minimum: 1 })
   @IsNotEmpty()
+  @IsInt()
+  @Min(1)
   quantity: number;
 }
 

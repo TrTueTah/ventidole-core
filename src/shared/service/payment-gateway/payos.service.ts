@@ -80,6 +80,21 @@ export class PayOSService {
         requestBody,
       );
 
+      // Log the full response for debugging
+      WinstonLogger.info('PayOS API response received', {
+        metadata: {
+          orderCode: paymentData.orderCode,
+          responseData: response.data,
+        },
+      });
+
+      // Validate response structure
+      if (!response.data || !response.data.data) {
+        throw new Error(
+          `Invalid PayOS response structure: ${JSON.stringify(response.data)}`,
+        );
+      }
+
       WinstonLogger.info('PayOS payment created successfully', {
         metadata: {
           orderCode: paymentData.orderCode,
@@ -89,13 +104,21 @@ export class PayOSService {
 
       return response.data;
     } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message;
+      const statusCode = error.response?.status;
+
       WinstonLogger.error('Failed to create PayOS payment', {
         metadata: {
           orderCode: paymentData.orderCode,
+          statusCode,
           error: error.response?.data || error.message,
         },
       });
-      throw error;
+
+      // Throw a custom error with meaningful message
+      throw new Error(
+        `PayOS payment creation failed: ${statusCode ? `${statusCode} - ` : ''}${errorMessage}`,
+      );
     }
   }
 
@@ -112,9 +135,16 @@ export class PayOSService {
   ): boolean {
     try {
       // Sort keys alphabetically and build signature string
+      // Convert null values to empty string to match PayOS signature format
       const rawData = Object.keys(webhookData)
         .sort()
-        .map((key) => `${key}=${webhookData[key]}`)
+        .map((key) => {
+          const value = webhookData[key];
+          // Handle null, undefined, or empty values
+          const stringValue =
+            value === null || value === undefined ? '' : String(value);
+          return `${key}=${stringValue}`;
+        })
         .join('&');
 
       const hmac = createHmac('sha256', this.checksumKey);

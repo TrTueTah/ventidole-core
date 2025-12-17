@@ -2216,6 +2216,350 @@ paths:
                   - message
       security: *ref_14
       tags: *ref_15
+  /v1/user/addresses:
+    post:
+      operationId: AddressController_createAddress_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAddressDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AddressDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: &ref_16
+        - bearer: []
+      tags: &ref_17
+        - User Addresses
+    get:
+      operationId: AddressController_getAddresses_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AddressDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: *ref_16
+      tags: *ref_17
+  /v1/user/addresses/provinces:
+    get:
+      operationId: AddressController_getProvinces_v1
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProvinceDto'
+                    description: Response data array
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_16
+      tags: *ref_17
+  /v1/user/addresses/provinces/{provinceCode}/districts:
+    get:
+      operationId: AddressController_getDistrictsByProvinceCode_v1
+      parameters:
+        - name: provinceCode
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DistrictDto'
+                    description: Response data array
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_16
+      tags: *ref_17
+  /v1/user/addresses/{id}:
+    get:
+      operationId: AddressController_getAddressById_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AddressDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_16
+      tags: *ref_17
+    patch:
+      operationId: AddressController_updateAddress_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAddressDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AddressDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_16
+      tags: *ref_17
+    delete:
+      operationId: AddressController_deleteAddress_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_16
+      tags: *ref_17
   /v1/admin/user:
     get:
       operationId: AdminUserController_getAllUsers_v1
@@ -2340,9 +2684,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_16
+      security: &ref_18
         - bearer: []
-      tags: &ref_17
+      tags: &ref_19
         - Admin User Management
     post:
       operationId: AdminUserController_createUser_v1
@@ -2385,8 +2729,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_16
-      tags: *ref_17
+      security: *ref_18
+      tags: *ref_19
   /v1/admin/user/{id}:
     get:
       operationId: AdminUserController_getUserById_v1
@@ -2428,8 +2772,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_16
-      tags: *ref_17
+      security: *ref_18
+      tags: *ref_19
     patch:
       operationId: AdminUserController_updateUser_v1
       parameters:
@@ -2476,8 +2820,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_16
-      tags: *ref_17
+      security: *ref_18
+      tags: *ref_19
     delete:
       operationId: AdminUserController_deleteUser_v1
       parameters:
@@ -2520,8 +2864,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_16
-      tags: *ref_17
+      security: *ref_18
+      tags: *ref_19
   /v1/admin/community:
     get:
       operationId: AdminCommunityController_getAllCommunities_v1
@@ -2634,9 +2978,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_18
+      security: &ref_20
         - bearer: []
-      tags: &ref_19
+      tags: &ref_21
         - Admin Community Management
     post:
       operationId: AdminCommunityController_createCommunity_v1
@@ -2679,8 +3023,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
-      tags: *ref_19
+      security: *ref_20
+      tags: *ref_21
   /v1/admin/community/{id}:
     get:
       operationId: AdminCommunityController_getCommunityById_v1
@@ -2722,8 +3066,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
-      tags: *ref_19
+      security: *ref_20
+      tags: *ref_21
     patch:
       operationId: AdminCommunityController_updateCommunity_v1
       parameters:
@@ -2770,8 +3114,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
-      tags: *ref_19
+      security: *ref_20
+      tags: *ref_21
     delete:
       operationId: AdminCommunityController_deleteCommunity_v1
       parameters:
@@ -2814,8 +3158,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
-      tags: *ref_19
+      security: *ref_20
+      tags: *ref_21
   /v1/admin/shop:
     get:
       operationId: AdminShopController_getAllShops_v1
@@ -2935,9 +3279,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_20
+      security: &ref_22
         - bearer: []
-      tags: &ref_21
+      tags: &ref_23
         - Admin Shop Management
     post:
       operationId: AdminShopController_createShop_v1
@@ -2980,8 +3324,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
-      tags: *ref_21
+      security: *ref_22
+      tags: *ref_23
   /v1/admin/shop/{id}:
     get:
       operationId: AdminShopController_getShopById_v1
@@ -3023,8 +3367,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
-      tags: *ref_21
+      security: *ref_22
+      tags: *ref_23
     patch:
       operationId: AdminShopController_updateShop_v1
       parameters:
@@ -3071,8 +3415,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
-      tags: *ref_21
+      security: *ref_22
+      tags: *ref_23
     delete:
       operationId: AdminShopController_deleteShop_v1
       parameters:
@@ -3115,8 +3459,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
-      tags: *ref_21
+      security: *ref_22
+      tags: *ref_23
   /v1/admin/product:
     get:
       operationId: AdminProductController_getAllProducts_v1
@@ -3245,9 +3589,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_22
+      security: &ref_24
         - bearer: []
-      tags: &ref_23
+      tags: &ref_25
         - Admin Product Management
     post:
       operationId: AdminProductController_createProduct_v1
@@ -3290,8 +3634,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
-      tags: *ref_23
+      security: *ref_24
+      tags: *ref_25
   /v1/admin/product/{id}:
     get:
       operationId: AdminProductController_getProductById_v1
@@ -3333,8 +3677,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
-      tags: *ref_23
+      security: *ref_24
+      tags: *ref_25
     patch:
       operationId: AdminProductController_updateProduct_v1
       parameters:
@@ -3381,8 +3725,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
-      tags: *ref_23
+      security: *ref_24
+      tags: *ref_25
     delete:
       operationId: AdminProductController_deleteProduct_v1
       parameters:
@@ -3425,8 +3769,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
-      tags: *ref_23
+      security: *ref_24
+      tags: *ref_25
   /v1/admin/order:
     get:
       operationId: AdminOrderController_getAllOrders_v1
@@ -3569,9 +3913,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_24
+      security: &ref_26
         - bearer: []
-      tags: &ref_25
+      tags: &ref_27
         - Admin Order Management
     post:
       operationId: AdminOrderController_createOrder_v1
@@ -3614,8 +3958,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_24
-      tags: *ref_25
+      security: *ref_26
+      tags: *ref_27
   /v1/admin/order/{id}:
     get:
       operationId: AdminOrderController_getOrderById_v1
@@ -3657,8 +4001,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_24
-      tags: *ref_25
+      security: *ref_26
+      tags: *ref_27
     patch:
       operationId: AdminOrderController_updateOrder_v1
       parameters:
@@ -3705,8 +4049,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_24
-      tags: *ref_25
+      security: *ref_26
+      tags: *ref_27
     delete:
       operationId: AdminOrderController_deleteOrder_v1
       parameters:
@@ -3749,8 +4093,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_24
-      tags: *ref_25
+      security: *ref_26
+      tags: *ref_27
   /v1/orders/confirm:
     post:
       description: >-
@@ -3797,10 +4141,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_26
+      security: &ref_28
         - bearer: []
       summary: Confirm order and create payment
-      tags: &ref_27
+      tags: &ref_29
         - Orders
   /v1/orders/{orderId}/retry-payment:
     post:
@@ -3846,9 +4190,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
+      security: *ref_28
       summary: Retry payment for PENDING_PAYMENT order
-      tags: *ref_27
+      tags: *ref_29
   /v1/orders/{orderId}:
     get:
       description: >-
@@ -3893,9 +4237,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
+      security: *ref_28
       summary: Get order status
-      tags: *ref_27
+      tags: *ref_29
   /webhooks/payos:
     post:
       description: >-
@@ -3918,511 +4262,6 @@ paths:
       summary: PayOS payment webhook
       tags:
         - Webhooks
-  /v1/stream-chat/token:
-    post:
-      operationId: StreamChatController_generateToken_v1
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GenerateTokenDto'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    $ref: '#/components/schemas/TokenDto'
-                    description: Response data
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: &ref_28
-        - bearer: []
-      summary: Generate Stream Chat authentication token
-      tags: &ref_29
-        - Stream Chat
-  /v1/stream-chat/users:
-    post:
-      operationId: StreamChatController_createUser_v1
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateStreamUserDto'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    $ref: '#/components/schemas/UserDto'
-                    description: Response data
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_28
-      summary: Create or update user in Stream Chat
-      tags: *ref_29
-  /v1/stream-chat/users/{userId}:
-    delete:
-      operationId: StreamChatController_deleteUser_v1
-      parameters:
-        - name: userId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_28
-      summary: Delete user from Stream Chat
-      tags: *ref_29
-  /v1/stream-chat/channels:
-    post:
-      operationId: StreamChatController_createChannel_v1
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateChannelDto'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    $ref: '#/components/schemas/ChannelDto'
-                    description: Response data
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_28
-      summary: Create a new channel
-      tags: *ref_29
-  /v1/stream-chat/channels/{userId}:
-    get:
-      operationId: StreamChatController_getUserChannels_v1
-      parameters:
-        - name: userId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ChannelDto'
-                    description: Response data array
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_28
-      summary: Get all channels for a user
-      tags: *ref_29
-  /v1/stream-chat/channels/{channelType}/{channelId}:
-    delete:
-      operationId: StreamChatController_deleteChannel_v1
-      parameters:
-        - name: channelType
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: channelId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_28
-      summary: Delete a channel
-      tags: *ref_29
-  /v1/stream-chat/channels/{channelType}/{channelId}/members:
-    post:
-      operationId: StreamChatController_addMembers_v1
-      parameters:
-        - name: channelType
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: channelId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ManageMembersDto'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_28
-      summary: Add members to a channel
-      tags: *ref_29
-    delete:
-      operationId: StreamChatController_removeMembers_v1
-      parameters:
-        - name: channelType
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: channelId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ManageMembersDto'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_28
-      summary: Remove members from a channel
-      tags: *ref_29
-  /v1/stream-chat/channels/{channelType}/{channelId}/messages:
-    get:
-      operationId: StreamChatController_getMessages_v1
-      parameters:
-        - name: channelType
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: channelId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: limit
-          required: true
-          in: query
-          schema:
-            type: number
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_28
-      summary: Get channel messages
-      tags: *ref_29
-    post:
-      operationId: StreamChatController_sendMessage_v1
-      parameters:
-        - name: channelType
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: channelId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SendMessageDto'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_28
-      summary: Send a message to a channel
-      tags: *ref_29
   /v1/knock/token:
     post:
       operationId: KnockController_generateToken_v1
@@ -4512,6 +4351,511 @@ paths:
       security: *ref_30
       summary: Register FCM token for push notifications
       tags: *ref_31
+  /v1/stream-chat/token:
+    post:
+      operationId: StreamChatController_generateToken_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateTokenDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/TokenDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: &ref_32
+        - bearer: []
+      summary: Generate Stream Chat authentication token
+      tags: &ref_33
+        - Stream Chat
+  /v1/stream-chat/users:
+    post:
+      operationId: StreamChatController_createUser_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateStreamUserDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UserDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_32
+      summary: Create or update user in Stream Chat
+      tags: *ref_33
+  /v1/stream-chat/users/{userId}:
+    delete:
+      operationId: StreamChatController_deleteUser_v1
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_32
+      summary: Delete user from Stream Chat
+      tags: *ref_33
+  /v1/stream-chat/channels:
+    post:
+      operationId: StreamChatController_createChannel_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChannelDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/ChannelDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_32
+      summary: Create a new channel
+      tags: *ref_33
+  /v1/stream-chat/channels/{userId}:
+    get:
+      operationId: StreamChatController_getUserChannels_v1
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChannelDto'
+                    description: Response data array
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_32
+      summary: Get all channels for a user
+      tags: *ref_33
+  /v1/stream-chat/channels/{channelType}/{channelId}:
+    delete:
+      operationId: StreamChatController_deleteChannel_v1
+      parameters:
+        - name: channelType
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: channelId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_32
+      summary: Delete a channel
+      tags: *ref_33
+  /v1/stream-chat/channels/{channelType}/{channelId}/members:
+    post:
+      operationId: StreamChatController_addMembers_v1
+      parameters:
+        - name: channelType
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: channelId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManageMembersDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_32
+      summary: Add members to a channel
+      tags: *ref_33
+    delete:
+      operationId: StreamChatController_removeMembers_v1
+      parameters:
+        - name: channelType
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: channelId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ManageMembersDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_32
+      summary: Remove members from a channel
+      tags: *ref_33
+  /v1/stream-chat/channels/{channelType}/{channelId}/messages:
+    get:
+      operationId: StreamChatController_getMessages_v1
+      parameters:
+        - name: channelType
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: channelId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: limit
+          required: true
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_32
+      summary: Get channel messages
+      tags: *ref_33
+    post:
+      operationId: StreamChatController_sendMessage_v1
+      parameters:
+        - name: channelType
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: channelId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendMessageDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_32
+      summary: Send a message to a channel
+      tags: *ref_33
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -4680,6 +5024,7 @@ components:
             - PaymentTransactionNotFound
             - PaymentTransactionCreateFailed
             - PaymentWebhookSignatureInvalid
+            - ResourceNotFound
           description: Error code (optional)
       required:
         - statusCode
@@ -5016,7 +5361,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: &ref_32
+          example: &ref_34
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
             - >-
@@ -5129,7 +5474,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: *ref_32
+          example: *ref_34
           description: Array of media URLs
           nullable: true
           type: array
@@ -6024,6 +6369,182 @@ components:
         - productId
         - quantity
         - action
+    ProvinceDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        code:
+          type: number
+        divisionType:
+          type: string
+        phoneCode:
+          type: number
+        codename:
+          type: string
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+        - code
+        - divisionType
+        - phoneCode
+        - codename
+        - createdAt
+        - updatedAt
+    DistrictDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        code:
+          type: number
+        codename:
+          type: string
+        divisionType:
+          type: string
+        provinceCode:
+          type: number
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+        - code
+        - codename
+        - divisionType
+        - provinceCode
+        - createdAt
+        - updatedAt
+    AddressDto:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        phoneNumber:
+          type: string
+        provinceCode:
+          type: number
+        districtCode:
+          type: number
+        detailAddress:
+          type: string
+        isDefaultAddress:
+          type: boolean
+          example: false
+        options:
+          type: object
+          nullable: true
+        province:
+          $ref: '#/components/schemas/ProvinceDto'
+        district:
+          $ref: '#/components/schemas/DistrictDto'
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - userId
+        - firstName
+        - lastName
+        - phoneNumber
+        - provinceCode
+        - districtCode
+        - detailAddress
+        - isDefaultAddress
+        - province
+        - district
+        - createdAt
+        - updatedAt
+    CreateAddressDto:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        phoneNumber:
+          type: string
+          example: '0901234567'
+        provinceCode:
+          type: number
+          example: 1
+          description: Province code
+        districtCode:
+          type: number
+          example: 1
+          description: District code
+        detailAddress:
+          type: string
+          example: 123 Main Street, Ward 1
+        isDefaultAddress:
+          type: boolean
+          example: false
+          description: Set as default address
+        options:
+          type: object
+          nullable: true
+      required:
+        - firstName
+        - lastName
+        - phoneNumber
+        - provinceCode
+        - districtCode
+        - detailAddress
+    UpdateAddressDto:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: John
+        lastName:
+          type: string
+          example: Doe
+        phoneNumber:
+          type: string
+          example: '0901234567'
+        provinceCode:
+          type: number
+          example: 1
+          description: Province code
+        districtCode:
+          type: number
+          example: 1
+          description: District code
+        detailAddress:
+          type: string
+          example: 123 Main Street, Ward 1
+        isDefaultAddress:
+          type: boolean
+          example: false
+          description: Set as default address
+        options:
+          type: object
+          nullable: true
     CommunityInfoDto:
       type: object
       properties:
@@ -7177,19 +7698,78 @@ components:
         orderCode:
           type: number
           description: Order code from PayOS
-          example: 123456
+          example: 123
         amount:
           type: number
           description: Paid amount
-          example: 10000
-        status:
+          example: 3000
+        description:
           type: string
-          description: Payment status
-          example: PAID
+          description: Payment description
+          example: VQRIO123
+        accountNumber:
+          type: string
+          description: Account number
+          example: '12345678'
+        reference:
+          type: string
+          description: Payment reference
+          example: TF230204212323
+        transactionDateTime:
+          type: string
+          description: Transaction date time
+          example: '2023-02-04 18:25:00'
+        currency:
+          type: string
+          description: Currency
+          example: VND
+        paymentLinkId:
+          type: string
+          description: Payment link ID
+          example: 124c33293c43417ab7879e14c8d9eb18
+        code:
+          type: string
+          description: Response code
+          example: '00'
+        desc:
+          type: string
+          description: Response description
+          example: Thành công
+        counterAccountBankId:
+          type: string
+          description: Counter account bank ID
+          example: ''
+        counterAccountBankName:
+          type: string
+          description: Counter account bank name
+          example: ''
+        counterAccountName:
+          type: string
+          description: Counter account name
+          example: ''
+        counterAccountNumber:
+          type: string
+          description: Counter account number
+          example: ''
+        virtualAccountName:
+          type: string
+          description: Virtual account name
+          example: ''
+        virtualAccountNumber:
+          type: string
+          description: Virtual account number
+          example: ''
       required:
         - orderCode
         - amount
-        - status
+        - description
+        - accountNumber
+        - reference
+        - transactionDateTime
+        - currency
+        - paymentLinkId
+        - code
+        - desc
     PayOSWebhookDto:
       type: object
       properties:
@@ -7201,6 +7781,10 @@ components:
           type: string
           description: Description
           example: success
+        success:
+          type: boolean
+          description: Success status
+          example: true
         data:
           description: Webhook data
           allOf:
@@ -7208,12 +7792,102 @@ components:
         signature:
           type: string
           description: HMAC SHA256 signature
-          example: abc123...
+          example: 8d8640d802576397a1ce45ebda7f835055768ac7ad2e0bfb77f9b8f12cca4c7f
       required:
         - code
         - desc
+        - success
         - data
         - signature
+    GenerateKnockTokenDto:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Knock authentication token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        userId:
+          type: string
+          description: User ID
+          example: user_123
+        expiresIn:
+          type: number
+          description: Token expiration time in seconds
+          example: 3600
+      required:
+        - token
+        - userId
+        - expiresIn
+    SendNotificationDto:
+      type: object
+      properties:
+        recipients:
+          description: Array of recipient user IDs
+          example:
+            - user_123
+            - user_456
+          type: array
+          items:
+            type: string
+        title:
+          type: string
+          description: Notification title
+          example: New Message
+        text:
+          type: string
+          description: Notification text content
+          example: You have a new message from John Doe
+        metadata:
+          type: object
+          description: Additional metadata for the notification
+          example:
+            url: /messages/123
+            type: message
+        actorId:
+          type: string
+          description: Actor ID (who triggered the notification)
+          example: user_789
+      required:
+        - recipients
+        - title
+        - text
+    WorkflowResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Success status
+          example: true
+        workflowRunId:
+          type: string
+          description: Workflow run ID from Knock
+          example: 01HG2XQZV5YJ9K8M7N6P5Q4R3S
+      required:
+        - success
+        - workflowRunId
+    RegisterFcmTokenDto:
+      type: object
+      properties:
+        fcmToken:
+          type: string
+          description: FCM (Firebase Cloud Messaging) device token for push notifications
+          example: fGHj8kL9mN0pQ1rS2tU3vW4xY5zA6bC7dE8fG9hI0jK1lM2nO3pQ4rS5tU6vW7xY8zA9
+      required:
+        - fcmToken
+    RegisterFcmTokenResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether the FCM token was registered successfully
+          example: true
+        message:
+          type: string
+          description: Success message
+          example: FCM token registered successfully
+      required:
+        - success
+        - message
     TokenDto:
       type: object
       properties:
@@ -7308,92 +7982,3 @@ components:
             type: string
       required:
         - memberIds
-    GenerateKnockTokenDto:
-      type: object
-      properties:
-        token:
-          type: string
-          description: Knock authentication token
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-        userId:
-          type: string
-          description: User ID
-          example: user_123
-        expiresIn:
-          type: number
-          description: Token expiration time in seconds
-          example: 3600
-      required:
-        - token
-        - userId
-        - expiresIn
-    SendNotificationDto:
-      type: object
-      properties:
-        recipients:
-          description: Array of recipient user IDs
-          example:
-            - user_123
-            - user_456
-          type: array
-          items:
-            type: string
-        title:
-          type: string
-          description: Notification title
-          example: New Message
-        text:
-          type: string
-          description: Notification text content
-          example: You have a new message from John Doe
-        metadata:
-          type: object
-          description: Additional metadata for the notification
-          example:
-            url: /messages/123
-            type: message
-        actorId:
-          type: string
-          description: Actor ID (who triggered the notification)
-          example: user_789
-      required:
-        - recipients
-        - title
-        - text
-    WorkflowResponseDto:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Success status
-          example: true
-        workflowRunId:
-          type: string
-          description: Workflow run ID from Knock
-          example: 01HG2XQZV5YJ9K8M7N6P5Q4R3S
-      required:
-        - success
-        - workflowRunId
-    RegisterFcmTokenDto:
-      type: object
-      properties:
-        fcmToken:
-          type: string
-          description: FCM (Firebase Cloud Messaging) device token for push notifications
-          example: fGHj8kL9mN0pQ1rS2tU3vW4xY5zA6bC7dE8fG9hI0jK1lM2nO3pQ4rS5tU6vW7xY8zA9
-      required:
-        - fcmToken
-    RegisterFcmTokenResponseDto:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Whether the FCM token was registered successfully
-          example: true
-        message:
-          type: string
-          description: Success message
-          example: FCM token registered successfully
-      required:
-        - success
-        - message

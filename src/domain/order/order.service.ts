@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { WinstonLogger } from '@shared/service/logger/winston.logger';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { Prisma } from 'src/db/prisma/client';
@@ -19,6 +20,7 @@ export class OrderService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly paymentTransactionService: PaymentTransactionService,
+    private readonly knockWorkflowService: KnockWorkflowService,
   ) {}
 
   /**
@@ -82,12 +84,13 @@ export class OrderService {
     // Handle payment method branching
     if (dto.paymentMethod === PaymentMethod.CREDIT) {
       // Create payment transaction and get PayOS link
+      // PayOS description max 25 characters
       const transaction =
         await this.paymentTransactionService.createPaymentTransaction(
           order.id,
           userId,
           totalAmount,
-          `Payment for order #${order.id}`,
+          'Thanh toan don hang',
         );
 
       return {
@@ -160,12 +163,13 @@ export class OrderService {
     await this.paymentTransactionService.expirePendingTransactions(orderId);
 
     // Create new payment transaction
+    // PayOS description max 25 characters
     const transaction =
       await this.paymentTransactionService.createPaymentTransaction(
         order.id,
         userId,
         order.totalAmount,
-        `Retry payment for order #${order.id}`,
+        'Thanh toan don hang',
       );
 
     WinstonLogger.info('Payment retry initiated', {
@@ -301,6 +305,34 @@ export class OrderService {
       },
     });
 
+    // Send payment success notification
+    try {
+      await this.knockWorkflowService.notifyInAppNotification({
+        userId: order.userId,
+        title: 'Payment Successful',
+        text: `Your payment of ${order.totalAmount.toLocaleString()} VND has been confirmed. Order #${orderCode}`,
+        metadata: {
+          orderId: order.id,
+          orderCode,
+          amount: order.totalAmount,
+          type: 'order_paid',
+        },
+      });
+
+      WinstonLogger.info('Payment notification sent', {
+        metadata: { orderId: order.id, userId: order.userId },
+      });
+    } catch (error) {
+      // Don't fail the payment process if notification fails
+      WinstonLogger.error('Failed to send payment notification', {
+        metadata: {
+          orderId: order.id,
+          userId: order.userId,
+          error: error.message,
+        },
+      });
+    }
+
     // Trigger business logic (e.g., notifications, inventory, etc.)
     await this.triggerPostPaymentLogic(order.id);
   }
@@ -388,8 +420,9 @@ export class OrderService {
     // - Decrease product stock
     // - Send confirmation email
     // - Trigger fulfillment
-    // - Send push notification
     // - Update analytics
+
+    // Note: Push notification already sent in handlePaymentSuccess via Knock
     WinstonLogger.info('Post-payment logic triggered', {
       metadata: { orderId },
     });

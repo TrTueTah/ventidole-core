@@ -121,3 +121,18 @@ export type OrderItem = Prisma.OrderItemModel
  * 
  */
 export type PaymentTransaction = Prisma.PaymentTransactionModel
+/**
+ * Model Province
+ * 
+ */
+export type Province = Prisma.ProvinceModel
+/**
+ * Model District
+ * 
+ */
+export type District = Prisma.DistrictModel
+/**
+ * Model Address
+ * 
+ */
+export type Address = Prisma.AddressModel

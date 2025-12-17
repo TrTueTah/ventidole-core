@@ -77,6 +77,7 @@ export enum ErrorCode {
   PaymentTransactionNotFound = 'PaymentTransactionNotFound',
   PaymentTransactionCreateFailed = 'PaymentTransactionCreateFailed',
   PaymentWebhookSignatureInvalid = 'PaymentWebhookSignatureInvalid',
+  ResourceNotFound = 'ResourceNotFound',
 }
 
 const ErrorCodeSet = new Set(Object.values(ErrorCode));
