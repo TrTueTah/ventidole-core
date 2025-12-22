@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
 import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
+import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
 import { WinstonLogger } from '@shared/service/logger/winston.logger';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { Prisma } from 'src/db/prisma/client';
@@ -17,10 +18,13 @@ import { PaymentTransactionService } from './payment-transaction.service';
 
 @Injectable()
 export class OrderService {
+  private readonly logger = new Logger(OrderService.name);
+
   constructor(
     private readonly prisma: PrismaService,
     private readonly paymentTransactionService: PaymentTransactionService,
     private readonly knockWorkflowService: KnockWorkflowService,
+    private readonly getStreamNotificationService: GetStreamNotificationService,
   ) {}
 
   /**
@@ -108,7 +112,39 @@ export class OrderService {
         createdAt: order.createdAt,
       };
     } else {
-      // COD - no payment needed
+      // COD - no payment needed, order is confirmed immediately
+      // Send order confirmation notifications
+      try {
+        await this.knockWorkflowService.notifyConfirmOrder({
+          userId: order.userId,
+          title: 'Order Confirmed',
+          text: `Your order has been confirmed. Total: ${order.totalAmount.toLocaleString()} VND`,
+          metadata: {
+            url: `/orders/${order.id}`,
+            orderId: order.id,
+            orderCode: order.orderCode,
+            amount: order.totalAmount,
+            type: 'order_confirmed',
+          },
+        });
+
+        await this.getStreamNotificationService.emitOrderStatusEvent({
+          userId: order.userId,
+          orderId: order.id,
+          orderCode: order.orderCode,
+          status: 'confirmed',
+        });
+
+        this.logger.log(
+          `Sent order confirmation notifications for order ${order.id}`,
+        );
+      } catch (error) {
+        this.logger.warn(
+          `Failed to send order confirmation notifications: ${error.message}`,
+        );
+        // Don't fail order creation if notification fails
+      }
+
       return {
         orderId: order.id,
         status: order.status,
@@ -305,18 +341,26 @@ export class OrderService {
       },
     });
 
-    // Send payment success notification
+    // Send payment success notifications
     try {
-      await this.knockWorkflowService.notifyInAppNotification({
+      // Knock multi-channel notification
+      await this.knockWorkflowService.notifyPaymentSuccess({
         userId: order.userId,
-        title: 'Payment Successful',
-        text: `Your payment of ${order.totalAmount.toLocaleString()} VND has been confirmed. Order #${orderCode}`,
+        orderId: order.id,
+        orderCode: String(orderCode),
+        amount: order.totalAmount,
+        paymentMethod: order.paymentMethod,
         metadata: {
-          orderId: order.id,
-          orderCode,
-          amount: order.totalAmount,
           type: 'order_paid',
         },
+      });
+
+      // Real-time in-app update via GetStream notification channel
+      await this.getStreamNotificationService.emitOrderStatusEvent({
+        userId: order.userId,
+        orderId: order.id,
+        orderCode: String(orderCode),
+        status: 'confirmed',
       });
 
       WinstonLogger.info('Payment notification sent', {

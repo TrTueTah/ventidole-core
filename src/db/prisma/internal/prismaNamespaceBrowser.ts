@@ -164,7 +164,8 @@ export const CommunityScalarFieldEnum = {
   name: 'name',
   avatarUrl: 'avatarUrl',
   backgroundUrl: 'backgroundUrl',
-  description: 'description'
+  description: 'description',
+  communityType: 'communityType'
 } as const
 
 export type CommunityScalarFieldEnum = (typeof CommunityScalarFieldEnum)[keyof typeof CommunityScalarFieldEnum]
@@ -195,10 +196,15 @@ export const ChatChannelScalarFieldEnum = {
   isDeleted: 'isDeleted',
   deletedAt: 'deletedAt',
   metadata: 'metadata',
+  type: 'type',
   name: 'name',
+  image: 'image',
   description: 'description',
   communityId: 'communityId',
-  idolId: 'idolId'
+  idolId: 'idolId',
+  isCommunityChannel: 'isCommunityChannel',
+  memberCount: 'memberCount',
+  lastMessageAt: 'lastMessageAt'
 } as const
 
 export type ChatChannelScalarFieldEnum = (typeof ChatChannelScalarFieldEnum)[keyof typeof ChatChannelScalarFieldEnum]
@@ -215,7 +221,11 @@ export const ChatParticipantScalarFieldEnum = {
   metadata: 'metadata',
   channelId: 'channelId',
   userId: 'userId',
-  canSendMessage: 'canSendMessage'
+  role: 'role',
+  canSendMessage: 'canSendMessage',
+  joinedAt: 'joinedAt',
+  invitedBy: 'invitedBy',
+  lastReadAt: 'lastReadAt'
 } as const
 
 export type ChatParticipantScalarFieldEnum = (typeof ChatParticipantScalarFieldEnum)[keyof typeof ChatParticipantScalarFieldEnum]

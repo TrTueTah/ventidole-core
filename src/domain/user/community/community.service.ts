@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PaginationDto } from '@shared/dto/pagination-request.dto';
 import {
   PageInfo,
@@ -7,6 +7,9 @@ import {
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
+import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
+import getStreamChatClient from '@core/config/stream-chat.config';
 import { CommunityDetailDto } from './dto/community-detail.dto';
 import { CommunityListDto } from './dto/community-list.dto';
 import { CommunityDto } from './dto/community.dto';
@@ -14,7 +17,13 @@ import { GetCommunitiesDto } from './dto/get-communities.dto';
 
 @Injectable()
 export class CommunityService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(CommunityService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly knockWorkflowService: KnockWorkflowService,
+    private readonly getStreamNotificationService: GetStreamNotificationService,
+  ) {}
 
   async getAllCommunities(
     userId: string,
@@ -166,12 +175,26 @@ export class CommunityService {
   }
 
   async joinCommunity(userId: string, communityId: string): Promise<void> {
-    // Check if community exists
+    // Check if community exists and get idol info
     const community = await this.prisma.community.findFirst({
       where: {
         id: communityId,
         isDeleted: false,
         isActive: true,
+      },
+      include: {
+        idols: {
+          where: {
+            isDeleted: false,
+            isActive: true,
+          },
+          select: {
+            id: true,
+            username: true,
+            avatarUrl: true,
+          },
+          take: 1, // Get first idol
+        },
       },
     });
 
@@ -192,6 +215,20 @@ export class CommunityService {
       throw new CustomError(ErrorCode.AlreadyJoinedCommunity);
     }
 
+    // Get fan info for notifications
+    const fan = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        username: true,
+        avatarUrl: true,
+      },
+    });
+
+    if (!fan) {
+      throw new CustomError(ErrorCode.UserNotFound);
+    }
+
     // Create follower relationship
     await this.prisma.communityFollower.create({
       data: {
@@ -199,6 +236,143 @@ export class CommunityService {
         communityId,
       },
     });
+
+    this.logger.log(`User ${userId} joined community ${communityId}`);
+
+    // Add fan to community channels in GetStream
+    await this.addFanToCommunityChannels(userId, communityId);
+
+    // Notify idol(s) about new follower
+    if (community.idols && community.idols.length > 0) {
+      await this.notifyIdolsAboutNewFollower(
+        community.idols,
+        fan,
+        community,
+      );
+    }
+  }
+
+  /**
+   * Add fan to all community channels in GetStream
+   */
+  private async addFanToCommunityChannels(
+    fanId: string,
+    communityId: string,
+  ): Promise<void> {
+    try {
+      // Get all community channels
+      const communityChannels = await this.prisma.chatChannel.findMany({
+        where: {
+          communityId,
+          isCommunityChannel: true,
+          isDeleted: false,
+        },
+        select: {
+          id: true,
+          type: true,
+          name: true,
+        },
+      });
+
+      if (communityChannels.length === 0) {
+        this.logger.log(
+          `No community channels found for community ${communityId}`,
+        );
+        return;
+      }
+
+      // Add fan to each channel in GetStream and database
+      const streamChatClient = getStreamChatClient();
+
+      for (const channel of communityChannels) {
+        try {
+          // Add to GetStream
+          const streamChannel = streamChatClient.channel(
+            channel.type,
+            channel.id,
+          );
+          await streamChannel.addMembers([fanId]);
+
+          // Add to database
+          await this.prisma.chatParticipant.upsert({
+            where: {
+              channelId_userId: {
+                channelId: channel.id,
+                userId: fanId,
+              },
+            },
+            create: {
+              channelId: channel.id,
+              userId: fanId,
+              role: 'member',
+              canSendMessage: true,
+            },
+            update: {
+              isDeleted: false,
+            },
+          });
+
+          this.logger.log(
+            `Added fan ${fanId} to community channel ${channel.id}`,
+          );
+        } catch (error) {
+          this.logger.error(
+            `Error adding fan to channel ${channel.id}:`,
+            error.message,
+          );
+          // Continue with other channels even if one fails
+        }
+      }
+    } catch (error) {
+      this.logger.error(
+        `Error adding fan to community channels:`,
+        error.message,
+      );
+      // Don't throw - channel addition failure shouldn't block community join
+    }
+  }
+
+  /**
+   * Notify idol(s) about new follower via Knock and GetStream
+   */
+  private async notifyIdolsAboutNewFollower(
+    idols: Array<{ id: string; username: string; avatarUrl: string | null }>,
+    fan: { id: string; username: string; avatarUrl: string | null },
+    community: { id: string; name: string },
+  ): Promise<void> {
+    for (const idol of idols) {
+      try {
+        // Send Knock notification (push/email)
+        await this.knockWorkflowService.notifyCommunityJoined({
+          idolId: idol.id,
+          fan: {
+            id: fan.id,
+            name: fan.username,
+            avatar: fan.avatarUrl,
+          },
+          communityId: community.id,
+          communityName: community.name,
+        });
+
+        // Send real-time event via GetStream notification channel
+        await this.getStreamNotificationService.emitCommunityJoinedEvent({
+          idolId: idol.id,
+          fanName: fan.username,
+          communityId: community.id,
+          communityName: community.name,
+        });
+
+        this.logger.log(
+          `Notified idol ${idol.id} about new follower ${fan.id}`,
+        );
+      } catch (error) {
+        this.logger.error(
+          `Error notifying idol ${idol.id}:`,
+          error.message,
+        );
+        // Continue with other idols even if one fails
+      }
+    }
   }
 
   async leaveCommunity(userId: string, communityId: string): Promise<void> {

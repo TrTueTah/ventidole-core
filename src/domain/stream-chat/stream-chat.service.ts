@@ -36,12 +36,20 @@ export class StreamChatService {
   async createOrUpdateUser(data: CreateStreamUserDto) {
     try {
       const streamChatClient = getStreamChatClient();
-      const user = await streamChatClient.upsertUser({
+
+      // Build user data - only include role if explicitly provided
+      const userData: any = {
         id: data.userId,
         name: data.name,
         image: data.image,
-        role: data.role || 'user',
-      });
+      };
+
+      // Only set role if explicitly provided, otherwise use GetStream default
+      if (data.role) {
+        userData.role = data.role;
+      }
+
+      const user = await streamChatClient.upsertUser(userData);
 
       this.logger.log(`Created/Updated user in Stream Chat: ${data.userId}`);
 

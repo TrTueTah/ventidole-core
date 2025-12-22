@@ -1,6 +1,7 @@
 import getKnockClient from '@core/config/knock.config';
 import { Injectable, Logger } from '@nestjs/common';
 import { ErrorCode } from '@shared/enum/error-code.enum';
+import { KnockWorkflow } from '@shared/enum/knock-workflow.enum';
 import { CustomError } from '@shared/helper/error';
 
 export interface WorkflowActor {
@@ -60,222 +61,6 @@ export class KnockWorkflowService {
   }
 
   /**
-   * Notify user about a new follower
-   */
-  async notifyNewFollower(params: {
-    userId: string;
-    follower: WorkflowActor;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
-    return this.triggerWorkflow(
-      'new-follower',
-      [params.userId],
-      {
-        followerName: params.follower.name,
-        followerAvatar: params.follower.avatar,
-        url: params.metadata?.url || `/profile/${params.follower.id}`,
-        ...params.metadata,
-      },
-      params.follower,
-    );
-  }
-
-  /**
-   * Notify user about a post like
-   */
-  async notifyPostLiked(params: {
-    postAuthorId: string;
-    postId: string;
-    postTitle?: string;
-    liker: WorkflowActor;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
-    return this.triggerWorkflow(
-      'post-liked',
-      [params.postAuthorId],
-      {
-        postId: params.postId,
-        postTitle: params.postTitle || 'your post',
-        likerName: params.liker.name,
-        likerAvatar: params.liker.avatar,
-        url: params.metadata?.url || `/posts/${params.postId}`,
-        ...params.metadata,
-      },
-      params.liker,
-    );
-  }
-
-  /**
-   * Notify user about a new comment on their post
-   */
-  async notifyNewComment(params: {
-    postAuthorId: string;
-    postId: string;
-    postTitle?: string;
-    commentId: string;
-    commentText: string;
-    commenter: WorkflowActor;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
-    return this.triggerWorkflow(
-      'new-comment',
-      [params.postAuthorId],
-      {
-        postId: params.postId,
-        postTitle: params.postTitle || 'your post',
-        commentId: params.commentId,
-        commentText: params.commentText,
-        commenterName: params.commenter.name,
-        commenterAvatar: params.commenter.avatar,
-        url:
-          params.metadata?.url || `/posts/${params.postId}#${params.commentId}`,
-        ...params.metadata,
-      },
-      params.commenter,
-    );
-  }
-
-  /**
-   * Notify user about a reply to their comment
-   */
-  async notifyCommentReply(params: {
-    originalCommenterId: string;
-    postId: string;
-    commentId: string;
-    replyText: string;
-    replier: WorkflowActor;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
-    return this.triggerWorkflow(
-      'comment-reply',
-      [params.originalCommenterId],
-      {
-        postId: params.postId,
-        commentId: params.commentId,
-        replyText: params.replyText,
-        replierName: params.replier.name,
-        replierAvatar: params.replier.avatar,
-        url:
-          params.metadata?.url || `/posts/${params.postId}#${params.commentId}`,
-        ...params.metadata,
-      },
-      params.replier,
-    );
-  }
-
-  /**
-   * Notify user when they are mentioned
-   */
-  async notifyUserMention(params: {
-    mentionedUserId: string;
-    postId?: string;
-    commentId?: string;
-    text: string;
-    mentioner: WorkflowActor;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
-    const url = params.postId
-      ? `/posts/${params.postId}${params.commentId ? '#' + params.commentId : ''}`
-      : params.metadata?.url || '/';
-
-    return this.triggerWorkflow(
-      'user-mention',
-      [params.mentionedUserId],
-      {
-        postId: params.postId,
-        commentId: params.commentId,
-        text: params.text,
-        mentionerName: params.mentioner.name,
-        mentionerAvatar: params.mentioner.avatar,
-        url,
-        ...params.metadata,
-      },
-      params.mentioner,
-    );
-  }
-
-  /**
-   * Notify followers about a new post
-   */
-  async notifyNewPost(params: {
-    followerIds: string[];
-    postId: string;
-    postTitle: string;
-    postExcerpt?: string;
-    author: WorkflowActor;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
-    if (params.followerIds.length === 0) {
-      this.logger.log('No followers to notify for new post');
-      return '';
-    }
-
-    return this.triggerWorkflow(
-      'new-post',
-      params.followerIds,
-      {
-        postId: params.postId,
-        postTitle: params.postTitle,
-        postExcerpt: params.postExcerpt,
-        authorName: params.author.name,
-        authorAvatar: params.author.avatar,
-        url: params.metadata?.url || `/posts/${params.postId}`,
-        ...params.metadata,
-      },
-      params.author,
-    );
-  }
-
-  /**
-   * Notify user for an in-app notification
-   */
-
-  async notifyInAppNotification(params: {
-    userId: string;
-    title: string;
-    text: string;
-    metadata?: NotificationMetadata;
-    actor?: WorkflowActor;
-  }): Promise<string> {
-    return this.triggerWorkflow(
-      'in-app-notification',
-      [params.userId],
-      {
-        title: params.title,
-        text: params.text,
-        url: params.metadata?.url || '/notifications',
-        ...params.metadata,
-      },
-      params.actor || { id: 'system', name: 'System' },
-    );
-  }
-
-  /**
-   * Notify user about community invitation
-   */
-  async notifyCommunityInvite(params: {
-    userId: string;
-    communityId: string;
-    communityName: string;
-    inviter: WorkflowActor;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
-    return this.triggerWorkflow(
-      'community-invite',
-      [params.userId],
-      {
-        communityId: params.communityId,
-        communityName: params.communityName,
-        inviterName: params.inviter.name,
-        inviterAvatar: params.inviter.avatar,
-        url: params.metadata?.url || `/communities/${params.communityId}`,
-        ...params.metadata,
-      },
-      params.inviter,
-    );
-  }
-
-  /**
    * Notify community members about a new post
    */
   async notifyCommunityNewPost(params: {
@@ -298,7 +83,7 @@ export class KnockWorkflowService {
     }
 
     return this.triggerWorkflow(
-      'community-new-post',
+      KnockWorkflow.COMMUNITY_NEW_POST,
       params.members,
       {
         communityId: params.communityId,
@@ -316,20 +101,177 @@ export class KnockWorkflowService {
     );
   }
 
-  /**
-   * Send welcome notification to new user
-   */
-  async notifyWelcome(params: {
+  async notifyConfirmOrder(params: {
     userId: string;
-    userName: string;
+    title: string;
+    text: string;
+    metadata?: NotificationMetadata;
+    actor?: WorkflowActor;
+  }): Promise<string> {
+    return this.triggerWorkflow(
+      KnockWorkflow.CONFIRM_ORDER,
+      [params.userId],
+      {
+        title: params.title,
+        text: params.text,
+        url: params.metadata?.url || '/notifications',
+        ...params.metadata,
+      },
+      params.actor || { id: 'system', name: 'System' },
+    );
+  }
+
+  /**
+   * Notify user when someone likes their post
+   */
+  async notifyPostLiked(params: {
+    authorId: string;
+    liker: WorkflowActor;
+    postId: string;
+    postContent: string;
     metadata?: NotificationMetadata;
   }): Promise<string> {
     return this.triggerWorkflow(
-      'welcome',
+      KnockWorkflow.POST_LIKED,
+      [params.authorId],
+      {
+        likerName: params.liker.name,
+        likerAvatar: params.liker.avatar,
+        postId: params.postId,
+        postContent: params.postContent.substring(0, 100),
+        url: params.metadata?.url || `/posts/${params.postId}`,
+        ...params.metadata,
+      },
+      params.liker,
+    );
+  }
+
+  /**
+   * Notify user when someone comments on their post
+   */
+  async notifyPostCommented(params: {
+    authorId: string;
+    commenter: WorkflowActor;
+    postId: string;
+    postContent: string;
+    commentContent: string;
+    metadata?: NotificationMetadata;
+  }): Promise<string> {
+    return this.triggerWorkflow(
+      KnockWorkflow.POST_COMMENTED,
+      [params.authorId],
+      {
+        commenterName: params.commenter.name,
+        commenterAvatar: params.commenter.avatar,
+        postId: params.postId,
+        postContent: params.postContent.substring(0, 100),
+        commentContent: params.commentContent.substring(0, 100),
+        url: params.metadata?.url || `/posts/${params.postId}`,
+        ...params.metadata,
+      },
+      params.commenter,
+    );
+  }
+
+  /**
+   * Notify idol when someone joins their community
+   */
+  async notifyCommunityJoined(params: {
+    idolId: string;
+    fan: WorkflowActor;
+    communityId: string;
+    communityName: string;
+    metadata?: NotificationMetadata;
+  }): Promise<string> {
+    return this.triggerWorkflow(
+      KnockWorkflow.COMMUNITY_JOINED,
+      [params.idolId],
+      {
+        fanName: params.fan.name,
+        fanAvatar: params.fan.avatar,
+        communityId: params.communityId,
+        communityName: params.communityName,
+        url:
+          params.metadata?.url ||
+          `/communities/${params.communityId}/followers`,
+        ...params.metadata,
+      },
+      params.fan,
+    );
+  }
+
+  /**
+   * Notify user of new chat message
+   */
+  async notifyNewMessage(params: {
+    recipientId: string;
+    sender: WorkflowActor;
+    channelId: string;
+    channelName: string;
+    messagePreview: string;
+    metadata?: NotificationMetadata;
+  }): Promise<string> {
+    return this.triggerWorkflow(
+      KnockWorkflow.NEW_MESSAGE,
+      [params.recipientId],
+      {
+        senderName: params.sender.name,
+        senderAvatar: params.sender.avatar,
+        channelId: params.channelId,
+        channelName: params.channelName,
+        messagePreview: params.messagePreview.substring(0, 100),
+        url: params.metadata?.url || `/chat/${params.channelId}`,
+        ...params.metadata,
+      },
+      params.sender,
+    );
+  }
+
+  /**
+   * Notify user when added to a channel
+   */
+  async notifyChannelInvitation(params: {
+    recipientId: string;
+    inviter: WorkflowActor;
+    channelId: string;
+    channelName: string;
+    channelDescription?: string;
+    metadata?: NotificationMetadata;
+  }): Promise<string> {
+    return this.triggerWorkflow(
+      KnockWorkflow.CHANNEL_INVITATION,
+      [params.recipientId],
+      {
+        inviterName: params.inviter.name,
+        inviterAvatar: params.inviter.avatar,
+        channelId: params.channelId,
+        channelName: params.channelName,
+        channelDescription: params.channelDescription,
+        url: params.metadata?.url || `/chat/${params.channelId}`,
+        ...params.metadata,
+      },
+      params.inviter,
+    );
+  }
+
+  /**
+   * Notify user when order is shipped
+   */
+  async notifyOrderShipped(params: {
+    userId: string;
+    orderId: string;
+    orderCode: string;
+    trackingNumber?: string;
+    metadata?: NotificationMetadata;
+  }): Promise<string> {
+    return this.triggerWorkflow(
+      KnockWorkflow.ORDER_SHIPPED,
       [params.userId],
       {
-        userName: params.userName,
-        url: params.metadata?.url || '/getting-started',
+        orderId: params.orderId,
+        orderCode: params.orderCode,
+        trackingNumber: params.trackingNumber,
+        url: params.metadata?.url || `/orders/${params.orderId}`,
         ...params.metadata,
       },
       { id: 'system', name: 'Ventidole' },
@@ -337,129 +279,76 @@ export class KnockWorkflowService {
   }
 
   /**
-   * Notify user about password change (security notification)
+   * Notify user when order is delivered
    */
-  async notifyPasswordChanged(params: {
+  async notifyOrderDelivered(params: {
     userId: string;
+    orderId: string;
+    orderCode: string;
     metadata?: NotificationMetadata;
   }): Promise<string> {
     return this.triggerWorkflow(
-      'password-changed',
+      KnockWorkflow.ORDER_DELIVERED,
       [params.userId],
       {
-        timestamp: new Date().toISOString(),
-        url: params.metadata?.url || '/settings/security',
+        orderId: params.orderId,
+        orderCode: params.orderCode,
+        url: params.metadata?.url || `/orders/${params.orderId}`,
         ...params.metadata,
       },
-      { id: 'system', name: 'Security' },
+      { id: 'system', name: 'Ventidole' },
     );
   }
 
   /**
-   * Notify user about new device login (security alert)
+   * Notify user of successful payment
    */
-  async notifyNewDeviceLogin(params: {
+  async notifyPaymentSuccess(params: {
     userId: string;
-    deviceInfo: {
-      device?: string;
-      location?: string;
-      ip?: string;
-    };
+    orderId: string;
+    orderCode: string;
+    amount: number;
+    paymentMethod: string;
     metadata?: NotificationMetadata;
   }): Promise<string> {
     return this.triggerWorkflow(
-      'new-device-login',
+      KnockWorkflow.PAYMENT_SUCCESS,
       [params.userId],
       {
-        device: params.deviceInfo.device,
-        location: params.deviceInfo.location,
-        ip: params.deviceInfo.ip,
-        timestamp: new Date().toISOString(),
-        url: params.metadata?.url || '/settings/security',
+        orderId: params.orderId,
+        orderCode: params.orderCode,
+        amount: params.amount,
+        paymentMethod: params.paymentMethod,
+        url: params.metadata?.url || `/orders/${params.orderId}`,
         ...params.metadata,
       },
-      { id: 'system', name: 'Security' },
+      { id: 'system', name: 'Ventidole' },
     );
   }
 
   /**
-   * Notify moderators about reported content
+   * Notify user of failed payment
    */
-  async notifyContentReported(params: {
-    moderatorIds: string[];
-    contentType: 'post' | 'comment' | 'user';
-    contentId: string;
-    reportReason: string;
-    reporter: WorkflowActor;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
-    if (params.moderatorIds.length === 0) {
-      this.logger.log('No moderators to notify');
-      return '';
-    }
-
-    return this.triggerWorkflow(
-      'content-reported',
-      params.moderatorIds,
-      {
-        contentType: params.contentType,
-        contentId: params.contentId,
-        reportReason: params.reportReason,
-        reporterName: params.reporter.name,
-        url:
-          params.metadata?.url ||
-          `/moderation/${params.contentType}/${params.contentId}`,
-        ...params.metadata,
-      },
-      params.reporter,
-    );
-  }
-
-  /**
-   * Notify user about account action (ban, warning, etc.)
-   */
-  async notifyAccountAction(params: {
+  async notifyPaymentFailed(params: {
     userId: string;
-    action: 'banned' | 'warned' | 'unbanned';
+    orderId: string;
+    orderCode: string;
+    amount: number;
     reason?: string;
-    duration?: string;
     metadata?: NotificationMetadata;
   }): Promise<string> {
     return this.triggerWorkflow(
-      'account-action',
+      KnockWorkflow.PAYMENT_FAILED,
       [params.userId],
       {
-        action: params.action,
-        reason: params.reason,
-        duration: params.duration,
-        url: params.metadata?.url || '/support',
+        orderId: params.orderId,
+        orderCode: params.orderCode,
+        amount: params.amount,
+        failureReason: params.reason || 'Payment processing failed',
+        url: params.metadata?.url || `/orders/${params.orderId}`,
         ...params.metadata,
       },
-      { id: 'system', name: 'Moderation' },
-    );
-  }
-
-  /**
-   * Notify user about content removal
-   */
-  async notifyContentRemoved(params: {
-    userId: string;
-    contentType: 'post' | 'comment';
-    contentTitle?: string;
-    reason: string;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
-    return this.triggerWorkflow(
-      'content-removed',
-      [params.userId],
-      {
-        contentType: params.contentType,
-        contentTitle: params.contentTitle,
-        reason: params.reason,
-        url: params.metadata?.url || '/guidelines',
-        ...params.metadata,
-      },
-      { id: 'system', name: 'Moderation' },
+      { id: 'system', name: 'Ventidole' },
     );
   }
 }

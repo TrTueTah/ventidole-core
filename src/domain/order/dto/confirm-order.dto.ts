@@ -10,11 +10,7 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-
-export enum PaymentMethod {
-  CREDIT = 'CREDIT',
-  COD = 'COD',
-}
+import { PaymentMethod } from 'src/db/prisma/enums';
 
 export class OrderItemDto {
   @ApiProperty({ description: 'Product ID', example: 'cm1abc123xyz' })

@@ -12,6 +12,9 @@ import { OtpService } from '@shared/service/otp/otp.service';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { RedisService } from '@shared/service/redis/redis.service';
 import { TokenService } from '@shared/service/token/token.service';
+import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
+import { KnockUserService } from '@shared/service/knock-workflow/knock-user.service';
+import { StreamChatService } from '@domain/stream-chat/stream-chat.service';
 import moment from 'moment';
 import { VerificationType } from 'src/db/prisma/enums';
 import { UserModel } from 'src/db/prisma/models';
@@ -34,7 +37,10 @@ export class AuthService {
     private readonly redisService: RedisService,
     private readonly otpService: OtpService,
     private readonly tokenService: TokenService,
-    private prisma: PrismaService,
+    private readonly prisma: PrismaService,
+    private readonly getStreamNotificationService: GetStreamNotificationService,
+    private readonly knockUserService: KnockUserService,
+    private readonly streamChatService: StreamChatService,
   ) {}
   async signIn(request: SignInRequest) {
     const user = await this.prisma.user.findFirst({
@@ -93,6 +99,9 @@ export class AuthService {
       },
     });
 
+    // Initialize notification and messaging infrastructure for new user
+    await this.initializeUserMessaging(user);
+
     const [accessToken, refreshToken] = await this.generateTokens(user);
 
     const response = new SignInResponse();
@@ -102,6 +111,49 @@ export class AuthService {
     response.refreshToken = refreshToken;
 
     return BaseResponse.of(response);
+  }
+
+  /**
+   * Initialize messaging and notification infrastructure for a new user
+   * Creates GetStream notification channel, registers in Knock, and creates GetStream chat user
+   */
+  private async initializeUserMessaging(user: UserModel): Promise<void> {
+    try {
+      this.logger.log(
+        `Initializing messaging infrastructure for user ${user.id}`,
+      );
+
+      // 1. Create GetStream notification channel for real-time events
+      await this.getStreamNotificationService.createNotificationChannel(
+        user.id,
+      );
+
+      // 2. Register user in Knock for multi-channel notifications
+      await this.knockUserService.registerUser({
+        userId: user.id,
+        email: user.email,
+        name: user.username,
+        avatarUrl: user.avatarUrl,
+        role: user.role,
+      });
+
+      // 3. Create user in GetStream Chat for messaging
+      await this.streamChatService.createOrUpdateUser({
+        userId: user.id,
+        name: user.username,
+        image: user.avatarUrl,
+      });
+
+      this.logger.log(
+        `Successfully initialized messaging infrastructure for user ${user.id}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Error initializing messaging for user ${user.id}:`,
+        error.message,
+      );
+      // Don't throw - messaging initialization failure shouldn't block user signup
+    }
   }
 
   async sendVerification(request: SendVerificationRequest) {

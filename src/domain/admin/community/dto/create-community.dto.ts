@@ -1,5 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
+import { CommunityType } from 'src/db/prisma/enums';
 
 export class CreateCommunityDto {
   @ApiProperty({
@@ -37,4 +44,13 @@ export class CreateCommunityDto {
   @IsOptional()
   @MaxLength(500)
   description?: string;
+
+  @ApiProperty({
+    description: 'Community type',
+    enum: CommunityType,
+    example: CommunityType.GROUP,
+  })
+  @IsNotEmpty()
+  @IsEnum(CommunityType)
+  communityType: CommunityType;
 }

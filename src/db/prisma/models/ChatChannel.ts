@@ -27,10 +27,12 @@ export type AggregateChatChannel = {
 
 export type ChatChannelAvgAggregateOutputType = {
   version: number | null
+  memberCount: number | null
 }
 
 export type ChatChannelSumAggregateOutputType = {
   version: number | null
+  memberCount: number | null
 }
 
 export type ChatChannelMinAggregateOutputType = {
@@ -41,10 +43,15 @@ export type ChatChannelMinAggregateOutputType = {
   version: number | null
   isDeleted: boolean | null
   deletedAt: Date | null
+  type: string | null
   name: string | null
+  image: string | null
   description: string | null
   communityId: string | null
   idolId: string | null
+  isCommunityChannel: boolean | null
+  memberCount: number | null
+  lastMessageAt: Date | null
 }
 
 export type ChatChannelMaxAggregateOutputType = {
@@ -55,10 +62,15 @@ export type ChatChannelMaxAggregateOutputType = {
   version: number | null
   isDeleted: boolean | null
   deletedAt: Date | null
+  type: string | null
   name: string | null
+  image: string | null
   description: string | null
   communityId: string | null
   idolId: string | null
+  isCommunityChannel: boolean | null
+  memberCount: number | null
+  lastMessageAt: Date | null
 }
 
 export type ChatChannelCountAggregateOutputType = {
@@ -70,20 +82,27 @@ export type ChatChannelCountAggregateOutputType = {
   isDeleted: number
   deletedAt: number
   metadata: number
+  type: number
   name: number
+  image: number
   description: number
   communityId: number
   idolId: number
+  isCommunityChannel: number
+  memberCount: number
+  lastMessageAt: number
   _all: number
 }
 
 
 export type ChatChannelAvgAggregateInputType = {
   version?: true
+  memberCount?: true
 }
 
 export type ChatChannelSumAggregateInputType = {
   version?: true
+  memberCount?: true
 }
 
 export type ChatChannelMinAggregateInputType = {
@@ -94,10 +113,15 @@ export type ChatChannelMinAggregateInputType = {
   version?: true
   isDeleted?: true
   deletedAt?: true
+  type?: true
   name?: true
+  image?: true
   description?: true
   communityId?: true
   idolId?: true
+  isCommunityChannel?: true
+  memberCount?: true
+  lastMessageAt?: true
 }
 
 export type ChatChannelMaxAggregateInputType = {
@@ -108,10 +132,15 @@ export type ChatChannelMaxAggregateInputType = {
   version?: true
   isDeleted?: true
   deletedAt?: true
+  type?: true
   name?: true
+  image?: true
   description?: true
   communityId?: true
   idolId?: true
+  isCommunityChannel?: true
+  memberCount?: true
+  lastMessageAt?: true
 }
 
 export type ChatChannelCountAggregateInputType = {
@@ -123,10 +152,15 @@ export type ChatChannelCountAggregateInputType = {
   isDeleted?: true
   deletedAt?: true
   metadata?: true
+  type?: true
   name?: true
+  image?: true
   description?: true
   communityId?: true
   idolId?: true
+  isCommunityChannel?: true
+  memberCount?: true
+  lastMessageAt?: true
   _all?: true
 }
 
@@ -225,10 +259,15 @@ export type ChatChannelGroupByOutputType = {
   isDeleted: boolean
   deletedAt: Date | null
   metadata: runtime.JsonValue | null
+  type: string
   name: string | null
+  image: string | null
   description: string | null
   communityId: string | null
   idolId: string | null
+  isCommunityChannel: boolean
+  memberCount: number
+  lastMessageAt: Date | null
   _count: ChatChannelCountAggregateOutputType | null
   _avg: ChatChannelAvgAggregateOutputType | null
   _sum: ChatChannelSumAggregateOutputType | null
@@ -263,10 +302,15 @@ export type ChatChannelWhereInput = {
   isDeleted?: Prisma.BoolFilter<"ChatChannel"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"ChatChannel"> | Date | string | null
   metadata?: Prisma.JsonNullableFilter<"ChatChannel">
+  type?: Prisma.StringFilter<"ChatChannel"> | string
   name?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
+  image?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   description?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   communityId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   idolId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
+  isCommunityChannel?: Prisma.BoolFilter<"ChatChannel"> | boolean
+  memberCount?: Prisma.IntFilter<"ChatChannel"> | number
+  lastMessageAt?: Prisma.DateTimeNullableFilter<"ChatChannel"> | Date | string | null
   community?: Prisma.XOR<Prisma.CommunityNullableScalarRelationFilter, Prisma.CommunityWhereInput> | null
   idol?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   participants?: Prisma.ChatParticipantListRelationFilter
@@ -282,10 +326,15 @@ export type ChatChannelOrderByWithRelationInput = {
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
+  image?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   communityId?: Prisma.SortOrderInput | Prisma.SortOrder
   idolId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isCommunityChannel?: Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
+  lastMessageAt?: Prisma.SortOrderInput | Prisma.SortOrder
   community?: Prisma.CommunityOrderByWithRelationInput
   idol?: Prisma.UserOrderByWithRelationInput
   participants?: Prisma.ChatParticipantOrderByRelationAggregateInput
@@ -304,10 +353,15 @@ export type ChatChannelWhereUniqueInput = Prisma.AtLeast<{
   isDeleted?: Prisma.BoolFilter<"ChatChannel"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"ChatChannel"> | Date | string | null
   metadata?: Prisma.JsonNullableFilter<"ChatChannel">
+  type?: Prisma.StringFilter<"ChatChannel"> | string
   name?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
+  image?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   description?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   communityId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   idolId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
+  isCommunityChannel?: Prisma.BoolFilter<"ChatChannel"> | boolean
+  memberCount?: Prisma.IntFilter<"ChatChannel"> | number
+  lastMessageAt?: Prisma.DateTimeNullableFilter<"ChatChannel"> | Date | string | null
   community?: Prisma.XOR<Prisma.CommunityNullableScalarRelationFilter, Prisma.CommunityWhereInput> | null
   idol?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   participants?: Prisma.ChatParticipantListRelationFilter
@@ -323,10 +377,15 @@ export type ChatChannelOrderByWithAggregationInput = {
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   metadata?: Prisma.SortOrderInput | Prisma.SortOrder
+  type?: Prisma.SortOrder
   name?: Prisma.SortOrderInput | Prisma.SortOrder
+  image?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
   communityId?: Prisma.SortOrderInput | Prisma.SortOrder
   idolId?: Prisma.SortOrderInput | Prisma.SortOrder
+  isCommunityChannel?: Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
+  lastMessageAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ChatChannelCountOrderByAggregateInput
   _avg?: Prisma.ChatChannelAvgOrderByAggregateInput
   _max?: Prisma.ChatChannelMaxOrderByAggregateInput
@@ -346,10 +405,15 @@ export type ChatChannelScalarWhereWithAggregatesInput = {
   isDeleted?: Prisma.BoolWithAggregatesFilter<"ChatChannel"> | boolean
   deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ChatChannel"> | Date | string | null
   metadata?: Prisma.JsonNullableWithAggregatesFilter<"ChatChannel">
+  type?: Prisma.StringWithAggregatesFilter<"ChatChannel"> | string
   name?: Prisma.StringNullableWithAggregatesFilter<"ChatChannel"> | string | null
+  image?: Prisma.StringNullableWithAggregatesFilter<"ChatChannel"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"ChatChannel"> | string | null
   communityId?: Prisma.StringNullableWithAggregatesFilter<"ChatChannel"> | string | null
   idolId?: Prisma.StringNullableWithAggregatesFilter<"ChatChannel"> | string | null
+  isCommunityChannel?: Prisma.BoolWithAggregatesFilter<"ChatChannel"> | boolean
+  memberCount?: Prisma.IntWithAggregatesFilter<"ChatChannel"> | number
+  lastMessageAt?: Prisma.DateTimeNullableWithAggregatesFilter<"ChatChannel"> | Date | string | null
 }
 
 export type ChatChannelCreateInput = {
@@ -361,8 +425,13 @@ export type ChatChannelCreateInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
   community?: Prisma.CommunityCreateNestedOneWithoutChatChannelsInput
   idol?: Prisma.UserCreateNestedOneWithoutChatChannelsInput
   participants?: Prisma.ChatParticipantCreateNestedManyWithoutChannelInput
@@ -378,10 +447,15 @@ export type ChatChannelUncheckedCreateInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
   communityId?: string | null
   idolId?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
   participants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutChannelInput
   messages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutChannelInput
 }
@@ -395,8 +469,13 @@ export type ChatChannelUpdateInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   community?: Prisma.CommunityUpdateOneWithoutChatChannelsNestedInput
   idol?: Prisma.UserUpdateOneWithoutChatChannelsNestedInput
   participants?: Prisma.ChatParticipantUpdateManyWithoutChannelNestedInput
@@ -412,10 +491,15 @@ export type ChatChannelUncheckedUpdateInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   participants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutChannelNestedInput
   messages?: Prisma.ChatMessageUncheckedUpdateManyWithoutChannelNestedInput
 }
@@ -429,10 +513,15 @@ export type ChatChannelCreateManyInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
   communityId?: string | null
   idolId?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
 }
 
 export type ChatChannelUpdateManyMutationInput = {
@@ -444,8 +533,13 @@ export type ChatChannelUpdateManyMutationInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ChatChannelUncheckedUpdateManyInput = {
@@ -457,10 +551,15 @@ export type ChatChannelUncheckedUpdateManyInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ChatChannelListRelationFilter = {
@@ -482,14 +581,20 @@ export type ChatChannelCountOrderByAggregateInput = {
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
   metadata?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   description?: Prisma.SortOrder
   communityId?: Prisma.SortOrder
   idolId?: Prisma.SortOrder
+  isCommunityChannel?: Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
+  lastMessageAt?: Prisma.SortOrder
 }
 
 export type ChatChannelAvgOrderByAggregateInput = {
   version?: Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
 }
 
 export type ChatChannelMaxOrderByAggregateInput = {
@@ -500,10 +605,15 @@ export type ChatChannelMaxOrderByAggregateInput = {
   version?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   description?: Prisma.SortOrder
   communityId?: Prisma.SortOrder
   idolId?: Prisma.SortOrder
+  isCommunityChannel?: Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
+  lastMessageAt?: Prisma.SortOrder
 }
 
 export type ChatChannelMinOrderByAggregateInput = {
@@ -514,14 +624,20 @@ export type ChatChannelMinOrderByAggregateInput = {
   version?: Prisma.SortOrder
   isDeleted?: Prisma.SortOrder
   deletedAt?: Prisma.SortOrder
+  type?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  image?: Prisma.SortOrder
   description?: Prisma.SortOrder
   communityId?: Prisma.SortOrder
   idolId?: Prisma.SortOrder
+  isCommunityChannel?: Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
+  lastMessageAt?: Prisma.SortOrder
 }
 
 export type ChatChannelSumOrderByAggregateInput = {
   version?: Prisma.SortOrder
+  memberCount?: Prisma.SortOrder
 }
 
 export type ChatChannelScalarRelationFilter = {
@@ -650,8 +766,13 @@ export type ChatChannelCreateWithoutIdolInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
   community?: Prisma.CommunityCreateNestedOneWithoutChatChannelsInput
   participants?: Prisma.ChatParticipantCreateNestedManyWithoutChannelInput
   messages?: Prisma.ChatMessageCreateNestedManyWithoutChannelInput
@@ -666,9 +787,14 @@ export type ChatChannelUncheckedCreateWithoutIdolInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
   communityId?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
   participants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutChannelInput
   messages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutChannelInput
 }
@@ -711,10 +837,15 @@ export type ChatChannelScalarWhereInput = {
   isDeleted?: Prisma.BoolFilter<"ChatChannel"> | boolean
   deletedAt?: Prisma.DateTimeNullableFilter<"ChatChannel"> | Date | string | null
   metadata?: Prisma.JsonNullableFilter<"ChatChannel">
+  type?: Prisma.StringFilter<"ChatChannel"> | string
   name?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
+  image?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   description?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   communityId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
   idolId?: Prisma.StringNullableFilter<"ChatChannel"> | string | null
+  isCommunityChannel?: Prisma.BoolFilter<"ChatChannel"> | boolean
+  memberCount?: Prisma.IntFilter<"ChatChannel"> | number
+  lastMessageAt?: Prisma.DateTimeNullableFilter<"ChatChannel"> | Date | string | null
 }
 
 export type ChatChannelCreateWithoutCommunityInput = {
@@ -726,8 +857,13 @@ export type ChatChannelCreateWithoutCommunityInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
   idol?: Prisma.UserCreateNestedOneWithoutChatChannelsInput
   participants?: Prisma.ChatParticipantCreateNestedManyWithoutChannelInput
   messages?: Prisma.ChatMessageCreateNestedManyWithoutChannelInput
@@ -742,9 +878,14 @@ export type ChatChannelUncheckedCreateWithoutCommunityInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
   idolId?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
   participants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutChannelInput
   messages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutChannelInput
 }
@@ -784,8 +925,13 @@ export type ChatChannelCreateWithoutParticipantsInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
   community?: Prisma.CommunityCreateNestedOneWithoutChatChannelsInput
   idol?: Prisma.UserCreateNestedOneWithoutChatChannelsInput
   messages?: Prisma.ChatMessageCreateNestedManyWithoutChannelInput
@@ -800,10 +946,15 @@ export type ChatChannelUncheckedCreateWithoutParticipantsInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
   communityId?: string | null
   idolId?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
   messages?: Prisma.ChatMessageUncheckedCreateNestedManyWithoutChannelInput
 }
 
@@ -832,8 +983,13 @@ export type ChatChannelUpdateWithoutParticipantsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   community?: Prisma.CommunityUpdateOneWithoutChatChannelsNestedInput
   idol?: Prisma.UserUpdateOneWithoutChatChannelsNestedInput
   messages?: Prisma.ChatMessageUpdateManyWithoutChannelNestedInput
@@ -848,10 +1004,15 @@ export type ChatChannelUncheckedUpdateWithoutParticipantsInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   messages?: Prisma.ChatMessageUncheckedUpdateManyWithoutChannelNestedInput
 }
 
@@ -864,8 +1025,13 @@ export type ChatChannelCreateWithoutMessagesInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
   community?: Prisma.CommunityCreateNestedOneWithoutChatChannelsInput
   idol?: Prisma.UserCreateNestedOneWithoutChatChannelsInput
   participants?: Prisma.ChatParticipantCreateNestedManyWithoutChannelInput
@@ -880,10 +1046,15 @@ export type ChatChannelUncheckedCreateWithoutMessagesInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
   communityId?: string | null
   idolId?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
   participants?: Prisma.ChatParticipantUncheckedCreateNestedManyWithoutChannelInput
 }
 
@@ -912,8 +1083,13 @@ export type ChatChannelUpdateWithoutMessagesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   community?: Prisma.CommunityUpdateOneWithoutChatChannelsNestedInput
   idol?: Prisma.UserUpdateOneWithoutChatChannelsNestedInput
   participants?: Prisma.ChatParticipantUpdateManyWithoutChannelNestedInput
@@ -928,10 +1104,15 @@ export type ChatChannelUncheckedUpdateWithoutMessagesInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   participants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutChannelNestedInput
 }
 
@@ -944,9 +1125,14 @@ export type ChatChannelCreateManyIdolInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
   communityId?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
 }
 
 export type ChatChannelUpdateWithoutIdolInput = {
@@ -958,8 +1144,13 @@ export type ChatChannelUpdateWithoutIdolInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   community?: Prisma.CommunityUpdateOneWithoutChatChannelsNestedInput
   participants?: Prisma.ChatParticipantUpdateManyWithoutChannelNestedInput
   messages?: Prisma.ChatMessageUpdateManyWithoutChannelNestedInput
@@ -974,9 +1165,14 @@ export type ChatChannelUncheckedUpdateWithoutIdolInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   participants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutChannelNestedInput
   messages?: Prisma.ChatMessageUncheckedUpdateManyWithoutChannelNestedInput
 }
@@ -990,9 +1186,14 @@ export type ChatChannelUncheckedUpdateManyWithoutIdolInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   communityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type ChatChannelCreateManyCommunityInput = {
@@ -1004,9 +1205,14 @@ export type ChatChannelCreateManyCommunityInput = {
   isDeleted?: boolean
   deletedAt?: Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: string
   name?: string | null
+  image?: string | null
   description?: string | null
   idolId?: string | null
+  isCommunityChannel?: boolean
+  memberCount?: number
+  lastMessageAt?: Date | string | null
 }
 
 export type ChatChannelUpdateWithoutCommunityInput = {
@@ -1018,8 +1224,13 @@ export type ChatChannelUpdateWithoutCommunityInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   idol?: Prisma.UserUpdateOneWithoutChatChannelsNestedInput
   participants?: Prisma.ChatParticipantUpdateManyWithoutChannelNestedInput
   messages?: Prisma.ChatMessageUpdateManyWithoutChannelNestedInput
@@ -1034,9 +1245,14 @@ export type ChatChannelUncheckedUpdateWithoutCommunityInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   participants?: Prisma.ChatParticipantUncheckedUpdateManyWithoutChannelNestedInput
   messages?: Prisma.ChatMessageUncheckedUpdateManyWithoutChannelNestedInput
 }
@@ -1050,9 +1266,14 @@ export type ChatChannelUncheckedUpdateManyWithoutCommunityInput = {
   isDeleted?: Prisma.BoolFieldUpdateOperationsInput | boolean
   deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   metadata?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
+  type?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   idolId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isCommunityChannel?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  memberCount?: Prisma.IntFieldUpdateOperationsInput | number
+  lastMessageAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -1104,10 +1325,15 @@ export type ChatChannelSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   isDeleted?: boolean
   deletedAt?: boolean
   metadata?: boolean
+  type?: boolean
   name?: boolean
+  image?: boolean
   description?: boolean
   communityId?: boolean
   idolId?: boolean
+  isCommunityChannel?: boolean
+  memberCount?: boolean
+  lastMessageAt?: boolean
   community?: boolean | Prisma.ChatChannel$communityArgs<ExtArgs>
   idol?: boolean | Prisma.ChatChannel$idolArgs<ExtArgs>
   participants?: boolean | Prisma.ChatChannel$participantsArgs<ExtArgs>
@@ -1124,10 +1350,15 @@ export type ChatChannelSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   isDeleted?: boolean
   deletedAt?: boolean
   metadata?: boolean
+  type?: boolean
   name?: boolean
+  image?: boolean
   description?: boolean
   communityId?: boolean
   idolId?: boolean
+  isCommunityChannel?: boolean
+  memberCount?: boolean
+  lastMessageAt?: boolean
   community?: boolean | Prisma.ChatChannel$communityArgs<ExtArgs>
   idol?: boolean | Prisma.ChatChannel$idolArgs<ExtArgs>
 }, ExtArgs["result"]["chatChannel"]>
@@ -1141,10 +1372,15 @@ export type ChatChannelSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   isDeleted?: boolean
   deletedAt?: boolean
   metadata?: boolean
+  type?: boolean
   name?: boolean
+  image?: boolean
   description?: boolean
   communityId?: boolean
   idolId?: boolean
+  isCommunityChannel?: boolean
+  memberCount?: boolean
+  lastMessageAt?: boolean
   community?: boolean | Prisma.ChatChannel$communityArgs<ExtArgs>
   idol?: boolean | Prisma.ChatChannel$idolArgs<ExtArgs>
 }, ExtArgs["result"]["chatChannel"]>
@@ -1158,13 +1394,18 @@ export type ChatChannelSelectScalar = {
   isDeleted?: boolean
   deletedAt?: boolean
   metadata?: boolean
+  type?: boolean
   name?: boolean
+  image?: boolean
   description?: boolean
   communityId?: boolean
   idolId?: boolean
+  isCommunityChannel?: boolean
+  memberCount?: boolean
+  lastMessageAt?: boolean
 }
 
-export type ChatChannelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "isDeleted" | "deletedAt" | "metadata" | "name" | "description" | "communityId" | "idolId", ExtArgs["result"]["chatChannel"]>
+export type ChatChannelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "isDeleted" | "deletedAt" | "metadata" | "type" | "name" | "image" | "description" | "communityId" | "idolId" | "isCommunityChannel" | "memberCount" | "lastMessageAt", ExtArgs["result"]["chatChannel"]>
 export type ChatChannelInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   community?: boolean | Prisma.ChatChannel$communityArgs<ExtArgs>
   idol?: boolean | Prisma.ChatChannel$idolArgs<ExtArgs>
@@ -1198,10 +1439,15 @@ export type $ChatChannelPayload<ExtArgs extends runtime.Types.Extensions.Interna
     isDeleted: boolean
     deletedAt: Date | null
     metadata: runtime.JsonValue | null
+    type: string
     name: string | null
+    image: string | null
     description: string | null
     communityId: string | null
     idolId: string | null
+    isCommunityChannel: boolean
+    memberCount: number
+    lastMessageAt: Date | null
   }, ExtArgs["result"]["chatChannel"]>
   composites: {}
 }
@@ -1637,10 +1883,15 @@ export interface ChatChannelFieldRefs {
   readonly isDeleted: Prisma.FieldRef<"ChatChannel", 'Boolean'>
   readonly deletedAt: Prisma.FieldRef<"ChatChannel", 'DateTime'>
   readonly metadata: Prisma.FieldRef<"ChatChannel", 'Json'>
+  readonly type: Prisma.FieldRef<"ChatChannel", 'String'>
   readonly name: Prisma.FieldRef<"ChatChannel", 'String'>
+  readonly image: Prisma.FieldRef<"ChatChannel", 'String'>
   readonly description: Prisma.FieldRef<"ChatChannel", 'String'>
   readonly communityId: Prisma.FieldRef<"ChatChannel", 'String'>
   readonly idolId: Prisma.FieldRef<"ChatChannel", 'String'>
+  readonly isCommunityChannel: Prisma.FieldRef<"ChatChannel", 'Boolean'>
+  readonly memberCount: Prisma.FieldRef<"ChatChannel", 'Int'>
+  readonly lastMessageAt: Prisma.FieldRef<"ChatChannel", 'DateTime'>
 }
     
 

@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class ChannelDto {
+export class StreamChannelDto {
   @ApiProperty({
     description: 'Channel type',
     example: 'messaging',

@@ -14,7 +14,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiVersion } from '@shared/enum/api-version.enum';
 import { BaseResponse } from '@shared/helper/response';
-import { ChannelDto } from './dto/channel.dto';
+import { StreamChannelDto } from './dto/channel.dto';
 import { CreateChannelDto } from './dto/create-channel.dto';
 import { CreateStreamUserDto } from './dto/create-user.dto';
 import { GenerateTokenDto } from './dto/generate-token.dto';
@@ -30,7 +30,7 @@ import { StreamChatService } from './stream-chat.service';
 @ApiExtraModelsCustom(
   TokenDto,
   UserDto,
-  ChannelDto,
+  StreamChannelDto,
   CreateStreamUserDto,
   CreateChannelDto,
   GenerateTokenDto,
@@ -71,23 +71,23 @@ export class StreamChatController {
   }
 
   @Post('channels')
-  @ApiResponseCustom(ChannelDto)
+  @ApiResponseCustom(StreamChannelDto)
   @ApiOperation({ summary: 'Create a new channel' })
   async createChannel(
     @Body() request: CreateChannelDto,
-  ): Promise<BaseResponse<ChannelDto>> {
+  ): Promise<BaseResponse<StreamChannelDto>> {
     const result = await this.streamChatService.createChannel(request);
-    return BaseResponse.of(result as ChannelDto);
+    return BaseResponse.of(result as StreamChannelDto);
   }
 
   @Get('channels/:userId')
-  @ApiResponseCustom(ChannelDto, true)
+  @ApiResponseCustom(StreamChannelDto, true)
   @ApiOperation({ summary: 'Get all channels for a user' })
   async getUserChannels(
     @Param('userId') userId: string,
-  ): Promise<BaseResponse<ChannelDto[]>> {
+  ): Promise<BaseResponse<StreamChannelDto[]>> {
     const result = await this.streamChatService.getUserChannels(userId);
-    return BaseResponse.of(result as ChannelDto[]);
+    return BaseResponse.of(result as StreamChannelDto[]);
   }
 
   @Delete('channels/:channelType/:channelId')

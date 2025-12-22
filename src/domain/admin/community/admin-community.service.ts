@@ -132,6 +132,7 @@ export class AdminCommunityService {
         avatarUrl: createCommunityDto.avatarUrl,
         backgroundUrl: createCommunityDto.backgroundUrl,
         description: createCommunityDto.description,
+        communityType: createCommunityDto.communityType,
       },
       select: {
         id: true,

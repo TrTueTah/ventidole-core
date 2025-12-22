@@ -73,3 +73,11 @@ export const PaymentMethod = {
 } as const
 
 export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
+
+
+export const CommunityType = {
+  SOLO: 'SOLO',
+  GROUP: 'GROUP'
+} as const
+
+export type CommunityType = (typeof CommunityType)[keyof typeof CommunityType]

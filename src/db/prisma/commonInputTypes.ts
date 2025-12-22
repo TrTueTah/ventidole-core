@@ -276,6 +276,23 @@ export type EnumSocialAccountProviderWithAggregatesFilter<$PrismaModel = never> 
   _max?: Prisma.NestedEnumSocialAccountProviderFilter<$PrismaModel>
 }
 
+export type EnumCommunityTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommunityType | Prisma.EnumCommunityTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CommunityType[] | Prisma.ListEnumCommunityTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommunityType[] | Prisma.ListEnumCommunityTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommunityTypeFilter<$PrismaModel> | $Enums.CommunityType
+}
+
+export type EnumCommunityTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommunityType | Prisma.EnumCommunityTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CommunityType[] | Prisma.ListEnumCommunityTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommunityType[] | Prisma.ListEnumCommunityTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommunityTypeWithAggregatesFilter<$PrismaModel> | $Enums.CommunityType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCommunityTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCommunityTypeFilter<$PrismaModel>
+}
+
 export type FloatFilter<$PrismaModel = never> = {
   equals?: number | Prisma.FloatFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListFloatFieldRefInput<$PrismaModel>
@@ -652,6 +669,23 @@ export type NestedEnumSocialAccountProviderWithAggregatesFilter<$PrismaModel = n
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumSocialAccountProviderFilter<$PrismaModel>
   _max?: Prisma.NestedEnumSocialAccountProviderFilter<$PrismaModel>
+}
+
+export type NestedEnumCommunityTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommunityType | Prisma.EnumCommunityTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CommunityType[] | Prisma.ListEnumCommunityTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommunityType[] | Prisma.ListEnumCommunityTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommunityTypeFilter<$PrismaModel> | $Enums.CommunityType
+}
+
+export type NestedEnumCommunityTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.CommunityType | Prisma.EnumCommunityTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.CommunityType[] | Prisma.ListEnumCommunityTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.CommunityType[] | Prisma.ListEnumCommunityTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumCommunityTypeWithAggregatesFilter<$PrismaModel> | $Enums.CommunityType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumCommunityTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumCommunityTypeFilter<$PrismaModel>
 }
 
 export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {

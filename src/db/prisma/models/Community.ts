@@ -45,6 +45,7 @@ export type CommunityMinAggregateOutputType = {
   avatarUrl: string | null
   backgroundUrl: string | null
   description: string | null
+  communityType: $Enums.CommunityType | null
 }
 
 export type CommunityMaxAggregateOutputType = {
@@ -59,6 +60,7 @@ export type CommunityMaxAggregateOutputType = {
   avatarUrl: string | null
   backgroundUrl: string | null
   description: string | null
+  communityType: $Enums.CommunityType | null
 }
 
 export type CommunityCountAggregateOutputType = {
@@ -74,6 +76,7 @@ export type CommunityCountAggregateOutputType = {
   avatarUrl: number
   backgroundUrl: number
   description: number
+  communityType: number
   _all: number
 }
 
@@ -98,6 +101,7 @@ export type CommunityMinAggregateInputType = {
   avatarUrl?: true
   backgroundUrl?: true
   description?: true
+  communityType?: true
 }
 
 export type CommunityMaxAggregateInputType = {
@@ -112,6 +116,7 @@ export type CommunityMaxAggregateInputType = {
   avatarUrl?: true
   backgroundUrl?: true
   description?: true
+  communityType?: true
 }
 
 export type CommunityCountAggregateInputType = {
@@ -127,6 +132,7 @@ export type CommunityCountAggregateInputType = {
   avatarUrl?: true
   backgroundUrl?: true
   description?: true
+  communityType?: true
   _all?: true
 }
 
@@ -229,6 +235,7 @@ export type CommunityGroupByOutputType = {
   avatarUrl: string | null
   backgroundUrl: string | null
   description: string | null
+  communityType: $Enums.CommunityType
   _count: CommunityCountAggregateOutputType | null
   _avg: CommunityAvgAggregateOutputType | null
   _sum: CommunitySumAggregateOutputType | null
@@ -267,6 +274,7 @@ export type CommunityWhereInput = {
   avatarUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   backgroundUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   description?: Prisma.StringNullableFilter<"Community"> | string | null
+  communityType?: Prisma.EnumCommunityTypeFilter<"Community"> | $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelListRelationFilter
   followers?: Prisma.CommunityFollowerListRelationFilter
   idols?: Prisma.UserListRelationFilter
@@ -287,6 +295,7 @@ export type CommunityOrderByWithRelationInput = {
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  communityType?: Prisma.SortOrder
   chatChannels?: Prisma.ChatChannelOrderByRelationAggregateInput
   followers?: Prisma.CommunityFollowerOrderByRelationAggregateInput
   idols?: Prisma.UserOrderByRelationAggregateInput
@@ -310,6 +319,7 @@ export type CommunityWhereUniqueInput = Prisma.AtLeast<{
   avatarUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   backgroundUrl?: Prisma.StringNullableFilter<"Community"> | string | null
   description?: Prisma.StringNullableFilter<"Community"> | string | null
+  communityType?: Prisma.EnumCommunityTypeFilter<"Community"> | $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelListRelationFilter
   followers?: Prisma.CommunityFollowerListRelationFilter
   idols?: Prisma.UserListRelationFilter
@@ -330,6 +340,7 @@ export type CommunityOrderByWithAggregationInput = {
   avatarUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   backgroundUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  communityType?: Prisma.SortOrder
   _count?: Prisma.CommunityCountOrderByAggregateInput
   _avg?: Prisma.CommunityAvgOrderByAggregateInput
   _max?: Prisma.CommunityMaxOrderByAggregateInput
@@ -353,6 +364,7 @@ export type CommunityScalarWhereWithAggregatesInput = {
   avatarUrl?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
   backgroundUrl?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
   description?: Prisma.StringNullableWithAggregatesFilter<"Community"> | string | null
+  communityType?: Prisma.EnumCommunityTypeWithAggregatesFilter<"Community"> | $Enums.CommunityType
 }
 
 export type CommunityCreateInput = {
@@ -368,6 +380,7 @@ export type CommunityCreateInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutCommunityInput
   followers?: Prisma.CommunityFollowerCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserCreateNestedManyWithoutCommunityInput
@@ -388,6 +401,7 @@ export type CommunityUncheckedCreateInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutCommunityInput
   followers?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserUncheckedCreateNestedManyWithoutCommunityInput
@@ -408,6 +422,7 @@ export type CommunityUpdateInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUpdateManyWithoutCommunityNestedInput
   followers?: Prisma.CommunityFollowerUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUpdateManyWithoutCommunityNestedInput
@@ -428,6 +443,7 @@ export type CommunityUncheckedUpdateInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutCommunityNestedInput
   followers?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUncheckedUpdateManyWithoutCommunityNestedInput
@@ -448,6 +464,7 @@ export type CommunityCreateManyInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
 }
 
 export type CommunityUpdateManyMutationInput = {
@@ -463,6 +480,7 @@ export type CommunityUpdateManyMutationInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
 }
 
 export type CommunityUncheckedUpdateManyInput = {
@@ -478,6 +496,7 @@ export type CommunityUncheckedUpdateManyInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
 }
 
 export type CommunityNullableScalarRelationFilter = {
@@ -498,6 +517,7 @@ export type CommunityCountOrderByAggregateInput = {
   avatarUrl?: Prisma.SortOrder
   backgroundUrl?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  communityType?: Prisma.SortOrder
 }
 
 export type CommunityAvgOrderByAggregateInput = {
@@ -516,6 +536,7 @@ export type CommunityMaxOrderByAggregateInput = {
   avatarUrl?: Prisma.SortOrder
   backgroundUrl?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  communityType?: Prisma.SortOrder
 }
 
 export type CommunityMinOrderByAggregateInput = {
@@ -530,6 +551,7 @@ export type CommunityMinOrderByAggregateInput = {
   avatarUrl?: Prisma.SortOrder
   backgroundUrl?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  communityType?: Prisma.SortOrder
 }
 
 export type CommunitySumOrderByAggregateInput = {
@@ -555,6 +577,10 @@ export type CommunityUpdateOneWithoutIdolsNestedInput = {
   delete?: Prisma.CommunityWhereInput | boolean
   connect?: Prisma.CommunityWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.CommunityUpdateToOneWithWhereWithoutIdolsInput, Prisma.CommunityUpdateWithoutIdolsInput>, Prisma.CommunityUncheckedUpdateWithoutIdolsInput>
+}
+
+export type EnumCommunityTypeFieldUpdateOperationsInput = {
+  set?: $Enums.CommunityType
 }
 
 export type CommunityCreateNestedOneWithoutFollowersInput = {
@@ -628,6 +654,7 @@ export type CommunityCreateWithoutIdolsInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutCommunityInput
   followers?: Prisma.CommunityFollowerCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
@@ -647,6 +674,7 @@ export type CommunityUncheckedCreateWithoutIdolsInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutCommunityInput
   followers?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
@@ -682,6 +710,7 @@ export type CommunityUpdateWithoutIdolsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUpdateManyWithoutCommunityNestedInput
   followers?: Prisma.CommunityFollowerUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
@@ -701,6 +730,7 @@ export type CommunityUncheckedUpdateWithoutIdolsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutCommunityNestedInput
   followers?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
@@ -720,6 +750,7 @@ export type CommunityCreateWithoutFollowersInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
@@ -739,6 +770,7 @@ export type CommunityUncheckedCreateWithoutFollowersInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
@@ -774,6 +806,7 @@ export type CommunityUpdateWithoutFollowersInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
@@ -793,6 +826,7 @@ export type CommunityUncheckedUpdateWithoutFollowersInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
@@ -812,6 +846,7 @@ export type CommunityCreateWithoutChatChannelsInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
   followers?: Prisma.CommunityFollowerCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostCreateNestedManyWithoutCommunityInput
@@ -831,6 +866,7 @@ export type CommunityUncheckedCreateWithoutChatChannelsInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
   followers?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserUncheckedCreateNestedManyWithoutCommunityInput
   posts?: Prisma.PostUncheckedCreateNestedManyWithoutCommunityInput
@@ -866,6 +902,7 @@ export type CommunityUpdateWithoutChatChannelsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
   followers?: Prisma.CommunityFollowerUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUpdateManyWithoutCommunityNestedInput
@@ -885,6 +922,7 @@ export type CommunityUncheckedUpdateWithoutChatChannelsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
   followers?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUncheckedUpdateManyWithoutCommunityNestedInput
   posts?: Prisma.PostUncheckedUpdateManyWithoutCommunityNestedInput
@@ -904,6 +942,7 @@ export type CommunityCreateWithoutPostsInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutCommunityInput
   followers?: Prisma.CommunityFollowerCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserCreateNestedManyWithoutCommunityInput
@@ -923,6 +962,7 @@ export type CommunityUncheckedCreateWithoutPostsInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutCommunityInput
   followers?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserUncheckedCreateNestedManyWithoutCommunityInput
@@ -958,6 +998,7 @@ export type CommunityUpdateWithoutPostsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUpdateManyWithoutCommunityNestedInput
   followers?: Prisma.CommunityFollowerUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUpdateManyWithoutCommunityNestedInput
@@ -977,6 +1018,7 @@ export type CommunityUncheckedUpdateWithoutPostsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutCommunityNestedInput
   followers?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUncheckedUpdateManyWithoutCommunityNestedInput
@@ -996,6 +1038,7 @@ export type CommunityCreateWithoutShopsInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelCreateNestedManyWithoutCommunityInput
   followers?: Prisma.CommunityFollowerCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserCreateNestedManyWithoutCommunityInput
@@ -1015,6 +1058,7 @@ export type CommunityUncheckedCreateWithoutShopsInput = {
   avatarUrl?: string | null
   backgroundUrl?: string | null
   description?: string | null
+  communityType: $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUncheckedCreateNestedManyWithoutCommunityInput
   followers?: Prisma.CommunityFollowerUncheckedCreateNestedManyWithoutCommunityInput
   idols?: Prisma.UserUncheckedCreateNestedManyWithoutCommunityInput
@@ -1050,6 +1094,7 @@ export type CommunityUpdateWithoutShopsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUpdateManyWithoutCommunityNestedInput
   followers?: Prisma.CommunityFollowerUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUpdateManyWithoutCommunityNestedInput
@@ -1069,6 +1114,7 @@ export type CommunityUncheckedUpdateWithoutShopsInput = {
   avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   backgroundUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  communityType?: Prisma.EnumCommunityTypeFieldUpdateOperationsInput | $Enums.CommunityType
   chatChannels?: Prisma.ChatChannelUncheckedUpdateManyWithoutCommunityNestedInput
   followers?: Prisma.CommunityFollowerUncheckedUpdateManyWithoutCommunityNestedInput
   idols?: Prisma.UserUncheckedUpdateManyWithoutCommunityNestedInput
@@ -1155,6 +1201,7 @@ export type CommunitySelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   avatarUrl?: boolean
   backgroundUrl?: boolean
   description?: boolean
+  communityType?: boolean
   chatChannels?: boolean | Prisma.Community$chatChannelsArgs<ExtArgs>
   followers?: boolean | Prisma.Community$followersArgs<ExtArgs>
   idols?: boolean | Prisma.Community$idolsArgs<ExtArgs>
@@ -1176,6 +1223,7 @@ export type CommunitySelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   avatarUrl?: boolean
   backgroundUrl?: boolean
   description?: boolean
+  communityType?: boolean
 }, ExtArgs["result"]["community"]>
 
 export type CommunitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1191,6 +1239,7 @@ export type CommunitySelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   avatarUrl?: boolean
   backgroundUrl?: boolean
   description?: boolean
+  communityType?: boolean
 }, ExtArgs["result"]["community"]>
 
 export type CommunitySelectScalar = {
@@ -1206,9 +1255,10 @@ export type CommunitySelectScalar = {
   avatarUrl?: boolean
   backgroundUrl?: boolean
   description?: boolean
+  communityType?: boolean
 }
 
-export type CommunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "isDeleted" | "deletedAt" | "metadata" | "name" | "avatarUrl" | "backgroundUrl" | "description", ExtArgs["result"]["community"]>
+export type CommunityOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "isActive" | "createdAt" | "updatedAt" | "version" | "isDeleted" | "deletedAt" | "metadata" | "name" | "avatarUrl" | "backgroundUrl" | "description" | "communityType", ExtArgs["result"]["community"]>
 export type CommunityInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   chatChannels?: boolean | Prisma.Community$chatChannelsArgs<ExtArgs>
   followers?: boolean | Prisma.Community$followersArgs<ExtArgs>
@@ -1242,6 +1292,7 @@ export type $CommunityPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     avatarUrl: string | null
     backgroundUrl: string | null
     description: string | null
+    communityType: $Enums.CommunityType
   }, ExtArgs["result"]["community"]>
   composites: {}
 }
@@ -1682,6 +1733,7 @@ export interface CommunityFieldRefs {
   readonly avatarUrl: Prisma.FieldRef<"Community", 'String'>
   readonly backgroundUrl: Prisma.FieldRef<"Community", 'String'>
   readonly description: Prisma.FieldRef<"Community", 'String'>
+  readonly communityType: Prisma.FieldRef<"Community", 'CommunityType'>
 }
     
 

@@ -48,6 +48,7 @@ export enum ErrorCode {
   AlreadyJoinedCommunity = 'AlreadyJoinedCommunity',
   NotJoinedCommunity = 'NotJoinedCommunity',
   ChatChannelRetrievalFailed = 'ChatChannelRetrievalFailed',
+  ChatChannelCreationFailed = 'ChatChannelCreationFailed',
   ChatMessageRetrievalFailed = 'ChatMessageRetrievalFailed',
   ChatMessageSendFailed = 'ChatMessageSendFailed',
   ChatChannelAccessDenied = 'ChatChannelAccessDenied',

@@ -6,6 +6,7 @@ import {
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
 import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
+import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsDto } from './dto/get-posts.dto';
@@ -20,6 +21,7 @@ export class PostService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly knockWorkflowService: KnockWorkflowService,
+    private readonly getStreamNotificationService: GetStreamNotificationService,
   ) {}
 
   async getPosts(
@@ -326,6 +328,7 @@ export class PostService {
               (post.content.length > 150 ? '...' : '')
             : undefined;
 
+          // Send Knock notification
           await this.knockWorkflowService.notifyCommunityNewPost({
             members: recipients,
             communityId: post.communityId,
@@ -338,6 +341,19 @@ export class PostService {
               avatar: post.author.avatarUrl ?? undefined,
             },
           });
+
+          // Send real-time event via GetStream notification channels
+          await this.getStreamNotificationService.emitNewPostEvent({
+            userIds: followers.map((f) => f.userId),
+            postId: post.id,
+            authorName: post.author.username,
+            communityName: community.name,
+            postPreview: postExcerpt || 'New post',
+          });
+
+          this.logger.log(
+            `Notified ${followers.length} followers about new post ${post.id}`,
+          );
         }
       } catch (error) {
         // Log error but don't fail post creation
@@ -574,6 +590,51 @@ export class PostService {
           },
         }),
       ]);
+
+      // Notify post author about the like (only if liker is not the author)
+      if (userId !== post.authorId) {
+        try {
+          // Get liker info
+          const liker = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+              id: true,
+              username: true,
+              avatarUrl: true,
+            },
+          });
+
+          if (liker) {
+            // Send Knock notification
+            await this.knockWorkflowService.notifyPostLiked({
+              authorId: post.authorId,
+              liker: {
+                id: liker.id,
+                name: liker.username,
+                avatar: liker.avatarUrl,
+              },
+              postId: post.id,
+              postContent: post.content || 'your post',
+            });
+
+            // Send real-time event via GetStream notification channel
+            await this.getStreamNotificationService.emitPostLikedEvent({
+              userId: post.authorId,
+              likerName: liker.username,
+              postId: post.id,
+            });
+
+            this.logger.log(
+              `Notified user ${post.authorId} about like from ${userId}`,
+            );
+          }
+        } catch (error) {
+          this.logger.warn(
+            `Failed to send post like notifications for post ${post.id}: ${error.message}`,
+          );
+          // Don't throw - notification failure shouldn't block like action
+        }
+      }
 
       return { liked: true };
     }

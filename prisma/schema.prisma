@@ -105,6 +105,7 @@ model Community {
   avatarUrl     String?             @map("avatar_url") @db.VarChar(255)
   backgroundUrl String?             @map("background_url") @db.VarChar(255)
   description   String?             @db.VarChar(500)
+  communityType CommunityType
   chatChannels  ChatChannel[]
   followers     CommunityFollower[]
   idols         User[]
@@ -135,18 +136,23 @@ model CommunityFollower {
 }
 
 model ChatChannel {
-  id          String    @id @default(cuid())
-  isActive    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  version     Int       @default(0)
-  isDeleted   Boolean   @default(false) @map("is_deleted")
-  deletedAt   DateTime? @map("deleted_at")
-  metadata    Json?
-  name        String?   @db.VarChar(255)
-  description String?   @db.VarChar(500)
-  communityId String?   @map("communityId")
-  idolId      String?   @map("idolId")
+  id                  String    @id @default(cuid())
+  isActive            Boolean   @default(true)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  version             Int       @default(0)
+  isDeleted           Boolean   @default(false) @map("is_deleted")
+  deletedAt           DateTime? @map("deleted_at")
+  metadata            Json?
+  type                String    @default("messaging") @db.VarChar(50)
+  name                String?   @db.VarChar(255)
+  image               String?   @db.VarChar(500)
+  description         String?   @db.VarChar(500)
+  communityId         String?   @map("communityId")
+  idolId              String?   @map("idolId")
+  isCommunityChannel  Boolean   @default(false) @map("is_community_channel")
+  memberCount         Int       @default(0) @map("member_count")
+  lastMessageAt       DateTime? @map("last_message_at")
 
   community    Community?        @relation(fields: [communityId], references: [id], onDelete: Cascade)
   idol         User?             @relation(fields: [idolId], references: [id], onDelete: Cascade)
@@ -155,6 +161,8 @@ model ChatChannel {
 
   @@index([communityId])
   @@index([idolId])
+  @@index([lastMessageAt])
+  @@index([type])
   @@map("chat_channel")
 }
 
@@ -169,13 +177,18 @@ model ChatParticipant {
   metadata       Json?
   channelId      String      @map("channelId")
   userId         String      @map("userId")
+  role           String      @default("member") @db.VarChar(50)
   canSendMessage Boolean     @default(true) @map("can_send_message")
+  joinedAt       DateTime    @default(now()) @map("joined_at")
+  invitedBy      String?     @map("invited_by")
+  lastReadAt     DateTime?   @map("last_read_at")
   channel        ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
   user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([channelId, userId])
   @@index([userId])
   @@index([channelId])
+  @@index([channelId, userId, lastReadAt])
   @@map("chat_participant")
 }
 
@@ -351,6 +364,11 @@ enum PaymentMethod {
   COD
 }
 
+enum CommunityType {
+  SOLO
+  GROUP
+}
+
 model Shop {
   id          String    @id @default(cuid())
   isActive    Boolean   @default(true)
@@ -402,7 +420,7 @@ model Product {
   shopId      String    @map("shopId")
   name        String    @db.VarChar(255)
   description String?   @db.Text
-  note        String?   @db.Text  
+  note        String?   @db.Text
   price       Float
   stock       Int
   mediaUrls   Json?     @map("media_urls")
@@ -534,25 +552,25 @@ model OrderItem {
 }
 
 model PaymentTransaction {
-  id              String                   @id @default(cuid())
-  isActive        Boolean                  @default(true)
-  createdAt       DateTime                 @default(now())
-  updatedAt       DateTime                 @updatedAt
-  version         Int                      @default(0)
-  isDeleted       Boolean                  @default(false) @map("is_deleted")
-  deletedAt       DateTime?                @map("deleted_at")
-  metadata        Json?
-  orderId         String                   @map("orderId")
-  userId          String                   @map("userId")
-  amount          Float
-  provider        String                   @db.VarChar(100)
-  orderCode       Int                      @unique @map("order_code")
-  paymentLinkId   String?                  @map("payment_link_id") @db.VarChar(255)
-  providerTxnId   String?                  @map("provider_txn_id") @db.VarChar(255)
-  status          PaymentTransactionStatus
-  paidAt          DateTime?                @map("paid_at")
-  checkoutUrl     String?                  @map("checkout_url") @db.Text
-  qrCode          String?                  @map("qr_code") @db.Text
+  id            String                   @id @default(cuid())
+  isActive      Boolean                  @default(true)
+  createdAt     DateTime                 @default(now())
+  updatedAt     DateTime                 @updatedAt
+  version       Int                      @default(0)
+  isDeleted     Boolean                  @default(false) @map("is_deleted")
+  deletedAt     DateTime?                @map("deleted_at")
+  metadata      Json?
+  orderId       String                   @map("orderId")
+  userId        String                   @map("userId")
+  amount        Float
+  provider      String                   @db.VarChar(100)
+  orderCode     Int                      @unique @map("order_code")
+  paymentLinkId String?                  @map("payment_link_id") @db.VarChar(255)
+  providerTxnId String?                  @map("provider_txn_id") @db.VarChar(255)
+  status        PaymentTransactionStatus
+  paidAt        DateTime?                @map("paid_at")
+  checkoutUrl   String?                  @map("checkout_url") @db.Text
+  qrCode        String?                  @map("qr_code") @db.Text
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -610,17 +628,17 @@ model District {
 }
 
 model Address {
-  id            String    @id @default(cuid())
-  isActive      Boolean   @default(true)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  version       Int       @default(0)
-  isDeleted     Boolean   @default(false) @map("is_deleted")
-  deletedAt     DateTime? @map("deleted_at")
-  metadata      Json?
-  userId        String    @map("user_id")
-  firstName     String    @map("first_name") @db.VarChar(100)
-  lastName      String    @map("last_name") @db.VarChar(100)
+  id               String    @id @default(cuid())
+  isActive         Boolean   @default(true)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  version          Int       @default(0)
+  isDeleted        Boolean   @default(false) @map("is_deleted")
+  deletedAt        DateTime? @map("deleted_at")
+  metadata         Json?
+  userId           String    @map("user_id")
+  firstName        String    @map("first_name") @db.VarChar(100)
+  lastName         String    @map("last_name") @db.VarChar(100)
   phoneNumber      String    @map("phone_number") @db.VarChar(20)
   provinceCode     Int       @map("province_code")
   districtCode     Int       @map("district_code")

@@ -34,9 +34,8 @@ export class CreateStreamUserDto {
   image?: string;
 
   @ApiPropertyOptional({
-    description: 'User role',
-    example: 'user',
-    default: 'user',
+    description: 'User role (optional - uses GetStream default if not provided)',
+    example: 'admin',
   })
   @IsString()
   @IsOptional()
