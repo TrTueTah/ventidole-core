@@ -12,9 +12,7 @@ import { StreamChatWebhookService } from './stream-chat-webhook.service';
 export class StreamChatWebhookController {
   private readonly logger = new Logger(StreamChatWebhookController.name);
 
-  constructor(
-    private readonly webhookService: StreamChatWebhookService,
-  ) {}
+  constructor(private readonly webhookService: StreamChatWebhookService) {}
 
   @Post()
   @ApiOperation({ summary: 'Handle GetStream webhook events' })

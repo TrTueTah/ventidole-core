@@ -8,6 +8,7 @@ import { CustomError } from '@shared/helper/error';
 import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
+import { RecommendationService } from '@shared/service/recommendation/recommendation.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsDto } from './dto/get-posts.dto';
 import { PostDetailDto } from './dto/post-detail.dto';
@@ -22,6 +23,7 @@ export class PostService {
     private readonly prisma: PrismaService,
     private readonly knockWorkflowService: KnockWorkflowService,
     private readonly getStreamNotificationService: GetStreamNotificationService,
+    private readonly recommendationService: RecommendationService,
   ) {}
 
   async getPosts(
@@ -684,5 +686,124 @@ export class PostService {
       ]);
     }
     // If view already exists, do nothing (idempotent)
+  }
+
+  async getRecommendations(
+    userId: string,
+    limit: number = 20,
+    offset: number = 0,
+  ): Promise<PaginationResponse<PostDto>> {
+    // Fetch recommendations from the recommendation service
+    const recommendations =
+      await this.recommendationService.getUserRecommendations(
+        userId,
+        limit,
+        offset,
+      );
+
+    // Extract post IDs from recommendations
+    const postIds = recommendations.recommendations.map((rec) => rec.post_id);
+
+    if (postIds.length === 0) {
+      // No recommendations found, return empty pagination
+      const pageInfo = new PageInfo(
+        Math.floor(offset / limit) + 1,
+        limit,
+        recommendations.pagination.total,
+      );
+      return new PaginationResponse([], pageInfo);
+    }
+
+    // Query database for the actual post data
+    const rawPosts = await this.prisma.post.findMany({
+      where: {
+        id: {
+          in: postIds,
+        },
+        isDeleted: false,
+        isActive: true,
+      },
+      select: {
+        id: true,
+        content: true,
+        mediaUrls: true,
+        likeCount: true,
+        commentCount: true,
+        viewCount: true,
+        authorId: true,
+        communityId: true,
+        author: {
+          select: {
+            id: true,
+            username: true,
+            avatarUrl: true,
+          },
+        },
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    // Get like status for each post if userId is provided
+    let likedPostIds: Set<string> = new Set();
+    if (rawPosts.length > 0) {
+      const likes = await this.prisma.postLike.findMany({
+        where: {
+          userId,
+          postId: {
+            in: rawPosts.map((post) => post.id),
+          },
+        },
+        select: {
+          postId: true,
+        },
+      });
+      likedPostIds = new Set(likes.map((like) => like.postId));
+    }
+
+    // Create a map of posts by ID for efficient lookup
+    const postMap = new Map(rawPosts.map((post) => [post.id, post]));
+
+    // Order posts according to recommendation order and transform
+    const posts = postIds
+      .map((postId) => postMap.get(postId))
+      .filter((post) => post !== undefined)
+      .map((post) => {
+        let mediaUrls: string[] | null = null;
+
+        if (post.mediaUrls) {
+          if (Array.isArray(post.mediaUrls)) {
+            mediaUrls = post.mediaUrls.every((item) => typeof item === 'string')
+              ? (post.mediaUrls as string[])
+              : null;
+          } else if (typeof post.mediaUrls === 'string') {
+            try {
+              const parsed = JSON.parse(post.mediaUrls);
+              mediaUrls = Array.isArray(parsed) ? parsed : null;
+            } catch {
+              mediaUrls = null;
+            }
+          } else if (typeof post.mediaUrls === 'object') {
+            const values = Object.values(post.mediaUrls);
+            mediaUrls = values.every((v) => typeof v === 'string')
+              ? values
+              : null;
+          }
+        }
+
+        return {
+          ...post,
+          mediaUrls,
+          isLiked: likedPostIds.has(post.id),
+        };
+      });
+
+    const pageInfo = new PageInfo(
+      Math.floor(offset / limit) + 1,
+      limit,
+      recommendations.pagination.total,
+    );
+
+    return new PaginationResponse(posts, pageInfo);
   }
 }

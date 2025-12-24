@@ -105,7 +105,7 @@ model Community {
   avatarUrl     String?             @map("avatar_url") @db.VarChar(255)
   backgroundUrl String?             @map("background_url") @db.VarChar(255)
   description   String?             @db.VarChar(500)
-  communityType CommunityType
+  communityType CommunityType       @map("community_type")
   chatChannels  ChatChannel[]
   followers     CommunityFollower[]
   idols         User[]

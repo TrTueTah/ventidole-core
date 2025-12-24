@@ -159,6 +159,10 @@ class EnvironmentVariable {
   @IsString()
   @IsNotEmpty()
   FRONTEND_URL: string;
+
+  @IsString()
+  @IsNotEmpty()
+  RECOMMENDATION_API_URL: string;
 }
 
 export const ENVIRONMENT = {} as EnvironmentVariable;

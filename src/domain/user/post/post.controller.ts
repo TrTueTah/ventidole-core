@@ -21,6 +21,7 @@ import { BaseResponse } from '@shared/helper/response';
 import { IRequest } from '@shared/interface/request.interface';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsDto } from './dto/get-posts.dto';
+import { GetRecommendationsDto } from './dto/get-recommendations.dto';
 import { PostDetailDto } from './dto/post-detail.dto';
 import { PostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -40,6 +41,20 @@ export class PostController {
     @Query() pagination: GetPostsDto,
   ): Promise<PaginationResponse<PostDto>> {
     const result = await this.postService.getPosts(pagination, req.user?.id);
+    return result;
+  }
+
+  @Get('recommendations')
+  @ApiPaginationResponse(PostDto)
+  async getRecommendations(
+    @Req() req: IRequest,
+    @Query() query: GetRecommendationsDto,
+  ): Promise<PaginationResponse<PostDto>> {
+    const result = await this.postService.getRecommendations(
+      req.user.id,
+      query.limit,
+      query.offset,
+    );
     return result;
   }
 

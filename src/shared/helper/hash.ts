@@ -15,6 +15,8 @@ export const verifyPassword = async (
   hashedPassword: string,
 ) => {
   try {
+    const hashed = await bcrypt.hash(password, 10);
+    console.log('password', password, hashed);
     return await bcrypt.compare(password, hashedPassword);
   } catch (error) {
     throw error;

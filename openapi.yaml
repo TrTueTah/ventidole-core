@@ -1421,6 +1421,90 @@ paths:
                   - message
       security: *ref_8
       tags: *ref_9
+  /v1/user/posts/recommendations:
+    get:
+      operationId: PostController_getRecommendations_v1
+      parameters:
+        - name: limit
+          required: false
+          in: query
+          description: Number of recommendations to return
+          schema:
+            minimum: 1
+            maximum: 100
+            default: 20
+            type: number
+        - name: offset
+          required: false
+          in: query
+          description: Offset for pagination
+          schema:
+            minimum: 0
+            default: 0
+            type: number
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: *ref_8
+      tags: *ref_9
   /v1/user/posts/{id}:
     get:
       operationId: PostController_getPostById_v1
@@ -5242,6 +5326,8 @@ components:
             - PaymentTransactionCreateFailed
             - PaymentWebhookSignatureInvalid
             - ResourceNotFound
+            - UserNotFoundInRecommendationSystem
+            - RecommendationServiceError
           description: Error code (optional)
       required:
         - statusCode

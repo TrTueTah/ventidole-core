@@ -8,6 +8,7 @@ export enum KnockWorkflow {
   // Chat workflows
   NEW_MESSAGE = 'new-message',
   CHANNEL_INVITATION = 'channel-invitation',
+  CHANNEL_CREATED = 'channel-created',
 
   // Order workflows
   CONFIRM_ORDER = 'confirm-order',

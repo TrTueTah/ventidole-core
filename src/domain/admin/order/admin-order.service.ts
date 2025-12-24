@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   PageInfo,
   PaginationResponse,
@@ -6,6 +6,8 @@ import {
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
+import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
 import { OrderStatus } from 'src/db/prisma/enums';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetOrdersDto } from './dto/get-orders.dto';
@@ -15,7 +17,13 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Injectable()
 export class AdminOrderService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(AdminOrderService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly knockWorkflowService: KnockWorkflowService,
+    private readonly getStreamNotificationService: GetStreamNotificationService,
+  ) {}
 
   async getAllOrders(
     filters: GetOrdersDto,
@@ -369,6 +377,57 @@ export class AdminOrderService {
         updatedAt: true,
       },
     });
+
+    // Send notifications if status changed
+    if (updateOrderDto.status && updateOrderDto.status !== existingOrder.status) {
+      try {
+        const orderCode = String(order.id.slice(-12)); // Use last 12 chars of ID as order code
+
+        // Notify on status changes
+        if (updateOrderDto.status === OrderStatus.shipping) {
+          // Order shipped notification
+          await this.knockWorkflowService.notifyOrderShipped({
+            userId: order.user.id,
+            orderId: order.id,
+            orderCode,
+          });
+
+          await this.getStreamNotificationService.emitOrderStatusEvent({
+            userId: order.user.id,
+            orderId: order.id,
+            orderCode,
+            status: 'shipped',
+          });
+
+          this.logger.log(
+            `Order shipped notification sent for order ${order.id}`,
+          );
+        } else if (updateOrderDto.status === OrderStatus.delivered) {
+          // Order delivered notification
+          await this.knockWorkflowService.notifyOrderDelivered({
+            userId: order.user.id,
+            orderId: order.id,
+            orderCode,
+          });
+
+          await this.getStreamNotificationService.emitOrderStatusEvent({
+            userId: order.user.id,
+            orderId: order.id,
+            orderCode,
+            status: 'delivered',
+          });
+
+          this.logger.log(
+            `Order delivered notification sent for order ${order.id}`,
+          );
+        }
+      } catch (error) {
+        this.logger.error(
+          `Failed to send order status notification: ${error.message}`,
+        );
+        // Don't throw - notification failure shouldn't block order update
+      }
+    }
 
     const { items, ...orderWithoutItems } = order;
     return {

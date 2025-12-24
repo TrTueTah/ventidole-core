@@ -6,6 +6,8 @@ import {
 } from '@shared/dto/pagination-response.dto';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
+import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { ChannelDto } from './dto/channel.dto';
 import { CreateChannelDto } from './dto/create-channel.dto';
@@ -17,7 +19,11 @@ import { SendMessageDto } from './dto/send-message.dto';
 export class ChatService {
   private readonly logger = new Logger(ChatService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly knockWorkflowService: KnockWorkflowService,
+    private readonly getStreamNotificationService: GetStreamNotificationService,
+  ) {}
 
   /**
    * Create a new channel (IDOL only)
@@ -117,6 +123,78 @@ export class ChatService {
           streamError,
         );
         // Don't throw error here, channel is already saved in database
+      }
+
+      // If community channel, notify all community members
+      if (createChannelDto.isCommunityChannel && createChannelDto.communityId) {
+        try {
+          const [community, followers] = await Promise.all([
+            this.prisma.community.findUnique({
+              where: { id: createChannelDto.communityId },
+              select: { id: true, name: true },
+            }),
+            this.prisma.communityFollower.findMany({
+              where: {
+                communityId: createChannelDto.communityId,
+                isDeleted: false,
+                isActive: true,
+              },
+              select: {
+                userId: true,
+                user: {
+                  select: {
+                    username: true,
+                    email: true,
+                    avatarUrl: true,
+                  },
+                },
+              },
+            }),
+          ]);
+
+          if (community && followers.length > 0) {
+            // Get creator info
+            const creator = await this.prisma.user.findUnique({
+              where: { id: userId },
+              select: { username: true, avatarUrl: true },
+            });
+
+            const creatorName = creator?.username || 'Unknown';
+            const followerIds = followers.map((f) => f.userId);
+
+            // Send Knock notifications (push/email) to community members
+            await this.knockWorkflowService.notifyChannelCreated({
+              recipientIds: followerIds.filter((id) => id !== userId), // Exclude creator
+              channelId: channel.id,
+              channelName: channel.name || 'New Channel',
+              creatorName,
+              communityName: community.name,
+            });
+
+            // Send real-time events via GetStream notification channels
+            const notificationPromises = followerIds
+              .filter((followerId) => followerId !== userId) // Exclude creator
+              .map((followerId) =>
+                this.getStreamNotificationService.emitChannelCreatedEvent({
+                  userId: followerId,
+                  channelId: channel.id,
+                  channelName: channel.name || 'New Channel',
+                  creatorName,
+                }),
+              );
+
+            await Promise.allSettled(notificationPromises);
+
+            this.logger.log(
+              `Notified ${followers.length - 1} community members about new channel ${channel.id}`,
+            );
+          }
+        } catch (notifyError) {
+          this.logger.warn(
+            `Failed to send channel creation notifications: ${notifyError.message}`,
+          );
+          // Don't throw - notification failure shouldn't block channel creation
+        }
       }
 
       // Return channel DTO
@@ -351,7 +429,7 @@ export class ChatService {
       id: channel.id,
       type: 'messaging',
       name: channel.name,
-      image: channel.description,
+      image: channel.image,
       memberIds: channel.participants?.map((p: any) => p.userId) || [],
       memberCount: channel.participants?.length || 0,
       lastMessage: lastMessage
@@ -616,9 +694,7 @@ export class ChatService {
         // Don't throw error here, lastReadAt is already updated in database
       }
 
-      this.logger.log(
-        `Channel ${channelId} marked as read for user ${userId}`,
-      );
+      this.logger.log(`Channel ${channelId} marked as read for user ${userId}`);
     } catch (error) {
       this.logger.error(
         `Error marking channel ${channelId} as read for user ${userId}:`,

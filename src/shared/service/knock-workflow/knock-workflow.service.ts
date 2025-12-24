@@ -255,6 +255,37 @@ export class KnockWorkflowService {
   }
 
   /**
+   * Notify community members when a new channel is created
+   */
+  async notifyChannelCreated(params: {
+    recipientIds: string[];
+    channelId: string;
+    channelName: string;
+    creatorName: string;
+    communityName?: string;
+    metadata?: NotificationMetadata;
+  }): Promise<string> {
+    if (params.recipientIds.length === 0) {
+      this.logger.log('No recipients to notify about channel creation');
+      return '';
+    }
+
+    return this.triggerWorkflow(
+      KnockWorkflow.CHANNEL_CREATED,
+      params.recipientIds,
+      {
+        creatorName: params.creatorName,
+        channelId: params.channelId,
+        channelName: params.channelName,
+        communityName: params.communityName,
+        url: params.metadata?.url || `/chat/${params.channelId}`,
+        ...params.metadata,
+      },
+      { id: 'system', name: params.creatorName },
+    );
+  }
+
+  /**
    * Notify user when order is shipped
    */
   async notifyOrderShipped(params: {

@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CustomError } from '@shared/helper/error';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
+import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
 import { PaginationDto } from '@shared/dto/pagination-request.dto';
 import {
   PageInfo,
@@ -13,7 +15,13 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @Injectable()
 export class CommentService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(CommentService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly knockWorkflowService: KnockWorkflowService,
+    private readonly getStreamNotificationService: GetStreamNotificationService,
+  ) {}
 
   async getCommentsByPostId(
     postId: string,
@@ -165,6 +173,50 @@ export class CommentService {
         },
       },
     });
+
+    // Notify post author about the comment (only if commenter is not the author)
+    if (userId !== post.authorId) {
+      try {
+        // Get post author info
+        const postAuthor = await this.prisma.user.findUnique({
+          where: { id: post.authorId },
+          select: { id: true, username: true, email: true },
+        });
+
+        if (postAuthor) {
+          const commentPreview = comment.content.substring(0, 100);
+
+          // Send Knock notification
+          await this.knockWorkflowService.notifyPostCommented({
+            authorId: post.authorId,
+            commenter: {
+              id: comment.user.id,
+              name: comment.user.username,
+              avatar: comment.user.avatarUrl,
+            },
+            postId: post.id,
+            commentContent: commentPreview,
+          });
+
+          // Send real-time event via GetStream notification channel
+          await this.getStreamNotificationService.emitPostCommentedEvent({
+            userId: post.authorId,
+            commenterName: comment.user.username,
+            postId: post.id,
+            commentPreview,
+          });
+
+          this.logger.log(
+            `Notified user ${post.authorId} about comment from ${userId} on post ${postId}`,
+          );
+        }
+      } catch (error) {
+        this.logger.warn(
+          `Failed to send comment notifications for post ${postId}: ${error.message}`,
+        );
+        // Don't throw - notification failure shouldn't block comment creation
+      }
+    }
 
     return {
       id: comment.id,
