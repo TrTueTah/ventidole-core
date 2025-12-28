@@ -62,9 +62,9 @@ export class AdminProductDto {
       'https://example.com/image2.jpg',
     ],
     description: 'Product media URLs',
+    type: [String],
   })
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  mediaUrls?: any;
+  mediaUrls?: string[];
 
   @ApiProperty({
     description: 'Shop information',

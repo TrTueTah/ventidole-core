@@ -329,6 +329,7 @@ enum VerificationType {
   RESET_PASSWORD
   REGISTER_ACCOUNT
   UPDATE_PROFILE
+  CHANGE_PASSWORD
 }
 
 enum SocialAccountProvider {
@@ -511,6 +512,7 @@ model Order {
   deletedAt       DateTime?     @map("deleted_at")
   metadata        Json?
   userId          String        @map("user_id")
+  orderCode       String?       @unique @map("order_code") @db.VarChar(50)
   totalAmount     Float         @map("total_amount")
   status          OrderStatus
   shippingAddress Json          @map("shipping_address")
@@ -523,6 +525,7 @@ model Order {
 
   @@index([userId])
   @@index([status])
+  @@index([orderCode])
   @@map("order")
 }
 

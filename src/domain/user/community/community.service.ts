@@ -1,3 +1,4 @@
+import getStreamChatClient from '@core/config/stream-chat.config';
 import { Injectable, Logger } from '@nestjs/common';
 import { PaginationDto } from '@shared/dto/pagination-request.dto';
 import {
@@ -6,10 +7,9 @@ import {
 } from '@shared/dto/pagination-response.dto';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
-import { PrismaService } from '@shared/service/prisma/prisma.service';
-import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
-import getStreamChatClient from '@core/config/stream-chat.config';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
+import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { CommunityDetailDto } from './dto/community-detail.dto';
 import { CommunityListDto } from './dto/community-list.dto';
 import { CommunityDto } from './dto/community.dto';
@@ -244,11 +244,7 @@ export class CommunityService {
 
     // Notify idol(s) about new follower
     if (community.idols && community.idols.length > 0) {
-      await this.notifyIdolsAboutNewFollower(
-        community.idols,
-        fan,
-        community,
-      );
+      await this.notifyIdolsAboutNewFollower(community.idols, fan, community);
     }
   }
 
@@ -366,10 +362,7 @@ export class CommunityService {
           `Notified idol ${idol.id} about new follower ${fan.id}`,
         );
       } catch (error) {
-        this.logger.error(
-          `Error notifying idol ${idol.id}:`,
-          error.message,
-        );
+        this.logger.error(`Error notifying idol ${idol.id}:`, error.message);
         // Continue with other idols even if one fails
       }
     }
@@ -428,11 +421,11 @@ export class CommunityService {
         updatedAt: true,
         followers: {
           where: {
-            userId,
             isDeleted: false,
           },
           select: {
             id: true,
+            userId: true,
           },
         },
         idols: {
@@ -462,7 +455,8 @@ export class CommunityService {
       description: community.description,
       createdAt: community.createdAt,
       updatedAt: community.updatedAt,
-      isJoined: community.followers.length > 0,
+      isJoined: community.followers.some((f) => f.userId === userId),
+      totalMember: community.followers.length,
       idols: community.idols,
     };
   }

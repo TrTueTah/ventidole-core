@@ -1,3 +1,4 @@
+import { ChangePasswordRequest } from './change-password.request';
 import { ConfirmVerificationRequest } from './confirm-verification.request';
 import { RefreshTokenRequest } from './refresh-token.request';
 import { ResetPasswordRequest } from './reset-password.request';
@@ -12,4 +13,5 @@ export const authRequests = [
   SignUpRequest,
   RefreshTokenRequest,
   ResetPasswordRequest,
+  ChangePasswordRequest,
 ];

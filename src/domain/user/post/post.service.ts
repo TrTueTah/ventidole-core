@@ -5,8 +5,8 @@ import {
 } from '@shared/dto/pagination-response.dto';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
-import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { RecommendationService } from '@shared/service/recommendation/recommendation.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -57,9 +57,6 @@ export class PostService {
           id: true,
           content: true,
           mediaUrls: true,
-          likeCount: true,
-          commentCount: true,
-          viewCount: true,
           authorId: true,
           communityId: true,
           author: {
@@ -67,6 +64,13 @@ export class PostService {
               id: true,
               username: true,
               avatarUrl: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+              views: true,
             },
           },
           createdAt: true,
@@ -125,9 +129,18 @@ export class PostService {
       }
 
       return {
-        ...post,
+        id: post.id,
+        content: post.content,
         mediaUrls,
+        likeCount: post._count.likes,
+        commentCount: post._count.comments,
+        viewCount: post._count.views,
         isLiked: likedPostIds.has(post.id),
+        authorId: post.authorId,
+        communityId: post.communityId,
+        author: post.author,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
       };
     });
 
@@ -147,15 +160,19 @@ export class PostService {
         id: true,
         content: true,
         mediaUrls: true,
-        likeCount: true,
-        commentCount: true,
-        viewCount: true,
         authorId: true,
         author: {
           select: {
             id: true,
             username: true,
             avatarUrl: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+            views: true,
           },
         },
         createdAt: true,
@@ -211,9 +228,9 @@ export class PostService {
       id: post.id,
       content: post.content,
       mediaUrls: transformedMediaUrls,
-      likeCount: post.likeCount,
-      commentCount: post.commentCount,
-      viewCount: post.viewCount,
+      likeCount: post._count.likes,
+      commentCount: post._count.comments,
+      viewCount: post._count.views,
       isLiked,
       authorId: post.authorId,
       author: {
@@ -244,9 +261,6 @@ export class PostService {
         id: true,
         content: true,
         mediaUrls: true,
-        likeCount: true,
-        commentCount: true,
-        viewCount: true,
         authorId: true,
         communityId: true,
         author: {
@@ -254,6 +268,13 @@ export class PostService {
             id: true,
             username: true,
             avatarUrl: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+            views: true,
           },
         },
         createdAt: true,
@@ -369,9 +390,9 @@ export class PostService {
       id: post.id,
       content: post.content,
       mediaUrls: transformedMediaUrls,
-      likeCount: post.likeCount,
-      commentCount: post.commentCount,
-      viewCount: post.viewCount,
+      likeCount: post._count.likes,
+      commentCount: post._count.comments,
+      viewCount: post._count.views,
       isLiked: false, // User just created the post, they haven't liked it yet
       authorId: post.authorId,
       author: {
@@ -428,9 +449,6 @@ export class PostService {
         id: true,
         content: true,
         mediaUrls: true,
-        likeCount: true,
-        commentCount: true,
-        viewCount: true,
         authorId: true,
         communityId: true,
         author: {
@@ -438,6 +456,13 @@ export class PostService {
             id: true,
             username: true,
             avatarUrl: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+            views: true,
           },
         },
         createdAt: true,
@@ -484,9 +509,9 @@ export class PostService {
       id: post.id,
       content: post.content,
       mediaUrls: transformedMediaUrls,
-      likeCount: post.likeCount,
-      commentCount: post.commentCount,
-      viewCount: post.viewCount,
+      likeCount: post._count.likes,
+      commentCount: post._count.comments,
+      viewCount: post._count.views,
       isLiked: !!like,
       authorId: post.authorId,
       communityId: post.communityId,
@@ -553,45 +578,25 @@ export class PostService {
     });
 
     if (existingLike) {
-      // Unlike: Delete the like and decrement count
-      await this.prisma.$transaction([
-        this.prisma.postLike.delete({
-          where: {
-            postId_userId: {
-              postId,
-              userId,
-            },
-          },
-        }),
-        this.prisma.post.update({
-          where: { id: postId },
-          data: {
-            likeCount: {
-              decrement: 1,
-            },
-          },
-        }),
-      ]);
-
-      return { liked: false };
-    } else {
-      // Like: Create the like and increment count
-      await this.prisma.$transaction([
-        this.prisma.postLike.create({
-          data: {
+      // Unlike: Delete the like
+      await this.prisma.postLike.delete({
+        where: {
+          postId_userId: {
             postId,
             userId,
           },
-        }),
-        this.prisma.post.update({
-          where: { id: postId },
-          data: {
-            likeCount: {
-              increment: 1,
-            },
-          },
-        }),
-      ]);
+        },
+      });
+
+      return { liked: false };
+    } else {
+      // Like: Create the like
+      await this.prisma.postLike.create({
+        data: {
+          postId,
+          userId,
+        },
+      });
 
       // Notify post author about the like (only if liker is not the author)
       if (userId !== post.authorId) {
@@ -668,22 +673,12 @@ export class PostService {
 
     // Only create view if it doesn't exist
     if (!existingView) {
-      await this.prisma.$transaction([
-        this.prisma.postView.create({
-          data: {
-            postId,
-            userId,
-          },
-        }),
-        this.prisma.post.update({
-          where: { id: postId },
-          data: {
-            viewCount: {
-              increment: 1,
-            },
-          },
-        }),
-      ]);
+      await this.prisma.postView.create({
+        data: {
+          postId,
+          userId,
+        },
+      });
     }
     // If view already exists, do nothing (idempotent)
   }
@@ -727,9 +722,6 @@ export class PostService {
         id: true,
         content: true,
         mediaUrls: true,
-        likeCount: true,
-        commentCount: true,
-        viewCount: true,
         authorId: true,
         communityId: true,
         author: {
@@ -737,6 +729,13 @@ export class PostService {
             id: true,
             username: true,
             avatarUrl: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+            comments: true,
+            views: true,
           },
         },
         createdAt: true,
@@ -792,9 +791,18 @@ export class PostService {
         }
 
         return {
-          ...post,
+          id: post.id,
+          content: post.content,
           mediaUrls,
+          likeCount: post._count.likes,
+          commentCount: post._count.comments,
+          viewCount: post._count.views,
           isLiked: likedPostIds.has(post.id),
+          authorId: post.authorId,
+          communityId: post.communityId,
+          author: post.author,
+          createdAt: post.createdAt,
+          updatedAt: post.updatedAt,
         };
       });
 

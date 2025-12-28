@@ -18,7 +18,7 @@ import { PaginationResponse } from '@shared/dto/pagination-response.dto';
 import { ApiVersion } from '@shared/enum/api-version.enum';
 import { BaseResponse } from '@shared/helper/response';
 import { AdminCommunityService } from './admin-community.service';
-import { CommunityDetailDto } from './dto/community-detail.dto';
+import { AdminCommunityDetailDto } from './dto/community-detail.dto';
 import { CommunityDto } from './dto/community.dto';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { GetCommunitiesDto } from './dto/get-communities.dto';
@@ -29,7 +29,7 @@ import { UpdateCommunityDto } from './dto/update-community.dto';
 @Controller({ path: 'admin/community', version: ApiVersion.V1 })
 @ApiExtraModelsCustom(
   CommunityDto,
-  CommunityDetailDto,
+  AdminCommunityDetailDto,
   CreateCommunityDto,
   UpdateCommunityDto,
 )
@@ -46,10 +46,10 @@ export class AdminCommunityController {
   }
 
   @Get(':id')
-  @ApiResponseCustom(CommunityDetailDto)
+  @ApiResponseCustom(AdminCommunityDetailDto)
   async getCommunityById(
     @Param('id') id: string,
-  ): Promise<BaseResponse<CommunityDetailDto>> {
+  ): Promise<BaseResponse<AdminCommunityDetailDto>> {
     const result = await this.adminCommunityService.getCommunityById(id);
     return BaseResponse.of(result);
   }

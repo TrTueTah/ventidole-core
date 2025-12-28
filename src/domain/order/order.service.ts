@@ -1,9 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 
+import {
+  PageInfo,
+  PaginationResponse,
+} from '@shared/dto/pagination-response.dto';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
-import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { WinstonLogger } from '@shared/service/logger/winston.logger';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { Prisma } from 'src/db/prisma/client';
@@ -13,6 +17,12 @@ import {
   PaymentTransactionStatus,
 } from 'src/db/prisma/enums';
 import { ConfirmOrderDto } from './dto/confirm-order.dto';
+import { GetOrdersDto } from './dto/get-orders.dto';
+import {
+  OrderDetailDto,
+  OrderItemListDto,
+  OrderListDto,
+} from './dto/order-list.dto';
 import { OrderResponseDto, PaymentInfoDto } from './dto/order-response.dto';
 import { PaymentTransactionService } from './payment-transaction.service';
 
@@ -62,6 +72,7 @@ export class OrderService {
     const order = await this.prisma.order.create({
       data: {
         userId,
+        orderCode: this.generateOrderCode(),
         totalAmount,
         status: initialStatus,
         paymentMethod: dto.paymentMethod,
@@ -78,12 +89,17 @@ export class OrderService {
     WinstonLogger.info('Order created', {
       metadata: {
         orderId: order.id,
+        orderCode: order.orderCode,
         userId,
         totalAmount,
         paymentMethod: dto.paymentMethod,
         status: order.status,
       },
     });
+
+    // Clear cart items for ordered products
+    const orderedProductIds = items.map((item) => item.id);
+    await this.clearCartItems(userId, orderedProductIds);
 
     // Handle payment method branching
     if (dto.paymentMethod === PaymentMethod.CREDIT) {
@@ -360,7 +376,7 @@ export class OrderService {
         userId: order.userId,
         orderId: order.id,
         orderCode: String(orderCode),
-        status: 'confirmed',
+        status: 'paid',
       });
 
       WinstonLogger.info('Payment notification sent', {
@@ -492,5 +508,183 @@ export class OrderService {
     WinstonLogger.info('Expired old pending orders', {
       metadata: { count: expiredOrders.count, timeoutMinutes },
     });
+  }
+
+  /**
+   * Get user's orders with pagination and filtering
+   * @param userId User UUID
+   * @param dto Query parameters
+   * @returns Paginated order list
+   */
+  async getUserOrders(
+    userId: string,
+    dto: GetOrdersDto,
+  ): Promise<PaginationResponse<OrderListDto>> {
+    const { page = 1, limit = 10, offset, status } = dto;
+    const skip = offset ?? (page - 1) * limit;
+
+    // Build where clause
+    const where: Prisma.OrderWhereInput = {
+      userId,
+      isDeleted: false,
+    };
+
+    if (status) {
+      where.status = status;
+    }
+
+    // Fetch orders and count in parallel
+    const [orders, total] = await Promise.all([
+      this.prisma.order.findMany({
+        where,
+        include: {
+          items: {
+            where: { isDeleted: false },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      this.prisma.order.count({ where }),
+    ]);
+
+    // Map to DTO
+    const data: OrderListDto[] = orders.map((order) => ({
+      id: order.id,
+      orderCode: order.orderCode,
+      totalAmount: order.totalAmount,
+      status: order.status,
+      paymentMethod: order.paymentMethod,
+      itemCount: order.items.length,
+      createdAt: order.createdAt,
+      paidAt: order.paidAt,
+    }));
+
+    const pageInfo = new PageInfo(page, limit, total);
+    return new PaginationResponse(data, pageInfo);
+  }
+
+  /**
+   * Get order details by ID
+   * @param userId User UUID
+   * @param orderId Order UUID
+   * @returns Order details
+   */
+  async getOrderDetails(
+    userId: string,
+    orderId: string,
+  ): Promise<OrderDetailDto> {
+    const order = await this.prisma.order.findFirst({
+      where: {
+        id: orderId,
+        userId,
+        isDeleted: false,
+      },
+      include: {
+        items: {
+          where: { isDeleted: false },
+          include: {
+            product: {
+              select: {
+                name: true,
+                mediaUrls: true,
+              },
+            },
+            variant: {
+              select: {
+                name: true,
+              },
+            },
+          },
+          orderBy: { createdAt: 'asc' },
+        },
+      },
+    });
+
+    if (!order) {
+      throw new CustomError(ErrorCode.OrderNotFound);
+    }
+
+    // Map items to DTO
+    const items: OrderItemListDto[] = order.items.map((item) => ({
+      id: item.id,
+      productId: item.productId,
+      productName: item.product.name,
+      variantId: item.variantId,
+      variantName: item.variant?.name ?? null,
+      price: item.price,
+      quantity: item.quantity,
+      mediaUrls: item.product.mediaUrls,
+    }));
+
+    return {
+      id: order.id,
+      orderCode: order.orderCode,
+      totalAmount: order.totalAmount,
+      status: order.status,
+      paymentMethod: order.paymentMethod,
+      shippingAddress: order.shippingAddress,
+      items,
+      createdAt: order.createdAt,
+      paidAt: order.paidAt,
+      updatedAt: order.updatedAt,
+    };
+  }
+
+  /**
+   * Clear cart items after order creation
+   * @param userId User UUID
+   * @param productIds Array of product IDs to remove from cart
+   */
+  private async clearCartItems(
+    userId: string,
+    productIds: string[],
+  ): Promise<void> {
+    // Find user's cart
+    const cart = await this.prisma.cart.findFirst({
+      where: {
+        userId,
+        isDeleted: false,
+      },
+    });
+
+    if (!cart) {
+      return; // No cart to clear
+    }
+
+    // Soft delete all cart items for the ordered products
+    await this.prisma.cartItem.updateMany({
+      where: {
+        cartId: cart.id,
+        productId: { in: productIds },
+        isDeleted: false,
+      },
+      data: {
+        isDeleted: true,
+        deletedAt: new Date(),
+      },
+    });
+
+    WinstonLogger.info('Cart items cleared after order creation', {
+      metadata: {
+        userId,
+        cartId: cart.id,
+        productCount: productIds.length,
+      },
+    });
+  }
+
+  /**
+   * Generate unique order code
+   * Format: ORD-YYYYMMDD-XXXXX (e.g., ORD-20251227-12345)
+   */
+  private generateOrderCode(): string {
+    const date = new Date();
+    const dateStr = date.toISOString().split('T')[0].replace(/-/g, '');
+    const random = Math.floor(Math.random() * 99999)
+      .toString()
+      .padStart(5, '0');
+    return `ORD-${dateStr}-${random}`;
   }
 }

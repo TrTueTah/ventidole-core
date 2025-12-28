@@ -6,7 +6,7 @@ import {
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
-import { CommunityDetailDto } from './dto/community-detail.dto';
+import { AdminCommunityDetailDto } from './dto/community-detail.dto';
 import { CommunityDto } from './dto/community.dto';
 import { CreateCommunityDto } from './dto/create-community.dto';
 import { GetCommunitiesDto } from './dto/get-communities.dto';
@@ -77,7 +77,7 @@ export class AdminCommunityService {
     return new PaginationResponse(communities, pageInfo);
   }
 
-  async getCommunityById(id: string): Promise<CommunityDetailDto> {
+  async getCommunityById(id: string): Promise<AdminCommunityDetailDto> {
     const community = await this.prisma.community.findUnique({
       where: {
         id,

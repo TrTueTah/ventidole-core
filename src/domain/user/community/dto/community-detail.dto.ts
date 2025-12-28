@@ -30,4 +30,11 @@ export class CommunityDetailDto extends CommunityDto {
     description: 'List of idols belonging to the community',
   })
   idols: IdolDto[];
+
+  @ApiProperty({
+    type: Number,
+    description: 'Total number of members in the community',
+    example: 1250,
+  })
+  totalMember: number;
 }

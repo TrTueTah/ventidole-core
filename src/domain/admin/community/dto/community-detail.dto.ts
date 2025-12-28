@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { CommunityDto } from './community.dto';
 
-export class CommunityDetailDto extends CommunityDto {
+export class AdminCommunityDetailDto extends CommunityDto {
   @ApiProperty({
     example: 100,
     description: 'Total members in the community',

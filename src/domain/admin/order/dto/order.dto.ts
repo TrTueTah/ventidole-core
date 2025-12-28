@@ -1,5 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { OrderStatus } from 'src/db/prisma/enums';
+import {
+  OrderStatus,
+  PaymentMethod,
+  PaymentTransactionStatus,
+} from 'src/db/prisma/enums';
 
 export class OrderUserDto {
   @ApiProperty({ example: 'clxxxxxxx', description: 'User ID' })
@@ -76,17 +80,25 @@ export class OrderDto {
   totalAmount: number;
 
   @ApiProperty({
-    example: 'pending',
+    example: 'PENDING_PAYMENT',
     description: 'Order status',
     enum: OrderStatus,
   })
   status: OrderStatus;
 
   @ApiProperty({
-    example: 'credit_card',
+    example: 'CREDIT',
     description: 'Payment method',
+    enum: PaymentMethod,
   })
-  paymentMethod: string;
+  paymentMethod: PaymentMethod;
+
+  @ApiPropertyOptional({
+    example: 'PAID',
+    description: 'Payment status from latest transaction',
+    enum: PaymentTransactionStatus,
+  })
+  paymentStatus?: PaymentTransactionStatus | null;
 
   @ApiPropertyOptional({
     example: '2023-01-01T00:00:00.000Z',

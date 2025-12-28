@@ -1,3 +1,4 @@
+import { StreamChatModule } from '@domain/stream-chat/stream-chat.module';
 import { Module } from '@nestjs/common';
 import { AddressModule } from './address/address.module';
 import { ChatModule } from './chat/chat.module';
@@ -16,6 +17,7 @@ import { UserService } from './user.service';
     ChatModule,
     ShopModule,
     AddressModule,
+    StreamChatModule,
   ],
   controllers: [UserController],
   providers: [UserService],

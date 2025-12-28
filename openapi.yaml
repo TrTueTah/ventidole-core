@@ -261,6 +261,53 @@ paths:
                   - statusCode
                   - message
       tags: *ref_0
+  /v1/auth/change-password:
+    post:
+      operationId: AuthController_changePassword_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security:
+        - bearer: []
+      tags: *ref_0
   /v1/auth/admin/sign-in:
     post:
       operationId: AuthController_adminSignIn_v1
@@ -1283,6 +1330,50 @@ paths:
                   - message
       security: *ref_6
       tags: *ref_7
+  /v1/user/profile:
+    patch:
+      operationId: UserController_updateProfile_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UpdateProfileResponseDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_6
+      tags: *ref_7
   /v1/user/posts:
     get:
       operationId: PostController_getPosts_v1
@@ -1425,22 +1516,17 @@ paths:
     get:
       operationId: PostController_getRecommendations_v1
       parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
         - name: limit
           required: false
           in: query
-          description: Number of recommendations to return
           schema:
-            minimum: 1
-            maximum: 100
-            default: 20
-            type: number
-        - name: offset
-          required: false
-          in: query
-          description: Offset for pagination
-          schema:
-            minimum: 0
-            default: 0
+            example: 20
             type: number
       responses:
         '200':
@@ -3807,7 +3893,7 @@ paths:
                     example: OK
                     description: Response message
                   data:
-                    $ref: '#/components/schemas/CommunityDetailDto'
+                    $ref: '#/components/schemas/AdminCommunityDetailDto'
                     description: Response data
                   error:
                     type: object
@@ -4557,12 +4643,12 @@ paths:
           schema:
             example: clxxxxxxx
             type: string
-        - name: status
+        - name: orderStatus
           required: false
           in: query
           description: Filter by order status
           schema:
-            example: pending
+            example: PENDING_PAYMENT
             type: string
             enum:
               - PENDING_PAYMENT
@@ -4572,13 +4658,29 @@ paths:
               - DELIVERED
               - CANCELED
               - EXPIRED
+        - name: paymentStatus
+          required: false
+          in: query
+          description: Filter by payment status
+          schema:
+            example: PAID
+            type: string
+            enum:
+              - PENDING
+              - PAID
+              - FAILED
+              - CANCELED
+              - EXPIRED
         - name: paymentMethod
           required: false
           in: query
           description: Filter by payment method
           schema:
-            example: credit_card
+            example: CREDIT
             type: string
+            enum:
+              - CREDIT
+              - COD
         - name: isActive
           required: false
           in: query
@@ -4851,6 +4953,55 @@ paths:
                   - message
       security: *ref_28
       tags: *ref_29
+  /v1/admin/order/{id}/status:
+    patch:
+      operationId: AdminOrderController_changeOrderStatus_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangeOrderStatusDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/OrderDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_28
+      tags: *ref_29
   /v1/admin/chat/community-channel:
     post:
       operationId: AdminChatController_createCommunityChannel_v1
@@ -4997,6 +5148,150 @@ paths:
                   - message
       security: *ref_30
       summary: Retry payment for PENDING_PAYMENT order
+      tags: *ref_31
+  /v1/orders:
+    get:
+      description: >-
+        Returns paginated list of user orders with optional status filter.
+        Ordered by creation date (newest first).
+      operationId: OrderController_getUserOrders_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: status
+          required: false
+          in: query
+          description: Filter by order status
+          schema:
+            type: string
+            enum:
+              - PENDING_PAYMENT
+              - CONFIRMED
+              - PAID
+              - SHIPPING
+              - DELIVERED
+              - CANCELED
+              - EXPIRED
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OrderListDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: *ref_30
+      summary: Get user orders
+      tags: *ref_31
+  /v1/orders/{orderId}/details:
+    get:
+      description: >-
+        Returns detailed order information including all items, shipping
+        address, and payment status.
+      operationId: OrderController_getOrderDetails_v1
+      parameters:
+        - name: orderId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/OrderDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_30
+      summary: Get order details
       tags: *ref_31
   /v1/orders/{orderId}:
     get:
@@ -5449,6 +5744,7 @@ components:
             - RESET_PASSWORD
             - REGISTER_ACCOUNT
             - UPDATE_PROFILE
+            - CHANGE_PASSWORD
           description: Verification behavior
           example: REGISTER_ACCOUNT
       required:
@@ -5472,6 +5768,7 @@ components:
             - RESET_PASSWORD
             - REGISTER_ACCOUNT
             - UPDATE_PROFILE
+            - CHANGE_PASSWORD
           description: Verification type
           example: FIND_EMAIL
       required:
@@ -5508,6 +5805,20 @@ components:
       required:
         - password
         - email
+    ChangePasswordRequest:
+      type: object
+      properties:
+        oldPassword:
+          type: string
+          example: Password@123456
+          description: Your current password
+        password:
+          type: string
+          example: NewPassword@123456
+          description: Your new password
+      required:
+        - oldPassword
+        - password
     TokenDto:
       type: object
       properties:
@@ -5817,6 +6128,61 @@ components:
           description: Online status of the user
       required:
         - isOnline
+    UpdateProfileDto:
+      type: object
+      properties:
+        username:
+          type: string
+          example: john_doe
+          description: Username
+        avatarUrl:
+          type: string
+          example: https://example.com/avatar.jpg
+          description: Avatar URL
+        backgroundUrl:
+          type: string
+          example: https://example.com/background.jpg
+          description: Background image URL
+        bio:
+          type: string
+          example: Passionate K-pop fan 🎵
+          description: User bio/description
+    UpdateProfileResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clx123abc
+          description: User ID
+        email:
+          type: string
+          example: user@example.com
+          description: Email
+        username:
+          type: string
+          example: john_doe
+          description: Username
+        role:
+          type: string
+          example: FAN
+          description: User role
+        avatarUrl:
+          type: string
+          example: https://example.com/avatar.jpg
+          description: Avatar URL
+        backgroundUrl:
+          type: string
+          example: https://example.com/background.jpg
+          description: Background URL
+        bio:
+          type: string
+          example: Passionate K-pop fan 🎵
+          description: User bio
+      required:
+        - id
+        - email
+        - username
+        - role
     PostAuthorDto:
       type: object
       properties:
@@ -6179,10 +6545,6 @@ components:
           type: object
           example: A community for K-Pop fans
           description: Community description
-        isActive:
-          type: boolean
-          example: true
-          description: Whether the community is active
         createdAt:
           format: date-time
           type: string
@@ -6193,22 +6555,26 @@ components:
           type: string
           example: '2024-01-01T00:00:00.000Z'
           description: Last update timestamp
-        totalMembers:
+        isJoined:
+          type: boolean
+          example: true
+          description: Whether the current user has joined this community
+        idols:
+          description: List of idols belonging to the community
+          type: array
+          items:
+            $ref: '#/components/schemas/IdolDto'
+        totalMember:
           type: number
-          example: 100
-          description: Total members in the community
-        totalPosts:
-          type: number
-          example: 50
-          description: Total posts in the community
+          description: Total number of members in the community
+          example: 1250
       required:
         - id
         - name
-        - isActive
         - createdAt
         - updatedAt
-        - totalMembers
-        - totalPosts
+        - idols
+        - totalMember
     CommunityListDto:
       type: object
       properties:
@@ -7198,6 +7564,59 @@ components:
           type: boolean
           example: true
           description: Whether the user is active
+    AdminCommunityDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Community ID
+        name:
+          type: string
+          example: K-Pop Fans Community
+          description: Community name
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Community avatar URL
+        backgroundUrl:
+          type: object
+          example: https://example.com/background.jpg
+          description: Community background URL
+        description:
+          type: object
+          example: A community for K-Pop fans
+          description: Community description
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the community is active
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Last update timestamp
+        totalMembers:
+          type: number
+          example: 100
+          description: Total members in the community
+        totalPosts:
+          type: number
+          example: 50
+          description: Total posts in the community
+      required:
+        - id
+        - name
+        - isActive
+        - createdAt
+        - updatedAt
+        - totalMembers
+        - totalPosts
     CreateCommunityDto:
       type: object
       properties:
@@ -7268,6 +7687,24 @@ components:
       required:
         - id
         - name
+    ShopOwnerDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: User ID
+        username:
+          type: string
+          example: john_doe
+          description: Username
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Avatar URL
+      required:
+        - id
+        - username
     ShopDto:
       type: object
       properties:
@@ -7291,6 +7728,14 @@ components:
           description: Community information
           allOf:
             - $ref: '#/components/schemas/ShopCommunityDto'
+        owner:
+          description: Shop owner information
+          allOf:
+            - $ref: '#/components/schemas/ShopOwnerDto'
+        productCount:
+          type: number
+          example: 42
+          description: Number of products in shop
         isActive:
           type: boolean
           example: true
@@ -7468,11 +7913,13 @@ components:
           example: 100
           description: Stock quantity
         mediaUrls:
-          type: object
           example:
             - https://example.com/image1.jpg
             - https://example.com/image2.jpg
           description: Product media URLs
+          type: array
+          items:
+            type: string
         shop:
           description: Shop information
           allOf:
@@ -7768,7 +8215,7 @@ components:
           description: Total amount
         status:
           type: string
-          example: pending
+          example: PENDING_PAYMENT
           description: Order status
           enum:
             - PENDING_PAYMENT
@@ -7780,8 +8227,21 @@ components:
             - EXPIRED
         paymentMethod:
           type: string
-          example: credit_card
+          example: CREDIT
           description: Payment method
+          enum:
+            - CREDIT
+            - COD
+        paymentStatus:
+          type: string
+          example: PAID
+          description: Payment status from latest transaction
+          enum:
+            - PENDING
+            - PAID
+            - FAILED
+            - CANCELED
+            - EXPIRED
         paidAt:
           type: object
           example: '2023-01-01T00:00:00.000Z'
@@ -7879,19 +8339,15 @@ components:
       properties:
         id:
           type: string
-          example: clxxxxxxx
           description: Order ID
-        user:
-          description: User information
-          allOf:
-            - $ref: '#/components/schemas/OrderDetailUserDto'
+        orderCode:
+          type: object
+          description: Order code
         totalAmount:
           type: number
-          example: 59.98
           description: Total amount
         status:
           type: string
-          example: pending
           description: Order status
           enum:
             - PENDING_PAYMENT
@@ -7901,63 +8357,40 @@ components:
             - DELIVERED
             - CANCELED
             - EXPIRED
-        shippingAddress:
-          type: object
-          example:
-            street: 123 Main St
-            city: New York
-            state: NY
-            zipCode: '10001'
-            country: USA
-          description: Shipping address
         paymentMethod:
           type: string
-          example: credit_card
           description: Payment method
-        paidAt:
+          enum:
+            - CREDIT
+            - COD
+        shippingAddress:
           type: object
-          example: '2023-01-01T00:00:00.000Z'
-          description: Paid at
+          description: Shipping address
         items:
           description: Order items
           type: array
           items:
-            $ref: '#/components/schemas/OrderDetailItemDto'
-        isActive:
-          type: boolean
-          example: true
-          description: Whether the order is active
+            $ref: '#/components/schemas/OrderItemListDto'
         createdAt:
           format: date-time
           type: string
-          example: '2023-01-01T00:00:00.000Z'
-          description: Created at
+          description: Order creation date
+        paidAt:
+          type: object
+          description: Payment date
         updatedAt:
           format: date-time
           type: string
-          example: '2023-01-01T00:00:00.000Z'
-          description: Updated at
-        metadata:
-          type: object
-          example:
-            key: value
-          description: Additional metadata
-        version:
-          type: number
-          example: 0
-          description: Version
+          description: Last update date
       required:
         - id
-        - user
         - totalAmount
         - status
-        - shippingAddress
         - paymentMethod
+        - shippingAddress
         - items
-        - isActive
         - createdAt
         - updatedAt
-        - version
     CreateOrderItemDto:
       type: object
       properties:
@@ -8066,6 +8499,27 @@ components:
           type: boolean
           example: true
           description: Whether the order is active
+    ChangeOrderStatusDto:
+      type: object
+      properties:
+        status:
+          type: string
+          example: CONFIRMED
+          description: New order status
+          enum:
+            - PENDING_PAYMENT
+            - CONFIRMED
+            - PAID
+            - SHIPPING
+            - DELIVERED
+            - CANCELED
+            - EXPIRED
+        note:
+          type: string
+          example: Order confirmed by admin
+          description: Optional note about status change
+      required:
+        - status
     CreateCommunityChannelDto:
       type: object
       properties:
@@ -8194,6 +8648,105 @@ components:
         - paymentMethod
         - totalAmount
         - createdAt
+    OrderListDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Order ID
+        orderCode:
+          type: object
+          description: Order code
+        totalAmount:
+          type: number
+          description: Total amount
+        status:
+          type: string
+          description: Order status
+          enum:
+            - PENDING_PAYMENT
+            - CONFIRMED
+            - PAID
+            - SHIPPING
+            - DELIVERED
+            - CANCELED
+            - EXPIRED
+        paymentMethod:
+          type: string
+          description: Payment method
+          enum:
+            - CREDIT
+            - COD
+        itemCount:
+          type: number
+          description: Number of items in order
+        createdAt:
+          format: date-time
+          type: string
+          description: Order creation date
+        paidAt:
+          type: object
+          description: Payment date
+      required:
+        - id
+        - totalAmount
+        - status
+        - paymentMethod
+        - itemCount
+        - createdAt
+    OrderItemListDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Order item ID
+        productId:
+          type: string
+          description: Product ID
+        productName:
+          type: string
+          description: Product name
+        variantId:
+          type: object
+          description: Variant ID
+        variantName:
+          type: object
+          description: Variant name
+        price:
+          type: number
+          description: Price at order time
+        quantity:
+          type: number
+          description: Quantity ordered
+        mediaUrls:
+          type: object
+          description: Product media URLs
+      required:
+        - id
+        - productId
+        - productName
+        - price
+        - quantity
+    GetOrdersDto:
+      type: object
+      properties:
+        page:
+          type: number
+          example: 1
+        limit:
+          type: number
+          example: 20
+        status:
+          type: string
+          description: Filter by order status
+          enum:
+            - PENDING_PAYMENT
+            - CONFIRMED
+            - PAID
+            - SHIPPING
+            - DELIVERED
+            - CANCELED
+            - EXPIRED
     PayOSWebhookDataDto:
       type: object
       properties:

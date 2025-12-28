@@ -3,10 +3,12 @@ import {
   ApiResponseCustom,
 } from '@core/decorator/doc.decorator';
 import { Public } from '@core/decorator/public.decorator';
-import { Body, Controller, Post } from '@nestjs/common';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post, Req } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { ApiVersion } from '@shared/enum/api-version.enum';
+import { IRequest } from '@shared/interface/request.interface';
 import { AuthService } from './auth.service';
+import { ChangePasswordRequest } from './request/change-password.request';
 import { ConfirmVerificationRequest } from './request/confirm-verification.request';
 import { RefreshTokenRequest } from './request/refresh-token.request';
 import { ResetPasswordRequest } from './request/reset-password.request';
@@ -70,6 +72,14 @@ export class AuthController {
   @ApiBody({ type: ResetPasswordRequest })
   resetPassword(@Body() request: ResetPasswordRequest) {
     return this.authService.resetPassword(request);
+  }
+
+  @ApiBearerAuth()
+  @Post('change-password')
+  @ApiResponseCustom()
+  @ApiBody({ type: ChangePasswordRequest })
+  changePassword(@Req() req: IRequest, @Body() request: ChangePasswordRequest) {
+    return this.authService.changePassword(req.user.id, request);
   }
 
   @Public()

@@ -17,6 +17,23 @@ export class ShopCommunityDto {
   avatarUrl?: string | null;
 }
 
+export class ShopOwnerDto {
+  @ApiProperty({ example: 'clxxxxxxx', description: 'User ID' })
+  id: string;
+
+  @ApiProperty({
+    example: 'john_doe',
+    description: 'Username',
+  })
+  username: string;
+
+  @ApiPropertyOptional({
+    example: 'https://example.com/avatar.jpg',
+    description: 'Avatar URL',
+  })
+  avatarUrl?: string | null;
+}
+
 export class ShopDto {
   @ApiProperty({ example: 'clxxxxxxx', description: 'Shop ID' })
   id: string;
@@ -44,6 +61,18 @@ export class ShopDto {
     type: () => ShopCommunityDto,
   })
   community: ShopCommunityDto;
+
+  @ApiPropertyOptional({
+    description: 'Shop owner information',
+    type: () => ShopOwnerDto,
+  })
+  owner?: ShopOwnerDto | null;
+
+  @ApiPropertyOptional({
+    example: 42,
+    description: 'Number of products in shop',
+  })
+  productCount?: number;
 
   @ApiProperty({
     example: true,

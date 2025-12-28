@@ -239,10 +239,11 @@ export class GetStreamNotificationService {
     userId: string;
     orderId: string;
     orderCode: string;
-    status: 'confirmed' | 'shipped' | 'delivered';
+    status: 'paid' | 'confirmed' | 'shipped' | 'delivered';
     trackingNumber?: string;
   }): Promise<void> {
     const statusMessages = {
+      paid: 'Your payment has been confirmed',
       confirmed: 'Your order has been confirmed',
       shipped: 'Your order has been shipped',
       delivered: 'Your order has been delivered',

@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { PaginationDto } from '@shared/dto/pagination-request.dto';
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { OrderStatus } from 'src/db/prisma/enums';
+import { OrderStatus, PaymentTransactionStatus } from 'src/db/prisma/enums';
 
 export class GetOrdersDto extends PaginationDto {
   @ApiPropertyOptional({
@@ -21,17 +21,27 @@ export class GetOrdersDto extends PaginationDto {
   userId?: string;
 
   @ApiPropertyOptional({
-    example: 'pending',
+    example: 'PENDING_PAYMENT',
     description: 'Filter by order status',
     enum: OrderStatus,
   })
   @IsEnum(OrderStatus)
   @IsOptional()
-  status?: OrderStatus;
+  orderStatus?: OrderStatus;
 
   @ApiPropertyOptional({
-    example: 'credit_card',
+    example: 'PAID',
+    description: 'Filter by payment status',
+    enum: PaymentTransactionStatus,
+  })
+  @IsEnum(PaymentTransactionStatus)
+  @IsOptional()
+  paymentStatus?: PaymentTransactionStatus;
+
+  @ApiPropertyOptional({
+    example: 'CREDIT',
     description: 'Filter by payment method',
+    enum: ['CREDIT', 'COD'],
   })
   @IsString()
   @IsOptional()

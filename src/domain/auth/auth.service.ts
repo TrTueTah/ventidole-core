@@ -1,4 +1,5 @@
 import { ENVIRONMENT } from '@core/config/env.config';
+import { StreamChatService } from '@domain/stream-chat/stream-chat.service';
 import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ErrorCode } from '@shared/enum/error-code.enum';
@@ -8,16 +9,16 @@ import { CustomError } from '@shared/helper/error';
 import { hashPassword, verifyPassword } from '@shared/helper/hash';
 import { BaseResponse } from '@shared/helper/response';
 import { IJwtDecoded } from '@shared/interface/jwt-payload.interface';
+import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
+import { KnockUserService } from '@shared/service/knock-workflow/knock-user.service';
 import { OtpService } from '@shared/service/otp/otp.service';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { RedisService } from '@shared/service/redis/redis.service';
 import { TokenService } from '@shared/service/token/token.service';
-import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
-import { KnockUserService } from '@shared/service/knock-workflow/knock-user.service';
-import { StreamChatService } from '@domain/stream-chat/stream-chat.service';
 import moment from 'moment';
 import { VerificationType } from 'src/db/prisma/enums';
 import { UserModel } from 'src/db/prisma/models';
+import { ChangePasswordRequest } from './request/change-password.request';
 import { ConfirmVerificationRequest } from './request/confirm-verification.request';
 import { RefreshTokenRequest } from './request/refresh-token.request';
 import { ResetPasswordRequest } from './request/reset-password.request';
@@ -242,6 +243,28 @@ export class AuthService {
       where: { email },
       data: { password: hashedPassword },
     });
+    return BaseResponse.ok();
+  }
+
+  async changePassword(userId: string, request: ChangePasswordRequest) {
+    const user = await this.prisma.user.findFirst({
+      where: { id: userId, isActive: true, isDeleted: false },
+    });
+    if (!user) throw new CustomError(ErrorCode.AccountNotFound, userId);
+
+    await this.validatePrevVerification(
+      user.email,
+      VerificationType.CHANGE_PASSWORD,
+    );
+
+    await this.validatePassword(user, request.oldPassword);
+
+    const hashedPassword = await hashPassword(request.password);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+
     return BaseResponse.ok();
   }
 

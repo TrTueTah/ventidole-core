@@ -5,10 +5,11 @@ import {
 } from '@shared/dto/pagination-response.dto';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
-import { PrismaService } from '@shared/service/prisma/prisma.service';
-import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
+import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { OrderStatus } from 'src/db/prisma/enums';
+import { ChangeOrderStatusDto } from './dto/change-order-status.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetOrdersDto } from './dto/get-orders.dto';
 import { OrderDetailDto } from './dto/order-detail.dto';
@@ -34,7 +35,8 @@ export class AdminOrderService {
       page,
       search,
       userId,
-      status,
+      orderStatus,
+      paymentStatus,
       paymentMethod,
       isActive,
       sortBy,
@@ -60,9 +62,18 @@ export class AdminOrderService {
       whereClause.userId = userId;
     }
 
-    // Add status filter
-    if (status) {
-      whereClause.status = status;
+    // Add order status filter
+    if (orderStatus) {
+      whereClause.status = orderStatus;
+    }
+
+    // Add payment status filter
+    if (paymentStatus) {
+      whereClause.paymentTransactions = {
+        some: {
+          status: paymentStatus,
+        },
+      };
     }
 
     // Add payment method filter
@@ -102,6 +113,15 @@ export class AdminOrderService {
           status: true,
           paymentMethod: true,
           paidAt: true,
+          paymentTransactions: {
+            orderBy: {
+              createdAt: 'desc',
+            },
+            take: 1,
+            select: {
+              status: true,
+            },
+          },
           items: {
             select: {
               id: true,
@@ -122,6 +142,8 @@ export class AdminOrderService {
 
     const ordersWithCount = orders.map((order) => ({
       ...order,
+      paymentStatus: order.paymentTransactions[0]?.status || null,
+      paymentTransactions: undefined,
       itemCount: order.items.length,
       items: undefined,
     }));
@@ -379,7 +401,10 @@ export class AdminOrderService {
     });
 
     // Send notifications if status changed
-    if (updateOrderDto.status && updateOrderDto.status !== existingOrder.status) {
+    if (
+      updateOrderDto.status &&
+      updateOrderDto.status !== existingOrder.status
+    ) {
       try {
         const orderCode = String(order.id.slice(-12)); // Use last 12 chars of ID as order code
 
@@ -434,6 +459,191 @@ export class AdminOrderService {
       ...orderWithoutItems,
       itemCount: items.length,
     };
+  }
+
+  async changeOrderStatus(
+    id: string,
+    changeOrderStatusDto: ChangeOrderStatusDto,
+  ): Promise<OrderDto> {
+    // Check if order exists
+    const existingOrder = await this.prisma.order.findUnique({
+      where: {
+        id,
+        isDeleted: false,
+      },
+      select: {
+        id: true,
+        status: true,
+        paidAt: true,
+        userId: true,
+      },
+    });
+
+    if (!existingOrder) {
+      throw new CustomError(ErrorCode.UserNotFound, {
+        message: 'Order not found',
+      });
+    }
+
+    // Validate status transition
+    const { status: newStatus, note } = changeOrderStatusDto;
+    this.validateStatusTransition(existingOrder.status, newStatus);
+
+    // Prepare update data
+    const updateData: Record<string, unknown> = {
+      status: newStatus,
+    };
+
+    // Set paidAt when transitioning to PAID status
+    if (newStatus === OrderStatus.PAID && !existingOrder.paidAt) {
+      updateData.paidAt = new Date();
+    }
+
+    // Add note to metadata if provided
+    if (note) {
+      updateData.metadata = {
+        statusChangeNote: note,
+        statusChangedAt: new Date().toISOString(),
+      };
+    }
+
+    const order = await this.prisma.order.update({
+      where: {
+        id,
+      },
+      data: updateData,
+      select: {
+        id: true,
+        user: {
+          select: {
+            id: true,
+            username: true,
+            email: true,
+            avatarUrl: true,
+          },
+        },
+        totalAmount: true,
+        status: true,
+        paymentMethod: true,
+        paidAt: true,
+        paymentTransactions: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
+          select: {
+            status: true,
+          },
+        },
+        items: {
+          select: {
+            id: true,
+          },
+        },
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    // Send notifications for status changes
+    if (newStatus !== existingOrder.status) {
+      try {
+        const orderCode = String(order.id.slice(-12));
+
+        if (newStatus === OrderStatus.CONFIRMED) {
+          this.logger.log(
+            `Order confirmed notification could be sent for order ${order.id}`,
+          );
+        } else if (newStatus === OrderStatus.SHIPPING) {
+          await this.knockWorkflowService.notifyOrderShipped({
+            userId: order.user.id,
+            orderId: order.id,
+            orderCode,
+          });
+
+          await this.getStreamNotificationService.emitOrderStatusEvent({
+            userId: order.user.id,
+            orderId: order.id,
+            orderCode,
+            status: 'shipped',
+          });
+
+          this.logger.log(
+            `Order shipped notification sent for order ${order.id}`,
+          );
+        } else if (newStatus === OrderStatus.DELIVERED) {
+          await this.knockWorkflowService.notifyOrderDelivered({
+            userId: order.user.id,
+            orderId: order.id,
+            orderCode,
+          });
+
+          await this.getStreamNotificationService.emitOrderStatusEvent({
+            userId: order.user.id,
+            orderId: order.id,
+            orderCode,
+            status: 'delivered',
+          });
+
+          this.logger.log(
+            `Order delivered notification sent for order ${order.id}`,
+          );
+        } else if (newStatus === OrderStatus.CANCELED) {
+          this.logger.log(
+            `Order canceled notification could be sent for order ${order.id}`,
+          );
+        }
+      } catch (error) {
+        this.logger.error(
+          `Failed to send order status notification: ${error.message}`,
+        );
+      }
+    }
+
+    const { items, paymentTransactions, ...orderWithoutItems } = order;
+    return {
+      ...orderWithoutItems,
+      paymentStatus: paymentTransactions[0]?.status || null,
+      itemCount: items.length,
+    };
+  }
+
+  private validateStatusTransition(
+    currentStatus: OrderStatus,
+    newStatus: OrderStatus,
+  ): void {
+    // Define valid transitions
+    const validTransitions: Record<OrderStatus, OrderStatus[]> = {
+      [OrderStatus.PENDING_PAYMENT]: [
+        OrderStatus.CONFIRMED,
+        OrderStatus.PAID,
+        OrderStatus.CANCELED,
+        OrderStatus.EXPIRED,
+      ],
+      [OrderStatus.CONFIRMED]: [
+        OrderStatus.PAID,
+        OrderStatus.SHIPPING,
+        OrderStatus.CANCELED,
+      ],
+      [OrderStatus.PAID]: [
+        OrderStatus.SHIPPING,
+        OrderStatus.DELIVERED,
+        OrderStatus.CANCELED,
+      ],
+      [OrderStatus.SHIPPING]: [OrderStatus.DELIVERED, OrderStatus.CANCELED],
+      [OrderStatus.DELIVERED]: [], // Final state
+      [OrderStatus.CANCELED]: [], // Final state
+      [OrderStatus.EXPIRED]: [], // Final state
+    };
+
+    const allowedStatuses = validTransitions[currentStatus] || [];
+
+    if (!allowedStatuses.includes(newStatus)) {
+      throw new CustomError(ErrorCode.ValidationFailed, {
+        message: `Invalid status transition from ${currentStatus} to ${newStatus}`,
+      });
+    }
   }
 
   async deleteOrder(id: string): Promise<void> {

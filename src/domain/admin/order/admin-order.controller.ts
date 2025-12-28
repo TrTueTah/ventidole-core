@@ -18,6 +18,7 @@ import { PaginationResponse } from '@shared/dto/pagination-response.dto';
 import { ApiVersion } from '@shared/enum/api-version.enum';
 import { BaseResponse } from '@shared/helper/response';
 import { AdminOrderService } from './admin-order.service';
+import { ChangeOrderStatusDto } from './dto/change-order-status.dto';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { GetOrdersDto } from './dto/get-orders.dto';
 import { OrderDetailDto } from './dto/order-detail.dto';
@@ -65,6 +66,19 @@ export class AdminOrderController {
     @Body() updateOrderDto: UpdateOrderDto,
   ): Promise<BaseResponse<OrderDto>> {
     const result = await this.adminOrderService.updateOrder(id, updateOrderDto);
+    return BaseResponse.of(result);
+  }
+
+  @Patch(':id/status')
+  @ApiResponseCustom(OrderDto)
+  async changeOrderStatus(
+    @Param('id') id: string,
+    @Body() changeOrderStatusDto: ChangeOrderStatusDto,
+  ): Promise<BaseResponse<OrderDto>> {
+    const result = await this.adminOrderService.changeOrderStatus(
+      id,
+      changeOrderStatusDto,
+    );
     return BaseResponse.of(result);
   }
 

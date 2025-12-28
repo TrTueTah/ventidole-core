@@ -21,7 +21,8 @@ export const VerificationType = {
   FIND_EMAIL: 'FIND_EMAIL',
   RESET_PASSWORD: 'RESET_PASSWORD',
   REGISTER_ACCOUNT: 'REGISTER_ACCOUNT',
-  UPDATE_PROFILE: 'UPDATE_PROFILE'
+  UPDATE_PROFILE: 'UPDATE_PROFILE',
+  CHANGE_PASSWORD: 'CHANGE_PASSWORD'
 } as const
 
 export type VerificationType = (typeof VerificationType)[keyof typeof VerificationType]
