@@ -30,4 +30,11 @@ export class SignInResponse {
     type: String,
   })
   refreshToken: string;
+
+  @ApiProperty({
+    example: false,
+    description: 'Whether user has chosen their communities',
+    type: Boolean,
+  })
+  isChooseCommunity: boolean;
 }

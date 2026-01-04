@@ -355,12 +355,6 @@ paths:
     post:
       operationId: StreamChatController_generateToken_v1
       parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/GenerateTokenDto'
       responses:
         '200':
           description: Successful Response
@@ -395,7 +389,7 @@ paths:
                   - message
       security: &ref_1
         - bearer: []
-      summary: Generate Stream Chat authentication token
+      summary: Generate Stream Chat authentication token for current user
       tags: &ref_2
         - Stream Chat
   /v1/stream-chat/users:
@@ -443,62 +437,19 @@ paths:
       security: *ref_1
       summary: Create or update user in Stream Chat
       tags: *ref_2
-  /v1/stream-chat/users/{userId}:
-    delete:
-      operationId: StreamChatController_deleteUser_v1
-      parameters:
-        - name: userId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_1
-      summary: Delete user from Stream Chat
-      tags: *ref_2
-  /v1/stream-chat/channels:
+  /v1/stream-chat/channels/community:
     post:
-      operationId: StreamChatController_createChannel_v1
+      description: >-
+        Creates a community channel and automatically adds all idols from the
+        community with send permissions
+      operationId: StreamChatController_createCommunityChannel_v1
       parameters: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateChannelDto'
+              $ref: '#/components/schemas/CreateCommunityChannelDto'
       responses:
         '200':
           description: Successful Response
@@ -532,125 +483,21 @@ paths:
                   - statusCode
                   - message
       security: *ref_1
-      summary: Create a new channel
+      summary: Create a community channel (ADMIN only)
       tags: *ref_2
-  /v1/stream-chat/channels/{userId}:
-    get:
-      operationId: StreamChatController_getUserChannels_v1
-      parameters:
-        - name: userId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/StreamChannelDto'
-                    description: Response data array
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_1
-      summary: Get all channels for a user
-      tags: *ref_2
-  /v1/stream-chat/channels/{channelType}/{channelId}:
-    delete:
-      operationId: StreamChatController_deleteChannel_v1
-      parameters:
-        - name: channelType
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: channelId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_1
-      summary: Delete a channel
-      tags: *ref_2
-  /v1/stream-chat/channels/{channelType}/{channelId}/members:
+  /v1/stream-chat/channels/idol:
     post:
-      operationId: StreamChatController_addMembers_v1
-      parameters:
-        - name: channelType
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: channelId
-          required: true
-          in: path
-          schema:
-            type: string
+      description: >-
+        Creates an idol channel where the creator becomes owner. Members join as
+        readonly by default
+      operationId: StreamChatController_createIdolChannel_v1
+      parameters: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ManageMembersDto'
+              $ref: '#/components/schemas/CreateIdolChannelDto'
       responses:
         '200':
           description: Successful Response
@@ -668,10 +515,8 @@ paths:
                     example: OK
                     description: Response message
                   data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
+                    $ref: '#/components/schemas/StreamChannelDto'
+                    description: Response data
                   error:
                     type: object
                     nullable: true
@@ -686,139 +531,25 @@ paths:
                   - statusCode
                   - message
       security: *ref_1
-      summary: Add members to a channel
+      summary: Create an idol channel (IDOL only)
       tags: *ref_2
-    delete:
-      operationId: StreamChatController_removeMembers_v1
-      parameters:
-        - name: channelType
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: channelId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ManageMembersDto'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_1
-      summary: Remove members from a channel
-      tags: *ref_2
-  /v1/stream-chat/channels/{channelType}/{channelId}/messages:
-    get:
-      operationId: StreamChatController_getMessages_v1
-      parameters:
-        - name: channelType
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: channelId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: limit
-          required: true
-          in: query
-          schema:
-            type: number
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_1
-      summary: Get channel messages
-      tags: *ref_2
+  /v1/stream-chat/channels/{channelId}/members/{memberId}/grant-send-permission:
     post:
-      operationId: StreamChatController_sendMessage_v1
+      description: >-
+        For idol channels: only creator can grant. For community channels: any
+        idol in the community can grant
+      operationId: StreamChatController_grantSendPermission_v1
       parameters:
-        - name: channelType
-          required: true
-          in: path
-          schema:
-            type: string
         - name: channelId
           required: true
           in: path
           schema:
             type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SendMessageDto'
+        - name: memberId
+          required: true
+          in: path
+          schema:
+            type: string
       responses:
         '200':
           description: Successful Response
@@ -854,7 +585,61 @@ paths:
                   - statusCode
                   - message
       security: *ref_1
-      summary: Send a message to a channel
+      summary: Grant send message permission to a member
+      tags: *ref_2
+  /v1/stream-chat/channels/{channelId}/members/{memberId}/revoke-send-permission:
+    post:
+      description: >-
+        For idol channels: only creator can revoke. For community channels: any
+        idol in the community can revoke
+      operationId: StreamChatController_revokeSendPermission_v1
+      parameters:
+        - name: channelId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: memberId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_1
+      summary: Revoke send message permission from a member
       tags: *ref_2
   /v1/webhooks/getstream:
     post:
@@ -2272,6 +2057,52 @@ paths:
                   - message
       security: *ref_12
       tags: *ref_13
+  /v1/user/community/bulk-follow:
+    post:
+      operationId: CommunityController_bulkFollowCommunities_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BulkFollowCommunitiesDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_12
+      tags: *ref_13
   /v1/user/community/{id}/leave:
     delete:
       operationId: CommunityController_leaveCommunity_v1
@@ -2360,318 +2191,6 @@ paths:
                   - message
       security: *ref_12
       tags: *ref_13
-  /v1/user/chat/my-channels:
-    get:
-      operationId: ChatController_getMyChannels_v1
-      parameters: []
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ChannelDto'
-                    description: Response data array
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: &ref_14
-        - bearer: []
-      summary: Get channels owned by the current user (idol only)
-      tags: &ref_15
-        - User Chat
-  /v1/user/chat/joined-channels:
-    get:
-      operationId: ChatController_getJoinedChannels_v1
-      parameters: []
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ChannelDto'
-                    description: Response data array
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_14
-      summary: Get channels that the current user has joined
-      tags: *ref_15
-  /v1/user/chat/channels:
-    post:
-      description: >-
-        Creates a new chat channel. Only idols can create channels. Can be a
-        personal channel or a community channel.
-      operationId: ChatController_createChannel_v1
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateChannelDto'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    $ref: '#/components/schemas/ChannelDto'
-                    description: Response data
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_14
-      summary: Create a new channel (idol only)
-      tags: *ref_15
-  /v1/user/chat/channels/{channelId}/messages:
-    get:
-      operationId: ChatController_getMessages_v1
-      parameters:
-        - name: channelId
-          required: true
-          in: path
-          schema:
-            type: string
-        - name: page
-          required: false
-          in: query
-          schema:
-            example: 1
-            type: number
-        - name: limit
-          required: false
-          in: query
-          schema:
-            example: 20
-            type: number
-      responses:
-        '200':
-          description: Successful paginated response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/MessageDto'
-                    description: Array of data items
-                  paging:
-                    type: object
-                    description: Pagination metadata
-                    properties:
-                      total:
-                        type: number
-                        example: 100
-                        description: Total number of items
-                      page:
-                        type: number
-                        example: 1
-                        description: Current page number
-                      limit:
-                        type: number
-                        example: 10
-                        description: Items per page
-                      totalPages:
-                        type: number
-                        example: 10
-                        description: Total number of pages
-                    required:
-                      - total
-                      - page
-                      - limit
-                      - totalPages
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-                  - data
-                  - paging
-      security: *ref_14
-      summary: Get messages from a specific channel
-      tags: *ref_15
-    post:
-      operationId: ChatController_sendMessage_v1
-      parameters:
-        - name: channelId
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SendMessageDto'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    $ref: '#/components/schemas/MessageDto'
-                    description: Response data
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_14
-      summary: Send a message to a channel
-      tags: *ref_15
-  /v1/user/chat/channels/{channelId}/read:
-    post:
-      operationId: ChatController_markChannelAsRead_v1
-      parameters:
-        - name: channelId
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security: *ref_14
-      summary: Mark channel as read
-      tags: *ref_15
   /v1/user/shop/following:
     get:
       operationId: ShopController_getFollowingCommunityShops_v1
@@ -2710,9 +2229,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_16
+      security: &ref_14
         - bearer: []
-      tags: &ref_17
+      tags: &ref_15
         - User Shop
   /v1/user/shop:
     get:
@@ -2798,8 +2317,8 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_16
-      tags: *ref_17
+      security: *ref_14
+      tags: *ref_15
   /v1/user/shop/{shopId}/products:
     get:
       operationId: ShopController_getShopProducts_v1
@@ -2889,8 +2408,8 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_16
-      tags: *ref_17
+      security: *ref_14
+      tags: *ref_15
   /v1/user/shop/products/{id}:
     get:
       operationId: ShopController_getProductById_v1
@@ -2932,8 +2451,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_16
-      tags: *ref_17
+      security: *ref_14
+      tags: *ref_15
   /v1/user/shop/cart:
     post:
       operationId: ShopController_addToCart_v1
@@ -2976,8 +2495,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_16
-      tags: *ref_17
+      security: *ref_14
+      tags: *ref_15
     get:
       operationId: ShopController_getCart_v1
       parameters: []
@@ -3013,8 +2532,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_16
-      tags: *ref_17
+      security: *ref_14
+      tags: *ref_15
   /v1/user/shop/cart/{cartItemId}:
     delete:
       operationId: ShopController_removeFromCart_v1
@@ -3056,8 +2575,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_16
-      tags: *ref_17
+      security: *ref_14
+      tags: *ref_15
   /v1/user/addresses:
     post:
       operationId: AddressController_createAddress_v1
@@ -3100,9 +2619,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_18
+      security: &ref_16
         - bearer: []
-      tags: &ref_19
+      tags: &ref_17
         - User Addresses
     get:
       operationId: AddressController_getAddresses_v1
@@ -3180,8 +2699,8 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_18
-      tags: *ref_19
+      security: *ref_16
+      tags: *ref_17
   /v1/user/addresses/provinces:
     get:
       operationId: AddressController_getProvinces_v1
@@ -3220,8 +2739,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
-      tags: *ref_19
+      security: *ref_16
+      tags: *ref_17
   /v1/user/addresses/provinces/{provinceCode}/districts:
     get:
       operationId: AddressController_getDistrictsByProvinceCode_v1
@@ -3265,8 +2784,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
-      tags: *ref_19
+      security: *ref_16
+      tags: *ref_17
   /v1/user/addresses/{id}:
     get:
       operationId: AddressController_getAddressById_v1
@@ -3308,8 +2827,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
-      tags: *ref_19
+      security: *ref_16
+      tags: *ref_17
     patch:
       operationId: AddressController_updateAddress_v1
       parameters:
@@ -3356,8 +2875,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
-      tags: *ref_19
+      security: *ref_16
+      tags: *ref_17
     delete:
       operationId: AddressController_deleteAddress_v1
       parameters:
@@ -3400,8 +2919,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_18
-      tags: *ref_19
+      security: *ref_16
+      tags: *ref_17
   /v1/admin/user:
     get:
       operationId: AdminUserController_getAllUsers_v1
@@ -3526,9 +3045,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_20
+      security: &ref_18
         - bearer: []
-      tags: &ref_21
+      tags: &ref_19
         - Admin User Management
     post:
       operationId: AdminUserController_createUser_v1
@@ -3571,8 +3090,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
-      tags: *ref_21
+      security: *ref_18
+      tags: *ref_19
   /v1/admin/user/{id}:
     get:
       operationId: AdminUserController_getUserById_v1
@@ -3614,8 +3133,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
-      tags: *ref_21
+      security: *ref_18
+      tags: *ref_19
     patch:
       operationId: AdminUserController_updateUser_v1
       parameters:
@@ -3662,8 +3181,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
-      tags: *ref_21
+      security: *ref_18
+      tags: *ref_19
     delete:
       operationId: AdminUserController_deleteUser_v1
       parameters:
@@ -3706,8 +3225,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_20
-      tags: *ref_21
+      security: *ref_18
+      tags: *ref_19
   /v1/admin/community:
     get:
       operationId: AdminCommunityController_getAllCommunities_v1
@@ -3820,9 +3339,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_22
+      security: &ref_20
         - bearer: []
-      tags: &ref_23
+      tags: &ref_21
         - Admin Community Management
     post:
       operationId: AdminCommunityController_createCommunity_v1
@@ -3865,8 +3384,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
-      tags: *ref_23
+      security: *ref_20
+      tags: *ref_21
   /v1/admin/community/{id}:
     get:
       operationId: AdminCommunityController_getCommunityById_v1
@@ -3908,8 +3427,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
-      tags: *ref_23
+      security: *ref_20
+      tags: *ref_21
     patch:
       operationId: AdminCommunityController_updateCommunity_v1
       parameters:
@@ -3956,8 +3475,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
-      tags: *ref_23
+      security: *ref_20
+      tags: *ref_21
     delete:
       operationId: AdminCommunityController_deleteCommunity_v1
       parameters:
@@ -4000,8 +3519,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_22
-      tags: *ref_23
+      security: *ref_20
+      tags: *ref_21
   /v1/admin/shop:
     get:
       operationId: AdminShopController_getAllShops_v1
@@ -4121,9 +3640,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_24
+      security: &ref_22
         - bearer: []
-      tags: &ref_25
+      tags: &ref_23
         - Admin Shop Management
     post:
       operationId: AdminShopController_createShop_v1
@@ -4166,8 +3685,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_24
-      tags: *ref_25
+      security: *ref_22
+      tags: *ref_23
   /v1/admin/shop/{id}:
     get:
       operationId: AdminShopController_getShopById_v1
@@ -4209,8 +3728,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_24
-      tags: *ref_25
+      security: *ref_22
+      tags: *ref_23
     patch:
       operationId: AdminShopController_updateShop_v1
       parameters:
@@ -4257,8 +3776,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_24
-      tags: *ref_25
+      security: *ref_22
+      tags: *ref_23
     delete:
       operationId: AdminShopController_deleteShop_v1
       parameters:
@@ -4301,8 +3820,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_24
-      tags: *ref_25
+      security: *ref_22
+      tags: *ref_23
   /v1/admin/product:
     get:
       operationId: AdminProductController_getAllProducts_v1
@@ -4431,9 +3950,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_26
+      security: &ref_24
         - bearer: []
-      tags: &ref_27
+      tags: &ref_25
         - Admin Product Management
     post:
       operationId: AdminProductController_createProduct_v1
@@ -4476,8 +3995,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
-      tags: *ref_27
+      security: *ref_24
+      tags: *ref_25
   /v1/admin/product/{id}:
     get:
       operationId: AdminProductController_getProductById_v1
@@ -4519,8 +4038,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
-      tags: *ref_27
+      security: *ref_24
+      tags: *ref_25
     patch:
       operationId: AdminProductController_updateProduct_v1
       parameters:
@@ -4567,8 +4086,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
-      tags: *ref_27
+      security: *ref_24
+      tags: *ref_25
     delete:
       operationId: AdminProductController_deleteProduct_v1
       parameters:
@@ -4611,8 +4130,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
-      tags: *ref_27
+      security: *ref_24
+      tags: *ref_25
   /v1/admin/order:
     get:
       operationId: AdminOrderController_getAllOrders_v1
@@ -4771,9 +4290,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_28
+      security: &ref_26
         - bearer: []
-      tags: &ref_29
+      tags: &ref_27
         - Admin Order Management
     post:
       operationId: AdminOrderController_createOrder_v1
@@ -4816,8 +4335,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
-      tags: *ref_29
+      security: *ref_26
+      tags: *ref_27
   /v1/admin/order/{id}:
     get:
       operationId: AdminOrderController_getOrderById_v1
@@ -4859,8 +4378,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
-      tags: *ref_29
+      security: *ref_26
+      tags: *ref_27
     patch:
       operationId: AdminOrderController_updateOrder_v1
       parameters:
@@ -4907,8 +4426,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
-      tags: *ref_29
+      security: *ref_26
+      tags: *ref_27
     delete:
       operationId: AdminOrderController_deleteOrder_v1
       parameters:
@@ -4951,8 +4470,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
-      tags: *ref_29
+      security: *ref_26
+      tags: *ref_27
   /v1/admin/order/{id}/status:
     patch:
       operationId: AdminOrderController_changeOrderStatus_v1
@@ -5000,57 +4519,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
-      tags: *ref_29
-  /v1/admin/chat/community-channel:
-    post:
-      operationId: AdminChatController_createCommunityChannel_v1
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateCommunityChannelDto'
-      responses:
-        '200':
-          description: Successful Response
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  statusCode:
-                    type: number
-                    example: 200
-                    description: HTTP status code
-                  message:
-                    type: string
-                    example: OK
-                    description: Response message
-                  data:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: No data returned
-                  error:
-                    type: object
-                    nullable: true
-                    example: null
-                    description: Error information (null on success)
-                  errorCode:
-                    type: string
-                    nullable: true
-                    example: null
-                    description: Error code (null on success)
-                required:
-                  - statusCode
-                  - message
-      security:
-        - bearer: []
-      summary: Create a chat channel for a community and add all idols as participants
-      tags:
-        - Admin Chat Management
+      security: *ref_26
+      tags: *ref_27
   /v1/orders/confirm:
     post:
       description: >-
@@ -5097,10 +4567,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_30
+      security: &ref_28
         - bearer: []
       summary: Confirm order and create payment
-      tags: &ref_31
+      tags: &ref_29
         - Orders
   /v1/orders/{orderId}/retry-payment:
     post:
@@ -5146,9 +4616,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_30
+      security: *ref_28
       summary: Retry payment for PENDING_PAYMENT order
-      tags: *ref_31
+      tags: *ref_29
   /v1/orders:
     get:
       description: >-
@@ -5243,9 +4713,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_30
+      security: *ref_28
       summary: Get user orders
-      tags: *ref_31
+      tags: *ref_29
   /v1/orders/{orderId}/details:
     get:
       description: >-
@@ -5290,9 +4760,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_30
+      security: *ref_28
       summary: Get order details
-      tags: *ref_31
+      tags: *ref_29
   /v1/orders/{orderId}:
     get:
       description: >-
@@ -5337,9 +4807,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_30
+      security: *ref_28
       summary: Get order status
-      tags: *ref_31
+      tags: *ref_29
   /webhooks/payos:
     post:
       description: >-
@@ -5398,10 +4868,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_32
+      security: &ref_30
         - bearer: []
       summary: Generate Knock authentication token for client SDK
-      tags: &ref_33
+      tags: &ref_31
         - Knock Notifications
   /v1/knock/fcm-token:
     post:
@@ -5448,9 +4918,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_32
+      security: *ref_30
       summary: Register FCM token for push notifications
-      tags: *ref_33
+      tags: *ref_31
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -5595,6 +5065,9 @@ components:
             - ChatMessageRetrievalFailed
             - ChatMessageSendFailed
             - ChatChannelAccessDenied
+            - ChatChannelAlreadyJoined
+            - ChatChannelNotJoined
+            - ChatChannelOwnerCannotLeave
             - InvalidChannelId
             - KnockTokenGenerationFailed
             - KnockNotificationSendFailed
@@ -5650,11 +5123,16 @@ components:
           type: string
           example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
           description: JWT refresh token
+        isChooseCommunity:
+          type: boolean
+          example: false
+          description: Whether user has chosen their communities
       required:
         - id
         - role
         - accessToken
         - refreshToken
+        - isChooseCommunity
     VerificationCodeResponse:
       type: object
       properties:
@@ -5857,7 +5335,7 @@ components:
           type: string
           example: USER
           description: User role
-          enum: &ref_35
+          enum: &ref_33
             - FAN
             - ADMIN
             - IDOL
@@ -5968,72 +5446,45 @@ components:
       required:
         - userId
         - name
-    CreateChannelDto:
+    CreateCommunityChannelDto:
       type: object
       properties:
         name:
           type: string
           description: Channel name
-          example: General Discussion
+          example: BTS Community Chat
+        communityId:
+          type: string
+          description: Community ID
+          example: comm_123
         description:
           type: string
           description: Channel description
-          example: A place for general discussion
+          example: Official chat for BTS community
         image:
           type: string
           description: Channel image URL
           example: https://example.com/image.jpg
-        type:
-          type: string
-          description: Channel type
-          example: messaging
-          default: messaging
-        communityId:
-          type: string
-          description: Community ID to associate with this channel
-          example: cm123abc
-        isCommunityChannel:
-          type: boolean
-          description: Whether this is a community channel
-          example: false
-          default: false
       required:
         - name
-    GenerateTokenDto:
+        - communityId
+    CreateIdolChannelDto:
       type: object
       properties:
-        userId:
+        name:
           type: string
-          description: User ID for token generation
-          example: user_123
-      required:
-        - userId
-    ManageMembersDto:
-      type: object
-      properties:
-        memberIds:
-          description: Array of user IDs to add/remove
-          example:
-            - user_1
-            - user_2
-          type: array
-          items:
-            type: string
-      required:
-        - memberIds
-    SendMessageDto:
-      type: object
-      properties:
-        text:
+          description: Channel name
+          example: JK Personal Chat
+        description:
           type: string
-          example: Hello, how are you?
-          description: Message text content
-        parentId:
+          description: Channel description
+          example: JK's personal fan chat
+        image:
           type: string
-          example: msg_parent_123
-          description: Parent message ID (for threaded replies)
+          description: Channel image URL
+          example: https://example.com/image.jpg
       required:
-        - text
+        - name
     UploadFileResponse:
       type: object
       properties:
@@ -6213,7 +5664,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: &ref_34
+          example: &ref_32
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
             - >-
@@ -6326,7 +5777,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: *ref_34
+          example: *ref_32
           description: Array of media URLs
           nullable: true
           type: array
@@ -6627,123 +6078,20 @@ components:
         - updatedAt
         - totalMember
         - isNew
-    ChannelDto:
+    BulkFollowCommunitiesDto:
       type: object
       properties:
-        id:
-          type: string
-          example: messaging:channel-123
-          description: Channel ID (cid)
-        type:
-          type: string
-          example: messaging
-          description: Channel type
-        name:
-          type: string
-          example: General Discussion
-          description: Channel name
-        image:
-          type: string
-          example: https://example.com/image.jpg
-          description: Channel image URL
-        memberIds:
+        communityIds:
+          description: Array of community IDs to follow
           example:
-            - user_1
-            - user_2
-          description: Channel member IDs
+            - cm123abc
+            - cm456def
+            - cm789ghi
           type: array
           items:
             type: string
-        memberCount:
-          type: number
-          example: 2
-          description: Number of members
-        lastMessage:
-          type: object
-          example:
-            id: msg_123
-            text: Hello!
-            createdAt: '2024-01-01T00:00:00.000Z'
-          description: Last message in the channel
-        unreadCount:
-          type: number
-          example: 0
-          description: Unread message count
-        createdAt:
-          type: string
-          example: '2024-01-01T00:00:00.000Z'
-          description: Channel creation timestamp
-        updatedAt:
-          type: string
-          example: '2024-01-01T00:00:00.000Z'
-          description: Channel last update timestamp
       required:
-        - id
-        - type
-        - memberIds
-        - memberCount
-        - unreadCount
-        - createdAt
-        - updatedAt
-    MessageDto:
-      type: object
-      properties:
-        id:
-          type: string
-          example: msg_123
-          description: Message ID
-        text:
-          type: string
-          example: Hello, how are you?
-          description: Message text content
-        user:
-          type: object
-          example:
-            id: user_123
-            name: John Doe
-            image: https://example.com/avatar.jpg
-          description: Message sender information
-        attachments:
-          example:
-            - https://example.com/image1.jpg
-          description: Attached images
-          type: array
-          items:
-            type: string
-        reactions:
-          type: object
-          example:
-            like:
-              - user_1
-              - user_2
-          description: Message reactions
-        parentId:
-          type: string
-          example: msg_parent_123
-          description: Parent message ID (for replies)
-        createdAt:
-          type: string
-          example: '2024-01-01T00:00:00.000Z'
-          description: Message creation timestamp
-        updatedAt:
-          type: string
-          example: '2024-01-01T00:00:00.000Z'
-          description: Message last update timestamp
-      required:
-        - id
-        - text
-        - user
-        - createdAt
-        - updatedAt
-    GetMessagesDto:
-      type: object
-      properties:
-        page:
-          type: number
-          example: 1
-        limit:
-          type: number
-          example: 20
+        - communityIds
     ShopProductDto:
       type: object
       properties:
@@ -7436,7 +6784,7 @@ components:
           type: string
           example: USER
           description: User role
-          enum: *ref_35
+          enum: *ref_33
         avatarUrl:
           type: object
           example: https://example.com/avatar.jpg
@@ -8520,24 +7868,6 @@ components:
           description: Optional note about status change
       required:
         - status
-    CreateCommunityChannelDto:
-      type: object
-      properties:
-        communityId:
-          type: string
-          description: Community ID
-          example: clxyz123abc
-        name:
-          type: string
-          description: Channel name
-          example: Community General Chat
-        description:
-          type: string
-          description: Channel description
-          example: A place for all community idols to chat
-      required:
-        - communityId
-        - name
     OrderItemDto:
       type: object
       properties:

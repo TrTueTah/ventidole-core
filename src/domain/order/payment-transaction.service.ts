@@ -76,10 +76,9 @@ export class PaymentTransactionService {
         orderCode,
         amount: 2000,
         description,
-        // cancelUrl: `${ENVIRONMENT.FRONTEND_URL}/orders/${orderId}/cancel`,
-        // returnUrl: `${ENVIRONMENT.FRONTEND_URL}/orders/${orderId}`,
-        cancelUrl: 'https://www.google.com/?hl=vi',
-        returnUrl: 'https://www.google.com/?hl=vi',
+        // Deep link URLs for mobile app navigation
+        cancelUrl: `ventidole://payment/failure/${orderId}`,
+        returnUrl: `ventidole://payment/success/${orderId}`,
       });
     } catch (error) {
       WinstonLogger.error('PayOS service error', {

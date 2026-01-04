@@ -2,24 +2,17 @@ import {
   ApiExtraModelsCustom,
   ApiResponseCustom,
 } from '@core/decorator/doc.decorator';
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Query,
-} from '@nestjs/common';
+import { Roles } from '@core/decorator/role.decorator';
+import { Body, Controller, Param, Post, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiVersion } from '@shared/enum/api-version.enum';
 import { BaseResponse } from '@shared/helper/response';
+import { IRequest } from '@shared/interface/request.interface';
+import { Role } from 'src/db/prisma/enums';
 import { StreamChannelDto } from './dto/channel.dto';
-import { CreateChannelDto } from './dto/create-channel.dto';
+import { CreateCommunityChannelDto } from './dto/create-community-channel.dto';
+import { CreateIdolChannelDto } from './dto/create-idol-channel.dto';
 import { CreateStreamUserDto } from './dto/create-user.dto';
-import { GenerateTokenDto } from './dto/generate-token.dto';
-import { ManageMembersDto } from './dto/manage-members.dto';
-import { SendMessageDto } from './dto/send-message.dto';
 import { TokenDto } from './dto/token.dto';
 import { UserDto } from './dto/user.dto';
 import { StreamChatService } from './stream-chat.service';
@@ -32,21 +25,19 @@ import { StreamChatService } from './stream-chat.service';
   UserDto,
   StreamChannelDto,
   CreateStreamUserDto,
-  CreateChannelDto,
-  GenerateTokenDto,
-  ManageMembersDto,
-  SendMessageDto,
+  CreateCommunityChannelDto,
+  CreateIdolChannelDto,
 )
 export class StreamChatController {
   constructor(private readonly streamChatService: StreamChatService) {}
 
   @Post('token')
   @ApiResponseCustom(TokenDto)
-  @ApiOperation({ summary: 'Generate Stream Chat authentication token' })
-  async generateToken(
-    @Body() request: GenerateTokenDto,
-  ): Promise<BaseResponse<TokenDto>> {
-    const result = await this.streamChatService.generateToken(request.userId);
+  @ApiOperation({
+    summary: 'Generate Stream Chat authentication token for current user',
+  })
+  async generateToken(@Req() req: IRequest): Promise<BaseResponse<TokenDto>> {
+    const result = await this.streamChatService.generateToken(req.user.id);
     return BaseResponse.of(result);
   }
 
@@ -60,108 +51,80 @@ export class StreamChatController {
     return BaseResponse.of(user.users[request.userId] as UserDto);
   }
 
-  @Delete('users/:userId')
-  @ApiResponseCustom()
-  @ApiOperation({ summary: 'Delete user from Stream Chat' })
-  async deleteUser(
-    @Param('userId') userId: string,
-  ): Promise<BaseResponse<null>> {
-    await this.streamChatService.deleteUser(userId);
-    return BaseResponse.ok();
-  }
-
-  @Post('channels')
+  @Post('channels/community')
+  @Roles(Role.ADMIN)
   @ApiResponseCustom(StreamChannelDto)
-  @ApiOperation({ summary: 'Create a new channel' })
-  async createChannel(
-    @Body() request: CreateChannelDto,
+  @ApiOperation({
+    summary: 'Create a community channel (ADMIN only)',
+    description:
+      'Creates a community channel and automatically adds all idols from the community with send permissions',
+  })
+  async createCommunityChannel(
+    @Req() req: IRequest,
+    @Body() request: CreateCommunityChannelDto,
   ): Promise<BaseResponse<StreamChannelDto>> {
-    const result = await this.streamChatService.createChannel(request);
+    const result = await this.streamChatService.createCommunityChannel(
+      req.user.id,
+      request,
+    );
     return BaseResponse.of(result as StreamChannelDto);
   }
 
-  @Get('channels/:userId')
-  @ApiResponseCustom(StreamChannelDto, true)
-  @ApiOperation({ summary: 'Get all channels for a user' })
-  async getUserChannels(
-    @Param('userId') userId: string,
-  ): Promise<BaseResponse<StreamChannelDto[]>> {
-    const result = await this.streamChatService.getUserChannels(userId);
-    return BaseResponse.of(result as StreamChannelDto[]);
-  }
-
-  @Delete('channels/:channelType/:channelId')
-  @ApiResponseCustom()
-  @ApiOperation({ summary: 'Delete a channel' })
-  async deleteChannel(
-    @Param('channelType') channelType: string,
-    @Param('channelId') channelId: string,
-  ): Promise<BaseResponse<null>> {
-    await this.streamChatService.deleteChannel(channelType, channelId);
-    return BaseResponse.ok();
-  }
-
-  @Post('channels/:channelType/:channelId/members')
-  @ApiResponseCustom()
-  @ApiOperation({ summary: 'Add members to a channel' })
-  async addMembers(
-    @Param('channelType') channelType: string,
-    @Param('channelId') channelId: string,
-    @Body() body: ManageMembersDto,
-  ): Promise<BaseResponse<null>> {
-    await this.streamChatService.addMembers(
-      channelType,
-      channelId,
-      body.memberIds,
+  @Post('channels/idol')
+  @Roles(Role.IDOL)
+  @ApiResponseCustom(StreamChannelDto)
+  @ApiOperation({
+    summary: 'Create an idol channel (IDOL only)',
+    description:
+      'Creates an idol channel where the creator becomes owner. Members join as readonly by default',
+  })
+  async createIdolChannel(
+    @Req() req: IRequest,
+    @Body() request: CreateIdolChannelDto,
+  ): Promise<BaseResponse<StreamChannelDto>> {
+    const result = await this.streamChatService.createIdolChannel(
+      req.user.id,
+      request,
     );
-    return BaseResponse.ok();
+    return BaseResponse.of(result as StreamChannelDto);
   }
 
-  @Delete('channels/:channelType/:channelId/members')
+  @Post('channels/:channelId/members/:memberId/grant-send-permission')
   @ApiResponseCustom()
-  @ApiOperation({ summary: 'Remove members from a channel' })
-  async removeMembers(
-    @Param('channelType') channelType: string,
+  @ApiOperation({
+    summary: 'Grant send message permission to a member',
+    description:
+      'For idol channels: only creator can grant. For community channels: any idol in the community can grant',
+  })
+  async grantSendPermission(
+    @Req() req: IRequest,
     @Param('channelId') channelId: string,
-    @Body() body: ManageMembersDto,
-  ): Promise<BaseResponse<null>> {
-    await this.streamChatService.removeMembers(
-      channelType,
+    @Param('memberId') memberId: string,
+  ): Promise<BaseResponse<{ success: boolean }>> {
+    const result = await this.streamChatService.grantSendPermission(
+      req.user.id,
       channelId,
-      body.memberIds,
-    );
-    return BaseResponse.ok();
-  }
-
-  @Get('channels/:channelType/:channelId/messages')
-  @ApiResponseCustom()
-  @ApiOperation({ summary: 'Get channel messages' })
-  async getMessages(
-    @Param('channelType') channelType: string,
-    @Param('channelId') channelId: string,
-    @Query('limit') limit?: number,
-  ): Promise<BaseResponse<any>> {
-    const result = await this.streamChatService.getChannelMessages(
-      channelType,
-      channelId,
-      limit || 50,
+      memberId,
     );
     return BaseResponse.of(result);
   }
 
-  @Post('channels/:channelType/:channelId/messages')
+  @Post('channels/:channelId/members/:memberId/revoke-send-permission')
   @ApiResponseCustom()
-  @ApiOperation({ summary: 'Send a message to a channel' })
-  async sendMessage(
-    @Param('channelType') channelType: string,
+  @ApiOperation({
+    summary: 'Revoke send message permission from a member',
+    description:
+      'For idol channels: only creator can revoke. For community channels: any idol in the community can revoke',
+  })
+  async revokeSendPermission(
+    @Req() req: IRequest,
     @Param('channelId') channelId: string,
-    @Body() body: SendMessageDto,
-  ): Promise<BaseResponse<any>> {
-    const result = await this.streamChatService.sendMessage(
-      channelType,
+    @Param('memberId') memberId: string,
+  ): Promise<BaseResponse<{ success: boolean }>> {
+    const result = await this.streamChatService.revokeSendPermission(
+      req.user.id,
       channelId,
-      body.userId,
-      body.text,
+      memberId,
     );
     return BaseResponse.of(result);
   }

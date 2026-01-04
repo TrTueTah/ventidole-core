@@ -58,6 +58,7 @@ export class AuthService {
     response.role = user.role;
     response.accessToken = accessToken;
     response.refreshToken = refreshToken;
+    response.isChooseCommunity = user.isChooseCommunity;
 
     return BaseResponse.of(response);
   }
@@ -82,6 +83,7 @@ export class AuthService {
     response.role = user.role;
     response.accessToken = accessToken;
     response.refreshToken = refreshToken;
+    response.isChooseCommunity = user.isChooseCommunity;
 
     return BaseResponse.of(response);
   }
@@ -110,6 +112,7 @@ export class AuthService {
     response.role = user.role;
     response.accessToken = accessToken;
     response.refreshToken = refreshToken;
+    response.isChooseCommunity = user.isChooseCommunity;
 
     return BaseResponse.of(response);
   }
@@ -158,6 +161,16 @@ export class AuthService {
   }
 
   async sendVerification(request: SendVerificationRequest) {
+    // Check if email already exists for registration verification type
+    if (request.verificationType === VerificationType.REGISTER_ACCOUNT) {
+      const userEmailExisted = await this.prisma.user.findFirst({
+        where: { email: request.email, isActive: true, isDeleted: false },
+        select: { id: true },
+      });
+
+      if (userEmailExisted) throw new CustomError(ErrorCode.ExistedEmail);
+    }
+
     const expireAt = await this.otpService.sendOtp(
       request.email!,
       request.verificationType,
@@ -231,6 +244,7 @@ export class AuthService {
     response.role = user.role;
     response.accessToken = newAccessToken;
     response.refreshToken = newRefreshToken;
+    response.isChooseCommunity = user.isChooseCommunity;
     return BaseResponse.of(response);
   }
 

@@ -1,25 +1,7 @@
 import 'dotenv/config';
-import { StreamChat } from 'stream-chat';
 import { PrismaClient } from '../src/db/prisma/client';
 
 const prisma = new PrismaClient();
-
-// Helper function to add delay between API calls to avoid rate limits
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// Initialize Stream Chat client only if env vars are present
-let streamChatClient: StreamChat | null = null;
-if (process.env.STREAM_CHAT_API_KEY && process.env.STREAM_CHAT_SECRET) {
-  streamChatClient = StreamChat.getInstance(
-    process.env.STREAM_CHAT_API_KEY,
-    process.env.STREAM_CHAT_SECRET,
-  );
-  console.log('✅ Stream Chat client initialized');
-} else {
-  console.log(
-    '⚠️  Stream Chat not configured - will skip Stream Chat operations',
-  );
-}
 
 async function seedMockData() {
   try {
@@ -41,6 +23,10 @@ async function seedMockData() {
     await prisma.chatParticipant.deleteMany();
     await prisma.chatChannel.deleteMany();
     console.log('  ✅ Cleared existing data\n');
+
+    console.log(
+      'ℹ️  Note: This script only seeds the database. Run "npx tsx scripts/seed-getstream.ts" afterward to sync to GetStream.\n',
+    );
 
     // 1. Read existing data from database (created by seed_all.py)
     console.log('📖 Reading existing data from database...');
@@ -67,139 +53,82 @@ async function seedMockData() {
     });
     console.log(`  ✅ Found admin user: ${adminUser?.email || 'N/A'}\n`);
 
-    // 2. Create users in Stream Chat (if configured)
-    if (streamChatClient) {
-      console.log('👥 Creating users in Stream Chat...');
-      const allUsers = [...(adminUser ? [adminUser] : []), ...idols, ...fans];
-      let streamUsersCreated = 0;
-
-      for (const user of allUsers) {
-        try {
-          await streamChatClient.upsertUser({
-            id: user.id,
-            name: user.username,
-            image: user.avatarUrl || undefined,
-          });
-          streamUsersCreated++;
-          // Add delay to avoid rate limits (300 calls/minute = ~200ms per call)
-          await delay(250);
-        } catch (error) {
-          console.log(
-            `  ⚠️  Warning: Could not create user ${user.id} in Stream Chat`,
-          );
-          console.log(
-            `     Error: ${error instanceof Error ? error.message : String(error)}`,
-          );
-        }
-      }
-      console.log(
-        `  ✅ Created ${streamUsersCreated}/${allUsers.length} users in Stream Chat\n`,
-      );
-    }
-
-    // 3. Read Community Followers from database
+    // 2. Read Community Followers from database
     console.log('💙 Reading community followers...');
     const followers = await prisma.communityFollower.findMany({
       orderBy: { createdAt: 'asc' },
     });
     console.log(`  ✅ Found ${followers.length} community follows\n`);
 
-    // 4. Create Chat Channels (one channel per community)
-    console.log('💬 Creating chat channels...');
-    const chatChannelsData = communities.map((community) => ({
-      type: 'messaging',
-      name: `${community.name} Community`,
-      description: `Official community channel for ${community.name}`,
-      communityId: community.id,
-      isCommunityChannel: true,
-      memberCount: 0,
-    }));
+    // 4. Create Chat Channels (in database only - GetStream sync is separate)
+    console.log('💬 Creating chat channels in database...');
 
-    await prisma.chatChannel.createMany({
-      data: chatChannelsData,
-    });
-    const chatChannels = await prisma.chatChannel.findMany({
-      orderBy: { createdAt: 'asc' },
-    });
-    console.log(
-      `  ✅ Created ${chatChannels.length} chat channels in database`,
-    );
+    // Map to store community -> channel ID mapping for later use
+    const communityChannelMap = new Map<string, string>();
 
-    // Create channels in GetStream (if configured)
-    let streamChannelsCreated = 0;
-    if (streamChatClient) {
-      console.log('  🔄 Creating channels in GetStream...');
-
-      for (const channel of chatChannels) {
-        try {
-          // For community channels, find the first idol in that community
-          const communityIdol = idols.find(
-            (i) => i.communityId === channel.communityId,
-          );
-          const creatorId = communityIdol
-            ? communityIdol.id
-            : adminUser?.id || idols[0]?.id;
-
-          const streamChannel = streamChatClient.channel(
-            channel.type,
-            channel.id,
-            {
-              created_by_id: creatorId,
-            },
-          );
-          await streamChannel.create();
-          streamChannelsCreated++;
-          // Add delay to avoid rate limits
-          await delay(250);
-        } catch (error) {
-          console.log(
-            `    ⚠️  Warning: Could not create channel ${channel.id} in GetStream (saved in DB)`,
-          );
-          console.log(
-            `       Error: ${error instanceof Error ? error.message : String(error)}`,
-          );
-        }
-      }
-      console.log(
-        `  ✅ Created ${streamChannelsCreated}/${chatChannels.length} channels in GetStream\n`,
-      );
-    } else {
-      console.log(
-        '  ⚠️  GetStream not configured - skipping channel creation in GetStream\n',
-      );
-    }
-
-    // 5. Create Chat Participants
-    console.log('👤 Adding chat participants...');
-    const participantsData: Array<{
-      channelId: string;
-      userId: string;
-      role: string;
-      canSendMessage: boolean;
-    }> = [];
-
-    // Helper: map each community to its channel
-    const communityChannelMap = new Map<string, string>(); // communityId -> channelId
+    let dbChannelsCreated = 0;
 
     for (const community of communities) {
-      const communityChannel = chatChannels.find(
-        (ch) => ch.communityId === community.id,
-      );
-      if (communityChannel) {
-        communityChannelMap.set(community.id, communityChannel.id);
+      try {
+        // For community channels, use admin as the default creator
+        const creatorId = adminUser?.id;
+
+        if (!creatorId) {
+          console.log(`  ⚠️  Skipping ${community.name} - no admin user found`);
+          continue;
+        }
+
+        // Generate a unique channel ID
+        const channelId = `community_${community.id}`;
+
+        // Create channel in DATABASE
+        await prisma.chatChannel.create({
+          data: {
+            id: channelId,
+            type: 'messaging',
+            name: `${community.name} Community`,
+            image: community.avatarUrl,
+            description: `Official chat for ${community.name} community`,
+            idolId: creatorId,
+            communityId: community.id,
+            isCommunityChannel: true,
+            memberCount: 0, // Will be updated when adding participants
+          },
+        });
+        dbChannelsCreated++;
+
+        // Store the mapping for later use
+        communityChannelMap.set(community.id, channelId);
+
+        console.log(
+          `  ✅ Created channel: ${community.name} Community (${channelId})`,
+        );
+      } catch (error) {
+        console.log(
+          `    ⚠️  Warning: Could not create channel for ${community.name}`,
+        );
+        console.log(
+          `       Error: ${error instanceof Error ? error.message : String(error)}`,
+        );
       }
     }
+    console.log(`  ✅ Created ${dbChannelsCreated} channels in database\n`);
 
+    // 5. Add Chat Participants (to database only - GetStream sync is separate)
+    console.log('👤 Adding chat participants to database...');
+
+    let dbParticipantsCreated = 0;
+    const channelMemberMap = new Map<string, string[]>();
+
+    // Build member list for each channel
     // Add all idols to their community channel as owners
     for (const idol of idols) {
       const channelId = communityChannelMap.get(idol.communityId!);
       if (channelId) {
-        participantsData.push({
-          channelId,
-          userId: idol.id,
-          role: 'owner',
-          canSendMessage: true,
-        });
+        if (!channelMemberMap.has(channelId)) {
+          channelMemberMap.set(channelId, []);
+        }
+        channelMemberMap.get(channelId)!.push(idol.id);
       }
     }
 
@@ -207,197 +136,64 @@ async function seedMockData() {
     for (const follower of followers) {
       const channelId = communityChannelMap.get(follower.communityId);
       if (channelId) {
-        participantsData.push({
-          channelId,
-          userId: follower.userId,
-          role: 'member',
-          canSendMessage: true,
-        });
-      }
-    }
-
-    await prisma.chatParticipant.createMany({
-      data: participantsData,
-    });
-    const participants = await prisma.chatParticipant.findMany({
-      orderBy: { createdAt: 'asc' },
-    });
-    console.log(
-      `  ✅ Created ${participants.length} chat participants in database`,
-    );
-
-    // Add participants to GetStream channels (if configured)
-    let streamMembersAdded = 0;
-    const channelMemberMap = new Map<string, string[]>();
-
-    // Group participants by channel
-    for (const participant of participants) {
-      if (!channelMemberMap.has(participant.channelId)) {
-        channelMemberMap.set(participant.channelId, []);
-      }
-      channelMemberMap.get(participant.channelId)!.push(participant.userId);
-    }
-
-    if (streamChatClient) {
-      // Add members to each channel in GetStream
-      console.log('  🔄 Adding participants to GetStream channels...');
-      for (const [channelId, memberIds] of Array.from(
-        channelMemberMap.entries(),
-      )) {
-        try {
-          const channel = chatChannels.find((ch) => ch.id === channelId);
-          if (channel) {
-            const streamChannel = streamChatClient.channel(
-              channel.type,
-              channelId,
-            );
-
-            // GetStream has a limit of 100 members per addMembers call
-            // Split into batches of 100
-            const batchSize = 100;
-            for (let i = 0; i < memberIds.length; i += batchSize) {
-              const batch = memberIds.slice(i, i + batchSize);
-              await streamChannel.addMembers(batch);
-              streamMembersAdded += batch.length;
-              // Add delay to avoid rate limits
-              await delay(250);
-            }
-          }
-        } catch (error) {
-          console.log(
-            `    ⚠️  Warning: Could not add members to channel ${channelId} in GetStream`,
-          );
-          console.log(
-            `       Error: ${error instanceof Error ? error.message : String(error)}`,
-          );
+        if (!channelMemberMap.has(channelId)) {
+          channelMemberMap.set(channelId, []);
         }
+        channelMemberMap.get(channelId)!.push(follower.userId);
       }
-      console.log(
-        `  ✅ Added ${streamMembersAdded}/${participants.length} members to GetStream channels\n`,
-      );
-    } else {
-      console.log(
-        '  ⚠️  GetStream not configured - skipping participant sync to GetStream\n',
-      );
     }
 
-    // Update channel member counts
-    console.log('  🔄 Updating channel member counts...');
+    // Add participants to database
     for (const [channelId, memberIds] of Array.from(
       channelMemberMap.entries(),
     )) {
-      await prisma.chatChannel.update({
-        where: { id: channelId },
-        data: { memberCount: memberIds.length },
-      });
-    }
-    console.log('  ✅ Updated channel member counts\n');
+      try {
+        // Get community ID from channel ID
+        const communityId = channelId.replace('community_', '');
 
-    // 6. Create Chat Messages
-    console.log('💬 Creating chat messages...');
-    const messageTemplates = [
-      'Hello everyone!',
-      'How are you all doing today?',
-      'I love this community! 💕',
-      "Can't wait for the next event!",
-      'This is amazing!',
-      'Thank you for all your support!',
-      'You guys are the best! ❤️',
-      'Excited to share this with you all!',
-      'Great to be here!',
-      'Looking forward to connecting with everyone!',
-      'What a wonderful day!',
-      'Sending love to all fans! 💖',
-      'Stay healthy and happy!',
-      'Thanks for being here!',
-      'This community is incredible!',
-    ];
+        // Add participants to DATABASE
+        const participantData = memberIds.map((userId) => {
+          // Check if this user is an idol in this community
+          const isIdol = idols.some(
+            (idol) =>
+              idol.id === userId && idol.communityId === communityId,
+          );
 
-    // Create 40-50 messages across different channels
-    const numMessages = Math.floor(Math.random() * 11) + 40; // 40-50 messages
-    const messagesData: Array<{
-      content: string;
-      channelId: string;
-      userId: string;
-      createdAt: Date;
-    }> = [];
-
-    for (let i = 0; i < numMessages; i++) {
-      const channel =
-        chatChannels[Math.floor(Math.random() * chatChannels.length)];
-      // Get a participant from this channel
-      const channelParticipants = participants.filter(
-        (p) => p.channelId === channel.id,
-      );
-
-      if (channelParticipants.length > 0) {
-        const participant =
-          channelParticipants[
-            Math.floor(Math.random() * channelParticipants.length)
-          ];
-        messagesData.push({
-          content:
-            messageTemplates[
-              Math.floor(Math.random() * messageTemplates.length)
-            ],
-          channelId: channel.id,
-          userId: participant.userId,
-          createdAt: new Date(
-            Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000,
-          ), // Random date within last 30 days
+          return {
+            channelId,
+            userId,
+            role: isIdol ? ('owner' as const) : ('member' as const),
+            canSendMessage: true,
+          };
         });
+
+        await prisma.chatParticipant.createMany({
+          data: participantData,
+        });
+        dbParticipantsCreated += participantData.length;
+
+        // Update channel member count
+        await prisma.chatChannel.update({
+          where: { id: channelId },
+          data: { memberCount: memberIds.length },
+        });
+      } catch (error) {
+        console.log(
+          `    ⚠️  Warning: Could not add members to channel ${channelId}`,
+        );
+        console.log(
+          `       Error: ${error instanceof Error ? error.message : String(error)}`,
+        );
       }
     }
 
-    await prisma.chatMessage.createMany({
-      data: messagesData,
-    });
-    const messages = await prisma.chatMessage.findMany({
-      orderBy: { createdAt: 'asc' },
-    });
-    console.log(`  ✅ Created ${messages.length} chat messages in database`);
+    console.log(
+      `  ✅ Added ${dbParticipantsCreated} participants to database\n`,
+    );
 
-    // Send messages to GetStream (if configured)
-    let streamMessagesSent = 0;
-    if (streamChatClient) {
-      console.log('  🔄 Sending messages to GetStream...');
-
-      for (const message of messages) {
-        try {
-          const channel = chatChannels.find(
-            (ch) => ch.id === message.channelId,
-          );
-          if (channel) {
-            const streamChannel = streamChatClient.channel(
-              channel.type,
-              message.channelId,
-            );
-            await streamChannel.sendMessage({
-              id: message.id,
-              text: message.content,
-              user_id: message.userId,
-            } as Record<string, unknown>);
-            streamMessagesSent++;
-            // Add delay to avoid rate limits
-            await delay(250);
-          }
-        } catch (error) {
-          console.log(
-            `    ⚠️  Warning: Could not send message ${message.id} to GetStream`,
-          );
-          console.log(
-            `       Error: ${error instanceof Error ? error.message : String(error)}`,
-          );
-        }
-      }
-      console.log(
-        `  ✅ Sent ${streamMessagesSent}/${messages.length} messages to GetStream\n`,
-      );
-    } else {
-      console.log(
-        '  ⚠️  GetStream not configured - skipping message sync to GetStream\n',
-      );
-    }
+    // 6. Note: Chat messages and GetStream sync are handled by separate script
+    console.log('💬 Chat channels and participants created in database.');
+    console.log('   ℹ️  Run "npx tsx scripts/seed-getstream.ts" to sync to GetStream and add messages.\n');
 
     // 7. Read Posts from database
     console.log('📝 Reading posts...');
@@ -837,21 +633,8 @@ async function seedMockData() {
     console.log(`   - ${fans.length} Fans`);
     console.log(`🏘️  Communities: ${communities.length}`);
     console.log(`💙 Community Follows: ${followers.length}`);
-    console.log(`💬 Chat Channels: ${chatChannels.length}`);
-    const announcementChannels = chatChannels.filter(
-      (_, idx) => idx < communities.length,
-    );
-    const groupChannels = chatChannels.filter(
-      (_, idx) => idx >= communities.length && idx < communities.length * 2,
-    );
-    const directChannels = chatChannels.filter(
-      (_, idx) => idx >= communities.length * 2,
-    );
-    console.log(`   - ${announcementChannels.length} Announcement channels`);
-    console.log(`   - ${groupChannels.length} Group channels`);
-    console.log(`   - ${directChannels.length} Direct message channels`);
-    console.log(`👥 Chat Participants: ${participants.length}`);
-    console.log(`💬 Chat Messages: ${messages.length}`);
+    console.log(`💬 Chat Channels: ${dbChannelsCreated} in database`);
+    console.log(`👥 Chat Participants: ${dbParticipantsCreated} in database`);
     console.log(`📝 Posts: ${posts.length} (with accurate counts)`);
     // Comments, likes, and views are managed by seed_all.py
     console.log(`🔗 Social Accounts: ${socialAccounts.length}`);

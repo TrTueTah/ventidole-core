@@ -248,6 +248,122 @@ export class CommunityService {
     }
   }
 
+  async bulkFollowCommunities(
+    userId: string,
+    communityIds: string[],
+  ): Promise<void> {
+    // Get fan info for notifications
+    const fan = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        username: true,
+        avatarUrl: true,
+      },
+    });
+
+    if (!fan) {
+      throw new CustomError(ErrorCode.UserNotFound);
+    }
+
+    // Get all valid communities that exist and are active
+    const communities = await this.prisma.community.findMany({
+      where: {
+        id: { in: communityIds },
+        isDeleted: false,
+        isActive: true,
+      },
+      include: {
+        idols: {
+          where: {
+            isDeleted: false,
+            isActive: true,
+          },
+          select: {
+            id: true,
+            username: true,
+            avatarUrl: true,
+          },
+          take: 1,
+        },
+      },
+    });
+
+    if (communities.length === 0) {
+      throw new CustomError(ErrorCode.CommunityNotFound);
+    }
+
+    // Get existing followers to avoid duplicates
+    const existingFollowers = await this.prisma.communityFollower.findMany({
+      where: {
+        userId,
+        communityId: { in: communityIds },
+        isDeleted: false,
+      },
+      select: {
+        communityId: true,
+      },
+    });
+
+    const existingCommunityIds = new Set(
+      existingFollowers.map((f) => f.communityId),
+    );
+
+    // Filter out communities already followed
+    const communitiesToFollow = communities.filter(
+      (c) => !existingCommunityIds.has(c.id),
+    );
+
+    if (communitiesToFollow.length === 0) {
+      this.logger.log(
+        `User ${userId} already follows all specified communities`,
+      );
+      return;
+    }
+
+    // Create follower relationships in bulk
+    await this.prisma.communityFollower.createMany({
+      data: communitiesToFollow.map((community) => ({
+        userId,
+        communityId: community.id,
+      })),
+      skipDuplicates: true,
+    });
+
+    // Update user's isChooseCommunity flag to true
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { isChooseCommunity: true },
+    });
+
+    this.logger.log(
+      `User ${userId} bulk followed ${communitiesToFollow.length} communities`,
+    );
+
+    // Process each community asynchronously for channels and notifications
+    for (const community of communitiesToFollow) {
+      // Add fan to community channels (don't await - let it run async)
+      this.addFanToCommunityChannels(userId, community.id).catch((error) => {
+        this.logger.error(
+          `Error adding fan to channels for community ${community.id}:`,
+          error.message,
+        );
+      });
+
+      // Notify idol(s) about new follower (don't await - let it run async)
+      if (community.idols && community.idols.length > 0) {
+        this.notifyIdolsAboutNewFollower(community.idols, fan, community).catch(
+          (error) => {
+            this.logger.error(
+              `Error notifying idols for community ${community.id}:`,
+              error.message,
+            );
+          },
+        );
+      }
+    }
+  }
+
   /**
    * Add fan to all community channels in GetStream
    */

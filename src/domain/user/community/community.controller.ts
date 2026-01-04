@@ -4,6 +4,7 @@ import {
   ApiResponseCustom,
 } from '@core/decorator/doc.decorator';
 import {
+  Body,
   Controller,
   Delete,
   Get,
@@ -19,6 +20,7 @@ import { ApiVersion } from '@shared/enum/api-version.enum';
 import { BaseResponse } from '@shared/helper/response';
 import { IRequest } from '@shared/interface/request.interface';
 import { CommunityService } from './community.service';
+import { BulkFollowCommunitiesDto } from './dto/bulk-follow-communities.dto';
 import { CommunityDetailDto } from './dto/community-detail.dto';
 import { CommunityListDto } from './dto/community-list.dto';
 import { CommunityDto } from './dto/community.dto';
@@ -64,6 +66,19 @@ export class CommunityController {
     @Param('id') id: string,
   ): Promise<BaseResponse<null>> {
     await this.communityService.joinCommunity(req.user.id, id);
+    return BaseResponse.ok();
+  }
+
+  @Post('bulk-follow')
+  @ApiResponseCustom()
+  async bulkFollowCommunities(
+    @Req() req: IRequest,
+    @Body() dto: BulkFollowCommunitiesDto,
+  ): Promise<BaseResponse<null>> {
+    await this.communityService.bulkFollowCommunities(
+      req.user.id,
+      dto.communityIds,
+    );
     return BaseResponse.ok();
   }
 

@@ -1,13 +1,23 @@
 import getStreamChatClient, {
   getStreamChatApiKey,
 } from '@core/config/stream-chat.config';
-import { Injectable, Logger } from '@nestjs/common';
-import { CreateChannelDto } from './dto/create-channel.dto';
+import {
+  ForbiddenException,
+  Injectable,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
+import { Role } from '@prisma/client';
+import { PrismaService } from '@shared/service/prisma/prisma.service';
+import { CreateCommunityChannelDto } from './dto/create-community-channel.dto';
+import { CreateIdolChannelDto } from './dto/create-idol-channel.dto';
 import { CreateStreamUserDto } from './dto/create-user.dto';
 
 @Injectable()
 export class StreamChatService {
   private readonly logger = new Logger(StreamChatService.name);
+
+  constructor(private readonly prisma: PrismaService) {}
 
   /**
    * Generate authentication token for a user
@@ -61,77 +71,192 @@ export class StreamChatService {
   }
 
   /**
-   * Create a channel
+   * Create a community channel (ADMIN only)
+   * Automatically adds all idols from the community with send permission
    */
-  async createChannel(data: CreateChannelDto) {
+  async createCommunityChannel(
+    adminId: string,
+    data: CreateCommunityChannelDto,
+  ) {
     try {
+      // Verify admin role
+      const admin = await this.prisma.user.findUnique({
+        where: { id: adminId },
+      });
+
+      if (!admin || admin.role !== Role.ADMIN) {
+        throw new ForbiddenException(
+          'Only admins can create community channels',
+        );
+      }
+
+      // Verify community exists
+      const community = await this.prisma.community.findUnique({
+        where: { id: data.communityId, isDeleted: false },
+      });
+
+      if (!community) {
+        throw new NotFoundException('Community not found');
+      }
+
+      // Get all idols from this community
+      const communityIdols = await this.prisma.user.findMany({
+        where: {
+          communityId: data.communityId,
+          role: Role.IDOL,
+          isDeleted: false,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      this.logger.log(
+        `Found ${communityIdols.length} idols in community ${data.communityId}`,
+      );
+
+      // Generate channel ID
+      const channelId = `community_${data.communityId}_${Date.now()}`;
+
+      // Create channel in GetStream
       const streamChatClient = getStreamChatClient();
-      const channel = streamChatClient.channel(data.type, data.channelId, {
+      const channel = streamChatClient.channel('messaging', channelId, {
         name: data.name,
         description: data.description,
-        members: data.members,
+        image: data.image,
+        community_id: data.communityId,
+        is_community_channel: true,
+        created_by_id: adminId,
       });
 
       await channel.create();
 
-      this.logger.log(`Created channel: ${data.channelId || 'auto-generated'}`);
+      // Add admin as owner
+      await channel.addMembers([{ user_id: adminId, role: 'owner' }]);
+
+      // Add all idols from the community with send permission (channel_member role)
+      if (communityIdols.length > 0) {
+        await channel.addMembers(
+          communityIdols.map((idol) => ({
+            user_id: idol.id,
+            channel_role: 'channel_member', // can send messages
+          })),
+        );
+      }
+
+      this.logger.log(
+        `Created community channel ${channelId} with ${communityIdols.length} idols`,
+      );
 
       return channel.data;
     } catch (error) {
-      this.logger.error(`Error creating channel:`, error);
+      this.logger.error(`Error creating community channel:`, error);
       throw error;
     }
   }
 
   /**
-   * Get user channels
+   * Create an idol channel (IDOL only)
+   * Creator becomes owner, members join as readonly by default
    */
-  async getUserChannels(userId: string) {
+  async createIdolChannel(idolId: string, data: CreateIdolChannelDto) {
     try {
-      const streamChatClient = getStreamChatClient();
-      const filter = { members: { $in: [userId] } };
-      const sort = [{ last_message_at: -1 }] as any;
-
-      const channels = await streamChatClient.queryChannels(filter, sort, {
-        watch: false,
-        state: true,
+      // Verify idol role
+      const idol = await this.prisma.user.findUnique({
+        where: { id: idolId },
       });
 
-      this.logger.log(
-        `Retrieved ${channels.length} channels for user: ${userId}`,
-      );
+      if (!idol || idol.role !== Role.IDOL) {
+        throw new ForbiddenException('Only idols can create idol channels');
+      }
 
-      return channels.map((channel) => channel.data);
+      // Generate channel ID
+      const channelId = `idol_${idolId}_${Date.now()}`;
+
+      // Create channel in GetStream
+      const streamChatClient = getStreamChatClient();
+      const channel = streamChatClient.channel('messaging', channelId, {
+        name: data.name,
+        description: data.description,
+        image: data.image,
+        is_idol_channel: true,
+        created_by_id: idolId,
+      });
+
+      await channel.create();
+
+      // Add idol as owner with full permissions
+      await channel.addMembers([{ user_id: idolId, role: 'owner' }]);
+
+      this.logger.log(`Created idol channel ${channelId} for idol ${idolId}`);
+
+      return channel.data;
     } catch (error) {
-      this.logger.error(`Error getting channels for user ${userId}:`, error);
+      this.logger.error(`Error creating idol channel:`, error);
       throw error;
     }
   }
 
   /**
-   * Send a message to a channel
+   * Grant send message permission to a member
+   * For idol channels: Only channel creator can grant
+   * For community channels: Any idol in the community can grant
    */
-  async sendMessage(
-    channelType: string,
+  async grantSendPermission(
+    requesterId: string,
     channelId: string,
-    userId: string,
-    text: string,
+    memberId: string,
   ) {
     try {
       const streamChatClient = getStreamChatClient();
-      const channel = streamChatClient.channel(channelType, channelId);
+      const channel = streamChatClient.channel('messaging', channelId);
 
-      const message = await channel.sendMessage({
-        text,
-        user_id: userId,
+      // Fetch channel data
+      await channel.watch();
+      const channelData = channel.data;
+
+      // Validate requester is authorized
+      if (channelData.is_idol_channel) {
+        // For idol channels: only creator can grant permission
+        if (requesterId !== channelData.created_by_id) {
+          throw new ForbiddenException(
+            'Only channel creator can grant send permissions',
+          );
+        }
+      } else if (channelData.is_community_channel) {
+        // For community channels: any idol in the community can grant permission
+        const requester = await this.prisma.user.findUnique({
+          where: { id: requesterId },
+        });
+
+        if (!requester || requester.role !== Role.IDOL) {
+          throw new ForbiddenException('Only idols can grant send permissions');
+        }
+
+        if (requester.communityId !== channelData.community_id) {
+          throw new ForbiddenException(
+            'Only idols from this community can grant permissions',
+          );
+        }
+      } else {
+        throw new ForbiddenException('Invalid channel type');
+      }
+
+      // Update member role to allow sending messages
+      await channel.updatePartial({
+        set: {
+          [`members.${memberId}.channel_role`]: 'channel_member',
+        },
       });
 
-      this.logger.log(`Sent message to channel ${channelId}`);
+      this.logger.log(
+        `Granted send permission to ${memberId} in channel ${channelId}`,
+      );
 
-      return message;
+      return { success: true };
     } catch (error) {
       this.logger.error(
-        `Error sending message to channel ${channelId}:`,
+        `Error granting send permission to ${memberId} in channel ${channelId}:`,
         error,
       );
       throw error;
@@ -139,114 +264,67 @@ export class StreamChatService {
   }
 
   /**
-   * Delete a user from Stream Chat
+   * Revoke send message permission from a member
+   * For idol channels: Only channel creator can revoke
+   * For community channels: Any idol in the community can revoke
    */
-  async deleteUser(userId: string) {
+  async revokeSendPermission(
+    requesterId: string,
+    channelId: string,
+    memberId: string,
+  ) {
     try {
       const streamChatClient = getStreamChatClient();
-      await streamChatClient.deleteUser(userId, {
-        mark_messages_deleted: true,
-        hard_delete: true,
+      const channel = streamChatClient.channel('messaging', channelId);
+
+      // Fetch channel data
+      await channel.watch();
+      const channelData = channel.data;
+
+      // Validate requester is authorized
+      if (channelData.is_idol_channel) {
+        // For idol channels: only creator can revoke permission
+        if (requesterId !== channelData.created_by_id) {
+          throw new ForbiddenException(
+            'Only channel creator can revoke send permissions',
+          );
+        }
+      } else if (channelData.is_community_channel) {
+        // For community channels: any idol in the community can revoke permission
+        const requester = await this.prisma.user.findUnique({
+          where: { id: requesterId },
+        });
+
+        if (!requester || requester.role !== Role.IDOL) {
+          throw new ForbiddenException(
+            'Only idols can revoke send permissions',
+          );
+        }
+
+        if (requester.communityId !== channelData.community_id) {
+          throw new ForbiddenException(
+            'Only idols from this community can revoke permissions',
+          );
+        }
+      } else {
+        throw new ForbiddenException('Invalid channel type');
+      }
+
+      // Update member role to readonly
+      await channel.updatePartial({
+        set: {
+          [`members.${memberId}.channel_role`]: 'channel_readonly',
+        },
       });
 
-      this.logger.log(`Deleted user from Stream Chat: ${userId}`);
-
-      return { success: true };
-    } catch (error) {
-      this.logger.error(`Error deleting user ${userId}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Add members to a channel
-   */
-  async addMembers(
-    channelType: string,
-    channelId: string,
-    memberIds: string[],
-  ) {
-    try {
-      const streamChatClient = getStreamChatClient();
-      const channel = streamChatClient.channel(channelType, channelId);
-      await channel.addMembers(memberIds);
-
       this.logger.log(
-        `Added ${memberIds.length} members to channel ${channelId}`,
-      );
-
-      return { success: true };
-    } catch (error) {
-      this.logger.error(`Error adding members to channel ${channelId}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Remove members from a channel
-   */
-  async removeMembers(
-    channelType: string,
-    channelId: string,
-    memberIds: string[],
-  ) {
-    try {
-      const streamChatClient = getStreamChatClient();
-      const channel = streamChatClient.channel(channelType, channelId);
-      await channel.removeMembers(memberIds);
-
-      this.logger.log(
-        `Removed ${memberIds.length} members from channel ${channelId}`,
+        `Revoked send permission from ${memberId} in channel ${channelId}`,
       );
 
       return { success: true };
     } catch (error) {
       this.logger.error(
-        `Error removing members from channel ${channelId}:`,
-        error,
-      );
-      throw error;
-    }
-  }
-
-  /**
-   * Delete a channel
-   */
-  async deleteChannel(channelType: string, channelId: string) {
-    try {
-      const streamChatClient = getStreamChatClient();
-      const channel = streamChatClient.channel(channelType, channelId);
-      await channel.delete();
-
-      this.logger.log(`Deleted channel: ${channelId}`);
-
-      return { success: true };
-    } catch (error) {
-      this.logger.error(`Error deleting channel ${channelId}:`, error);
-      throw error;
-    }
-  }
-
-  /**
-   * Get channel messages
-   */
-  async getChannelMessages(channelType: string, channelId: string, limit = 50) {
-    try {
-      const streamChatClient = getStreamChatClient();
-      const channel = streamChatClient.channel(channelType, channelId);
-
-      const messages = await channel.query({
-        messages: { limit },
-      });
-
-      this.logger.log(
-        `Retrieved ${messages.messages.length} messages from channel ${channelId}`,
-      );
-
-      return messages.messages;
-    } catch (error) {
-      this.logger.error(
-        `Error getting messages from channel ${channelId}:`,
+        `Error revoking send permission from ${memberId} in channel ${channelId}:`,
         error,
       );
       throw error;

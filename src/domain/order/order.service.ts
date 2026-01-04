@@ -97,10 +97,6 @@ export class OrderService {
       },
     });
 
-    // Clear cart items for ordered products
-    const orderedProductIds = items.map((item) => item.id);
-    await this.clearCartItems(userId, orderedProductIds);
-
     // Handle payment method branching
     if (dto.paymentMethod === PaymentMethod.CREDIT) {
       // Create payment transaction and get PayOS link
@@ -129,6 +125,10 @@ export class OrderService {
       };
     } else {
       // COD - no payment needed, order is confirmed immediately
+      // Clear cart items for COD orders (confirmed immediately)
+      const orderedProductIds = items.map((item) => item.id);
+      await this.clearCartItems(userId, orderedProductIds);
+
       // Send order confirmation notifications
       try {
         await this.knockWorkflowService.notifyConfirmOrder({
@@ -356,6 +356,18 @@ export class OrderService {
         amount: order.totalAmount,
       },
     });
+
+    // Clear cart items after successful payment
+    const orderWithItems = await this.prisma.order.findUnique({
+      where: { id: order.id },
+      include: { items: true },
+    });
+    if (orderWithItems) {
+      const orderedProductIds = orderWithItems.items.map(
+        (item) => item.productId,
+      );
+      await this.clearCartItems(order.userId, orderedProductIds);
+    }
 
     // Send payment success notifications
     try {
