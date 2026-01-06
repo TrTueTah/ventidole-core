@@ -24,9 +24,38 @@ if (process.env.STREAM_CHAT_API_KEY && process.env.STREAM_CHAT_SECRET) {
 
 async function seedGetStream() {
   try {
-    console.log('🌱 Starting GetStream sync from database...\n');
+    console.log('🌱 Starting GetStream chat setup...\n');
 
-    // 1. Read users from database
+    // 1. Create custom channel roles in GetStream
+    console.log('🔧 Setting up custom channel roles...');
+    const customRoles = [
+      'moderator_member',
+      'default_member',
+      'trusted_member',
+    ];
+
+    for (const roleName of customRoles) {
+      try {
+        await streamChatClient!.createRole(roleName);
+        console.log(`  ✅ Created role: ${roleName}`);
+      } catch (error) {
+        // Role might already exist, that's okay
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+        if (
+          errorMessage.includes('already exists') ||
+          errorMessage.includes('Role already exists')
+        ) {
+          console.log(`  ℹ️  Role ${roleName} already exists`);
+        } else {
+          console.log(`  ⚠️  Warning: Could not create role ${roleName}`);
+          console.log(`     Error: ${errorMessage}`);
+        }
+      }
+    }
+    console.log('');
+
+    // 2. Read users from database
     console.log('📖 Reading users from database...');
     const allUsers = await prisma.user.findMany({
       select: {
@@ -34,11 +63,12 @@ async function seedGetStream() {
         username: true,
         avatarUrl: true,
         role: true,
+        communityId: true,
       },
     });
     console.log(`  ✅ Found ${allUsers.length} users\n`);
 
-    // 2. Create users in GetStream
+    // 3. Create users in GetStream
     console.log('👥 Creating users in GetStream...');
     let streamUsersCreated = 0;
 
@@ -53,19 +83,40 @@ async function seedGetStream() {
         // Add delay to avoid rate limits (300 calls/minute = ~200ms per call)
         await delay(250);
       } catch (error) {
-        console.log(
-          `  ⚠️  Warning: Could not create user ${user.id} in Stream Chat`,
-        );
-        console.log(
-          `     Error: ${error instanceof Error ? error.message : String(error)}`,
-        );
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
+
+        // If user was deleted, restore them first then upsert
+        if (errorMessage.includes('was deleted')) {
+          try {
+            await streamChatClient!.restoreUsers([user.id]);
+            await streamChatClient!.upsertUser({
+              id: user.id,
+              name: user.username,
+              image: user.avatarUrl || undefined,
+            });
+            streamUsersCreated++;
+            console.log(`  ✅ Restored and recreated user: ${user.username}`);
+            await delay(250);
+          } catch (restoreError) {
+            console.log(`  ⚠️  Warning: Could not restore user ${user.id}`);
+            console.log(
+              `     Error: ${restoreError instanceof Error ? restoreError.message : String(restoreError)}`,
+            );
+          }
+        } else {
+          console.log(
+            `  ⚠️  Warning: Could not create user ${user.id} in Stream Chat`,
+          );
+          console.log(`     Error: ${errorMessage}`);
+        }
       }
     }
     console.log(
       `  ✅ Created ${streamUsersCreated}/${allUsers.length} users in GetStream\n`,
     );
 
-    // 3. Get admin user for channel creation
+    // 4. Get admin user for channel creation
     console.log('📖 Finding admin user...');
     const adminUser = await prisma.user.findFirst({
       where: { role: 'ADMIN' },
@@ -76,59 +127,96 @@ async function seedGetStream() {
     }
     console.log(`  ✅ Found admin user: ${adminUser.email}\n`);
 
-    // 4. Read channels from database
-    console.log('📖 Reading channels from database...');
-    const channels = await prisma.chatChannel.findMany({
+    // 5. Read communities from database
+    console.log('📖 Reading communities from database...');
+    const communities = await prisma.community.findMany({
       where: { isDeleted: false },
       include: {
-        participants: {
+        idols: {
           where: { isDeleted: false },
-          select: {
-            userId: true,
-            role: true,
-          },
+          select: { id: true },
+        },
+        followers: {
+          where: { isDeleted: false },
+          select: { userId: true },
         },
       },
       orderBy: { createdAt: 'asc' },
     });
-    console.log(`  ✅ Found ${channels.length} channels\n`);
+    console.log(`  ✅ Found ${communities.length} communities\n`);
 
-    // 5. Create channels in GetStream
-    console.log('💬 Creating channels in GetStream...');
+    // 6. Create community channels in GetStream
+    console.log('💬 Creating community channels in GetStream...');
     let streamChannelsCreated = 0;
+    const createdChannelIds: string[] = [];
 
-    for (const channel of channels) {
+    for (const community of communities) {
       try {
-        // Use admin as the creator for all community channels
-        const creatorId = adminUser.id;
+        const channelId = `community_${community.id}`;
 
+        // Create channel with community metadata
         const streamChannel = streamChatClient!.channel(
-          channel.type,
-          channel.id,
+          'messaging',
+          channelId,
           {
-            created_by_id: creatorId,
-            // Custom metadata stored in GetStream
-            community_id: channel.communityId,
-            is_community_channel: channel.isCommunityChannel || false,
+            name: `${community.name} Community`,
+            image: community.avatarUrl || undefined,
+            community_id: community.id,
+            is_community_channel: true,
+            created_by_id: adminUser.id,
           } as Record<string, unknown>,
         );
+
         await streamChannel.create();
 
-        // Update channel with name and image after creation
-        await streamChannel.update({
-          name: channel.name || undefined,
-          image: channel.image || undefined,
-        } as Record<string, unknown>);
+        // Admin is automatically the channel creator/owner, no need to add explicitly
+
+        // Add all idols from the community as 'moderator_member' (custom role)
+        // This gives them permissions to send messages and moderate
+        if (community.idols.length > 0) {
+          const idolIds = community.idols.map((idol) => idol.id);
+          await streamChannel.addMembers(
+            idolIds.map((idolId) => ({
+              user_id: idolId,
+              channel_role: 'moderator_member',
+            })),
+          );
+        }
+
+        // Add all followers with custom roles
+        // 10% will be 'trusted_member' (can send messages)
+        // 90% will be 'default_member' (readonly, no send permission)
+        if (community.followers.length > 0) {
+          const followerIds = community.followers.map((f) => f.userId);
+          // Add in batches of 100
+          const batchSize = 100;
+          for (let i = 0; i < followerIds.length; i += batchSize) {
+            const batch = followerIds.slice(i, i + batchSize);
+            const membersWithRole = batch.map((userId) => {
+              // 10% chance to be trusted_member
+              const isTrusted = Math.random() < 0.1;
+              return {
+                user_id: userId,
+                channel_role: isTrusted ? 'trusted_member' : 'default_member',
+              };
+            });
+            await streamChannel.addMembers(membersWithRole);
+            await delay(250);
+          }
+        }
 
         streamChannelsCreated++;
+        createdChannelIds.push(channelId);
         console.log(
-          `  ✅ Created channel: ${channel.name} (${channel.id})`,
+          `  ✅ Created channel: ${community.name} Community (${channelId})`,
         );
-        // Add delay to avoid rate limits
+        console.log(`     - Admin: 1 member`);
+        console.log(`     - Idols: ${community.idols.length} members`);
+        console.log(`     - Followers: ${community.followers.length} members`);
         await delay(250);
       } catch (error) {
         console.log(
-          `    ⚠️  Warning: Could not create channel ${channel.id} in GetStream`,
+          `    ⚠️  Warning: Could not create channel for ${community.name}`,
         );
         console.log(
           `       Error: ${error instanceof Error ? error.message : String(error)}`,
@@ -136,49 +224,7 @@ async function seedGetStream() {
       }
     }
     console.log(
-      `  ✅ Created ${streamChannelsCreated}/${channels.length} channels in GetStream\n`,
-    );
-
-    // 6. Add participants to GetStream channels
-    console.log('👤 Adding participants to GetStream channels...');
-    let streamMembersAdded = 0;
-
-    for (const channel of channels) {
-      try {
-        if (channel.participants.length === 0) continue;
-
-        const memberIds = channel.participants.map((p) => p.userId);
-
-        const streamChannel = streamChatClient!.channel(
-          channel.type,
-          channel.id,
-        );
-
-        // GetStream has a limit of 100 members per addMembers call
-        // Split into batches of 100
-        const batchSize = 100;
-        for (let i = 0; i < memberIds.length; i += batchSize) {
-          const batch = memberIds.slice(i, i + batchSize);
-          await streamChannel.addMembers(batch);
-          streamMembersAdded += batch.length;
-          // Add delay to avoid rate limits
-          await delay(250);
-        }
-        console.log(
-          `  ✅ Added ${memberIds.length} members to channel ${channel.id}`,
-        );
-      } catch (error) {
-        console.log(
-          `    ⚠️  Warning: Could not add members to channel ${channel.id} in GetStream`,
-        );
-        console.log(
-          `       Error: ${error instanceof Error ? error.message : String(error)}`,
-        );
-      }
-    }
-
-    console.log(
-      `  ✅ Added ${streamMembersAdded} total members to GetStream channels\n`,
+      `  ✅ Created ${streamChannelsCreated}/${communities.length} channels in GetStream\n`,
     );
 
     // 7. Send sample messages to channels
@@ -206,36 +252,49 @@ async function seedGetStream() {
     let streamMessagesSent = 0;
 
     for (let i = 0; i < numMessages; i++) {
-      const channel = channels[Math.floor(Math.random() * channels.length)];
-      const channelParticipants = channel.participants;
+      if (createdChannelIds.length === 0) break;
 
-      if (channelParticipants.length > 0) {
-        const randomUserId =
-          channelParticipants[
-            Math.floor(Math.random() * channelParticipants.length)
-          ].userId;
+      const channelId =
+        createdChannelIds[Math.floor(Math.random() * createdChannelIds.length)];
 
-        try {
-          const streamChannel = streamChatClient!.channel(
-            channel.type,
-            channel.id,
-          );
-          await streamChannel.sendMessage({
-            text: messageTemplates[
-              Math.floor(Math.random() * messageTemplates.length)
-            ],
-            user_id: randomUserId,
-          } as Record<string, unknown>);
-          streamMessagesSent++;
-          // Add delay to avoid rate limits
-          await delay(250);
-        } catch (error) {
-          console.log(
-            `    ⚠️  Warning: Could not send message to channel ${channel.id}`,
-          );
-          console.log(
-            `       Error: ${error instanceof Error ? error.message : String(error)}`,
-          );
+      // Find the community for this channel
+      const communityId = channelId.replace('community_', '');
+      const community = communities.find((c) => c.id === communityId);
+
+      if (community) {
+        // Pick a random member (admin, idol, or follower)
+        const allMembers = [
+          adminUser.id,
+          ...community.idols.map((i) => i.id),
+          ...community.followers.map((f) => f.userId),
+        ];
+
+        if (allMembers.length > 0) {
+          const randomUserId =
+            allMembers[Math.floor(Math.random() * allMembers.length)];
+
+          try {
+            const streamChannel = streamChatClient!.channel(
+              'messaging',
+              channelId,
+            );
+            await streamChannel.sendMessage({
+              text: messageTemplates[
+                Math.floor(Math.random() * messageTemplates.length)
+              ],
+              user_id: randomUserId,
+            } as Record<string, unknown>);
+            streamMessagesSent++;
+            // Add delay to avoid rate limits
+            await delay(250);
+          } catch (error) {
+            console.log(
+              `    ⚠️  Warning: Could not send message to channel ${channelId}`,
+            );
+            console.log(
+              `       Error: ${error instanceof Error ? error.message : String(error)}`,
+            );
+          }
         }
       }
     }
@@ -245,8 +304,9 @@ async function seedGetStream() {
     console.log('\n📊 GetStream Sync Summary:');
     console.log('═══════════════════════════════════════');
     console.log(`👤 Users synced: ${streamUsersCreated}/${allUsers.length}`);
-    console.log(`💬 Channels synced: ${streamChannelsCreated}/${channels.length}`);
-    console.log(`👥 Members added: ${streamMembersAdded}`);
+    console.log(
+      `💬 Channels created: ${streamChannelsCreated}/${communities.length}`,
+    );
     console.log(`💬 Messages sent: ${streamMessagesSent}`);
     console.log('═══════════════════════════════════════\n');
 

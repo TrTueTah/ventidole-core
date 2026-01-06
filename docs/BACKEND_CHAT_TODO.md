@@ -71,13 +71,13 @@ This document describes how to implement the realtime chat system using GetStrea
 
 ## Responsibility Matrix
 
-| Layer      | Responsibility                                      |
-|------------|-----------------------------------------------------|
-| Frontend   | Realtime chat, UI, WebSocket connection             |
-| Backend    | Auth, permissions, Stream token, business rules     |
-| GetStream  | Chat storage, realtime, unread counts               |
-| Database   | Users, idols, communities, follows, access rules    |
-| Knock      | Push / Email notifications                          |
+| Layer     | Responsibility                                   |
+| --------- | ------------------------------------------------ |
+| Frontend  | Realtime chat, UI, WebSocket connection          |
+| Backend   | Auth, permissions, Stream token, business rules  |
+| GetStream | Chat storage, realtime, unread counts            |
+| Database  | Users, idols, communities, follows, access rules |
+| Knock     | Push / Email notifications                       |
 
 ---
 
@@ -101,7 +101,7 @@ Backend must:
 
 ### 2. Stream Token Endpoint
 
-**Endpoint**: `POST /v1/chat/token`
+**Endpoint**: `POST /v1/stream-chat/token`
 
 **Purpose**: Issue a short-lived GetStream token. FE uses this token to connect directly to Stream.
 
@@ -132,7 +132,7 @@ getStreamToken(@Req() req) {
 
 #### A. Community Chat Channels
 
-**Endpoint**: `POST /v1/chat/channels/community`
+**Endpoint**: `POST /v1/stream-chat/channels/community`
 
 **Role**: ADMIN only
 
@@ -149,32 +149,32 @@ getStreamToken(@Req() req) {
 **Implementation**:
 
 ```typescript
-const channel = streamClient.channel("messaging", channelId, {
+const channel = streamClient.channel('messaging', channelId, {
   name,
   image,
   community_id: communityId,
   is_community_channel: true,
-  created_by_id: adminId
+  created_by_id: adminId,
 });
 
 await channel.create();
 
 // Add admin as owner
-await channel.addMembers([{ user_id: adminId, role: "owner" }]);
+await channel.addMembers([{ user_id: adminId, role: 'owner' }]);
 
 // Add all idols from the community with send permission
 const communityIdols = await getCommunityIdols(communityId);
 await channel.addMembers(
-  communityIdols.map(idol => ({
+  communityIdols.map((idol) => ({
     user_id: idol.id,
-    channel_role: "channel_member" // can send messages
-  }))
+    channel_role: 'channel_member', // can send messages
+  })),
 );
 ```
 
 #### B. Idol Chat Channels
 
-**Endpoint**: `POST /v1/chat/channels/idol`
+**Endpoint**: `POST /v1/stream-chat/channels/idol`
 
 **Role**: IDOL only
 
@@ -190,17 +190,17 @@ await channel.addMembers(
 **Implementation**:
 
 ```typescript
-const channel = streamClient.channel("messaging", channelId, {
+const channel = streamClient.channel('messaging', channelId, {
   name,
   image,
   is_idol_channel: true,
-  created_by_id: idolId
+  created_by_id: idolId,
 });
 
 await channel.create();
 
 // Add idol as owner with full permissions
-await channel.addMembers([{ user_id: idolId, role: "owner" }]);
+await channel.addMembers([{ user_id: idolId, role: 'owner' }]);
 
 // Members joining later will be added as readonly by default
 ```
@@ -211,7 +211,7 @@ await channel.addMembers([{ user_id: idolId, role: "owner" }]);
 
 Backend decides who is allowed to join or leave.
 
-**Join Permission Check**: `POST /v1/chat/channels/:id/join-check`
+**Join Permission Check**: `POST /v1/stream-chat/channels/:id/join-check`
 
 ```typescript
 if (!userHasAccess) {
@@ -229,9 +229,10 @@ return { allowed: true };
 
 #### A. Grant Send Message Permission
 
-**Endpoint**: `POST /v1/chat/channels/:id/members/:memberId/grant-send-permission`
+**Endpoint**: `POST /v1/stream-chat/channels/:channelId/members/:memberId/grant-send-permission`
 
 **Authorization**:
+
 - For idol channels: Only channel creator (owner)
 - For community channels: Any idol in the community
 
@@ -244,7 +245,10 @@ if (channel.is_idol_channel) {
     throw ForbiddenException;
   }
 } else if (channel.is_community_channel) {
-  const isIdolInCommunity = await checkIdolInCommunity(requesterId, channel.community_id);
+  const isIdolInCommunity = await checkIdolInCommunity(
+    requesterId,
+    channel.community_id,
+  );
   if (!isIdolInCommunity) {
     throw ForbiddenException;
   }
@@ -253,14 +257,14 @@ if (channel.is_idol_channel) {
 // Update member role to allow sending messages
 await channel.updatePartial({
   set: {
-    [`members.${memberId}.channel_role`]: "channel_member"
-  }
+    [`members.${memberId}.channel_role`]: 'channel_member',
+  },
 });
 ```
 
 #### B. Revoke Send Message Permission
 
-**Endpoint**: `POST /v1/chat/channels/:id/members/:memberId/revoke-send-permission`
+**Endpoint**: `POST /v1/stream-chat/channels/:channelId/members/:memberId/revoke-send-permission`
 
 **Authorization**: Same as grant permission
 
@@ -270,8 +274,8 @@ await channel.updatePartial({
 // Update member role to readonly
 await channel.updatePartial({
   set: {
-    [`members.${memberId}.channel_role`]: "channel_readonly"
-  }
+    [`members.${memberId}.channel_role`]: 'channel_readonly',
+  },
 });
 ```
 
@@ -308,9 +312,9 @@ await client.connectUser(
   {
     id: user.id,
     name: user.name,
-    image: user.avatar
+    image: user.avatar,
   },
-  streamToken
+  streamToken,
 );
 ```
 
@@ -320,7 +324,7 @@ await client.connectUser(
 
 ```typescript
 const channels = await client.queryChannels({
-  members: { $in: [userId] }
+  members: { $in: [userId] },
 });
 ```
 
@@ -336,14 +340,14 @@ const channels = await client.queryChannels({
 **Implementation**:
 
 ```typescript
-const channel = client.channel("messaging", channelId);
+const channel = client.channel('messaging', channelId);
 
 // Add member as readonly by default
 await channel.addMembers([
   {
     user_id: userId,
-    channel_role: "channel_readonly"
-  }
+    channel_role: 'channel_readonly',
+  },
 ]);
 ```
 
@@ -354,7 +358,7 @@ await channel.addMembers([
 ### 5. Leave Channel
 
 ```typescript
-const channel = client.channel("messaging", channelId);
+const channel = client.channel('messaging', channelId);
 await channel.removeMembers([userId]);
 ```
 
@@ -366,7 +370,7 @@ await channel.removeMembers([userId]);
 
 ```typescript
 channel.sendMessage({
-  text: message
+  text: message,
 });
 ```
 
@@ -388,8 +392,8 @@ Unread count is automatic.
 channel.query({
   messages: {
     limit: 20,
-    offset
-  }
+    offset,
+  },
 });
 ```
 
@@ -401,10 +405,10 @@ channel.query({
 client.queryChannels(
   {
     is_community_channel: true,
-    name: { $autocomplete: search }
+    name: { $autocomplete: search },
   },
   { last_message_at: -1 },
-  { limit }
+  { limit },
 );
 ```
 
@@ -414,20 +418,22 @@ client.queryChannels(
 
 ### Roles
 
-| Role              | Description                                      | Can Send Messages |
-|-------------------|--------------------------------------------------|-------------------|
-| owner             | Channel creator (Admin or Idol)                  | ✅                |
-| channel_member    | Member with send permission (granted by owner/idol) | ✅             |
-| channel_readonly  | Default member (readonly)                        | ❌                |
+| Role             | Description                                         | Can Send Messages |
+| ---------------- | --------------------------------------------------- | ----------------- |
+| owner            | Channel creator (Admin or Idol)                     | ✅                |
+| channel_member   | Member with send permission (granted by owner/idol) | ✅                |
+| channel_readonly | Default member (readonly)                           | ❌                |
 
 ### Permission Logic by Channel Type
 
 #### Idol Channels
+
 - **Creator (Idol)**: owner role - can send messages, manage permissions
 - **Members (Default)**: channel_readonly - cannot send messages
 - **Members (Granted)**: channel_member - can send messages after creator grants permission
 
 #### Community Channels
+
 - **Creator (Admin)**: owner role - can send messages, manage permissions
 - **Idols in Community**: channel_member - can send messages by default
 - **Regular Members (Default)**: channel_readonly - cannot send messages
@@ -456,11 +462,11 @@ client.queryChannels(
 
 ## Notifications
 
-| Event Type         | Handler                     |
-|--------------------|-----------------------------|
-| Messages           | GetStream realtime (no Knock) |
-| Channel creation   | Knock (push/email)          |
-| Special events     | Knock workflows             |
+| Event Type       | Handler                       |
+| ---------------- | ----------------------------- |
+| Messages         | GetStream realtime (no Knock) |
+| Channel creation | Knock (push/email)            |
+| Special events   | Knock workflows               |
 
 ---
 

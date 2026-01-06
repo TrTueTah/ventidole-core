@@ -19,13 +19,10 @@ async function seedMockData() {
     await prisma.productType.deleteMany();
     await prisma.shop.deleteMany();
     await prisma.socialAccount.deleteMany();
-    await prisma.chatMessage.deleteMany();
-    await prisma.chatParticipant.deleteMany();
-    await prisma.chatChannel.deleteMany();
     console.log('  ✅ Cleared existing data\n');
 
     console.log(
-      'ℹ️  Note: This script only seeds the database. Run "npx tsx scripts/seed-getstream.ts" afterward to sync to GetStream.\n',
+      'ℹ️  Note: This script only seeds the database. Run "npx tsx scripts/seed-getstream.ts" afterward to create chat channels in GetStream.\n',
     );
 
     // 1. Read existing data from database (created by seed_all.py)
@@ -60,140 +57,11 @@ async function seedMockData() {
     });
     console.log(`  ✅ Found ${followers.length} community follows\n`);
 
-    // 4. Create Chat Channels (in database only - GetStream sync is separate)
-    console.log('💬 Creating chat channels in database...');
-
-    // Map to store community -> channel ID mapping for later use
-    const communityChannelMap = new Map<string, string>();
-
-    let dbChannelsCreated = 0;
-
-    for (const community of communities) {
-      try {
-        // For community channels, use admin as the default creator
-        const creatorId = adminUser?.id;
-
-        if (!creatorId) {
-          console.log(`  ⚠️  Skipping ${community.name} - no admin user found`);
-          continue;
-        }
-
-        // Generate a unique channel ID
-        const channelId = `community_${community.id}`;
-
-        // Create channel in DATABASE
-        await prisma.chatChannel.create({
-          data: {
-            id: channelId,
-            type: 'messaging',
-            name: `${community.name} Community`,
-            image: community.avatarUrl,
-            description: `Official chat for ${community.name} community`,
-            idolId: creatorId,
-            communityId: community.id,
-            isCommunityChannel: true,
-            memberCount: 0, // Will be updated when adding participants
-          },
-        });
-        dbChannelsCreated++;
-
-        // Store the mapping for later use
-        communityChannelMap.set(community.id, channelId);
-
-        console.log(
-          `  ✅ Created channel: ${community.name} Community (${channelId})`,
-        );
-      } catch (error) {
-        console.log(
-          `    ⚠️  Warning: Could not create channel for ${community.name}`,
-        );
-        console.log(
-          `       Error: ${error instanceof Error ? error.message : String(error)}`,
-        );
-      }
-    }
-    console.log(`  ✅ Created ${dbChannelsCreated} channels in database\n`);
-
-    // 5. Add Chat Participants (to database only - GetStream sync is separate)
-    console.log('👤 Adding chat participants to database...');
-
-    let dbParticipantsCreated = 0;
-    const channelMemberMap = new Map<string, string[]>();
-
-    // Build member list for each channel
-    // Add all idols to their community channel as owners
-    for (const idol of idols) {
-      const channelId = communityChannelMap.get(idol.communityId!);
-      if (channelId) {
-        if (!channelMemberMap.has(channelId)) {
-          channelMemberMap.set(channelId, []);
-        }
-        channelMemberMap.get(channelId)!.push(idol.id);
-      }
-    }
-
-    // Add all followers to their community channel as members
-    for (const follower of followers) {
-      const channelId = communityChannelMap.get(follower.communityId);
-      if (channelId) {
-        if (!channelMemberMap.has(channelId)) {
-          channelMemberMap.set(channelId, []);
-        }
-        channelMemberMap.get(channelId)!.push(follower.userId);
-      }
-    }
-
-    // Add participants to database
-    for (const [channelId, memberIds] of Array.from(
-      channelMemberMap.entries(),
-    )) {
-      try {
-        // Get community ID from channel ID
-        const communityId = channelId.replace('community_', '');
-
-        // Add participants to DATABASE
-        const participantData = memberIds.map((userId) => {
-          // Check if this user is an idol in this community
-          const isIdol = idols.some(
-            (idol) =>
-              idol.id === userId && idol.communityId === communityId,
-          );
-
-          return {
-            channelId,
-            userId,
-            role: isIdol ? ('owner' as const) : ('member' as const),
-            canSendMessage: true,
-          };
-        });
-
-        await prisma.chatParticipant.createMany({
-          data: participantData,
-        });
-        dbParticipantsCreated += participantData.length;
-
-        // Update channel member count
-        await prisma.chatChannel.update({
-          where: { id: channelId },
-          data: { memberCount: memberIds.length },
-        });
-      } catch (error) {
-        console.log(
-          `    ⚠️  Warning: Could not add members to channel ${channelId}`,
-        );
-        console.log(
-          `       Error: ${error instanceof Error ? error.message : String(error)}`,
-        );
-      }
-    }
-
+    // 4. Note: Chat is handled entirely by GetStream
+    console.log('💬 Chat will be created in GetStream...');
     console.log(
-      `  ✅ Added ${dbParticipantsCreated} participants to database\n`,
+      '   ℹ️  Run "npx tsx scripts/seed-getstream.ts" to create channels in GetStream.\n',
     );
-
-    // 6. Note: Chat messages and GetStream sync are handled by separate script
-    console.log('💬 Chat channels and participants created in database.');
-    console.log('   ℹ️  Run "npx tsx scripts/seed-getstream.ts" to sync to GetStream and add messages.\n');
 
     // 7. Read Posts from database
     console.log('📝 Reading posts...');
@@ -633,8 +501,7 @@ async function seedMockData() {
     console.log(`   - ${fans.length} Fans`);
     console.log(`🏘️  Communities: ${communities.length}`);
     console.log(`💙 Community Follows: ${followers.length}`);
-    console.log(`💬 Chat Channels: ${dbChannelsCreated} in database`);
-    console.log(`👥 Chat Participants: ${dbParticipantsCreated} in database`);
+    console.log(`💬 Chat: Managed by GetStream (run seed-getstream.ts)`);
     console.log(`📝 Posts: ${posts.length} (with accurate counts)`);
     // Comments, likes, and views are managed by seed_all.py
     console.log(`🔗 Social Accounts: ${socialAccounts.length}`);
