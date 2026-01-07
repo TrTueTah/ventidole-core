@@ -13,6 +13,7 @@ import { StreamChannelDto } from './dto/channel.dto';
 import { CreateCommunityChannelDto } from './dto/create-community-channel.dto';
 import { CreateIdolChannelDto } from './dto/create-idol-channel.dto';
 import { CreateStreamUserDto } from './dto/create-user.dto';
+import { JoinChannelDto } from './dto/join-channel.dto';
 import { TokenDto } from './dto/token.dto';
 import { UserDto } from './dto/user.dto';
 import { StreamChatService } from './stream-chat.service';
@@ -125,6 +126,24 @@ export class StreamChatController {
       req.user.id,
       channelId,
       memberId,
+    );
+    return BaseResponse.of(result);
+  }
+
+  @Post('channels/join')
+  @ApiResponseCustom()
+  @ApiOperation({
+    summary: 'Join a chat channel',
+    description:
+      'Join a chat channel as a member. Users will be added with readonly permissions by default.',
+  })
+  async joinChannel(
+    @Req() req: IRequest,
+    @Body() request: JoinChannelDto,
+  ): Promise<BaseResponse<{ success: boolean; channelId: string }>> {
+    const result = await this.streamChatService.joinChannel(
+      req.user.id,
+      request.channelId,
     );
     return BaseResponse.of(result);
   }

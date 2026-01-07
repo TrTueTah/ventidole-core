@@ -3,9 +3,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
+import { Role } from 'src/db/prisma/enums';
 import { UpdateProfileResponseDto } from './dto/update-profile-response.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
+import { UserProfileDto } from './dto/user-profile.dto';
 import { UserDto } from './dto/user.dto';
 
 @Injectable()
@@ -187,6 +189,77 @@ export class UserService {
       avatarUrl: updatedUser.avatarUrl ?? undefined,
       backgroundUrl: updatedUser.backgroundUrl ?? undefined,
       bio: updatedUser.bio ?? undefined,
+    };
+  }
+
+  async getUserProfile(userId: string): Promise<UserProfileDto> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        id: userId,
+        isDeleted: false,
+        isActive: true,
+      },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        role: true,
+        avatarUrl: true,
+        backgroundUrl: true,
+        bio: true,
+        communityId: true,
+        isOnline: true,
+        createdAt: true,
+        updatedAt: true,
+        chatChannels: {
+          where: {
+            isDeleted: false,
+            isActive: true,
+            idolId: userId,
+          },
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            description: true,
+            memberCount: true,
+            lastMessageAt: true,
+          },
+          take: 1,
+        },
+      },
+    });
+
+    if (!user) {
+      throw new CustomError(ErrorCode.UserNotFound);
+    }
+
+    // Get the chat channel only if user is an idol and has a channel
+    const chatChannel =
+      user.role === Role.IDOL && user.chatChannels.length > 0
+        ? {
+            id: user.chatChannels[0].id,
+            name: user.chatChannels[0].name,
+            image: user.chatChannels[0].image ?? undefined,
+            description: user.chatChannels[0].description ?? undefined,
+            memberCount: user.chatChannels[0].memberCount,
+            lastMessageAt: user.chatChannels[0].lastMessageAt ?? undefined,
+          }
+        : undefined;
+
+    return {
+      id: user.id,
+      email: user.email,
+      username: user.username,
+      role: user.role,
+      avatarUrl: user.avatarUrl ?? undefined,
+      backgroundUrl: user.backgroundUrl ?? undefined,
+      bio: user.bio ?? undefined,
+      communityId: user.communityId ?? undefined,
+      isOnline: user.isOnline,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      chatChannel,
     };
   }
 }

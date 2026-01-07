@@ -164,6 +164,7 @@ async function seedGetStream() {
             community_id: community.id,
             is_community_channel: true,
             created_by_id: adminUser.id,
+            discoverable: true,
           } as Record<string, unknown>,
         );
 

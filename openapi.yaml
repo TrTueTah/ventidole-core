@@ -641,6 +641,56 @@ paths:
       security: *ref_1
       summary: Revoke send message permission from a member
       tags: *ref_2
+  /v1/stream-chat/channels/join:
+    post:
+      description: >-
+        Join a chat channel as a member. Users will be added with readonly
+        permissions by default.
+      operationId: StreamChatController_joinChannel_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JoinChannelDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_1
+      summary: Join a chat channel
+      tags: *ref_2
   /v1/webhooks/getstream:
     post:
       operationId: StreamChatWebhookController_handleWebhook_v1
@@ -1071,6 +1121,49 @@ paths:
         - bearer: []
       tags: &ref_7
         - User
+  /v1/user/profile/{userId}:
+    get:
+      operationId: UserController_getUserProfile_v1
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/UserProfileDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_6
+      tags: *ref_7
   /v1/user/status:
     patch:
       operationId: UserController_updateStatus_v1
@@ -1313,6 +1406,202 @@ paths:
           schema:
             example: 20
             type: number
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: *ref_8
+      tags: *ref_9
+  /v1/user/posts/user/{userId}:
+    get:
+      operationId: PostController_getPostsByUserId_v1
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: communityId
+          required: false
+          in: query
+          description: Filter posts by community ID
+          schema:
+            example: nestjs
+            type: string
+        - name: filter
+          required: false
+          in: query
+          description: Filter posts by user role
+          schema:
+            example: FAN
+            type: string
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PostDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: *ref_8
+      tags: *ref_9
+  /v1/user/posts/reactions/{userId}:
+    get:
+      operationId: PostController_getReactionPostsByUserId_v1
+      parameters:
+        - name: userId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: communityId
+          required: false
+          in: query
+          description: Filter posts by community ID
+          schema:
+            example: nestjs
+            type: string
+        - name: filter
+          required: false
+          in: query
+          description: Filter posts by user role
+          schema:
+            example: FAN
+            type: string
       responses:
         '200':
           description: Successful paginated response
@@ -5485,6 +5774,15 @@ components:
           example: https://example.com/image.jpg
       required:
         - name
+    JoinChannelDto:
+      type: object
+      properties:
+        channelId:
+          type: string
+          description: Channel ID to join
+          example: community_123_1234567890
+      required:
+        - channelId
     UploadFileResponse:
       type: object
       properties:
@@ -5634,6 +5932,67 @@ components:
         - email
         - username
         - role
+    ChatChannelDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        image:
+          type: string
+        description:
+          type: string
+        memberCount:
+          type: number
+        lastMessageAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - name
+        - memberCount
+    UserProfileDto:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        role:
+          type: string
+          enum:
+            - FAN
+            - ADMIN
+            - IDOL
+        avatarUrl:
+          type: string
+        backgroundUrl:
+          type: string
+        bio:
+          type: string
+        communityId:
+          type: string
+        isOnline:
+          type: boolean
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        chatChannel:
+          $ref: '#/components/schemas/ChatChannelDto'
+      required:
+        - id
+        - email
+        - username
+        - role
+        - isOnline
+        - createdAt
+        - updatedAt
     PostAuthorDto:
       type: object
       properties:
@@ -6019,6 +6378,10 @@ components:
           type: number
           description: Total number of members in the community
           example: 1250
+        chatChannel:
+          description: Community chat channel if exists
+          allOf:
+            - $ref: '#/components/schemas/ChatChannelDto'
       required:
         - id
         - name

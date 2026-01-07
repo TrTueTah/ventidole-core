@@ -814,4 +814,243 @@ export class PostService {
 
     return new PaginationResponse(posts, pageInfo);
   }
+
+  async getPostsByUserId(
+    targetUserId: string,
+    filters: GetPostsDto,
+    currentUserId?: string,
+  ): Promise<PaginationResponse<PostDto>> {
+    const { offset, limit, page } = filters;
+
+    // Build where clause to get posts by specific user
+    const whereClause: Record<string, unknown> = {
+      isDeleted: false,
+      isActive: true,
+      authorId: targetUserId,
+    };
+
+    const [rawPosts, total] = await Promise.all([
+      this.prisma.post.findMany({
+        where: whereClause,
+        select: {
+          id: true,
+          content: true,
+          mediaUrls: true,
+          authorId: true,
+          communityId: true,
+          author: {
+            select: {
+              id: true,
+              username: true,
+              avatarUrl: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+              comments: true,
+              views: true,
+            },
+          },
+          createdAt: true,
+          updatedAt: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        skip: offset,
+        take: limit,
+      }),
+      this.prisma.post.count({
+        where: whereClause,
+      }),
+    ]);
+
+    // Get like status for each post if currentUserId is provided
+    let likedPostIds: Set<string> = new Set();
+    if (currentUserId && rawPosts.length > 0) {
+      const likes = await this.prisma.postLike.findMany({
+        where: {
+          userId: currentUserId,
+          postId: {
+            in: rawPosts.map((post) => post.id),
+          },
+        },
+        select: {
+          postId: true,
+        },
+      });
+      likedPostIds = new Set(likes.map((like) => like.postId));
+    }
+
+    // Transform mediaUrls from JSON to array and add isLiked status
+    const posts = rawPosts.map((post) => {
+      let mediaUrls: string[] | null = null;
+
+      if (post.mediaUrls) {
+        if (Array.isArray(post.mediaUrls)) {
+          mediaUrls = post.mediaUrls.every((item) => typeof item === 'string')
+            ? (post.mediaUrls as string[])
+            : null;
+        } else if (typeof post.mediaUrls === 'string') {
+          try {
+            const parsed = JSON.parse(post.mediaUrls);
+            mediaUrls = Array.isArray(parsed) ? parsed : null;
+          } catch {
+            mediaUrls = null;
+          }
+        } else if (typeof post.mediaUrls === 'object') {
+          const values = Object.values(post.mediaUrls);
+          mediaUrls = values.every((v) => typeof v === 'string')
+            ? values
+            : null;
+        }
+      }
+
+      return {
+        id: post.id,
+        content: post.content,
+        mediaUrls,
+        likeCount: post._count.likes,
+        commentCount: post._count.comments,
+        viewCount: post._count.views,
+        isLiked: likedPostIds.has(post.id),
+        authorId: post.authorId,
+        communityId: post.communityId,
+        author: post.author,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      };
+    });
+
+    const pageInfo = new PageInfo(page, limit, total);
+
+    return new PaginationResponse(posts, pageInfo);
+  }
+
+  async getReactionPostsByUserId(
+    targetUserId: string,
+    filters: GetPostsDto,
+    currentUserId?: string,
+  ): Promise<PaginationResponse<PostDto>> {
+    const { offset, limit, page } = filters;
+
+    // Get posts that the user has liked
+    const [likedPosts, total] = await Promise.all([
+      this.prisma.postLike.findMany({
+        where: {
+          userId: targetUserId,
+          post: {
+            isDeleted: false,
+            isActive: true,
+          },
+        },
+        select: {
+          post: {
+            select: {
+              id: true,
+              content: true,
+              mediaUrls: true,
+              authorId: true,
+              communityId: true,
+              author: {
+                select: {
+                  id: true,
+                  username: true,
+                  avatarUrl: true,
+                },
+              },
+              _count: {
+                select: {
+                  likes: true,
+                  comments: true,
+                  views: true,
+                },
+              },
+              createdAt: true,
+              updatedAt: true,
+            },
+          },
+          createdAt: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        skip: offset,
+        take: limit,
+      }),
+      this.prisma.postLike.count({
+        where: {
+          userId: targetUserId,
+          post: {
+            isDeleted: false,
+            isActive: true,
+          },
+        },
+      }),
+    ]);
+
+    const rawPosts = likedPosts.map((like) => like.post);
+
+    // Get like status for each post if currentUserId is provided
+    let likedPostIds: Set<string> = new Set();
+    if (currentUserId && rawPosts.length > 0) {
+      const likes = await this.prisma.postLike.findMany({
+        where: {
+          userId: currentUserId,
+          postId: {
+            in: rawPosts.map((post) => post.id),
+          },
+        },
+        select: {
+          postId: true,
+        },
+      });
+      likedPostIds = new Set(likes.map((like) => like.postId));
+    }
+
+    // Transform mediaUrls from JSON to array and add isLiked status
+    const posts = rawPosts.map((post) => {
+      let mediaUrls: string[] | null = null;
+
+      if (post.mediaUrls) {
+        if (Array.isArray(post.mediaUrls)) {
+          mediaUrls = post.mediaUrls.every((item) => typeof item === 'string')
+            ? (post.mediaUrls as string[])
+            : null;
+        } else if (typeof post.mediaUrls === 'string') {
+          try {
+            const parsed = JSON.parse(post.mediaUrls);
+            mediaUrls = Array.isArray(parsed) ? parsed : null;
+          } catch {
+            mediaUrls = null;
+          }
+        } else if (typeof post.mediaUrls === 'object') {
+          const values = Object.values(post.mediaUrls);
+          mediaUrls = values.every((v) => typeof v === 'string')
+            ? values
+            : null;
+        }
+      }
+
+      return {
+        id: post.id,
+        content: post.content,
+        mediaUrls,
+        likeCount: post._count.likes,
+        commentCount: post._count.comments,
+        viewCount: post._count.views,
+        isLiked: likedPostIds.has(post.id),
+        authorId: post.authorId,
+        communityId: post.communityId,
+        author: post.author,
+        createdAt: post.createdAt,
+        updatedAt: post.updatedAt,
+      };
+    });
+
+    const pageInfo = new PageInfo(page, limit, total);
+
+    return new PaginationResponse(posts, pageInfo);
+  }
 }

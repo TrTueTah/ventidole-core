@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ChatChannelDto } from '../../dto/chat-channel.dto';
 import { CommunityDto } from './community.dto';
 
 export class IdolDto {
@@ -37,4 +38,10 @@ export class CommunityDetailDto extends CommunityDto {
     example: 1250,
   })
   totalMember: number;
+
+  @ApiPropertyOptional({
+    type: ChatChannelDto,
+    description: 'Community chat channel if exists',
+  })
+  chatChannel?: ChatChannelDto;
 }

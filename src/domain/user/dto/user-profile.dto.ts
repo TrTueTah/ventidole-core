@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from 'src/db/prisma/enums';
+import { ChatChannelDto } from './chat-channel.dto';
 
-export class UserDto {
+export class UserProfileDto {
   @ApiProperty()
   id: string;
 
@@ -34,4 +35,7 @@ export class UserDto {
 
   @ApiProperty()
   updatedAt: Date;
+
+  @ApiProperty({ required: false, type: ChatChannelDto })
+  chatChannel?: ChatChannelDto;
 }

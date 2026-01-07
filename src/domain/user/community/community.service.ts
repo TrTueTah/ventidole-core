@@ -1,4 +1,5 @@
 import getStreamChatClient from '@core/config/stream-chat.config';
+import { StreamChatService } from '@domain/stream-chat/stream-chat.service';
 import { Injectable, Logger } from '@nestjs/common';
 import { PaginationDto } from '@shared/dto/pagination-request.dto';
 import {
@@ -23,6 +24,7 @@ export class CommunityService {
     private readonly prisma: PrismaService,
     private readonly knockWorkflowService: KnockWorkflowService,
     private readonly getStreamNotificationService: GetStreamNotificationService,
+    private readonly streamChatService: StreamChatService,
   ) {}
 
   async getAllCommunities(
@@ -242,6 +244,9 @@ export class CommunityService {
     // Add fan to community channels in GetStream
     await this.addFanToCommunityChannels(userId, communityId);
 
+    // Join community chat channel
+    await this.joinCommunityChatChannel(userId, communityId);
+
     // Notify idol(s) about new follower
     if (community.idols && community.idols.length > 0) {
       await this.notifyIdolsAboutNewFollower(community.idols, fan, community);
@@ -346,6 +351,14 @@ export class CommunityService {
       this.addFanToCommunityChannels(userId, community.id).catch((error) => {
         this.logger.error(
           `Error adding fan to channels for community ${community.id}:`,
+          error.message,
+        );
+      });
+
+      // Join community chat channel (don't await - let it run async)
+      this.joinCommunityChatChannel(userId, community.id).catch((error) => {
+        this.logger.error(
+          `Error joining community chat channel for community ${community.id}:`,
           error.message,
         );
       });
@@ -460,7 +473,7 @@ export class CommunityService {
           fan: {
             id: fan.id,
             name: fan.username,
-            avatar: fan.avatarUrl,
+            avatar: fan.avatarUrl ?? undefined,
           },
           communityId: community.id,
           communityName: community.name,
@@ -515,6 +528,14 @@ export class CommunityService {
     await this.prisma.communityFollower.delete({
       where: { id: follower.id, userId: userId },
     });
+
+    this.logger.log(`User ${userId} left community ${communityId}`);
+
+    // Remove fan from community channels in GetStream
+    await this.removeFanFromCommunityChannels(userId, communityId);
+
+    // Leave community chat channel
+    await this.leaveCommunityChatChannel(userId, communityId);
   }
 
   async getDetailCommunity(
@@ -563,6 +584,10 @@ export class CommunityService {
       throw new CustomError(ErrorCode.CommunityNotFound);
     }
 
+    // Fetch channel information from GetStream
+    const channelId = `community_${communityId}`;
+    const chatChannel = await this.streamChatService.getChannelInfo(channelId);
+
     return {
       id: community.id,
       name: community.name,
@@ -574,6 +599,135 @@ export class CommunityService {
       isJoined: community.followers.some((f) => f.userId === userId),
       totalMember: community.followers.length,
       idols: community.idols,
+      chatChannel: chatChannel ?? undefined,
     };
+  }
+
+  /**
+   * Join community chat channel
+   */
+  private async joinCommunityChatChannel(
+    userId: string,
+    communityId: string,
+  ): Promise<void> {
+    try {
+      // Generate the community channel ID
+      const channelId = `community_${communityId}`;
+
+      // Use StreamChatService to join the channel
+      await this.streamChatService.joinChannel(userId, channelId);
+
+      this.logger.log(
+        `User ${userId} joined community chat channel ${channelId}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Error joining community chat channel for user ${userId}:`,
+        error.message,
+      );
+      // Don't throw - channel join failure shouldn't block community join
+    }
+  }
+
+  /**
+   * Leave community chat channel
+   */
+  private async leaveCommunityChatChannel(
+    userId: string,
+    communityId: string,
+  ): Promise<void> {
+    try {
+      // Generate the community channel ID
+      const channelId = `community_${communityId}`;
+
+      // Use GetStream client to remove member from channel
+      const streamChatClient = getStreamChatClient();
+      const channel = streamChatClient.channel('messaging', channelId);
+
+      // Remove user from channel
+      await channel.removeMembers([userId]);
+
+      this.logger.log(
+        `User ${userId} left community chat channel ${channelId}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Error leaving community chat channel for user ${userId}:`,
+        error.message,
+      );
+      // Don't throw - channel leave failure shouldn't block community leave
+    }
+  }
+
+  /**
+   * Remove fan from all community channels in GetStream
+   */
+  private async removeFanFromCommunityChannels(
+    fanId: string,
+    communityId: string,
+  ): Promise<void> {
+    try {
+      // Get all community channels
+      const communityChannels = await this.prisma.chatChannel.findMany({
+        where: {
+          communityId,
+          isCommunityChannel: true,
+          isDeleted: false,
+        },
+        select: {
+          id: true,
+          type: true,
+          name: true,
+        },
+      });
+
+      if (communityChannels.length === 0) {
+        this.logger.log(
+          `No community channels found for community ${communityId}`,
+        );
+        return;
+      }
+
+      // Remove fan from each channel in GetStream and database
+      const streamChatClient = getStreamChatClient();
+
+      for (const channel of communityChannels) {
+        try {
+          // Remove from GetStream
+          const streamChannel = streamChatClient.channel(
+            channel.type,
+            channel.id,
+          );
+          await streamChannel.removeMembers([fanId]);
+
+          // Remove from database (soft delete)
+          await this.prisma.chatParticipant.updateMany({
+            where: {
+              channelId: channel.id,
+              userId: fanId,
+            },
+            data: {
+              isDeleted: true,
+            },
+          });
+
+          this.logger.log(
+            `Removed fan ${fanId} from community channel ${channel.id}`,
+          );
+        } catch (error) {
+          this.logger.error(
+            `Error removing fan from channel ${channel.id}:`,
+            error.message,
+          );
+          // Continue with other channels even if one fails
+        }
+      }
+    } catch (error) {
+      this.logger.error(
+        `Error removing fan from community channels:`,
+        error.message,
+      );
+      // Don't throw - channel removal failure shouldn't block community leave
+    }
   }
 }

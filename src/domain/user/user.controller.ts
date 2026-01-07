@@ -2,7 +2,7 @@ import {
   ApiExtraModelsCustom,
   ApiResponseCustom,
 } from '@core/decorator/doc.decorator';
-import { Body, Controller, Get, Patch, Req } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ApiVersion } from '@shared/enum/api-version.enum';
 import { BaseResponse } from '@shared/helper/response';
@@ -10,6 +10,7 @@ import { IRequest } from '@shared/interface/request.interface';
 import { UpdateProfileResponseDto } from './dto/update-profile-response.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UpdateStatusDto } from './dto/update-status.dto';
+import { UserProfileDto } from './dto/user-profile.dto';
 import { UserDto } from './dto/user.dto';
 import { UserService } from './user.service';
 
@@ -21,6 +22,7 @@ import { UserService } from './user.service';
   UpdateStatusDto,
   UpdateProfileDto,
   UpdateProfileResponseDto,
+  UserProfileDto,
 )
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -29,6 +31,15 @@ export class UserController {
   @ApiResponseCustom(UserDto)
   async getCurrentUser(@Req() req: IRequest): Promise<BaseResponse<UserDto>> {
     const result = await this.userService.getCurrentUser(req.user.id);
+    return BaseResponse.of(result);
+  }
+
+  @Get('profile/:userId')
+  @ApiResponseCustom(UserProfileDto)
+  async getUserProfile(
+    @Param('userId') userId: string,
+  ): Promise<BaseResponse<UserProfileDto>> {
+    const result = await this.userService.getUserProfile(userId);
     return BaseResponse.of(result);
   }
 

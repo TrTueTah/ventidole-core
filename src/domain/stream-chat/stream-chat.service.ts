@@ -7,8 +7,8 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { Role } from '@prisma/client';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
+import { Role } from 'src/db/prisma/enums';
 import { CreateCommunityChannelDto } from './dto/create-community-channel.dto';
 import { CreateIdolChannelDto } from './dto/create-idol-channel.dto';
 import { CreateStreamUserDto } from './dto/create-user.dto';
@@ -131,8 +131,10 @@ export class StreamChatService {
 
       await channel.create();
 
-      // Add admin as owner
-      await channel.addMembers([{ user_id: adminId, role: 'owner' }]);
+      // Add admin as owner with send permission
+      await channel.addMembers([
+        { user_id: adminId, role: 'owner', channel_role: 'channel_member' },
+      ]);
 
       // Add all idols from the community with send permission (channel_member role)
       if (communityIdols.length > 0) {
@@ -186,7 +188,9 @@ export class StreamChatService {
       await channel.create();
 
       // Add idol as owner with full permissions
-      await channel.addMembers([{ user_id: idolId, role: 'owner' }]);
+      await channel.addMembers([
+        { user_id: idolId, role: 'owner', channel_role: 'moderator_member' },
+      ]);
 
       this.logger.log(`Created idol channel ${channelId} for idol ${idolId}`);
 
@@ -325,6 +329,72 @@ export class StreamChatService {
     } catch (error) {
       this.logger.error(
         `Error revoking send permission from ${memberId} in channel ${channelId}:`,
+        error,
+      );
+      throw error;
+    }
+  }
+
+  /**
+   * Get channel information from GetStream
+   */
+  async getChannelInfo(channelId: string) {
+    try {
+      const streamChatClient = getStreamChatClient();
+      const channel = streamChatClient.channel('messaging', channelId);
+
+      // Fetch channel data
+      await channel.watch();
+
+      const channelData: any = channel.data;
+
+      return {
+        id: channelData?.id || channelId,
+        name: channelData?.name,
+        image: channelData?.image,
+        description: channelData?.description,
+        memberCount: channelData?.member_count || 0,
+        lastMessageAt: channelData?.last_message_at
+          ? new Date(channelData.last_message_at)
+          : undefined,
+      };
+    } catch (error) {
+      this.logger.error(`Error fetching channel info for ${channelId}:`, error);
+      // Return null if channel doesn't exist
+      return null;
+    }
+  }
+
+  /**
+   * Join a chat channel
+   * Users will be added with readonly permissions by default (channel_readonly)
+   * This is a server-side operation that bypasses client-side permission restrictions
+   */
+  async joinChannel(userId: string, channelId: string) {
+    try {
+      const streamChatClient = getStreamChatClient();
+      const channel = streamChatClient.channel('messaging', channelId);
+
+      // Verify channel exists
+      await channel.watch();
+
+      // Add user as member with readonly permission by default
+      await channel.addMembers([
+        {
+          user_id: userId,
+          channel_role: 'default_member',
+        },
+      ]);
+
+      this.logger.log(`User ${userId} joined channel ${channelId}`);
+
+      return {
+        success: true,
+        channelId,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Error adding user ${userId} to channel ${channelId}:`,
         error,
       );
       throw error;

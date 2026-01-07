@@ -58,6 +58,36 @@ export class PostController {
     return result;
   }
 
+  @Get('user/:userId')
+  @ApiPaginationResponse(PostDto)
+  async getPostsByUserId(
+    @Req() req: IRequest,
+    @Param('userId') userId: string,
+    @Query() pagination: GetPostsDto,
+  ): Promise<PaginationResponse<PostDto>> {
+    const result = await this.postService.getPostsByUserId(
+      userId,
+      pagination,
+      req.user?.id,
+    );
+    return result;
+  }
+
+  @Get('reactions/:userId')
+  @ApiPaginationResponse(PostDto)
+  async getReactionPostsByUserId(
+    @Req() req: IRequest,
+    @Param('userId') userId: string,
+    @Query() pagination: GetPostsDto,
+  ): Promise<PaginationResponse<PostDto>> {
+    const result = await this.postService.getReactionPostsByUserId(
+      userId,
+      pagination,
+      req.user?.id,
+    );
+    return result;
+  }
+
   @Get(':id')
   @ApiResponseCustom(PostDetailDto)
   async getPostById(
