@@ -77,6 +77,11 @@ export type PostLike = Prisma.PostLikeModel
  */
 export type PostView = Prisma.PostViewModel
 /**
+ * Model PostReport
+ * 
+ */
+export type PostReport = Prisma.PostReportModel
+/**
  * Model Shop
  * 
  */

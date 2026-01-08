@@ -12,6 +12,13 @@ export class PostAuthorDto {
     description: 'Author avatar URL',
   })
   avatarUrl?: string;
+
+  @ApiProperty({
+    example: 'FAN',
+    description: 'Author role',
+    enum: ['FAN', 'ADMIN', 'IDOL'],
+  })
+  role: string;
 }
 
 export class PostDto {

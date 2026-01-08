@@ -41,6 +41,7 @@ export enum ErrorCode {
   IdolNotFound = 'IdolNotFound',
   PostNotFound = 'PostNotFound',
   PostNotOwned = 'PostNotOwned',
+  PostAlreadyReported = 'PostAlreadyReported',
   CommentNotFound = 'CommentNotFound',
   CommentNotOwned = 'CommentNotOwned',
   CommentNotBelongToPost = 'CommentNotBelongToPost',
@@ -67,6 +68,8 @@ export enum ErrorCode {
   KnockFcmTokenRegistrationFailed = 'KnockFcmTokenRegistrationFailed',
   InvalidFcmToken = 'InvalidFcmToken',
   UserNotFound = 'UserNotFound',
+  // Address
+  AddressNotFound = 'AddressNotFound',
   // Order & Payment
   OrderNotFound = 'OrderNotFound',
   OrderAccessDenied = 'OrderAccessDenied',

@@ -19,10 +19,12 @@ import { PaginationResponse } from '@shared/dto/pagination-response.dto';
 import { ApiVersion } from '@shared/enum/api-version.enum';
 import { BaseResponse } from '@shared/helper/response';
 import { IRequest } from '@shared/interface/request.interface';
+import { CreatePostReportDto } from './dto/create-post-report.dto';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsDto } from './dto/get-posts.dto';
 import { GetRecommendationsDto } from './dto/get-recommendations.dto';
 import { PostDetailDto } from './dto/post-detail.dto';
+import { PostReportDto } from './dto/post-report.dto';
 import { PostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostService } from './post.service';
@@ -30,7 +32,13 @@ import { PostService } from './post.service';
 @ApiBearerAuth()
 @ApiTags('User Posts')
 @Controller({ path: 'user/posts', version: ApiVersion.V1 })
-@ApiExtraModelsCustom(PostDto, CreatePostDto, UpdatePostDto, PostDetailDto)
+@ApiExtraModelsCustom(
+  PostDto,
+  CreatePostDto,
+  UpdatePostDto,
+  PostDetailDto,
+  PostReportDto,
+)
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
@@ -154,5 +162,15 @@ export class PostController {
   ): Promise<BaseResponse<null>> {
     await this.postService.viewPost(req.user.id, id);
     return BaseResponse.ok();
+  }
+
+  @Post('report')
+  @ApiResponseCustom(PostReportDto)
+  async reportPost(
+    @Req() req: IRequest,
+    @Body() data: CreatePostReportDto,
+  ): Promise<BaseResponse<PostReportDto>> {
+    const result = await this.postService.reportPost(req.user.id, data);
+    return BaseResponse.of(result);
   }
 }

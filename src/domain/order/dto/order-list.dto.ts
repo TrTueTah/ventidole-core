@@ -1,6 +1,38 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { OrderStatus, PaymentMethod } from 'src/db/prisma/enums';
 
+export class ShippingAddressDto {
+  @ApiProperty({ description: 'Address ID' })
+  id: string;
+
+  @ApiProperty({ description: 'First name' })
+  firstName: string;
+
+  @ApiProperty({ description: 'Last name' })
+  lastName: string;
+
+  @ApiProperty({ description: 'Phone number' })
+  phoneNumber: string;
+
+  @ApiProperty({ description: 'Province code' })
+  provinceCode: number;
+
+  @ApiProperty({ description: 'Province name' })
+  provinceName: string;
+
+  @ApiProperty({ description: 'District code' })
+  districtCode: number;
+
+  @ApiProperty({ description: 'District name' })
+  districtName: string;
+
+  @ApiProperty({ description: 'Detail address' })
+  detailAddress: string;
+
+  @ApiProperty({ description: 'Is default address' })
+  isDefaultAddress: boolean;
+}
+
 export class OrderItemListDto {
   @ApiProperty({ description: 'Order item ID' })
   id: string;
@@ -69,8 +101,8 @@ export class OrderDetailDto {
   @ApiProperty({ description: 'Payment method', enum: PaymentMethod })
   paymentMethod: PaymentMethod;
 
-  @ApiProperty({ description: 'Shipping address' })
-  shippingAddress: any;
+  @ApiProperty({ description: 'Shipping address', type: ShippingAddressDto })
+  shippingAddress: ShippingAddressDto;
 
   @ApiProperty({ description: 'Order items', type: [OrderItemListDto] })
   items: OrderItemListDto[];

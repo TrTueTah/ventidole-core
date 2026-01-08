@@ -41,6 +41,7 @@ model User {
   comments            Comment[]
   postLikes           PostLike[]
   postViews           PostView[]
+  postReports         PostReport[]    @relation("PostReporter")
   shops               Shop[]
   carts               Cart[]
   orders              Order[]
@@ -241,6 +242,7 @@ model Post {
   likes    PostLike[]
   comments Comment[]
   views    PostView[]
+  reports  PostReport[]
 
   @@index([authorId])
   @@index([communityId])
@@ -317,6 +319,29 @@ model PostView {
   @@index([userId])
   @@index([postId])
   @@map("post_view")
+}
+
+model PostReport {
+  id         String    @id @default(cuid())
+  isActive   Boolean   @default(true)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  version    Int       @default(0)
+  isDeleted  Boolean   @default(false) @map("is_deleted")
+  deletedAt  DateTime? @map("deleted_at")
+  metadata   Json?
+  reason     String?   @db.Text
+
+  postId     String @map("postId")
+  post       Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  reportedBy String @map("reportedBy")
+  reporter   User   @relation("PostReporter", fields: [reportedBy], references: [id], onDelete: Cascade)
+
+  @@unique([postId, reportedBy])
+  @@index([reportedBy])
+  @@index([postId])
+  @@map("post_report")
 }
 
 enum Role {

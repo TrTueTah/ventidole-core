@@ -60,6 +60,7 @@ export const ModelName = {
   Comment: 'Comment',
   PostLike: 'PostLike',
   PostView: 'PostView',
+  PostReport: 'PostReport',
   Shop: 'Shop',
   ProductType: 'ProductType',
   Product: 'Product',
@@ -318,6 +319,23 @@ export const PostViewScalarFieldEnum = {
 } as const
 
 export type PostViewScalarFieldEnum = (typeof PostViewScalarFieldEnum)[keyof typeof PostViewScalarFieldEnum]
+
+
+export const PostReportScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
+  metadata: 'metadata',
+  reason: 'reason',
+  postId: 'postId',
+  reportedBy: 'reportedBy'
+} as const
+
+export type PostReportScalarFieldEnum = (typeof PostReportScalarFieldEnum)[keyof typeof PostReportScalarFieldEnum]
 
 
 export const ShopScalarFieldEnum = {

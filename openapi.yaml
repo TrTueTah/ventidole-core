@@ -1890,6 +1890,50 @@ paths:
                   - message
       security: *ref_8
       tags: *ref_9
+  /v1/user/posts/report:
+    post:
+      operationId: PostController_reportPost_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePostReportDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/PostReportDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_8
+      tags: *ref_9
   /v1/user/comment/{postId}:
     get:
       operationId: CommentController_getCommentsByPostId_v1
@@ -4810,6 +4854,489 @@ paths:
                   - message
       security: *ref_26
       tags: *ref_27
+  /v1/admin/post:
+    get:
+      operationId: AdminPostController_getAllPosts_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Search by post content
+          schema:
+            example: content
+            type: string
+        - name: isActive
+          required: false
+          in: query
+          description: Filter by active status
+          schema:
+            example: 'true'
+            type: string
+        - name: authorId
+          required: false
+          in: query
+          description: Filter by author ID
+          schema:
+            example: clxxxxxxx
+            type: string
+        - name: communityId
+          required: false
+          in: query
+          description: Filter by community ID
+          schema:
+            example: clxxxxxxx
+            type: string
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            example: createdAt
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+              - likeCount
+              - commentCount
+              - viewCount
+        - name: sortOrder
+          required: false
+          in: query
+          description: Sort order
+          schema:
+            example: desc
+            type: string
+            enum:
+              - asc
+              - desc
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AdminPostDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: &ref_28
+        - bearer: []
+      tags: &ref_29
+        - Admin Post Management
+    post:
+      operationId: AdminPostController_createPost_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreatePostDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AdminPostDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_28
+      tags: *ref_29
+  /v1/admin/post/reported:
+    get:
+      operationId: AdminPostController_getReportedPosts_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Search by post content
+          schema:
+            example: content
+            type: string
+        - name: isActive
+          required: false
+          in: query
+          description: Filter by active status
+          schema:
+            example: 'true'
+            type: string
+        - name: authorId
+          required: false
+          in: query
+          description: Filter by author ID
+          schema:
+            example: clxxxxxxx
+            type: string
+        - name: communityId
+          required: false
+          in: query
+          description: Filter by community ID
+          schema:
+            example: clxxxxxxx
+            type: string
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            example: createdAt
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+              - likeCount
+              - commentCount
+              - viewCount
+        - name: sortOrder
+          required: false
+          in: query
+          description: Sort order
+          schema:
+            example: desc
+            type: string
+            enum:
+              - asc
+              - desc
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReportedPostDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: *ref_28
+      tags: *ref_29
+  /v1/admin/post/{id}:
+    get:
+      operationId: AdminPostController_getPostById_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AdminPostDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_28
+      tags: *ref_29
+    patch:
+      operationId: AdminPostController_updatePost_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminUpdatePostDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AdminPostDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_28
+      tags: *ref_29
+    delete:
+      operationId: AdminPostController_deletePost_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_28
+      tags: *ref_29
+  /v1/admin/post/{id}/ban:
+    patch:
+      operationId: AdminPostController_banPost_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AdminPostDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_28
+      tags: *ref_29
   /v1/orders/confirm:
     post:
       description: >-
@@ -4856,10 +5383,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_28
+      security: &ref_30
         - bearer: []
       summary: Confirm order and create payment
-      tags: &ref_29
+      tags: &ref_31
         - Orders
   /v1/orders/{orderId}/retry-payment:
     post:
@@ -4905,9 +5432,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
+      security: *ref_30
       summary: Retry payment for PENDING_PAYMENT order
-      tags: *ref_29
+      tags: *ref_31
   /v1/orders:
     get:
       description: >-
@@ -5002,9 +5529,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_28
+      security: *ref_30
       summary: Get user orders
-      tags: *ref_29
+      tags: *ref_31
   /v1/orders/{orderId}/details:
     get:
       description: >-
@@ -5049,9 +5576,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
+      security: *ref_30
       summary: Get order details
-      tags: *ref_29
+      tags: *ref_31
   /v1/orders/{orderId}:
     get:
       description: >-
@@ -5096,9 +5623,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
+      security: *ref_30
       summary: Get order status
-      tags: *ref_29
+      tags: *ref_31
   /webhooks/payos:
     post:
       description: >-
@@ -5157,10 +5684,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_30
+      security: &ref_32
         - bearer: []
       summary: Generate Knock authentication token for client SDK
-      tags: &ref_31
+      tags: &ref_33
         - Knock Notifications
   /v1/knock/fcm-token:
     post:
@@ -5207,9 +5734,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_30
+      security: *ref_32
       summary: Register FCM token for push notifications
-      tags: *ref_31
+      tags: *ref_33
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -5343,6 +5870,7 @@ components:
             - IdolNotFound
             - PostNotFound
             - PostNotOwned
+            - PostAlreadyReported
             - CommentNotFound
             - CommentNotOwned
             - CommentNotBelongToPost
@@ -5369,6 +5897,7 @@ components:
             - KnockFcmTokenRegistrationFailed
             - InvalidFcmToken
             - UserNotFound
+            - AddressNotFound
             - OrderNotFound
             - OrderAccessDenied
             - OrderInvalidStatus
@@ -5624,7 +6153,7 @@ components:
           type: string
           example: USER
           description: User role
-          enum: &ref_33
+          enum: &ref_35
             - FAN
             - ADMIN
             - IDOL
@@ -6008,9 +6537,18 @@ components:
           type: string
           example: https://example.com/avatar.jpg
           description: Author avatar URL
+        role:
+          type: string
+          example: FAN
+          description: Author role
+          enum:
+            - FAN
+            - ADMIN
+            - IDOL
       required:
         - id
         - username
+        - role
     PostDto:
       type: object
       properties:
@@ -6023,7 +6561,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: &ref_32
+          example: &ref_34
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
             - >-
@@ -6136,7 +6674,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: *ref_32
+          example: *ref_34
           description: Array of media URLs
           nullable: true
           type: array
@@ -6192,9 +6730,51 @@ components:
         - communityId
         - createdAt
         - updatedAt
+    PostReportDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier of the report
+          example: clx1234567890abcdefgh
+        postId:
+          type: string
+          description: ID of the reported post
+          example: clx0987654321zyxwvuts
+        reportedBy:
+          type: string
+          description: ID of the user who reported the post
+          example: clx1111222233334444
+        reason:
+          type: string
+          description: Reason for reporting the post
+          example: This post contains inappropriate content
+        createdAt:
+          format: date-time
+          type: string
+          description: Timestamp when the report was created
+          example: '2024-01-07T10:30:00Z'
+      required:
+        - id
+        - postId
+        - reportedBy
+        - createdAt
     PageInfo:
       type: object
       properties: {}
+    CreatePostReportDto:
+      type: object
+      properties:
+        postId:
+          type: string
+          description: ID of the post being reported
+          example: clx1234567890abcdefgh
+        reason:
+          type: string
+          description: Reason for reporting the post
+          example: This post contains inappropriate content
+      required:
+        - postId
     CommentDto:
       type: object
       properties:
@@ -7147,7 +7727,7 @@ components:
           type: string
           example: USER
           description: User role
-          enum: *ref_33
+          enum: *ref_35
         avatarUrl:
           type: object
           example: https://example.com/avatar.jpg
@@ -8075,8 +8655,9 @@ components:
             - CREDIT
             - COD
         shippingAddress:
-          type: object
           description: Shipping address
+          allOf:
+            - $ref: '#/components/schemas/ShippingAddressDto'
         items:
           description: Order items
           type: array
@@ -8231,6 +8812,294 @@ components:
           description: Optional note about status change
       required:
         - status
+    AdminPostDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Post ID
+        content:
+          type: string
+          example: This is a post content
+          description: Post content
+        mediaUrls:
+          type: object
+          example:
+            - https://example.com/image1.jpg
+            - https://example.com/image2.jpg
+          description: Post media URLs
+        likeCount:
+          type: number
+          example: 100
+          description: Number of likes
+        commentCount:
+          type: number
+          example: 50
+          description: Number of comments
+        viewCount:
+          type: number
+          example: 200
+          description: Number of views
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the post is active
+        authorId:
+          type: string
+          example: clxxxxxxx
+          description: Author ID
+        authorName:
+          type: string
+          example: John Doe
+          description: Author name
+        authorAvatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Author avatar URL
+        communityId:
+          type: string
+          example: clxxxxxxx
+          description: Community ID
+        communityName:
+          type: string
+          example: K-Pop Fans Community
+          description: Community name
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Last update timestamp
+      required:
+        - id
+        - content
+        - likeCount
+        - commentCount
+        - viewCount
+        - isActive
+        - authorId
+        - authorName
+        - communityId
+        - communityName
+        - createdAt
+        - updatedAt
+    AdminPostDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Post ID
+        content:
+          type: string
+          example: This is a post content
+          description: Post content
+        mediaUrls:
+          type: object
+          example:
+            - https://example.com/image1.jpg
+            - https://example.com/image2.jpg
+          description: Post media URLs
+        likeCount:
+          type: number
+          example: 100
+          description: Number of likes
+        commentCount:
+          type: number
+          example: 50
+          description: Number of comments
+        viewCount:
+          type: number
+          example: 200
+          description: Number of views
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the post is active
+        metadata:
+          type: object
+          example: {}
+          description: Post metadata
+        author:
+          type: object
+          example:
+            id: clxxxxxxx
+            username: johndoe
+            avatarUrl: https://example.com/avatar.jpg
+          description: Post author information
+        community:
+          type: object
+          example:
+            id: clxxxxxxx
+            name: K-Pop Fans Community
+            avatarUrl: https://example.com/avatar.jpg
+          description: Community information
+        reports:
+          example:
+            - id: clxxxxxxx
+              reason: Inappropriate content
+              reportedBy: clxxxxxxx
+              reporterName: janedoe
+              createdAt: '2024-01-01T00:00:00.000Z'
+          description: List of reports for this post
+          type: array
+          items:
+            type: string
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Last update timestamp
+      required:
+        - id
+        - content
+        - likeCount
+        - commentCount
+        - viewCount
+        - isActive
+        - author
+        - community
+        - reports
+        - createdAt
+        - updatedAt
+    AdminCreatePostDto:
+      type: object
+      properties:
+        content:
+          type: string
+          example: This is a post content
+          description: Post content
+        mediaUrls:
+          type: object
+          example:
+            - https://example.com/image1.jpg
+            - https://example.com/image2.jpg
+          description: Post media URLs
+        authorId:
+          type: string
+          example: clxxxxxxx
+          description: Author ID
+        communityId:
+          type: string
+          example: clxxxxxxx
+          description: Community ID
+        metadata:
+          type: object
+          example: {}
+          description: Post metadata
+      required:
+        - content
+        - authorId
+        - communityId
+    AdminUpdatePostDto:
+      type: object
+      properties:
+        content:
+          type: string
+          example: Updated post content
+          description: Post content
+        mediaUrls:
+          type: object
+          example:
+            - https://example.com/image1.jpg
+            - https://example.com/image2.jpg
+          description: Post media URLs
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the post is active
+        metadata:
+          type: object
+          example: {}
+          description: Post metadata
+    ReportedPostDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Post ID
+        content:
+          type: string
+          example: This is a post content
+          description: Post content
+        mediaUrls:
+          type: object
+          example:
+            - https://example.com/image1.jpg
+            - https://example.com/image2.jpg
+          description: Post media URLs
+        reportCount:
+          type: number
+          example: 5
+          description: Number of reports
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the post is active
+        authorId:
+          type: string
+          example: clxxxxxxx
+          description: Author ID
+        authorName:
+          type: string
+          example: John Doe
+          description: Author name
+        authorAvatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Author avatar URL
+        communityId:
+          type: string
+          example: clxxxxxxx
+          description: Community ID
+        communityName:
+          type: string
+          example: K-Pop Fans Community
+          description: Community name
+        reports:
+          example:
+            - id: clxxxxxxx
+              reason: Inappropriate content
+              reportedBy: clxxxxxxx
+              reporterName: Jane Doe
+              createdAt: '2024-01-01T00:00:00.000Z'
+          description: Report details
+          type: array
+          items:
+            type: string
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Creation timestamp
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-01T00:00:00.000Z'
+          description: Last update timestamp
+      required:
+        - id
+        - content
+        - reportCount
+        - isActive
+        - authorId
+        - authorName
+        - communityId
+        - communityName
+        - reports
+        - createdAt
+        - updatedAt
     OrderItemDto:
       type: object
       properties:
@@ -8387,6 +9256,50 @@ components:
         - paymentMethod
         - itemCount
         - createdAt
+    ShippingAddressDto:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Address ID
+        firstName:
+          type: string
+          description: First name
+        lastName:
+          type: string
+          description: Last name
+        phoneNumber:
+          type: string
+          description: Phone number
+        provinceCode:
+          type: number
+          description: Province code
+        provinceName:
+          type: string
+          description: Province name
+        districtCode:
+          type: number
+          description: District code
+        districtName:
+          type: string
+          description: District name
+        detailAddress:
+          type: string
+          description: Detail address
+        isDefaultAddress:
+          type: boolean
+          description: Is default address
+      required:
+        - id
+        - firstName
+        - lastName
+        - phoneNumber
+        - provinceCode
+        - provinceName
+        - districtCode
+        - districtName
+        - detailAddress
+        - isDefaultAddress
     OrderItemListDto:
       type: object
       properties:

@@ -400,6 +400,7 @@ export const ModelName = {
   Comment: 'Comment',
   PostLike: 'PostLike',
   PostView: 'PostView',
+  PostReport: 'PostReport',
   Shop: 'Shop',
   ProductType: 'ProductType',
   Product: 'Product',
@@ -427,7 +428,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "verification" | "socialAccount" | "community" | "communityFollower" | "chatChannel" | "chatParticipant" | "chatMessage" | "post" | "comment" | "postLike" | "postView" | "shop" | "productType" | "product" | "productVariant" | "cart" | "cartItem" | "order" | "orderItem" | "paymentTransaction" | "province" | "district" | "address"
+    modelProps: "user" | "verification" | "socialAccount" | "community" | "communityFollower" | "chatChannel" | "chatParticipant" | "chatMessage" | "post" | "comment" | "postLike" | "postView" | "postReport" | "shop" | "productType" | "product" | "productVariant" | "cart" | "cartItem" | "order" | "orderItem" | "paymentTransaction" | "province" | "district" | "address"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1316,6 +1317,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.PostViewCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.PostViewCountAggregateOutputType> | number
+        }
+      }
+    }
+    PostReport: {
+      payload: Prisma.$PostReportPayload<ExtArgs>
+      fields: Prisma.PostReportFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.PostReportFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostReportPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.PostReportFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostReportPayload>
+        }
+        findFirst: {
+          args: Prisma.PostReportFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostReportPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.PostReportFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostReportPayload>
+        }
+        findMany: {
+          args: Prisma.PostReportFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostReportPayload>[]
+        }
+        create: {
+          args: Prisma.PostReportCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostReportPayload>
+        }
+        createMany: {
+          args: Prisma.PostReportCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.PostReportCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostReportPayload>[]
+        }
+        delete: {
+          args: Prisma.PostReportDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostReportPayload>
+        }
+        update: {
+          args: Prisma.PostReportUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostReportPayload>
+        }
+        deleteMany: {
+          args: Prisma.PostReportDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.PostReportUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.PostReportUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostReportPayload>[]
+        }
+        upsert: {
+          args: Prisma.PostReportUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$PostReportPayload>
+        }
+        aggregate: {
+          args: Prisma.PostReportAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregatePostReport>
+        }
+        groupBy: {
+          args: Prisma.PostReportGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostReportGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.PostReportCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.PostReportCountAggregateOutputType> | number
         }
       }
     }
@@ -2476,6 +2551,23 @@ export const PostViewScalarFieldEnum = {
 export type PostViewScalarFieldEnum = (typeof PostViewScalarFieldEnum)[keyof typeof PostViewScalarFieldEnum]
 
 
+export const PostReportScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
+  metadata: 'metadata',
+  reason: 'reason',
+  postId: 'postId',
+  reportedBy: 'reportedBy'
+} as const
+
+export type PostReportScalarFieldEnum = (typeof PostReportScalarFieldEnum)[keyof typeof PostReportScalarFieldEnum]
+
+
 export const ShopScalarFieldEnum = {
   id: 'id',
   isActive: 'isActive',
@@ -3036,6 +3128,7 @@ export type GlobalOmitConfig = {
   comment?: Prisma.CommentOmit
   postLike?: Prisma.PostLikeOmit
   postView?: Prisma.PostViewOmit
+  postReport?: Prisma.PostReportOmit
   shop?: Prisma.ShopOmit
   productType?: Prisma.ProductTypeOmit
   product?: Prisma.ProductOmit

@@ -9,9 +9,11 @@ import { GetStreamNotificationService } from '@shared/service/getstream-notifica
 import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { RecommendationService } from '@shared/service/recommendation/recommendation.service';
+import { CreatePostReportDto } from './dto/create-post-report.dto';
 import { CreatePostDto } from './dto/create-post.dto';
 import { GetPostsDto } from './dto/get-posts.dto';
 import { PostDetailDto } from './dto/post-detail.dto';
+import { PostReportDto } from './dto/post-report.dto';
 import { PostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 
@@ -64,6 +66,7 @@ export class PostService {
               id: true,
               username: true,
               avatarUrl: true,
+              role: true,
             },
           },
           _count: {
@@ -166,6 +169,7 @@ export class PostService {
             id: true,
             username: true,
             avatarUrl: true,
+            role: true,
           },
         },
         _count: {
@@ -237,6 +241,7 @@ export class PostService {
         id: post.author.id,
         username: post.author.username,
         avatarUrl: post.author.avatarUrl ?? undefined,
+        role: post.author.role,
       },
       communityId: post.communityId,
       createdAt: post.createdAt,
@@ -268,6 +273,7 @@ export class PostService {
             id: true,
             username: true,
             avatarUrl: true,
+            role: true,
           },
         },
         _count: {
@@ -399,6 +405,7 @@ export class PostService {
         id: post.author.id,
         username: post.author.username,
         avatarUrl: post.author.avatarUrl ?? undefined,
+        role: post.author.role,
       },
       communityId: post.communityId,
       createdAt: post.createdAt,
@@ -456,6 +463,7 @@ export class PostService {
             id: true,
             username: true,
             avatarUrl: true,
+            role: true,
           },
         },
         _count: {
@@ -519,6 +527,7 @@ export class PostService {
         id: post.author.id,
         username: post.author.username,
         avatarUrl: post.author.avatarUrl ?? undefined,
+        role: post.author.role,
       },
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
@@ -729,6 +738,7 @@ export class PostService {
             id: true,
             username: true,
             avatarUrl: true,
+            role: true,
           },
         },
         _count: {
@@ -843,6 +853,7 @@ export class PostService {
               id: true,
               username: true,
               avatarUrl: true,
+              role: true,
             },
           },
           _count: {
@@ -958,6 +969,7 @@ export class PostService {
                   id: true,
                   username: true,
                   avatarUrl: true,
+                  role: true,
                 },
               },
               _count: {
@@ -1052,5 +1064,52 @@ export class PostService {
     const pageInfo = new PageInfo(page, limit, total);
 
     return new PaginationResponse(posts, pageInfo);
+  }
+
+  async reportPost(
+    userId: string,
+    data: CreatePostReportDto,
+  ): Promise<PostReportDto> {
+    const { postId, reason } = data;
+
+    // Check if post exists
+    const post = await this.prisma.post.findUnique({
+      where: { id: postId, isDeleted: false },
+    });
+
+    if (!post) {
+      throw new CustomError(ErrorCode.PostNotFound);
+    }
+
+    // Check if user already reported this post
+    const existingReport = await this.prisma.postReport.findUnique({
+      where: {
+        postId_reportedBy: {
+          postId,
+          reportedBy: userId,
+        },
+      },
+    });
+
+    if (existingReport) {
+      throw new CustomError(ErrorCode.PostAlreadyReported);
+    }
+
+    // Create the report
+    const report = await this.prisma.postReport.create({
+      data: {
+        postId,
+        reportedBy: userId,
+        reason,
+      },
+    });
+
+    return {
+      id: report.id,
+      postId: report.postId,
+      reportedBy: report.reportedBy,
+      reason: report.reason || undefined,
+      createdAt: report.createdAt,
+    };
   }
 }

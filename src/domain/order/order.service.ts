@@ -22,6 +22,7 @@ import {
   OrderDetailDto,
   OrderItemListDto,
   OrderListDto,
+  ShippingAddressDto,
 } from './dto/order-list.dto';
 import { OrderResponseDto, PaymentInfoDto } from './dto/order-response.dto';
 import { PaymentTransactionService } from './payment-transaction.service';
@@ -56,11 +57,35 @@ export class OrderService {
       throw new CustomError(ErrorCode.OrderItemsEmpty);
     }
 
-    // Get shipping address (in real app, fetch from database)
-    // For now, using placeholder
+    // Fetch full shipping address details from database
+    const address = await this.prisma.address.findFirst({
+      where: {
+        id: dto.shippingAddressId,
+        userId,
+        isDeleted: false,
+      },
+      include: {
+        province: true,
+        district: true,
+      },
+    });
+
+    if (!address) {
+      throw new CustomError(ErrorCode.AddressNotFound);
+    }
+
+    // Store complete address details (snapshot at order time)
     const shippingAddress = {
-      id: dto.shippingAddressId,
-      // Add other address fields as needed
+      id: address.id,
+      firstName: address.firstName,
+      lastName: address.lastName,
+      phoneNumber: address.phoneNumber,
+      provinceCode: address.provinceCode,
+      provinceName: address.province.name,
+      districtCode: address.districtCode,
+      districtName: address.district.name,
+      detailAddress: address.detailAddress,
+      isDefaultAddress: address.isDefaultAddress,
     };
 
     // Create order with appropriate initial status
@@ -630,13 +655,17 @@ export class OrderService {
       mediaUrls: item.product.mediaUrls,
     }));
 
+    // Extract shipping address from JSON (stored as snapshot at order creation)
+    const shippingAddress =
+      order.shippingAddress as unknown as ShippingAddressDto;
+
     return {
       id: order.id,
       orderCode: order.orderCode,
       totalAmount: order.totalAmount,
       status: order.status,
       paymentMethod: order.paymentMethod,
-      shippingAddress: order.shippingAddress,
+      shippingAddress,
       items,
       createdAt: order.createdAt,
       paidAt: order.paidAt,
