@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { StreamChatService } from '@domain/stream-chat/stream-chat.service';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   PageInfo,
   PaginationResponse,
@@ -14,7 +15,12 @@ import { UpdateCommunityDto } from './dto/update-community.dto';
 
 @Injectable()
 export class AdminCommunityService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(AdminCommunityService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly streamChatService: StreamChatService,
+  ) {}
 
   async getAllCommunities(
     filters: GetCommunitiesDto,
@@ -125,6 +131,7 @@ export class AdminCommunityService {
 
   async createCommunity(
     createCommunityDto: CreateCommunityDto,
+    adminId?: string,
   ): Promise<CommunityDto> {
     const community = await this.prisma.community.create({
       data: {
@@ -145,6 +152,31 @@ export class AdminCommunityService {
         updatedAt: true,
       },
     });
+
+    // Create GetStream channel for the community
+    if (adminId) {
+      try {
+        await this.streamChatService.createCommunityChannel(adminId, {
+          communityId: community.id,
+          name: `${community.name} Community`,
+          description: community.description || undefined,
+          image: community.avatarUrl || undefined,
+        });
+        this.logger.log(
+          `Created GetStream channel for community: ${community.id}`,
+        );
+      } catch (error) {
+        this.logger.error(
+          `Failed to create GetStream channel for community ${community.id}:`,
+          error,
+        );
+        // Non-blocking: Don't fail community creation if GetStream fails
+      }
+    } else {
+      this.logger.warn(
+        `No adminId provided - skipping GetStream channel creation for community ${community.id}`,
+      );
+    }
 
     return community;
   }

@@ -127,14 +127,9 @@ export class StreamChatService {
         community_id: data.communityId,
         is_community_channel: true,
         created_by_id: adminId,
-      });
+      } as Record<string, unknown>);
 
       await channel.create();
-
-      // Add admin as owner with send permission
-      await channel.addMembers([
-        { user_id: adminId, role: 'owner', channel_role: 'channel_member' },
-      ]);
 
       // Add all idols from the community with send permission (channel_member role)
       if (communityIdols.length > 0) {
@@ -183,7 +178,7 @@ export class StreamChatService {
         image: data.image,
         is_idol_channel: true,
         created_by_id: idolId,
-      });
+      } as Record<string, unknown>);
 
       await channel.create();
 

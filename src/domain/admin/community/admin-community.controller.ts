@@ -12,11 +12,13 @@ import {
   Patch,
   Post,
   Query,
+  Req,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { PaginationResponse } from '@shared/dto/pagination-response.dto';
 import { ApiVersion } from '@shared/enum/api-version.enum';
 import { BaseResponse } from '@shared/helper/response';
+import { IRequest } from '@shared/interface/request.interface';
 import { AdminCommunityService } from './admin-community.service';
 import { AdminCommunityDetailDto } from './dto/community-detail.dto';
 import { CommunityDto } from './dto/community.dto';
@@ -57,10 +59,13 @@ export class AdminCommunityController {
   @Post()
   @ApiResponseCustom(CommunityDto)
   async createCommunity(
+    @Req() req: IRequest,
     @Body() createCommunityDto: CreateCommunityDto,
   ): Promise<BaseResponse<CommunityDto>> {
-    const result =
-      await this.adminCommunityService.createCommunity(createCommunityDto);
+    const result = await this.adminCommunityService.createCommunity(
+      createCommunityDto,
+      req.user.id,
+    );
     return BaseResponse.of(result);
   }
 

@@ -150,6 +150,9 @@ export class OrderService {
       };
     } else {
       // COD - no payment needed, order is confirmed immediately
+      // Decrease stock for COD orders (confirmed immediately)
+      await this.decreaseProductStock(order.id);
+
       // Clear cart items for COD orders (confirmed immediately)
       const orderedProductIds = items.map((item) => item.id);
       await this.clearCartItems(userId, orderedProductIds);
@@ -509,12 +512,68 @@ export class OrderService {
   }
 
   /**
+   * Decrease product stock for order items
+   * @param orderId Order UUID
+   */
+  private async decreaseProductStock(orderId: string): Promise<void> {
+    const order = await this.prisma.order.findUnique({
+      where: { id: orderId },
+      include: { items: true },
+    });
+
+    if (!order) {
+      throw new CustomError(ErrorCode.OrderNotFound);
+    }
+
+    // Update stock for each order item
+    for (const item of order.items) {
+      if (item.variantId) {
+        // Decrease variant stock
+        await this.prisma.productVariant.update({
+          where: { id: item.variantId },
+          data: {
+            stock: {
+              decrement: item.quantity,
+            },
+          },
+        });
+        WinstonLogger.info('Variant stock decreased', {
+          metadata: {
+            orderId,
+            variantId: item.variantId,
+            quantity: item.quantity,
+          },
+        });
+      } else {
+        // Decrease product stock
+        await this.prisma.product.update({
+          where: { id: item.productId },
+          data: {
+            stock: {
+              decrement: item.quantity,
+            },
+          },
+        });
+        WinstonLogger.info('Product stock decreased', {
+          metadata: {
+            orderId,
+            productId: item.productId,
+            quantity: item.quantity,
+          },
+        });
+      }
+    }
+  }
+
+  /**
    * Trigger post-payment business logic
    * @param orderId Order UUID
    */
   private async triggerPostPaymentLogic(orderId: string): Promise<void> {
-    // TODO: Implement business logic:
-    // - Decrease product stock
+    // Decrease product stock
+    await this.decreaseProductStock(orderId);
+
+    // TODO: Implement additional business logic:
     // - Send confirmation email
     // - Trigger fulfillment
     // - Update analytics
