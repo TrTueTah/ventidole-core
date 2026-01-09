@@ -72,7 +72,8 @@ export const ModelName = {
   PaymentTransaction: 'PaymentTransaction',
   Province: 'Province',
   District: 'District',
-  Address: 'Address'
+  Address: 'Address',
+  Banner: 'Banner'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -569,6 +570,27 @@ export const AddressScalarFieldEnum = {
 } as const
 
 export type AddressScalarFieldEnum = (typeof AddressScalarFieldEnum)[keyof typeof AddressScalarFieldEnum]
+
+
+export const BannerScalarFieldEnum = {
+  id: 'id',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  version: 'version',
+  isDeleted: 'isDeleted',
+  deletedAt: 'deletedAt',
+  metadata: 'metadata',
+  title: 'title',
+  description: 'description',
+  imageUrl: 'imageUrl',
+  link: 'link',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  order: 'order'
+} as const
+
+export type BannerScalarFieldEnum = (typeof BannerScalarFieldEnum)[keyof typeof BannerScalarFieldEnum]
 
 
 export const SortOrder = {

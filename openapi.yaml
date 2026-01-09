@@ -3254,6 +3254,46 @@ paths:
                   - message
       security: *ref_16
       tags: *ref_17
+  /v1/user/banner/active:
+    get:
+      operationId: BannerController_getActiveBanners_v1
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security:
+        - bearer: []
+      tags:
+        - User Banner
   /v1/admin/user:
     get:
       operationId: AdminUserController_getAllUsers_v1
@@ -5337,6 +5377,275 @@ paths:
                   - message
       security: *ref_28
       tags: *ref_29
+  /v1/admin/banner:
+    get:
+      operationId: AdminBannerController_getAllBanners_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            default: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            default: 10
+            type: number
+        - name: search
+          required: false
+          in: query
+          schema:
+            type: string
+        - name: isActive
+          required: false
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BannerDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: &ref_30
+        - bearer: []
+      tags: &ref_31
+        - Admin Banner Management
+    post:
+      operationId: AdminBannerController_createBanner_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBannerDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/BannerDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_30
+      tags: *ref_31
+  /v1/admin/banner/{id}:
+    get:
+      operationId: AdminBannerController_getBannerById_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/BannerDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_30
+      tags: *ref_31
+    patch:
+      operationId: AdminBannerController_updateBanner_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBannerDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/BannerDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_30
+      tags: *ref_31
+    delete:
+      operationId: AdminBannerController_deleteBanner_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_30
+      tags: *ref_31
   /v1/orders/confirm:
     post:
       description: >-
@@ -5383,10 +5692,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_30
+      security: &ref_32
         - bearer: []
       summary: Confirm order and create payment
-      tags: &ref_31
+      tags: &ref_33
         - Orders
   /v1/orders/{orderId}/retry-payment:
     post:
@@ -5432,9 +5741,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_30
+      security: *ref_32
       summary: Retry payment for PENDING_PAYMENT order
-      tags: *ref_31
+      tags: *ref_33
   /v1/orders:
     get:
       description: >-
@@ -5529,9 +5838,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_30
+      security: *ref_32
       summary: Get user orders
-      tags: *ref_31
+      tags: *ref_33
   /v1/orders/{orderId}/details:
     get:
       description: >-
@@ -5576,9 +5885,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_30
+      security: *ref_32
       summary: Get order details
-      tags: *ref_31
+      tags: *ref_33
   /v1/orders/{orderId}:
     get:
       description: >-
@@ -5623,9 +5932,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_30
+      security: *ref_32
       summary: Get order status
-      tags: *ref_31
+      tags: *ref_33
   /webhooks/payos:
     post:
       description: >-
@@ -5684,10 +5993,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_32
+      security: &ref_34
         - bearer: []
       summary: Generate Knock authentication token for client SDK
-      tags: &ref_33
+      tags: &ref_35
         - Knock Notifications
   /v1/knock/fcm-token:
     post:
@@ -5734,9 +6043,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_32
+      security: *ref_34
       summary: Register FCM token for push notifications
-      tags: *ref_33
+      tags: *ref_35
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -6153,7 +6462,7 @@ components:
           type: string
           example: USER
           description: User role
-          enum: &ref_35
+          enum: &ref_37
             - FAN
             - ADMIN
             - IDOL
@@ -6561,7 +6870,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: &ref_34
+          example: &ref_36
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
             - >-
@@ -6674,7 +6983,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: *ref_34
+          example: *ref_36
           description: Array of media URLs
           nullable: true
           type: array
@@ -7681,6 +7990,34 @@ components:
         options:
           type: object
           nullable: true
+    UserBannerDto:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        link:
+          type: string
+        startDate:
+          format: date-time
+          type: string
+        endDate:
+          format: date-time
+          type: string
+        order:
+          type: number
+      required:
+        - id
+        - title
+        - imageUrl
+        - startDate
+        - endDate
+        - order
     CommunityInfoDto:
       type: object
       properties:
@@ -7727,7 +8064,7 @@ components:
           type: string
           example: USER
           description: User role
-          enum: *ref_35
+          enum: *ref_37
         avatarUrl:
           type: object
           example: https://example.com/avatar.jpg
@@ -9100,6 +9437,144 @@ components:
         - reports
         - createdAt
         - updatedAt
+    BannerDto:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        link:
+          type: string
+        startDate:
+          format: date-time
+          type: string
+        endDate:
+          format: date-time
+          type: string
+        order:
+          type: number
+        isActive:
+          type: boolean
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+      required:
+        - id
+        - title
+        - imageUrl
+        - startDate
+        - endDate
+        - order
+        - isActive
+        - createdAt
+        - updatedAt
+    BannerDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        imageUrl:
+          type: string
+        link:
+          type: string
+        startDate:
+          format: date-time
+          type: string
+        endDate:
+          format: date-time
+          type: string
+        order:
+          type: number
+        isActive:
+          type: boolean
+        createdAt:
+          format: date-time
+          type: string
+        updatedAt:
+          format: date-time
+          type: string
+        version:
+          type: number
+        isDeleted:
+          type: boolean
+        deletedAt:
+          format: date-time
+          type: string
+        metadata:
+          type: object
+      required:
+        - id
+        - title
+        - imageUrl
+        - startDate
+        - endDate
+        - order
+        - isActive
+        - createdAt
+        - updatedAt
+        - version
+        - isDeleted
+    CreateBannerDto:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        imageUrl:
+          type: string
+          maxLength: 500
+        link:
+          type: string
+          maxLength: 500
+        startDate:
+          type: string
+        endDate:
+          type: string
+        order:
+          type: number
+          default: 0
+      required:
+        - title
+        - imageUrl
+        - startDate
+        - endDate
+        - order
+    UpdateBannerDto:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        imageUrl:
+          type: string
+          maxLength: 500
+        link:
+          type: string
+          maxLength: 500
+        startDate:
+          type: string
+        endDate:
+          type: string
+        order:
+          type: number
+        isActive:
+          type: boolean
     OrderItemDto:
       type: object
       properties:

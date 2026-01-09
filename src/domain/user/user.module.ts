@@ -1,6 +1,7 @@
 import { StreamChatModule } from '@domain/stream-chat/stream-chat.module';
 import { Module } from '@nestjs/common';
 import { AddressModule } from './address/address.module';
+import { BannerModule } from './banner/banner.module';
 import { CommentModule } from './comment/comment.module';
 import { CommunityModule } from './community/community.module';
 import { PostModule } from './post/post.module';
@@ -15,6 +16,7 @@ import { UserService } from './user.service';
     CommunityModule,
     ShopModule,
     AddressModule,
+    BannerModule,
     StreamChatModule,
   ],
   controllers: [UserController],

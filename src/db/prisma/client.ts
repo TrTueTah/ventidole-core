@@ -170,3 +170,8 @@ export type District = Prisma.DistrictModel
  * 
  */
 export type Address = Prisma.AddressModel
+/**
+ * Model Banner
+ * 
+ */
+export type Banner = Prisma.BannerModel
