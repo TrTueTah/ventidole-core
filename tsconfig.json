@@ -23,7 +23,8 @@
       "@integrations/*": ["src/integrations/*"],
       "@application/*": ["src/application/*"],
       "@core/*": ["src/core/*"],
-      "@database/*": ["src/db/*"]
+      "@database/*": ["src/db/*"],
+      "@infra/*": ["src/infra/*"]
     }
   }
 }
