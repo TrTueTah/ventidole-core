@@ -20,8 +20,10 @@
     "paths": {
       "@shared/*": ["src/shared/*"],
       "@domain/*": ["src/domain/*"],
+      "@integrations/*": ["src/integrations/*"],
+      "@application/*": ["src/application/*"],
       "@core/*": ["src/core/*"],
-      "@database/*": ["src/generated/*"]
+      "@database/*": ["src/db/*"]
     }
   }
 }
