@@ -393,6 +393,46 @@ paths:
         - bearer: []
       summary: Get current authenticated user
       tags: *ref_0
+  /auth/stream-chat-token:
+    get:
+      operationId: AuthController_getStreamChatToken
+      parameters: []
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/StreamChatTokenResponseDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security:
+        - bearer: []
+      summary: Get Stream Chat authentication token
+      tags: *ref_0
   /user/community:
     post:
       operationId: CommunityController_createCommunity
@@ -2286,6 +2326,100 @@ paths:
       security: *ref_4
       summary: Get orders by shop
       tags: *ref_5
+  /v1/user/cart/items:
+    post:
+      operationId: CartController_addItem_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddToCartDto'
+      responses:
+        '200':
+          description: Item added successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartResponseDto'
+        '404':
+          description: Product not found
+      security: &ref_6
+        - bearer: []
+      summary: Add item to cart
+      tags: &ref_7
+        - Cart
+  /v1/user/cart:
+    get:
+      operationId: CartController_getCart_v1
+      parameters: []
+      responses:
+        '200':
+          description: Cart retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartResponseDto'
+      security: *ref_6
+      summary: Get user cart
+      tags: *ref_7
+    delete:
+      operationId: CartController_clearCart_v1
+      parameters: []
+      responses:
+        '200':
+          description: Cart cleared successfully
+      security: *ref_6
+      summary: Clear entire cart
+      tags: *ref_7
+  /v1/user/cart/items/{itemId}:
+    patch:
+      operationId: CartController_updateItemQuantity_v1
+      parameters:
+        - name: itemId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCartItemDto'
+      responses:
+        '200':
+          description: Item updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartResponseDto'
+        '404':
+          description: Cart or item not found
+      security: *ref_6
+      summary: Update cart item quantity
+      tags: *ref_7
+    delete:
+      operationId: CartController_removeItem_v1
+      parameters:
+        - name: itemId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Item removed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartResponseDto'
+        '404':
+          description: Cart or item not found
+      security: *ref_6
+      summary: Remove item from cart
+      tags: *ref_7
   /user/product:
     post:
       operationId: ProductController_createProduct
@@ -2328,10 +2462,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_6
+      security: &ref_8
         - bearer: []
       summary: Create new product
-      tags: &ref_7
+      tags: &ref_9
         - Product
   /user/product/{id}:
     get:
@@ -2374,9 +2508,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_6
+      security: *ref_8
       summary: Get product by ID
-      tags: *ref_7
+      tags: *ref_9
     patch:
       operationId: ProductController_updateProduct
       parameters:
@@ -2423,9 +2557,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_6
+      security: *ref_8
       summary: Update product
-      tags: *ref_7
+      tags: *ref_9
     delete:
       operationId: ProductController_deleteProduct
       parameters:
@@ -2468,9 +2602,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_6
+      security: *ref_8
       summary: Delete product (soft delete)
-      tags: *ref_7
+      tags: *ref_9
   /user/product/{id}/variant:
     post:
       operationId: ProductController_addVariant
@@ -2518,9 +2652,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_6
+      security: *ref_8
       summary: Add variant to product
-      tags: *ref_7
+      tags: *ref_9
   /user/product/{id}/variant/{variantId}:
     patch:
       operationId: ProductController_updateVariant
@@ -2573,9 +2707,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_6
+      security: *ref_8
       summary: Update variant
-      tags: *ref_7
+      tags: *ref_9
   /user/product/{id}/variant/{variantId}/stock:
     patch:
       operationId: ProductController_updateVariantStock
@@ -2628,9 +2762,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_6
+      security: *ref_8
       summary: Update variant stock
-      tags: *ref_7
+      tags: *ref_9
   /user/product/{id}/variant/{variantId}/activate:
     patch:
       operationId: ProductController_activateVariant
@@ -2677,9 +2811,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_6
+      security: *ref_8
       summary: Activate variant
-      tags: *ref_7
+      tags: *ref_9
   /user/product/{id}/variant/{variantId}/deactivate:
     patch:
       operationId: ProductController_deactivateVariant
@@ -2726,9 +2860,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_6
+      security: *ref_8
       summary: Deactivate variant
-      tags: *ref_7
+      tags: *ref_9
   /user/product/shop/{shopId}:
     get:
       operationId: ProductController_getProductsByShop
@@ -2821,9 +2955,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_6
+      security: *ref_8
       summary: Get products by shop
-      tags: *ref_7
+      tags: *ref_9
   /user/product/search:
     get:
       operationId: ProductController_searchProducts
@@ -2911,9 +3045,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_6
+      security: *ref_8
       summary: Search products by name
-      tags: *ref_7
+      tags: *ref_9
   /user/shop:
     post:
       operationId: ShopController_createShop
@@ -2956,10 +3090,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_8
+      security: &ref_10
         - bearer: []
       summary: Create new shop
-      tags: &ref_9
+      tags: &ref_11
         - Shop
     get:
       operationId: ShopController_getAllShops
@@ -3042,9 +3176,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_8
+      security: *ref_10
       summary: Get all shops
-      tags: *ref_9
+      tags: *ref_11
   /user/shop/me:
     get:
       operationId: ShopController_getMyShop
@@ -3081,9 +3215,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_8
+      security: *ref_10
       summary: Get my shop
-      tags: *ref_9
+      tags: *ref_11
   /user/shop/{id}:
     get:
       operationId: ShopController_getShop
@@ -3125,9 +3259,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_8
+      security: *ref_10
       summary: Get shop by ID
-      tags: *ref_9
+      tags: *ref_11
     patch:
       operationId: ShopController_updateShop
       parameters:
@@ -3174,9 +3308,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_8
+      security: *ref_10
       summary: Update shop
-      tags: *ref_9
+      tags: *ref_11
   /user/shop/{id}/activate:
     patch:
       operationId: ShopController_activateShop
@@ -3218,9 +3352,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_8
+      security: *ref_10
       summary: Activate shop
-      tags: *ref_9
+      tags: *ref_11
   /user/shop/{id}/deactivate:
     patch:
       operationId: ShopController_deactivateShop
@@ -3262,13 +3396,19 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_8
+      security: *ref_10
       summary: Deactivate shop
-      tags: *ref_9
-  /stream-chat/token:
-    get:
-      operationId: StreamChatController_getToken
+      tags: *ref_11
+  /user/membership-tier:
+    post:
+      operationId: MembershipTierController_createTier
       parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTierDto'
       responses:
         '200':
           description: Successful Response
@@ -3286,7 +3426,7 @@ paths:
                     example: OK
                     description: Response message
                   data:
-                    $ref: '#/components/schemas/StreamChatTokenResponseDto'
+                    $ref: '#/components/schemas/TierResponseDto'
                     description: Response data
                   error:
                     type: object
@@ -3301,11 +3441,577 @@ paths:
                 required:
                   - statusCode
                   - message
-      security:
-        - bearer: []
-      summary: Get Stream Chat authentication token
-      tags:
-        - Stream Chat
+      summary: Create membership tier (community owner only)
+      tags: &ref_12
+        - Membership Tier
+  /user/membership-tier/community/{communityId}:
+    get:
+      operationId: MembershipTierController_getTierByCommunity
+      parameters:
+        - name: communityId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/TierResponseDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      summary: Get membership tier for a community
+      tags: *ref_12
+  /user/membership-tier/{tierId}/pricing:
+    patch:
+      operationId: MembershipTierController_updatePricing
+      parameters:
+        - name: tierId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTierPricingDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/TierResponseDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      summary: Update tier pricing (community owner only)
+      tags: *ref_12
+  /user/membership-tier/{tierId}/details:
+    patch:
+      operationId: MembershipTierController_updateDetails
+      parameters:
+        - name: tierId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTierDetailsDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/TierResponseDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      summary: Update tier details (community owner only)
+      tags: *ref_12
+  /user/membership-tier/{tierId}/deactivate:
+    patch:
+      operationId: MembershipTierController_deactivate
+      parameters:
+        - name: tierId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      summary: Deactivate tier (community owner only)
+      tags: *ref_12
+  /user/membership-tier/{tierId}/activate:
+    patch:
+      operationId: MembershipTierController_activate
+      parameters:
+        - name: tierId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      summary: Activate tier (community owner only)
+      tags: *ref_12
+  /user/subscription:
+    post:
+      operationId: SubscriptionController_subscribe
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSubscriptionDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/SubscriptionResponseDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      summary: Subscribe to a community
+      tags: &ref_13
+        - Subscription
+  /user/subscription/{subscriptionId}:
+    delete:
+      operationId: SubscriptionController_cancelSubscription
+      parameters:
+        - name: subscriptionId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      summary: Cancel subscription
+      tags: *ref_13
+  /user/subscription/me:
+    get:
+      operationId: SubscriptionController_getMySubscriptions
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SubscriptionResponseDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      summary: Get my subscriptions
+      tags: *ref_13
+  /user/subscription/community/{communityId}:
+    get:
+      operationId: SubscriptionController_getCommunitySubscribers
+      parameters:
+        - name: communityId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SubscriptionResponseDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      summary: Get community subscribers (community owner only)
+      tags: *ref_13
+  /user/subscription/check/{communityId}:
+    get:
+      operationId: SubscriptionController_checkSubscriptionStatus
+      parameters:
+        - name: communityId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      summary: Check if I have access to a community
+      tags: *ref_13
+  /webhooks/payos/subscription:
+    post:
+      operationId: PayOSWebhookController_handleSubscriptionPayment
+      parameters:
+        - name: x-payos-signature
+          required: true
+          in: header
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayOSWebhookDto'
+      responses:
+        '201':
+          description: ''
+      tags: &ref_14
+        - PayOSWebhook
+  /webhooks/payos/order:
+    post:
+      operationId: PayOSWebhookController_handleOrderPayment
+      parameters:
+        - name: x-payos-signature
+          required: true
+          in: header
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PayOSWebhookDto'
+      responses:
+        '201':
+          description: ''
+      tags: *ref_14
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -3456,6 +4162,25 @@ components:
           example: 1740412406898
       required:
         - expiresAt
+    StreamChatTokenResponseDto:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Stream Chat authentication token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+        apiKey:
+          type: string
+          description: Stream Chat API key
+          example: abc123xyz
+        userId:
+          type: string
+          description: User ID for Stream Chat
+          example: user_abc123
+      required:
+        - token
+        - apiKey
+        - userId
     RegisterDto:
       type: object
       properties:
@@ -3839,6 +4564,26 @@ components:
           type: object
           example: payment_123456
           nullable: true
+        paymentOrderCode:
+          type: object
+          example: 1737500000
+          description: PayOS orderCode for webhook lookup
+          nullable: true
+        checkoutUrl:
+          type: object
+          example: https://pay.payos.vn/web/abc123
+          description: PayOS checkout URL
+          nullable: true
+        qrCode:
+          type: object
+          example: data:image/png;base64,iVBOR...
+          description: PayOS QR code (base64)
+          nullable: true
+        paidAt:
+          type: object
+          example: '2024-01-15T10:30:00Z'
+          description: Payment completion timestamp
+          nullable: true
         trackingNumber:
           type: object
           example: TRACK12345
@@ -3867,6 +4612,10 @@ components:
         - shippingAddress
         - paymentMethod
         - paymentId
+        - paymentOrderCode
+        - checkoutUrl
+        - qrCode
+        - paidAt
         - trackingNumber
         - cancelReason
         - totalAmount
@@ -3895,6 +4644,122 @@ components:
         reason:
           type: string
           example: Customer changed mind
+    AddToCartDto:
+      type: object
+      properties:
+        productId:
+          type: string
+          description: Product ID
+          example: prod_abc123
+        variantId:
+          type: string
+          description: Product variant ID (optional)
+          example: variant_xyz789
+        quantity:
+          type: number
+          description: Quantity to add
+          example: 2
+          minimum: 1
+          maximum: 999
+      required:
+        - productId
+        - quantity
+    CartItemResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: item_abc123
+        productId:
+          type: string
+          example: prod_xyz789
+        productName:
+          type: string
+          example: K-Pop Album - Limited Edition
+        variantId:
+          type: object
+          example: variant_def456
+          nullable: true
+        quantity:
+          type: number
+          example: 2
+        unitPrice:
+          type: number
+          example: 25000
+          description: Unit price in VND
+        total:
+          type: number
+          example: 50000
+          description: Total for this item (unitPrice * quantity)
+      required:
+        - id
+        - productId
+        - productName
+        - variantId
+        - quantity
+        - unitPrice
+        - total
+    CartResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: cart_abc123
+        userId:
+          type: string
+          example: user_xyz789
+        status:
+          type: string
+          example: ACTIVE
+          enum:
+            - ACTIVE
+            - CHECKED_OUT
+            - ABANDONED
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemResponseDto'
+        itemCount:
+          type: number
+          example: 3
+          description: Number of distinct items
+        totalQuantity:
+          type: number
+          example: 5
+          description: Total quantity of all items
+        totalAmount:
+          type: number
+          example: 125000
+          description: Total amount in VND
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-15T08:30:00Z'
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-20T14:45:00Z'
+      required:
+        - id
+        - userId
+        - status
+        - items
+        - itemCount
+        - totalQuantity
+        - totalAmount
+        - createdAt
+        - updatedAt
+    UpdateCartItemDto:
+      type: object
+      properties:
+        quantity:
+          type: number
+          description: New quantity
+          example: 3
+          minimum: 1
+          maximum: 999
+      required:
+        - quantity
     ProductVariantResponseDto:
       type: object
       properties:
@@ -4159,22 +5024,24 @@ components:
         bannerUrl:
           type: string
           example: https://example.com/new-banner.jpg
-    StreamChatTokenResponseDto:
+    TierResponseDto:
       type: object
-      properties:
-        token:
-          type: string
-          description: Stream Chat authentication token
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-        apiKey:
-          type: string
-          description: Stream Chat API key
-          example: abc123xyz
-        userId:
-          type: string
-          description: User ID for Stream Chat
-          example: user_abc123
-      required:
-        - token
-        - apiKey
-        - userId
+      properties: {}
+    CreateTierDto:
+      type: object
+      properties: {}
+    UpdateTierPricingDto:
+      type: object
+      properties: {}
+    UpdateTierDetailsDto:
+      type: object
+      properties: {}
+    SubscriptionResponseDto:
+      type: object
+      properties: {}
+    CreateSubscriptionDto:
+      type: object
+      properties: {}
+    PayOSWebhookDto:
+      type: object
+      properties: {}
