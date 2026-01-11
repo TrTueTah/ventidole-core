@@ -11,6 +11,8 @@ import { CanViewOrderPolicy } from '@domain/commerce/order/policies/can-view-ord
 import { CanManageOrderPolicy } from '@domain/commerce/order/policies/can-manage-order.policy';
 import { CanCancelOrderPolicy } from '@domain/commerce/order/policies/can-cancel-order.policy';
 import { ConfigService } from '@nestjs/config';
+import { CartModule } from '@application/user/cart/cart.module';
+import { KnockService } from '@infra/knock/knock.service';
 
 /**
  * PayOS Webhook Module
@@ -23,6 +25,7 @@ import { ConfigService } from '@nestjs/config';
  * - Repository access for subscription and order updates
  */
 @Module({
+  imports: [CartModule],
   controllers: [PayOSWebhookController],
   providers: [
     PayOSService,
@@ -49,6 +52,7 @@ import { ConfigService } from '@nestjs/config';
     CanViewOrderPolicy,
     CanManageOrderPolicy,
     CanCancelOrderPolicy,
+    KnockService,
   ],
 })
 export class PayOSWebhookModule {}
