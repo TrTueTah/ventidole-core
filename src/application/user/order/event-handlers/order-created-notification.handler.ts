@@ -1,9 +1,9 @@
-import { OrderCreatedEvent } from '@domain/commerce/order/events/order-created.event';
 import { DomainEvent } from '@core/event/domain-event.base';
 import { IEventHandler } from '@core/event/event-handler.interface';
-import { Injectable, Logger } from '@nestjs/common';
+import { OrderCreatedEvent } from '@domain/commerce/order/events/order-created.event';
 import { KnockService } from '@infra/knock/knock.service';
-import { PrismaService } from '@db/prisma/prisma.service';
+import { PrismaService } from '@infra/prisma/prisma.service';
+import { Injectable, Logger } from '@nestjs/common';
 
 /**
  * Order Created Notification Handler

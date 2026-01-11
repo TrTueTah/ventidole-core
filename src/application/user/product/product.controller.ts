@@ -1,34 +1,35 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Patch,
-  Delete,
-  Body,
-  Param,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { PaginationDto } from '@application/shared/dto/pagination.dto';
+import { CurrentUser } from '@core/decorator/current-user.decorator';
 import {
   ApiExtraModelsCustom,
-  ApiResponseCustom,
   ApiPaginationResponse,
+  ApiResponseCustom,
 } from '@core/decorator/doc.decorator';
 import { JwtAuthGuard } from '@core/guard/jwt-auth.guard';
-import { CurrentUser } from '@core/decorator/current-user.decorator';
 import { BaseResponse } from '@core/response/base-response';
-import { PaginationDto } from '@application/shared/dto/pagination.dto';
-import { ProductApplicationService } from './product.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import {
   CreateProductDto,
-  UpdateProductDto,
-  UpdateVariantDto,
-  UpdateStockDto,
   ProductResponseDto,
-  ProductVariantResponseDto,
   ProductVariantDto,
+  ProductVariantResponseDto,
+  UpdateProductDto,
+  UpdateStockDto,
+  UpdateVariantDto,
 } from './dto';
+import { ProductApplicationService } from './product.service';
 
 /**
  * Product Controller
@@ -46,9 +47,7 @@ import {
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
 export class ProductController {
-  constructor(
-    private readonly productService: ProductApplicationService,
-  ) {}
+  constructor(private readonly productService: ProductApplicationService) {}
 
   /**
    * Create new product
@@ -57,10 +56,13 @@ export class ProductController {
   @ApiOperation({ summary: 'Create new product' })
   @ApiResponseCustom(ProductResponseDto)
   async createProduct(
-    @Request() req,
+    @Req() req,
     @Body() dto: CreateProductDto,
   ): Promise<BaseResponse<ProductResponseDto>> {
-    const result = await this.productService.createProduct(req.user.userId, dto);
+    const result = await this.productService.createProduct(
+      req.user.userId,
+      dto,
+    );
     return BaseResponse.of(result);
   }
 
@@ -89,7 +91,11 @@ export class ProductController {
     @Param('id') productId: string,
     @Body() dto: UpdateProductDto,
   ): Promise<BaseResponse<ProductResponseDto>> {
-    const result = await this.productService.updateProduct(userId, productId, dto);
+    const result = await this.productService.updateProduct(
+      userId,
+      productId,
+      dto,
+    );
     return BaseResponse.of(result);
   }
 

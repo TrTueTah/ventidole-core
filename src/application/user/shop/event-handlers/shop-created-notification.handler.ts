@@ -1,9 +1,9 @@
 import { DomainEvent } from '@core/event/domain-event.base';
 import { IEventHandler } from '@core/event/event-handler.interface';
-import { Injectable, Logger } from '@nestjs/common';
 import { ShopCreatedEvent } from '@domain/commerce/shop/events/shop-created.event';
 import { KnockService } from '@infra/knock/knock.service';
-import { PrismaService } from '@db/prisma/prisma.service';
+import { PrismaService } from '@infra/prisma/prisma.service';
+import { Injectable, Logger } from '@nestjs/common';
 
 /**
  * Shop Created Notification Handler

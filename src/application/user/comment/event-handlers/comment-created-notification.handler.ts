@@ -1,9 +1,9 @@
 import { DomainEvent } from '@core/event/domain-event.base';
 import { IEventHandler } from '@core/event/event-handler.interface';
 import { CommentCreatedEvent } from '@domain/content/comment/events/comment-created.event';
-import { Injectable, Logger } from '@nestjs/common';
 import { KnockService } from '@infra/knock/knock.service';
-import { PrismaService } from '@db/prisma/prisma.service';
+import { PrismaService } from '@infra/prisma/prisma.service';
+import { Injectable, Logger } from '@nestjs/common';
 
 /**
  * Comment Created Notification Handler
