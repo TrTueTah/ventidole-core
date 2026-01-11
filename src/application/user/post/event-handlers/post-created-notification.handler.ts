@@ -2,6 +2,8 @@ import { DomainEvent } from '@core/event/domain-event.base';
 import { IEventHandler } from '@core/event/event-handler.interface';
 import { PostCreatedEvent } from '@domain/content/post/events/post-created.event';
 import { Injectable, Logger } from '@nestjs/common';
+import { KnockService } from '@infra/knock/knock.service';
+import { PrismaService } from '@db/prisma/prisma.service';
 
 /**
  * Post Created Notification Handler
@@ -21,6 +23,11 @@ import { Injectable, Logger } from '@nestjs/common';
 export class PostCreatedNotificationHandler implements IEventHandler {
   private readonly logger = new Logger(PostCreatedNotificationHandler.name);
 
+  constructor(
+    private readonly knockService: KnockService,
+    private readonly prisma: PrismaService,
+  ) {}
+
   async handle(event: DomainEvent): Promise<void> {
     if (!(event instanceof PostCreatedEvent)) {
       return;
@@ -31,7 +38,7 @@ export class PostCreatedNotificationHandler implements IEventHandler {
     );
 
     try {
-      // TODO: Send notifications to community followers
+      // Send notifications to community followers
       if (event.communityId) {
         await this.notifyCommunityFollowers(
           event.postId,
@@ -71,10 +78,83 @@ export class PostCreatedNotificationHandler implements IEventHandler {
     authorId: string,
     communityId: string,
   ): Promise<void> {
-    // TODO: Send notifications via Knock
-    this.logger.log(
-      `Notifying community ${communityId} followers about new post: ${postId}`,
-    );
+    try {
+      // Get community details
+      const community = await this.prisma.community.findUnique({
+        where: { id: communityId },
+        select: { id: true, name: true },
+      });
+
+      if (!community) {
+        this.logger.warn(`Community not found: ${communityId}`);
+        return;
+      }
+
+      // Get all followers except the author
+      const followers = await this.prisma.communityFollower.findMany({
+        where: {
+          communityId,
+          userId: { not: authorId },
+          isActive: true,
+        },
+        select: {
+          userId: true,
+          user: { select: { id: true, username: true, email: true } },
+        },
+      });
+
+      if (followers.length === 0) {
+        this.logger.log('No followers to notify');
+        return;
+      }
+
+      // Get author details
+      const author = await this.prisma.user.findUnique({
+        where: { id: authorId },
+        select: { id: true, username: true, avatarUrl: true },
+      });
+
+      if (!author) {
+        this.logger.warn(`Author not found: ${authorId}`);
+        return;
+      }
+
+      // Get post title for notification
+      const post = await this.prisma.post.findUnique({
+        where: { id: postId },
+        select: { content: true },
+      });
+
+      const postTitle = post?.content?.substring(0, 100) || 'New post';
+
+      // Trigger Knock workflow
+      await this.knockService.triggerWorkflow(
+        'community-new-post',
+        followers.map((f) => ({
+          id: f.user.id,
+          name: f.user.username,
+          email: f.user.email,
+        })),
+        {
+          communityId: community.id,
+          communityName: community.name,
+          postId,
+          postTitle,
+          authorName: author.username,
+          authorAvatar: author.avatarUrl,
+          url: `/communities/${community.id}/posts/${postId}`,
+        },
+        { id: author.id, name: author.username, avatar: author.avatarUrl },
+      );
+
+      this.logger.log(`Notified ${followers.length} followers about new post`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to notify followers for post ${postId}:`,
+        error,
+      );
+      throw error;
+    }
   }
 
   private async updateRecommendations(

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { OrderController } from './order.controller';
 import { OrderApplicationService } from './order.service';
 import { OrderRepositoryPrisma } from '@infra/prisma/commerce/order/order.repository.prisma';
@@ -9,6 +9,10 @@ import { EventBus } from '@core/event/event-bus.service';
 import { PrismaService } from '@infra/prisma/prisma.service';
 import { OrderCreatedNotificationHandler } from './event-handlers/order-created-notification.handler';
 import { OrderPaidWebhookHandler } from './event-handlers/order-paid-webhook.handler';
+import { KnockService } from '@infra/knock/knock.service';
+import { PayOSService } from '@infra/payos/payos.service';
+import { ConfigService } from '@nestjs/config';
+import { CartModule } from '@application/user/cart/cart.module';
 
 /**
  * Order Module
@@ -21,6 +25,7 @@ import { OrderPaidWebhookHandler } from './event-handlers/order-paid-webhook.han
  * - Order event handlers (side effects)
  */
 @Module({
+  imports: [CartModule],
   controllers: [OrderController],
   providers: [
     // Application Service
@@ -40,6 +45,9 @@ import { OrderPaidWebhookHandler } from './event-handlers/order-paid-webhook.han
     // Infrastructure
     EventBus,
     PrismaService,
+    KnockService,
+    PayOSService,
+    ConfigService,
 
     // Event Handlers
     OrderCreatedNotificationHandler,
@@ -47,4 +55,14 @@ import { OrderPaidWebhookHandler } from './event-handlers/order-paid-webhook.han
   ],
   exports: [OrderApplicationService],
 })
-export class OrderModule {}
+export class OrderModule implements OnModuleInit {
+  constructor(
+    private readonly eventBus: EventBus,
+    private readonly orderCreatedHandler: OrderCreatedNotificationHandler,
+  ) {}
+
+  onModuleInit() {
+    // Register event handlers
+    this.eventBus.subscribe('OrderCreatedEvent', this.orderCreatedHandler);
+  }
+}

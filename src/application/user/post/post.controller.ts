@@ -1,4 +1,4 @@
-import { BaseResponse } from '@application/shared/dto/base-response.dto';
+import { BaseResponse } from '@core/response/base-response';
 import { PaginationDto, PaginationResponse } from '@application/shared/dto/pagination.dto';
 import { CurrentUser } from '@core/decorator/current-user.decorator';
 import {
@@ -11,8 +11,14 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiExtraModelsCustom,
+  ApiResponseCustom,
+  ApiPaginationResponse,
+} from '@core/decorator/doc.decorator';
 import { PostApplicationService } from './post.service';
-import { CreatePostDto, PostResponseDto, UpdatePostDto } from './dto';
+import { CreatePostDto, PostResponseDto, PostMediaResponseDto, UpdatePostDto } from './dto';
 
 /**
  * Post Controller
@@ -27,16 +33,18 @@ import { CreatePostDto, PostResponseDto, UpdatePostDto } from './dto';
  *
  * Note: This controller is THIN - all business logic is in the domain/application layers.
  */
+@ApiTags('Post')
+@ApiExtraModelsCustom(PostResponseDto, PostMediaResponseDto)
 @Controller('user/post')
 export class PostController {
   constructor(private readonly postService: PostApplicationService) {}
 
   /**
    * Create new post
-   *
-   * POST /user/post
    */
   @Post()
+  @ApiOperation({ summary: 'Create new post' })
+  @ApiResponseCustom(PostResponseDto)
   async createPost(
     @CurrentUser('id') userId: string,
     @Body() dto: CreatePostDto,
@@ -47,10 +55,10 @@ export class PostController {
 
   /**
    * Get post by ID
-   *
-   * GET /user/post/:postId
    */
   @Get(':postId')
+  @ApiOperation({ summary: 'Get post by ID' })
+  @ApiResponseCustom(PostResponseDto)
   async getPost(
     @CurrentUser('id') userId: string | null,
     @Param('postId') postId: string,
@@ -61,10 +69,10 @@ export class PostController {
 
   /**
    * Update post
-   *
-   * PATCH /user/post/:postId
    */
   @Patch(':postId')
+  @ApiOperation({ summary: 'Update post' })
+  @ApiResponseCustom(PostResponseDto)
   async updatePost(
     @CurrentUser('id') userId: string,
     @Param('postId') postId: string,
@@ -76,10 +84,10 @@ export class PostController {
 
   /**
    * Like post
-   *
-   * POST /user/post/:postId/like
    */
   @Post(':postId/like')
+  @ApiOperation({ summary: 'Like post' })
+  @ApiResponseCustom()
   async likePost(
     @CurrentUser('id') userId: string,
     @Param('postId') postId: string,
@@ -90,10 +98,10 @@ export class PostController {
 
   /**
    * Unlike post
-   *
-   * DELETE /user/post/:postId/like
    */
   @Delete(':postId/like')
+  @ApiOperation({ summary: 'Unlike post' })
+  @ApiResponseCustom()
   async unlikePost(
     @CurrentUser('id') userId: string,
     @Param('postId') postId: string,
@@ -104,10 +112,10 @@ export class PostController {
 
   /**
    * Delete post
-   *
-   * DELETE /user/post/:postId
    */
   @Delete(':postId')
+  @ApiOperation({ summary: 'Delete post' })
+  @ApiResponseCustom()
   async deletePost(
     @CurrentUser('id') userId: string,
     @Param('postId') postId: string,
@@ -118,10 +126,10 @@ export class PostController {
 
   /**
    * Get posts by author
-   *
-   * GET /user/post/author/:authorId
    */
   @Get('author/:authorId')
+  @ApiOperation({ summary: 'Get posts by author' })
+  @ApiPaginationResponse(PostResponseDto)
   async getPostsByAuthor(
     @Param('authorId') authorId: string,
     @Query() pagination: PaginationDto,
@@ -136,10 +144,10 @@ export class PostController {
 
   /**
    * Get posts by community
-   *
-   * GET /user/post/community/:communityId
    */
   @Get('community/:communityId')
+  @ApiOperation({ summary: 'Get posts by community' })
+  @ApiPaginationResponse(PostResponseDto)
   async getPostsByCommunity(
     @Param('communityId') communityId: string,
     @Query() pagination: PaginationDto,
@@ -154,10 +162,10 @@ export class PostController {
 
   /**
    * Get feed posts
-   *
-   * GET /user/post/feed
    */
   @Get('feed')
+  @ApiOperation({ summary: 'Get feed posts' })
+  @ApiPaginationResponse(PostResponseDto)
   async getFeedPosts(
     @CurrentUser('id') userId: string | null,
     @Query() pagination: PaginationDto,

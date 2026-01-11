@@ -1,6 +1,4 @@
 import { ConfigModuleOptions } from '@nestjs/config';
-import { NodeEnv } from '@shared/enum/environment.enum';
-import { convertStringToBool } from '@shared/helper/convert';
 import { plainToInstance, Transform } from 'class-transformer';
 import {
   IsBoolean,
@@ -10,6 +8,8 @@ import {
   IsString,
   validateSync,
 } from 'class-validator';
+import { NodeEnv } from '../types/environment.enum';
+import { convertStringToBool } from '../utils/convert';
 
 class EnvironmentVariable {
   @IsEnum(NodeEnv)

@@ -7,13 +7,12 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
-import { getErrorMessage } from '@shared/constant/error-message.constant';
-import { DecoratorKey } from '@shared/enum/decorator.enum';
-import { ErrorCode } from '@shared/enum/error-code.enum';
-import { TokenStrategyKey } from '@shared/enum/token.enum';
 import { IRequest } from '@shared/interface/request.interface';
 import { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken';
 import { Role } from 'src/db/prisma/enums';
+import { DecoratorKey } from '../types/decorator-key.enum';
+import { CoreErrorCode } from '../types/error-code.enum';
+import { TokenStrategyKey } from '../types/token.enum';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard(TokenStrategyKey.Jwt) {
@@ -46,8 +45,7 @@ export class JwtAuthGuard extends AuthGuard(TokenStrategyKey.Jwt) {
     const request = context.switchToHttp().getRequest<IRequest>();
     const user = request.user;
 
-    if (!user)
-      throw new ForbiddenException(getErrorMessage(ErrorCode.Unauthenticated));
+    if (!user) throw new ForbiddenException(CoreErrorCode.Unauthenticated);
 
     // Check for required roles
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(
@@ -62,18 +60,19 @@ export class JwtAuthGuard extends AuthGuard(TokenStrategyKey.Jwt) {
     if (requiredRoles.includes(user.role)) return true;
 
     throw new UnauthorizedException(
-      new CustomHttpException(ErrorCode.Unauthorized, user.role),
+      new CustomHttpException(CoreErrorCode.Unauthorized, user.role),
     );
   }
 
   handleRequest(err, user, info, context: ExecutionContext) {
     if (info instanceof TokenExpiredError)
-      throw new UnauthorizedException(ErrorCode.TokenExpired);
+      throw new UnauthorizedException(CoreErrorCode.TokenExpired);
 
     if (info instanceof JsonWebTokenError)
-      throw new UnauthorizedException(ErrorCode.InvalidToken);
+      throw new UnauthorizedException(CoreErrorCode.InvalidToken);
 
-    if (err || !user) throw new ForbiddenException(ErrorCode.Unauthenticated);
+    if (err || !user)
+      throw new ForbiddenException(CoreErrorCode.Unauthenticated);
 
     return user;
   }

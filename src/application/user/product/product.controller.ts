@@ -10,9 +10,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiExtraModelsCustom,
+  ApiResponseCustom,
+  ApiPaginationResponse,
+} from '@core/decorator/doc.decorator';
 import { JwtAuthGuard } from '@core/guard/jwt-auth.guard';
 import { CurrentUser } from '@core/decorator/current-user.decorator';
-import { BaseResponse } from '@application/shared/dto/base-response.dto';
+import { BaseResponse } from '@core/response/base-response';
 import { PaginationDto } from '@application/shared/dto/pagination.dto';
 import { ProductApplicationService } from './product.service';
 import {
@@ -21,6 +26,7 @@ import {
   UpdateVariantDto,
   UpdateStockDto,
   ProductResponseDto,
+  ProductVariantResponseDto,
   ProductVariantDto,
 } from './dto';
 
@@ -35,6 +41,7 @@ import {
  * 3. Map to response DTO
  */
 @ApiTags('Product')
+@ApiExtraModelsCustom(ProductResponseDto, ProductVariantResponseDto)
 @Controller('user/product')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
@@ -48,10 +55,12 @@ export class ProductController {
    */
   @Post()
   @ApiOperation({ summary: 'Create new product' })
+  @ApiResponseCustom(ProductResponseDto)
   async createProduct(
+    @Request() req,
     @Body() dto: CreateProductDto,
   ): Promise<BaseResponse<ProductResponseDto>> {
-    const result = await this.productService.createProduct(dto);
+    const result = await this.productService.createProduct(req.user.userId, dto);
     return BaseResponse.of(result);
   }
 
@@ -60,6 +69,7 @@ export class ProductController {
    */
   @Get(':id')
   @ApiOperation({ summary: 'Get product by ID' })
+  @ApiResponseCustom(ProductResponseDto)
   async getProduct(
     @CurrentUser('id') userId: string,
     @Param('id') productId: string,
@@ -73,6 +83,7 @@ export class ProductController {
    */
   @Patch(':id')
   @ApiOperation({ summary: 'Update product' })
+  @ApiResponseCustom(ProductResponseDto)
   async updateProduct(
     @CurrentUser('id') userId: string,
     @Param('id') productId: string,
@@ -87,6 +98,7 @@ export class ProductController {
    */
   @Delete(':id')
   @ApiOperation({ summary: 'Delete product (soft delete)' })
+  @ApiResponseCustom()
   async deleteProduct(
     @CurrentUser('id') userId: string,
     @Param('id') productId: string,
@@ -100,6 +112,7 @@ export class ProductController {
    */
   @Post(':id/variant')
   @ApiOperation({ summary: 'Add variant to product' })
+  @ApiResponseCustom(ProductResponseDto)
   async addVariant(
     @CurrentUser('id') userId: string,
     @Param('id') productId: string,
@@ -114,6 +127,7 @@ export class ProductController {
    */
   @Patch(':id/variant/:variantId')
   @ApiOperation({ summary: 'Update variant' })
+  @ApiResponseCustom(ProductResponseDto)
   async updateVariant(
     @CurrentUser('id') userId: string,
     @Param('id') productId: string,
@@ -134,6 +148,7 @@ export class ProductController {
    */
   @Patch(':id/variant/:variantId/stock')
   @ApiOperation({ summary: 'Update variant stock' })
+  @ApiResponseCustom(ProductResponseDto)
   async updateVariantStock(
     @CurrentUser('id') userId: string,
     @Param('id') productId: string,
@@ -154,6 +169,7 @@ export class ProductController {
    */
   @Patch(':id/variant/:variantId/activate')
   @ApiOperation({ summary: 'Activate variant' })
+  @ApiResponseCustom(ProductResponseDto)
   async activateVariant(
     @CurrentUser('id') userId: string,
     @Param('id') productId: string,
@@ -172,6 +188,7 @@ export class ProductController {
    */
   @Patch(':id/variant/:variantId/deactivate')
   @ApiOperation({ summary: 'Deactivate variant' })
+  @ApiResponseCustom(ProductResponseDto)
   async deactivateVariant(
     @CurrentUser('id') userId: string,
     @Param('id') productId: string,
@@ -190,6 +207,7 @@ export class ProductController {
    */
   @Get('shop/:shopId')
   @ApiOperation({ summary: 'Get products by shop' })
+  @ApiPaginationResponse(ProductResponseDto)
   async getProductsByShop(
     @Param('shopId') shopId: string,
     @Query() pagination: PaginationDto,
@@ -211,6 +229,7 @@ export class ProductController {
    */
   @Get('search')
   @ApiOperation({ summary: 'Search products by name' })
+  @ApiPaginationResponse(ProductResponseDto)
   async searchProducts(
     @Query('q') query: string,
     @Query() pagination: PaginationDto,

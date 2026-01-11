@@ -10,14 +10,21 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiExtraModelsCustom,
+  ApiResponseCustom,
+  ApiPaginationResponse,
+} from '@core/decorator/doc.decorator';
 import { JwtAuthGuard } from '@core/guard/jwt-auth.guard';
 import { CurrentUser } from '@core/decorator/current-user.decorator';
-import { BaseResponse } from '@application/shared/dto/base-response.dto';
+import { BaseResponse } from '@core/response/base-response';
 import { PaginationDto } from '@application/shared/dto/pagination.dto';
 import { OrderApplicationService } from './order.service';
 import {
   CreateOrderDto,
   OrderResponseDto,
+  OrderItemResponseDto,
+  ShippingAddressResponseDto,
   MarkOrderAsPaidDto,
   ShipOrderDto,
   CancelOrderDto,
@@ -34,6 +41,7 @@ import {
  * 3. Map to response DTO
  */
 @ApiTags('Order')
+@ApiExtraModelsCustom(OrderResponseDto, OrderItemResponseDto, ShippingAddressResponseDto)
 @Controller('user/order')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
@@ -47,6 +55,7 @@ export class OrderController {
    */
   @Post()
   @ApiOperation({ summary: 'Create new order' })
+  @ApiResponseCustom(OrderResponseDto)
   async createOrder(
     @CurrentUser('id') customerId: string,
     @Body() dto: CreateOrderDto,
@@ -60,6 +69,7 @@ export class OrderController {
    */
   @Get(':id')
   @ApiOperation({ summary: 'Get order by ID' })
+  @ApiResponseCustom(OrderResponseDto)
   async getOrder(
     @CurrentUser('id') userId: string,
     @Param('id') orderId: string,
@@ -73,6 +83,7 @@ export class OrderController {
    */
   @Patch(':id/confirm')
   @ApiOperation({ summary: 'Confirm order (shop owner)' })
+  @ApiResponseCustom(OrderResponseDto)
   async confirmOrder(
     @CurrentUser('id') userId: string,
     @Param('id') orderId: string,
@@ -86,6 +97,7 @@ export class OrderController {
    */
   @Patch(':id/pay')
   @ApiOperation({ summary: 'Mark order as paid (payment confirmation)' })
+  @ApiResponseCustom(OrderResponseDto)
   async markOrderAsPaid(
     @CurrentUser('id') userId: string,
     @Param('id') orderId: string,
@@ -104,6 +116,7 @@ export class OrderController {
    */
   @Patch(':id/ship')
   @ApiOperation({ summary: 'Ship order (shop owner)' })
+  @ApiResponseCustom(OrderResponseDto)
   async shipOrder(
     @CurrentUser('id') userId: string,
     @Param('id') orderId: string,
@@ -122,6 +135,7 @@ export class OrderController {
    */
   @Patch(':id/deliver')
   @ApiOperation({ summary: 'Mark order as delivered (shop owner)' })
+  @ApiResponseCustom(OrderResponseDto)
   async deliverOrder(
     @CurrentUser('id') userId: string,
     @Param('id') orderId: string,
@@ -135,6 +149,7 @@ export class OrderController {
    */
   @Delete(':id')
   @ApiOperation({ summary: 'Cancel order' })
+  @ApiResponseCustom(OrderResponseDto)
   async cancelOrder(
     @CurrentUser('id') userId: string,
     @Param('id') orderId: string,
@@ -153,6 +168,7 @@ export class OrderController {
    */
   @Get('customer/:customerId')
   @ApiOperation({ summary: 'Get orders by customer' })
+  @ApiPaginationResponse(OrderResponseDto)
   async getOrdersByCustomer(
     @Param('customerId') customerId: string,
     @Query() pagination: PaginationDto,
@@ -172,6 +188,7 @@ export class OrderController {
    */
   @Get('shop/:shopId')
   @ApiOperation({ summary: 'Get orders by shop' })
+  @ApiPaginationResponse(OrderResponseDto)
   async getOrdersByShop(
     @Param('shopId') shopId: string,
     @Query() pagination: PaginationDto,

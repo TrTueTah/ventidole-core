@@ -72,12 +72,14 @@ export class OrderStatus {
   canTransitionTo(newStatus: OrderStatus): boolean {
     const transitions: Record<OrderStatusEnum, OrderStatusEnum[]> = {
       [OrderStatusEnum.PENDING_PAYMENT]: [
-        OrderStatusEnum.CONFIRMED,
+        OrderStatusEnum.PAID, // CREDIT: payment confirmed
+        OrderStatusEnum.CONFIRMED, // COD: order confirmed
         OrderStatusEnum.EXPIRED,
         OrderStatusEnum.CANCELED,
       ],
       [OrderStatusEnum.CONFIRMED]: [
         OrderStatusEnum.PAID,
+        OrderStatusEnum.SHIPPING, // COD: ship directly
         OrderStatusEnum.CANCELED,
       ],
       [OrderStatusEnum.PAID]: [

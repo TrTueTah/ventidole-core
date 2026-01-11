@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
 import { CommunityRepository } from '@domain/community/community/community.repository';
 import { CommunityId } from '@domain/shared/value-objects/community-id.vo';
 import { UserId } from '@domain/shared/value-objects/user-id.vo';
+import { Inject, Injectable } from '@nestjs/common';
 
 /**
  * Post Domain Service
@@ -13,7 +13,10 @@ import { UserId } from '@domain/shared/value-objects/user-id.vo';
  */
 @Injectable()
 export class PostDomainService {
-  constructor(private readonly communityRepository: CommunityRepository) {}
+  constructor(
+    @Inject('CommunityRepository')
+    private readonly communityRepository: CommunityRepository,
+  ) {}
 
   /**
    * Check if user can post in a community

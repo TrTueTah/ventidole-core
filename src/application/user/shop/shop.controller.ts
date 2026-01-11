@@ -9,9 +9,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiExtraModelsCustom,
+  ApiResponseCustom,
+  ApiPaginationResponse,
+} from '@core/decorator/doc.decorator';
 import { JwtAuthGuard } from '@core/guard/jwt-auth.guard';
 import { CurrentUser } from '@core/decorator/current-user.decorator';
-import { BaseResponse } from '@application/shared/dto/base-response.dto';
+import { BaseResponse } from '@core/response/base-response';
 import { PaginationDto } from '@application/shared/dto/pagination.dto';
 import { ShopApplicationService } from './shop.service';
 import {
@@ -31,6 +36,7 @@ import {
  * 3. Map to response DTO
  */
 @ApiTags('Shop')
+@ApiExtraModelsCustom(ShopResponseDto)
 @Controller('user/shop')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
@@ -44,6 +50,7 @@ export class ShopController {
    */
   @Post()
   @ApiOperation({ summary: 'Create new shop' })
+  @ApiResponseCustom(ShopResponseDto)
   async createShop(
     @CurrentUser('id') ownerId: string,
     @Body() dto: CreateShopDto,
@@ -57,6 +64,7 @@ export class ShopController {
    */
   @Get('me')
   @ApiOperation({ summary: 'Get my shop' })
+  @ApiResponseCustom(ShopResponseDto)
   async getMyShop(
     @CurrentUser('id') ownerId: string,
   ): Promise<BaseResponse<ShopResponseDto | null>> {
@@ -69,6 +77,7 @@ export class ShopController {
    */
   @Get(':id')
   @ApiOperation({ summary: 'Get shop by ID' })
+  @ApiResponseCustom(ShopResponseDto)
   async getShop(
     @CurrentUser('id') userId: string,
     @Param('id') shopId: string,
@@ -82,6 +91,7 @@ export class ShopController {
    */
   @Patch(':id')
   @ApiOperation({ summary: 'Update shop' })
+  @ApiResponseCustom(ShopResponseDto)
   async updateShop(
     @CurrentUser('id') userId: string,
     @Param('id') shopId: string,
@@ -96,6 +106,7 @@ export class ShopController {
    */
   @Patch(':id/activate')
   @ApiOperation({ summary: 'Activate shop' })
+  @ApiResponseCustom(ShopResponseDto)
   async activateShop(
     @CurrentUser('id') userId: string,
     @Param('id') shopId: string,
@@ -109,6 +120,7 @@ export class ShopController {
    */
   @Patch(':id/deactivate')
   @ApiOperation({ summary: 'Deactivate shop' })
+  @ApiResponseCustom(ShopResponseDto)
   async deactivateShop(
     @CurrentUser('id') userId: string,
     @Param('id') shopId: string,
@@ -122,6 +134,7 @@ export class ShopController {
    */
   @Get()
   @ApiOperation({ summary: 'Get all shops' })
+  @ApiPaginationResponse(ShopResponseDto)
   async getAllShops(
     @Query() pagination: PaginationDto,
     @Query('isActive') isActive?: boolean,

@@ -266,6 +266,23 @@ export class UserAggregate {
   }
 
   /**
+   * Business method: Check if user can login
+   *
+   * Invariant: User must be active and not deleted to login
+   *
+   * Throws UnauthorizedException if user cannot login
+   */
+  canLogin(): void {
+    if (!this._isActive) {
+      throw new Error('User account is deactivated');
+    }
+
+    if (this._isDeleted) {
+      throw new Error('User account has been deleted');
+    }
+  }
+
+  /**
    * Business method: Deactivate user
    *
    * Invariant: Cannot deactivate already inactive user

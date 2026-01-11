@@ -1,5 +1,5 @@
 import { SetMetadata } from '@nestjs/common';
-import { DecoratorKey } from '@shared/enum/decorator.enum';
+import { DecoratorKey } from '../types/decorator-key.enum';
 
 /**
  * Public route decorator

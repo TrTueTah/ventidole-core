@@ -11,6 +11,7 @@ import {
   CanViewProductPolicy,
   CanManageProductPolicy,
 } from '@domain/commerce/product';
+import { CanManageShopPolicy } from '@domain/commerce/shop/policies/can-manage-shop.policy';
 import {
   CreateProductDto,
   UpdateProductDto,
@@ -45,14 +46,15 @@ export class ProductApplicationService {
     private readonly productRepository: ProductRepository,
     private readonly canViewProduct: CanViewProductPolicy,
     private readonly canManageProduct: CanManageProductPolicy,
+    private readonly canManageShop: CanManageShopPolicy,
   ) {}
 
   /**
    * Create new product
    */
-  async createProduct(dto: CreateProductDto): Promise<ProductResponseDto> {
-    // TODO: Verify shop exists and user is shop owner
-    // TODO: Use CanManageShop policy
+  async createProduct(userId: string, dto: CreateProductDto): Promise<ProductResponseDto> {
+    // Check if user can manage shop
+    await this.canManageShop.check(userId, dto.shopId);
 
     // Create aggregate
     const product = ProductAggregate.create({

@@ -1,20 +1,20 @@
-import { NestFactory, Reflector } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { WinstonModule } from 'nest-winston';
-import { WinstonLogger } from '@shared/service/logger/winston.logger';
-import { ENVIRONMENT } from '@core/config/env.config';
-import helmet from 'helmet';
-import compression from 'compression';
-import cookieParser from 'cookie-parser';
-import bodyParser from 'body-parser';
-import { CustomValidationPipe } from '@core/pipe/validation.pipe';
-import { UnhandledExceptionFilter } from '@core/exception/exception.filter';
-import { HttpLoggerInterceptor } from '@core/interceptor/http-logger.interceptor';
-import { JwtAuthGuard } from '@core/guard/jwt-auth.guard';
-import { VersioningType } from '@nestjs/common';
 import { setupSwagger } from '@core/config/doc.config';
+import { ENVIRONMENT } from '@core/config/env.config';
+import { UnhandledExceptionFilter } from '@core/exception/exception.filter';
+import { JwtAuthGuard } from '@core/guard/jwt-auth.guard';
+import { HttpLoggerInterceptor } from '@core/interceptor/http-logger.interceptor';
+import { CustomValidationPipe } from '@core/pipe/validation.pipe';
+import { VersioningType } from '@nestjs/common';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { getMessage } from '@shared/constant/message.constant';
 import { MessageCode } from '@shared/enum/message-code.enum';
+import { WinstonLogger } from '@shared/service/logger/winston.logger';
+import bodyParser from 'body-parser';
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
+import { WinstonModule } from 'nest-winston';
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   try {

@@ -9,6 +9,7 @@ import {
   CanFollowCommunityPolicy,
 } from '@domain/community/community/policies';
 import { CommunityCreatedNotificationHandler } from './event-handlers/community-created-notification.handler';
+import { KnockService } from '@infra/knock/knock.service';
 
 /**
  * Community Module
@@ -36,6 +37,7 @@ import { CommunityCreatedNotificationHandler } from './event-handlers/community-
     },
     PrismaService,
     EventBus,
+    KnockService,
 
     // Policies
     CanManageCommunityPolicy,

@@ -2,6 +2,8 @@ import { DomainEvent } from '@core/event/domain-event.base';
 import { IEventHandler } from '@core/event/event-handler.interface';
 import { CommunityCreatedEvent } from '@domain/community/community/events/community-created.event';
 import { Injectable, Logger } from '@nestjs/common';
+import { KnockService } from '@infra/knock/knock.service';
+import { PrismaService } from '@db/prisma/prisma.service';
 
 /**
  * Community Created Notification Handler
@@ -23,6 +25,11 @@ export class CommunityCreatedNotificationHandler implements IEventHandler {
     CommunityCreatedNotificationHandler.name,
   );
 
+  constructor(
+    private readonly knockService: KnockService,
+    private readonly prisma: PrismaService,
+  ) {}
+
   async handle(event: DomainEvent): Promise<void> {
     if (!(event instanceof CommunityCreatedEvent)) {
       return;
@@ -36,7 +43,7 @@ export class CommunityCreatedNotificationHandler implements IEventHandler {
       // TODO: Create default community settings
       await this.createDefaultSettings(event.communityId);
 
-      // TODO: Send notification to owner
+      // Send notification to owner
       await this.notifyOwner(event.ownerId, event.communityId, event.name);
 
       // TODO: Track analytics
@@ -70,8 +77,26 @@ export class CommunityCreatedNotificationHandler implements IEventHandler {
     communityId: string,
     name: string,
   ): Promise<void> {
-    // TODO: Send notification via Knock
-    this.logger.log(`Notifying owner ${ownerId} about new community: ${name}`);
+    try {
+      await this.knockService.triggerWorkflow(
+        'community-created',
+        [ownerId],
+        {
+          communityId,
+          communityName: name,
+          url: `/communities/${communityId}`,
+        },
+        { id: 'system', name: 'Ventidole' },
+      );
+      this.logger.log(
+        `Community creation notification sent to owner: ${ownerId}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Failed to send community creation notification to ${ownerId}: ${error.message}`,
+      );
+      // Don't throw - notification is non-critical
+    }
   }
 
   private async trackCreation(

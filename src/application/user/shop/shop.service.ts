@@ -1,21 +1,19 @@
-import { Injectable, Inject, NotFoundException, ConflictException } from '@nestjs/common';
 import {
   PageInfo,
   PaginationResponse,
 } from '@application/shared/dto/pagination.dto';
-import { ShopRepository } from '@domain/commerce/shop/shop.repository';
+import { CanManageShopPolicy, CanViewShopPolicy } from '@domain/commerce/shop';
 import { ShopAggregate } from '@domain/commerce/shop/shop.aggregate';
+import { ShopRepository } from '@domain/commerce/shop/shop.repository';
 import { ShopId } from '@domain/shared/value-objects/shop-id.vo';
 import { UserId } from '@domain/shared/value-objects/user-id.vo';
 import {
-  CanViewShopPolicy,
-  CanManageShopPolicy,
-} from '@domain/commerce/shop';
-import {
-  CreateShopDto,
-  UpdateShopDto,
-  ShopResponseDto,
-} from './dto';
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { CreateShopDto, ShopResponseDto, UpdateShopDto } from './dto';
 
 /**
  * Shop Application Service
@@ -83,9 +81,7 @@ export class ShopApplicationService {
     await this.canViewShop.check(userId, shopId);
 
     // Load aggregate
-    const shop = await this.shopRepository.findById(
-      ShopId.fromString(shopId),
-    );
+    const shop = await this.shopRepository.findById(ShopId.fromString(shopId));
 
     if (!shop) {
       throw new NotFoundException('Shop not found');
@@ -124,9 +120,7 @@ export class ShopApplicationService {
     await this.canManageShop.check(userId, shopId);
 
     // Load aggregate
-    const shop = await this.shopRepository.findById(
-      ShopId.fromString(shopId),
-    );
+    const shop = await this.shopRepository.findById(ShopId.fromString(shopId));
 
     if (!shop) {
       throw new NotFoundException('Shop not found');
@@ -155,9 +149,7 @@ export class ShopApplicationService {
     await this.canManageShop.check(userId, shopId);
 
     // Load aggregate
-    const shop = await this.shopRepository.findById(
-      ShopId.fromString(shopId),
-    );
+    const shop = await this.shopRepository.findById(ShopId.fromString(shopId));
 
     if (!shop) {
       throw new NotFoundException('Shop not found');
@@ -176,14 +168,15 @@ export class ShopApplicationService {
   /**
    * Deactivate shop
    */
-  async deactivateShop(userId: string, shopId: string): Promise<ShopResponseDto> {
+  async deactivateShop(
+    userId: string,
+    shopId: string,
+  ): Promise<ShopResponseDto> {
     // Check policy
     await this.canManageShop.check(userId, shopId);
 
     // Load aggregate
-    const shop = await this.shopRepository.findById(
-      ShopId.fromString(shopId),
-    );
+    const shop = await this.shopRepository.findById(ShopId.fromString(shopId));
 
     if (!shop) {
       throw new NotFoundException('Shop not found');

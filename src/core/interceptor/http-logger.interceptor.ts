@@ -5,13 +5,13 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
-import { NodeEnv } from '@shared/enum/environment.enum';
 import { WinstonLogger } from '@shared/service/logger/winston.logger';
 import chalk from 'chalk';
 import { Response } from 'express';
 import moment from 'moment-timezone';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { NodeEnv } from '../types/environment.enum';
 
 const httpMethodColors = {
   GET: chalk.green.bold,

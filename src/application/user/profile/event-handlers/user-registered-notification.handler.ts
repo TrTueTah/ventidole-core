@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { IEventHandler } from '@core/event/event-handler.interface';
 import { DomainEvent } from '@core/event/domain-event.base';
 import { UserRegisteredEvent } from '@domain/identity/user/events/user-registered.event';
+import { KnockService } from '@infra/knock/knock.service';
+import { PrismaService } from '@db/prisma/prisma.service';
 
 /**
  * User Registered Notification Handler
@@ -21,6 +23,11 @@ import { UserRegisteredEvent } from '@domain/identity/user/events/user-registere
 export class UserRegisteredNotificationHandler implements IEventHandler {
   private readonly logger = new Logger(UserRegisteredNotificationHandler.name);
 
+  constructor(
+    private readonly knockService: KnockService,
+    private readonly prisma: PrismaService,
+  ) {}
+
   async handle(event: DomainEvent): Promise<void> {
     if (!(event instanceof UserRegisteredEvent)) {
       return;
@@ -31,8 +38,8 @@ export class UserRegisteredNotificationHandler implements IEventHandler {
     );
 
     try {
-      // TODO: Send welcome email
-      await this.sendWelcomeEmail(event.email, event.username);
+      // Send welcome email/notification
+      await this.sendWelcomeEmail(event.userId, event.email, event.username);
 
       // TODO: Create default profile settings
       await this.createDefaultSettings(event.userId);
@@ -51,14 +58,29 @@ export class UserRegisteredNotificationHandler implements IEventHandler {
     }
   }
 
-  private async sendWelcomeEmail(email: string, username: string): Promise<void> {
-    // TODO: Integrate with email service (e.g., SendGrid, AWS SES)
-    this.logger.log(`Sending welcome email to: ${email}`);
-    // await this.emailService.send({
-    //   to: email,
-    //   template: 'welcome',
-    //   data: { username },
-    // });
+  private async sendWelcomeEmail(
+    userId: string,
+    email: string,
+    username: string,
+  ): Promise<void> {
+    try {
+      await this.knockService.triggerWorkflow(
+        'user-welcome',
+        [userId],
+        {
+          username,
+          email,
+          url: '/welcome',
+        },
+        { id: 'system', name: 'Ventidole' },
+      );
+      this.logger.log(`Welcome email sent to: ${email}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to send welcome email to ${email}: ${error.message}`,
+      );
+      // Don't throw - notification is non-critical
+    }
   }
 
   private async createDefaultSettings(userId: string): Promise<void> {

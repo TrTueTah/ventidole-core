@@ -3,9 +3,8 @@ import {
   Injectable,
   ValidationPipe,
 } from '@nestjs/common';
-import { getErrorMessage } from '@shared/constant/error-message.constant';
-import { ErrorCode } from '@shared/enum/error-code.enum';
 import { ValidationError } from 'class-validator';
+import { CoreErrorCode } from '../types/error-code.enum';
 
 /**
  * Describe options
@@ -25,7 +24,7 @@ export class CustomValidationPipe extends ValidationPipe {
       transformOptions: { enableImplicitConversion: true },
       exceptionFactory: (errors: ValidationError[]) => {
         return new BadRequestException({
-          message: getErrorMessage(ErrorCode.ValidationFailed),
+          message: CoreErrorCode.ValidationFailed,
           errors: errors.map((error) => ({
             property: error.property,
             constraints: error.constraints,

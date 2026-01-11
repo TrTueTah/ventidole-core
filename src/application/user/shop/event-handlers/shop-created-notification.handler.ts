@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
+import { DomainEvent } from '@core/event/domain-event.base';
+import { IEventHandler } from '@core/event/event-handler.interface';
+import { Injectable, Logger } from '@nestjs/common';
 import { ShopCreatedEvent } from '@domain/commerce/shop/events/shop-created.event';
+import { KnockService } from '@infra/knock/knock.service';
+import { PrismaService } from '@db/prisma/prisma.service';
 
 /**
  * Shop Created Notification Handler
@@ -13,26 +16,64 @@ import { ShopCreatedEvent } from '@domain/commerce/shop/events/shop-created.even
  * - Set up initial shop configuration
  */
 @Injectable()
-export class ShopCreatedNotificationHandler {
-  @OnEvent('shop.created')
-  async handle(event: ShopCreatedEvent): Promise<void> {
-    console.log(`[ShopCreated] Shop ${event.aggregateId} created`);
-    console.log(`  Owner: ${event.ownerId}`);
-    console.log(`  Name: ${event.shopName}`);
+export class ShopCreatedNotificationHandler implements IEventHandler {
+  private readonly logger = new Logger(ShopCreatedNotificationHandler.name);
 
-    // TODO: Send notification to owner's followers
-    // await this.knockService.notify({
-    //   userId: event.ownerId,
-    //   event: 'shop.created',
-    //   data: {
-    //     shopId: event.aggregateId,
-    //     shopName: event.shopName,
-    //   },
-    // });
+  constructor(
+    private readonly knockService: KnockService,
+    private readonly prisma: PrismaService,
+  ) {}
 
-    // TODO: Set up initial shop configuration
-    // - Create default payment methods
-    // - Set up shipping options
-    // - Configure shop settings
+  async handle(event: DomainEvent): Promise<void> {
+    if (!(event instanceof ShopCreatedEvent)) {
+      return;
+    }
+
+    this.logger.log(`Handling ShopCreatedEvent for shop: ${event.aggregateId}`);
+
+    try {
+      // Send notification to shop owner
+      await this.notifyOwner(event.ownerId, event.aggregateId, event.shopName);
+
+      // TODO: Set up initial shop configuration
+      // - Create default payment methods
+      // - Set up shipping options
+      // - Configure shop settings
+
+      this.logger.log(
+        `Successfully processed shop creation: ${event.aggregateId}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Failed to process shop creation: ${event.aggregateId}`,
+        error,
+      );
+      // Note: We don't throw here - event handlers should be resilient
+    }
+  }
+
+  private async notifyOwner(
+    ownerId: string,
+    shopId: string,
+    shopName: string,
+  ): Promise<void> {
+    try {
+      await this.knockService.triggerWorkflow(
+        'shop-created',
+        [ownerId],
+        {
+          shopId,
+          shopName,
+          url: `/shops/${shopId}`,
+        },
+        { id: 'system', name: 'Ventidole' },
+      );
+      this.logger.log(`Shop creation notification sent to owner: ${ownerId}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to send shop creation notification to ${ownerId}: ${error.message}`,
+      );
+      // Don't throw - notification is non-critical
+    }
   }
 }

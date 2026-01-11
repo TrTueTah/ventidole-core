@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@infra/prisma/prisma.service';
 
 /**
@@ -24,22 +24,7 @@ export class CanManageShopPolicy {
     });
 
     if (!shop) {
-      throw new Error('Shop not found');
-    }
-
-    // Get user
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-      select: { role: true },
-    });
-
-    if (!user) {
-      throw new Error('User not found');
-    }
-
-    // Admins can manage all shops
-    if (user.role === 'ADMIN') {
-      return;
+      throw new NotFoundException('Shop not found');
     }
 
     // Shop owners can manage their own shops
@@ -47,6 +32,17 @@ export class CanManageShopPolicy {
       return;
     }
 
-    throw new Error('Forbidden: Cannot manage this shop');
+    // Check if user is admin
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    });
+
+    if (user?.role === 'ADMIN') {
+      return;
+    }
+
+    // Neither owner nor admin
+    throw new ForbiddenException('You do not have permission to manage this shop');
   }
 }

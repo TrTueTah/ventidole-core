@@ -1,4 +1,4 @@
-import { BaseResponse } from '@application/shared/dto/base-response.dto';
+import { BaseResponse } from '@core/response/base-response';
 import {
   PaginationDto,
   PaginationResponse,
@@ -14,6 +14,12 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiExtraModelsCustom,
+  ApiResponseCustom,
+  ApiPaginationResponse,
+} from '@core/decorator/doc.decorator';
 import { CommentApplicationService } from './comment.service';
 import {
   CommentResponseDto,
@@ -34,16 +40,18 @@ import {
  *
  * Note: This controller is THIN - all business logic is in the domain/application layers.
  */
+@ApiTags('Comment')
+@ApiExtraModelsCustom(CommentResponseDto)
 @Controller('user/comment')
 export class CommentController {
   constructor(private readonly commentService: CommentApplicationService) {}
 
   /**
    * Create new comment
-   *
-   * POST /user/comment
    */
   @Post()
+  @ApiOperation({ summary: 'Create new comment' })
+  @ApiResponseCustom(CommentResponseDto)
   async createComment(
     @CurrentUser('id') userId: string,
     @Body() dto: CreateCommentDto,
@@ -54,10 +62,10 @@ export class CommentController {
 
   /**
    * Get comment by ID
-   *
-   * GET /user/comment/:commentId
    */
   @Get(':commentId')
+  @ApiOperation({ summary: 'Get comment by ID' })
+  @ApiResponseCustom(CommentResponseDto)
   async getComment(
     @CurrentUser('id') userId: string | null,
     @Param('commentId') commentId: string,
@@ -68,10 +76,10 @@ export class CommentController {
 
   /**
    * Update comment
-   *
-   * PATCH /user/comment/:commentId
    */
   @Patch(':commentId')
+  @ApiOperation({ summary: 'Update comment' })
+  @ApiResponseCustom(CommentResponseDto)
   async updateComment(
     @CurrentUser('id') userId: string,
     @Param('commentId') commentId: string,
@@ -87,10 +95,10 @@ export class CommentController {
 
   /**
    * Delete comment
-   *
-   * DELETE /user/comment/:commentId
    */
   @Delete(':commentId')
+  @ApiOperation({ summary: 'Delete comment' })
+  @ApiResponseCustom()
   async deleteComment(
     @CurrentUser('id') userId: string,
     @Param('commentId') commentId: string,
@@ -101,10 +109,10 @@ export class CommentController {
 
   /**
    * Get comments by post
-   *
-   * GET /user/comment/post/:postId
    */
   @Get('post/:postId')
+  @ApiOperation({ summary: 'Get comments by post' })
+  @ApiPaginationResponse(CommentResponseDto)
   async getCommentsByPost(
     @Param('postId') postId: string,
     @Query() pagination: PaginationDto,
@@ -119,10 +127,10 @@ export class CommentController {
 
   /**
    * Get replies to a comment
-   *
-   * GET /user/comment/:commentId/replies
    */
   @Get(':commentId/replies')
+  @ApiOperation({ summary: 'Get replies to a comment' })
+  @ApiPaginationResponse(CommentResponseDto)
   async getReplies(
     @Param('commentId') commentId: string,
     @Query() pagination: PaginationDto,
@@ -137,10 +145,10 @@ export class CommentController {
 
   /**
    * Get comments by author
-   *
-   * GET /user/comment/author/:authorId
    */
   @Get('author/:authorId')
+  @ApiOperation({ summary: 'Get comments by author' })
+  @ApiPaginationResponse(CommentResponseDto)
   async getCommentsByAuthor(
     @Param('authorId') authorId: string,
     @Query() pagination: PaginationDto,

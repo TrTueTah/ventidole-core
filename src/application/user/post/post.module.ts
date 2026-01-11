@@ -12,6 +12,7 @@ import {
 } from '@domain/content/post/policies';
 import { PostCreatedNotificationHandler } from './event-handlers/post-created-notification.handler';
 import { CommunityRepositoryPrisma } from '@infra/prisma/community/community/community.repository.prisma';
+import { KnockService } from '@infra/knock/knock.service';
 
 /**
  * Post Module
@@ -46,6 +47,7 @@ import { CommunityRepositoryPrisma } from '@infra/prisma/community/community/com
     },
     PrismaService,
     EventBus,
+    KnockService,
 
     // Policies
     CanViewPostPolicy,

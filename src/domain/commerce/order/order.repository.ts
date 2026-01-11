@@ -50,4 +50,9 @@ export interface OrderRepository {
     orders: OrderAggregate[];
     total: number;
   }>;
+
+  /**
+   * Find order by PayOS orderCode (for webhook processing)
+   */
+  findByPaymentOrderCode(orderCode: number): Promise<OrderAggregate | null>;
 }

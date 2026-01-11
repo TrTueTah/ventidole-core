@@ -3,7 +3,7 @@ import { CurrentUser } from '@core/decorator/current-user.decorator';
 import { ProfileApplicationService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { UserResponseDto } from './dto/user-response.dto';
-import { BaseResponse } from '@application/shared/dto/base-response.dto';
+import { BaseResponse } from '@core/response/base-response';
 
 /**
  * Profile Controller

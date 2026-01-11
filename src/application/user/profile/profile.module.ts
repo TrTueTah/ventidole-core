@@ -10,6 +10,7 @@ import {
   CanDeactivateUserPolicy,
 } from '@domain/identity/user/policies';
 import { UserRegisteredNotificationHandler } from './event-handlers/user-registered-notification.handler';
+import { KnockService } from '@infra/knock/knock.service';
 
 /**
  * Profile Module
@@ -37,6 +38,7 @@ import { UserRegisteredNotificationHandler } from './event-handlers/user-registe
     },
     PrismaService,
     EventBus,
+    KnockService,
 
     // Policies
     CanUpdateProfilePolicy,

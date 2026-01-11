@@ -6,17 +6,13 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { getErrorMessage } from '@shared/constant/error-message.constant';
-import { ErrorCode, isErrorCode } from '@shared/enum/error-code.enum';
-import { CustomError } from '@shared/helper/error';
-import { BaseResponse } from '@shared/helper/response';
-import {
-  IException,
-  IExceptionDetail,
-} from '@shared/interface/exception.interface';
 import { WinstonLogger } from '@shared/service/logger/winston.logger';
 import chalk from 'chalk';
 import moment from 'moment';
+import { BaseResponse } from '../response/base-response';
+import { CoreErrorCode, isCoreErrorCode } from '../types/error-code.enum';
+import { CustomError } from './custom-error';
+import { IException, IExceptionDetail } from './exception.interface';
 
 @Catch()
 export class UnhandledExceptionFilter implements ExceptionFilter {
@@ -67,16 +63,16 @@ export class UnhandledExceptionFilter implements ExceptionFilter {
     statusCode: number,
     message: string,
   ): IExceptionDetail {
-    return isErrorCode(message)
-      ? { statusCode, errorCode: message, message: getErrorMessage(message) }
-      : { statusCode, errorCode: ErrorCode.HttpError, message };
+    return isCoreErrorCode(message)
+      ? { statusCode, errorCode: message, message }
+      : { statusCode, errorCode: CoreErrorCode.HttpError, message };
   }
 
   private getExceptionDetail(exception: unknown): IExceptionDetail {
     if (exception instanceof CustomError)
       return {
-        statusCode: HttpStatus.BAD_REQUEST,
-        errorCode: exception.errorCode,
+        statusCode: exception.statusCode,
+        errorCode: exception.code,
         message: exception.message,
       };
 
@@ -97,18 +93,18 @@ export class UnhandledExceptionFilter implements ExceptionFilter {
           return {
             statusCode: exception.getStatus(),
             errorCode: response.errorCode,
-            message: getErrorMessage(response.errorCode, response.params),
+            message: response.errorCode, // Use error code as message for now
           };
       }
     }
 
     return {
-      statusCode: HttpStatus.BAD_REQUEST,
-      errorCode: ErrorCode.UnknownError,
+      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      errorCode: CoreErrorCode.UnknownError,
       message:
         exception instanceof Error
           ? exception.message
-          : getErrorMessage(ErrorCode.UnknownError),
+          : CoreErrorCode.UnknownError,
     };
   }
 }

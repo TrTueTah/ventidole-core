@@ -1,5 +1,8 @@
-import { BaseResponse } from '@application/shared/dto/base-response.dto';
-import { PaginationDto, PaginationResponse } from '@application/shared/dto/pagination.dto';
+import { BaseResponse } from '@core/response/base-response';
+import {
+  PaginationDto,
+  PaginationResponse,
+} from '@application/shared/dto/pagination.dto';
 import { CurrentUser } from '@core/decorator/current-user.decorator';
 import {
   Body,
@@ -11,6 +14,12 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiExtraModelsCustom,
+  ApiResponseCustom,
+  ApiPaginationResponse,
+} from '@core/decorator/doc.decorator';
 import { CommunityApplicationService } from './community.service';
 import {
   CommunityResponseDto,
@@ -31,16 +40,18 @@ import {
  *
  * Note: This controller is THIN - all business logic is in the domain/application layers.
  */
+@ApiTags('Community')
+@ApiExtraModelsCustom(CommunityResponseDto)
 @Controller('user/community')
 export class CommunityController {
   constructor(private readonly communityService: CommunityApplicationService) {}
 
   /**
    * Create new community
-   *
-   * POST /user/community
    */
   @Post()
+  @ApiOperation({ summary: 'Create new community' })
+  @ApiResponseCustom(CommunityResponseDto)
   async createCommunity(
     @CurrentUser('id') userId: string,
     @Body() dto: CreateCommunityDto,
@@ -51,10 +62,10 @@ export class CommunityController {
 
   /**
    * Get community by ID
-   *
-   * GET /user/community/:communityId
    */
   @Get(':communityId')
+  @ApiOperation({ summary: 'Get community by ID' })
+  @ApiResponseCustom(CommunityResponseDto)
   async getCommunity(
     @Param('communityId') communityId: string,
   ): Promise<BaseResponse<CommunityResponseDto>> {
@@ -64,10 +75,10 @@ export class CommunityController {
 
   /**
    * Update community profile
-   *
-   * PATCH /user/community/:communityId
    */
   @Patch(':communityId')
+  @ApiOperation({ summary: 'Update community profile' })
+  @ApiResponseCustom(CommunityResponseDto)
   async updateCommunity(
     @CurrentUser('id') userId: string,
     @Param('communityId') communityId: string,
@@ -83,10 +94,10 @@ export class CommunityController {
 
   /**
    * Follow community
-   *
-   * POST /user/community/:communityId/follow
    */
   @Post(':communityId/follow')
+  @ApiOperation({ summary: 'Follow community' })
+  @ApiResponseCustom()
   async followCommunity(
     @CurrentUser('id') userId: string,
     @Param('communityId') communityId: string,
@@ -97,10 +108,10 @@ export class CommunityController {
 
   /**
    * Unfollow community
-   *
-   * DELETE /user/community/:communityId/follow
    */
   @Delete(':communityId/follow')
+  @ApiOperation({ summary: 'Unfollow community' })
+  @ApiResponseCustom()
   async unfollowCommunity(
     @CurrentUser('id') userId: string,
     @Param('communityId') communityId: string,
@@ -111,10 +122,10 @@ export class CommunityController {
 
   /**
    * Get my communities (as owner)
-   *
-   * GET /user/community/my/owned
    */
   @Get('my/owned')
+  @ApiOperation({ summary: 'Get my communities (as owner)' })
+  @ApiResponseCustom(CommunityResponseDto, true)
   async getMyCommunities(
     @CurrentUser('id') userId: string,
   ): Promise<BaseResponse<CommunityResponseDto[]>> {
@@ -125,10 +136,10 @@ export class CommunityController {
 
   /**
    * Get followed communities
-   *
-   * GET /user/community/my/followed
    */
   @Get('my/followed')
+  @ApiOperation({ summary: 'Get followed communities' })
+  @ApiResponseCustom(CommunityResponseDto, true)
   async getFollowedCommunities(
     @CurrentUser('id') userId: string,
   ): Promise<BaseResponse<CommunityResponseDto[]>> {
@@ -139,10 +150,10 @@ export class CommunityController {
 
   /**
    * Get all communities with pagination
-   *
-   * GET /user/community
    */
   @Get()
+  @ApiOperation({ summary: 'Get all communities with pagination' })
+  @ApiPaginationResponse(CommunityResponseDto)
   async getAllCommunities(
     @Query() pagination: PaginationDto,
     @Query('type') type?: string,
@@ -159,10 +170,10 @@ export class CommunityController {
 
   /**
    * Delete community
-   *
-   * DELETE /user/community/:communityId
    */
   @Delete(':communityId')
+  @ApiOperation({ summary: 'Delete community' })
+  @ApiResponseCustom()
   async deleteCommunity(
     @CurrentUser('id') userId: string,
     @Param('communityId') communityId: string,

@@ -10,6 +10,7 @@ import {
   CanEditCommentPolicy,
 } from '@domain/content/comment/policies';
 import { CommentCreatedNotificationHandler } from './event-handlers/comment-created-notification.handler';
+import { KnockService } from '@infra/knock/knock.service';
 
 /**
  * Comment Module
@@ -41,6 +42,7 @@ import { CommentCreatedNotificationHandler } from './event-handlers/comment-crea
     },
     PrismaService,
     EventBus,
+    KnockService,
 
     // Policies
     CanViewCommentPolicy,

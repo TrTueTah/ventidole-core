@@ -9,3 +9,5 @@ export { UserId } from './user-id.vo';
 export { CommunityId } from './community-id.vo';
 export { PostId } from './post-id.vo';
 export { OrderId } from './order-id.vo';
+export { MembershipTierId } from './membership-tier-id.vo';
+export { SubscriptionId } from './subscription-id.vo';

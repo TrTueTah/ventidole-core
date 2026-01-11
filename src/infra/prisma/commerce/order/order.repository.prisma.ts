@@ -44,6 +44,10 @@ export class OrderRepositoryPrisma implements OrderRepository {
         shippingPostalCode: data.shippingPostalCode,
         paymentMethod: data.paymentMethod,
         paymentId: data.paymentId,
+        paymentOrderCode: data.paymentOrderCode,
+        checkoutUrl: data.checkoutUrl,
+        qrCode: data.qrCode,
+        paidAt: data.paidAt,
         trackingNumber: data.trackingNumber,
         cancelReason: data.cancelReason,
         totalAmount: data.totalAmount,
@@ -53,6 +57,10 @@ export class OrderRepositoryPrisma implements OrderRepository {
       update: {
         status: data.status,
         paymentId: data.paymentId,
+        paymentOrderCode: data.paymentOrderCode,
+        checkoutUrl: data.checkoutUrl,
+        qrCode: data.qrCode,
+        paidAt: data.paidAt,
         trackingNumber: data.trackingNumber,
         cancelReason: data.cancelReason,
         updatedAt: data.updatedAt,
@@ -269,6 +277,10 @@ export class OrderRepositoryPrisma implements OrderRepository {
       },
       paymentMethod: data.paymentMethod,
       paymentId: data.paymentId,
+      paymentOrderCode: data.paymentOrderCode,
+      checkoutUrl: data.checkoutUrl,
+      qrCode: data.qrCode,
+      paidAt: data.paidAt,
       trackingNumber: data.trackingNumber,
       cancelReason: data.cancelReason,
       totalAmount: data.totalAmount,
@@ -296,11 +308,37 @@ export class OrderRepositoryPrisma implements OrderRepository {
       shippingPostalCode: order.shippingAddress.postalCode,
       paymentMethod: order.paymentMethod.value,
       paymentId: order.paymentId,
+      paymentOrderCode: order.paymentOrderCode,
+      checkoutUrl: order.checkoutUrl,
+      qrCode: order.qrCode,
+      paidAt: order.paidAt,
       trackingNumber: order.trackingNumber,
       cancelReason: order.cancelReason,
       totalAmount: order.totalAmount.amount,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
     };
+  }
+
+  async findByPaymentOrderCode(orderCode: number): Promise<OrderAggregate | null> {
+    const order = await this.prisma.order.findFirst({
+      where: { paymentOrderCode: orderCode },
+      include: {
+        items: {
+          select: {
+            productId: true,
+            productName: true,
+            quantity: true,
+            unitPrice: true,
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      return null;
+    }
+
+    return this.fromPersistence(order);
   }
 }

@@ -1,16 +1,15 @@
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ApiVersion } from '@shared/enum/api-version.enum';
-import path from 'path';
 import fs from 'fs';
 import yaml from 'js-yaml';
+import path from 'path';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 
 export function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('API Docs')
     .setDescription('Custom Swagger UI in NestJS')
-    .setVersion(ApiVersion.V1)
+    .setVersion('1.0')
     .addBearerAuth({
       type: 'http',
       scheme: 'bearer',

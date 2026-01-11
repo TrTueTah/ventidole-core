@@ -1,6 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { OnEvent } from '@nestjs/event-emitter';
+import { DomainEvent } from '@core/event/domain-event.base';
+import { IEventHandler } from '@core/event/event-handler.interface';
+import { Injectable, Logger } from '@nestjs/common';
 import { ProductCreatedEvent } from '@domain/commerce/product/events/product-created.event';
+import { KnockService } from '@infra/knock/knock.service';
+import { PrismaService } from '@db/prisma/prisma.service';
 
 /**
  * Product Created Notification Handler
@@ -13,24 +16,82 @@ import { ProductCreatedEvent } from '@domain/commerce/product/events/product-cre
  * - Log product creation
  */
 @Injectable()
-export class ProductCreatedNotificationHandler {
-  @OnEvent('product.created')
-  async handle(event: ProductCreatedEvent): Promise<void> {
-    console.log(`[ProductCreated] Product ${event.aggregateId} created`);
-    console.log(`  Shop: ${event.shopId}`);
-    console.log(`  Name: ${event.productName}`);
+export class ProductCreatedNotificationHandler implements IEventHandler {
+  private readonly logger = new Logger(ProductCreatedNotificationHandler.name);
 
-    // TODO: Integrate with Knock to notify shop followers
-    // await this.knockService.notify({
-    //   shopId: event.shopId,
-    //   event: 'product.created',
-    //   data: {
-    //     productId: event.aggregateId,
-    //     productName: event.productName,
-    //   },
-    // });
+  constructor(
+    private readonly knockService: KnockService,
+    private readonly prisma: PrismaService,
+  ) {}
 
-    // TODO: Index product for search (Elasticsearch, Algolia, etc.)
-    // await this.searchService.indexProduct(event.aggregateId);
+  async handle(event: DomainEvent): Promise<void> {
+    if (!(event instanceof ProductCreatedEvent)) {
+      return;
+    }
+
+    this.logger.log(
+      `Handling ProductCreatedEvent for product: ${event.aggregateId}`,
+    );
+
+    try {
+      // Send notification to shop owner about new product
+      await this.notifyShopOwner(
+        event.shopId,
+        event.aggregateId,
+        event.productName,
+      );
+
+      // TODO: Index product for search (Elasticsearch, Algolia, etc.)
+      // await this.searchService.indexProduct(event.aggregateId);
+
+      this.logger.log(
+        `Successfully processed product creation: ${event.aggregateId}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Failed to process product creation: ${event.aggregateId}`,
+        error,
+      );
+      // Note: We don't throw here - event handlers should be resilient
+    }
+  }
+
+  private async notifyShopOwner(
+    shopId: string,
+    productId: string,
+    productName: string,
+  ): Promise<void> {
+    try {
+      // Fetch shop details to get owner
+      const shop = await this.prisma.shop.findUnique({
+        where: { id: shopId },
+        select: { ownerId: true },
+      });
+
+      if (!shop) {
+        this.logger.warn(`Shop not found: ${shopId}`);
+        return;
+      }
+
+      await this.knockService.triggerWorkflow(
+        'product-created',
+        [shop.ownerId],
+        {
+          productId,
+          productName,
+          shopId,
+          url: `/products/${productId}`,
+        },
+        { id: 'system', name: 'Ventidole' },
+      );
+      this.logger.log(
+        `Product creation notification sent to shop owner: ${shop.ownerId}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Failed to send product creation notification for ${productId}: ${error.message}`,
+      );
+      // Don't throw - notification is non-critical
+    }
   }
 }

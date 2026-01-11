@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .header {
+      background-color: #4F46E5;
+      color: #ffffff;
+      padding: 30px;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .content {
+      padding: 40px 30px;
+    }
+    .content h2 {
+      color: #333333;
+      font-size: 20px;
+      margin-top: 0;
+    }
+    .content p {
+      color: #666666;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .otp-box {
+      background-color: #f9fafb;
+      border: 2px dashed #d1d5db;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin: 30px 0;
+    }
+    .otp {
+      font-size: 32px;
+      font-weight: bold;
+      color: #4F46E5;
+      letter-spacing: 8px;
+      margin: 0;
+    }
+    .expiration {
+      color: #9ca3af;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    .footer {
+      background-color: #f9fafb;
+      color: #9ca3af;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+    }
+    .warning {
+      background-color: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 12px;
+      margin: 20px 0;
+      color: #92400e;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🎯 Ventidole</h1>
+    </div>
+    <div class="content">
+      <h2>Email Verification</h2>
+      <p>Hello!</p>
+      <p>Your verification code is ready. Please use the code below to complete your verification:</p>
+
+      <div class="otp-box">
+        <p class="otp">{{otp}}</p>
+        <p class="expiration">This code will expire in {{expiration}} minutes</p>
+      </div>
+
+      <div class="warning">
+        ⚠️ If you didn't request this verification code, please ignore this email.
+      </div>
+
+      <p>For security reasons, please do not share this code with anyone.</p>
+    </div>
+    <div class="footer">
+      © {{year}} Ventidole. All rights reserved.
+    </div>
+  </div>
+</body>
+</html>

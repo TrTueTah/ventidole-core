@@ -1,10 +1,10 @@
+import { PrismaClient } from '@database/prisma/client';
 import {
   Injectable,
   Logger,
   OnModuleDestroy,
   OnModuleInit,
 } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
 
 /**
  * Prisma Service

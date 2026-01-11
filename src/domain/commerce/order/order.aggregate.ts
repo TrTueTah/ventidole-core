@@ -45,6 +45,10 @@ export class OrderAggregate {
   private readonly _shippingAddress: ShippingAddress;
   private readonly _paymentMethod: PaymentMethod;
   private _paymentId: string | null;
+  private _paymentOrderCode: number | null; // PayOS orderCode for webhook lookup
+  private _checkoutUrl: string | null; // PayOS checkout URL
+  private _qrCode: string | null; // PayOS QR code
+  private _paidAt: Date | null; // Payment completion timestamp
   private _trackingNumber: string | null;
   private _cancelReason: string | null;
   private readonly _totalAmount: Money;
@@ -61,6 +65,10 @@ export class OrderAggregate {
     shippingAddress: ShippingAddress;
     paymentMethod: PaymentMethod;
     paymentId: string | null;
+    paymentOrderCode: number | null;
+    checkoutUrl: string | null;
+    qrCode: string | null;
+    paidAt: Date | null;
     trackingNumber: string | null;
     cancelReason: string | null;
     totalAmount: Money;
@@ -75,6 +83,10 @@ export class OrderAggregate {
     this._shippingAddress = props.shippingAddress;
     this._paymentMethod = props.paymentMethod;
     this._paymentId = props.paymentId;
+    this._paymentOrderCode = props.paymentOrderCode;
+    this._checkoutUrl = props.checkoutUrl;
+    this._qrCode = props.qrCode;
+    this._paidAt = props.paidAt;
     this._trackingNumber = props.trackingNumber;
     this._cancelReason = props.cancelReason;
     this._totalAmount = props.totalAmount;
@@ -130,6 +142,10 @@ export class OrderAggregate {
       shippingAddress: ShippingAddress.create(props.shippingAddress),
       paymentMethod: PaymentMethod.create(props.paymentMethod),
       paymentId: null,
+      paymentOrderCode: null,
+      checkoutUrl: null,
+      qrCode: null,
+      paidAt: null,
       trackingNumber: null,
       cancelReason: null,
       totalAmount,
@@ -169,6 +185,10 @@ export class OrderAggregate {
     };
     paymentMethod: string;
     paymentId: string | null;
+    paymentOrderCode: number | null;
+    checkoutUrl: string | null;
+    qrCode: string | null;
+    paidAt: Date | null;
     trackingNumber: string | null;
     cancelReason: string | null;
     totalAmount: number;
@@ -197,12 +217,56 @@ export class OrderAggregate {
       shippingAddress: ShippingAddress.create(props.shippingAddress),
       paymentMethod: PaymentMethod.create(props.paymentMethod),
       paymentId: props.paymentId,
+      paymentOrderCode: props.paymentOrderCode,
+      checkoutUrl: props.checkoutUrl,
+      qrCode: props.qrCode,
+      paidAt: props.paidAt,
       trackingNumber: props.trackingNumber,
       cancelReason: props.cancelReason,
       totalAmount: Money.fromAmount(props.totalAmount),
       createdAt: props.createdAt,
       updatedAt: props.updatedAt,
     });
+  }
+
+  /**
+   * Business method: Set payment details (for CREDIT orders)
+   * Called after creating PayOS payment link
+   */
+  setPaymentDetails(
+    paymentOrderCode: number,
+    checkoutUrl: string,
+    qrCode: string,
+  ): void {
+    this._paymentOrderCode = paymentOrderCode;
+    this._checkoutUrl = checkoutUrl;
+    this._qrCode = qrCode;
+    this._updatedAt = new Date();
+  }
+
+  /**
+   * Business method: Confirm payment (webhook processing)
+   * Transitions from PENDING_PAYMENT to PAID
+   */
+  confirmPayment(paidAt: Date): void {
+    // Invariant: Can only confirm payment from PENDING_PAYMENT
+    if (!this._status.isPendingPayment()) {
+      throw new Error(
+        `Cannot confirm payment for order in status: ${this._status.value}`,
+      );
+    }
+
+    this._status = OrderStatus.paid();
+    this._paidAt = paidAt;
+    this._updatedAt = new Date();
+
+    this.addDomainEvent(
+      new OrderPaidEvent(
+        this._id.value,
+        this._paymentOrderCode?.toString() || 'unknown',
+        this._totalAmount.amount,
+      ),
+    );
   }
 
   /**
@@ -402,6 +466,22 @@ export class OrderAggregate {
 
   get paymentId(): string | null {
     return this._paymentId;
+  }
+
+  get paymentOrderCode(): number | null {
+    return this._paymentOrderCode;
+  }
+
+  get checkoutUrl(): string | null {
+    return this._checkoutUrl;
+  }
+
+  get qrCode(): string | null {
+    return this._qrCode;
+  }
+
+  get paidAt(): Date | null {
+    return this._paidAt;
   }
 
   get trackingNumber(): string | null {
