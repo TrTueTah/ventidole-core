@@ -1,4 +1,7 @@
-import { PageInfo, PaginationResponse } from '@application/shared/dto/pagination.dto';
+import {
+  PageInfo,
+  PaginationResponse,
+} from '@application/shared/dto/pagination.dto';
 import { CommunityAggregate } from '@domain/community/community/community.aggregate';
 import { CommunityRepository } from '@domain/community/community/community.repository';
 import { CanFollowCommunityPolicy } from '@domain/community/community/policies/can-follow-community.policy';
@@ -6,12 +9,15 @@ import { CanManageCommunityPolicy } from '@domain/community/community/policies/c
 import { CommunityName } from '@domain/community/community/value-objects/community-name.vo';
 import { CommunityId } from '@domain/shared/value-objects/community-id.vo';
 import { UserId } from '@domain/shared/value-objects/user-id.vo';
+import { PrismaService } from '@infra/prisma/prisma.service';
+import { StreamChatService } from '@infra/stream-chat/stream-chat.service';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   CommunityResponseDto,
   CreateCommunityDto,
   UpdateCommunityDto,
 } from './dto';
+import { CommunityDetailResponseDto } from './dto/community-detail-response.dto';
 
 /**
  * Community Application Service
@@ -37,6 +43,8 @@ export class CommunityApplicationService {
     private readonly communityRepository: CommunityRepository,
     private readonly canManageCommunity: CanManageCommunityPolicy,
     private readonly canFollowCommunity: CanFollowCommunityPolicy,
+    private readonly streamChatService: StreamChatService,
+    private readonly prisma: PrismaService,
   ) {}
 
   /**
@@ -69,9 +77,14 @@ export class CommunityApplicationService {
   }
 
   /**
-   * Get community by ID
+   * Get community by ID with detailed information
+   *
+   * Includes:
+   * - Community basic info
+   * - List of idols
+   * - Chat channel info (if exists)
    */
-  async getCommunity(communityId: string): Promise<CommunityResponseDto> {
+  async getCommunity(communityId: string): Promise<CommunityDetailResponseDto> {
     const community = await this.communityRepository.findById(
       CommunityId.fromString(communityId),
     );
@@ -80,7 +93,37 @@ export class CommunityApplicationService {
       throw new NotFoundException('Community not found');
     }
 
-    return this.mapToDto(community);
+    // Fetch idols belonging to this community
+    const idols = await this.prisma.user.findMany({
+      where: {
+        communityId: communityId,
+        isDeleted: false,
+        isActive: true,
+      },
+      select: {
+        id: true,
+        username: true,
+        avatarUrl: true,
+        bio: true,
+      },
+    });
+
+    // Fetch channel information from GetStream
+    const channelId = `community_${communityId}`;
+    const chatChannel = await this.streamChatService.getChannelInfo(channelId);
+
+    // Map to detailed DTO
+    const baseDto = this.mapToDto(community);
+    return {
+      ...baseDto,
+      idols: idols.map((idol) => ({
+        id: idol.id,
+        username: idol.username,
+        avatarUrl: idol.avatarUrl,
+        bio: idol.bio,
+      })),
+      chatChannel: chatChannel ?? undefined,
+    };
   }
 
   /**
@@ -209,7 +252,8 @@ export class CommunityApplicationService {
 
     try {
       // STEP 1: Batch fetch all communities in one query (without followers for performance)
-      const communities = await this.communityRepository.findByIds(communityIds);
+      const communities =
+        await this.communityRepository.findByIds(communityIds);
       const foundCommunityIds = new Set(communities.map((c) => c.id.value));
 
       // Track communities that don't exist
@@ -224,10 +268,11 @@ export class CommunityApplicationService {
       }
 
       // STEP 2: Check which communities user already follows (single query)
-      const alreadyFollowing = await this.communityRepository.checkAlreadyFollowing(
-        userId,
-        communities.map((c) => c.id.value),
-      );
+      const alreadyFollowing =
+        await this.communityRepository.checkAlreadyFollowing(
+          userId,
+          communities.map((c) => c.id.value),
+        );
 
       // STEP 3: Process valid communities that aren't already followed
       for (const community of communities) {

@@ -1,15 +1,16 @@
+import { EventBus } from '@core/event/event-bus.service';
+import {
+  CanFollowCommunityPolicy,
+  CanManageCommunityPolicy,
+} from '@domain/community/community/policies';
+import { KnockService } from '@infra/knock/knock.service';
+import { CommunityRepositoryPrisma } from '@infra/prisma/community/community/community.repository.prisma';
+import { PrismaService } from '@infra/prisma/prisma.service';
+import { StreamChatService } from '@infra/stream-chat/stream-chat.service';
 import { Module, OnModuleInit } from '@nestjs/common';
 import { CommunityController } from './community.controller';
 import { CommunityApplicationService } from './community.service';
-import { CommunityRepositoryPrisma } from '@infra/prisma/community/community/community.repository.prisma';
-import { PrismaService } from '@infra/prisma/prisma.service';
-import { EventBus } from '@core/event/event-bus.service';
-import {
-  CanManageCommunityPolicy,
-  CanFollowCommunityPolicy,
-} from '@domain/community/community/policies';
 import { CommunityCreatedNotificationHandler } from './event-handlers/community-created-notification.handler';
-import { KnockService } from '@infra/knock/knock.service';
 
 /**
  * Community Module
@@ -38,6 +39,7 @@ import { KnockService } from '@infra/knock/knock.service';
     PrismaService,
     EventBus,
     KnockService,
+    StreamChatService,
 
     // Policies
     CanManageCommunityPolicy,

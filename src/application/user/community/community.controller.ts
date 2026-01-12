@@ -29,6 +29,7 @@ import {
   GetCommunitiesDto,
   UpdateCommunityDto,
 } from './dto';
+import { CommunityDetailResponseDto } from './dto/community-detail-response.dto';
 
 /**
  * Community Controller
@@ -48,7 +49,11 @@ import {
  * - Public endpoints (get community by ID, list all communities) are marked with @Public()
  */
 @ApiTags('Community')
-@ApiExtraModelsCustom(CommunityResponseDto, BulkFollowResultDto)
+@ApiExtraModelsCustom(
+  CommunityResponseDto,
+  BulkFollowResultDto,
+  CommunityDetailResponseDto,
+)
 @Controller('user/community')
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth()
@@ -74,14 +79,15 @@ export class CommunityController {
    * Get community by ID
    *
    * Public endpoint - no authentication required
+   * Returns detailed community information including idols and chat channel
    */
   @Get(':communityId')
   @Public()
-  @ApiOperation({ summary: 'Get community by ID' })
-  @ApiResponseCustom(CommunityResponseDto)
+  @ApiOperation({ summary: 'Get community by ID with details' })
+  @ApiResponseCustom(CommunityDetailResponseDto)
   async getCommunity(
     @Param('communityId') communityId: string,
-  ): Promise<BaseResponse<CommunityResponseDto>> {
+  ): Promise<BaseResponse<CommunityDetailResponseDto>> {
     const community = await this.communityService.getCommunity(communityId);
     return BaseResponse.of(community);
   }

@@ -653,7 +653,7 @@ paths:
                     example: OK
                     description: Response message
                   data:
-                    $ref: '#/components/schemas/CommunityResponseDto'
+                    $ref: '#/components/schemas/CommunityDetailResponseDto'
                     description: Response data
                   error:
                     type: object
@@ -669,7 +669,7 @@ paths:
                   - statusCode
                   - message
       security: *ref_2
-      summary: Get community by ID
+      summary: Get community by ID with details
       tags: *ref_3
     patch:
       operationId: CommunityController_updateCommunity
@@ -4379,7 +4379,7 @@ components:
         type:
           type: string
           example: GROUP
-          enum:
+          enum: &ref_17
             - SOLO
             - GROUP
         description:
@@ -4456,6 +4456,111 @@ components:
         - succeeded
         - failed
         - errors
+    IdolDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Idol ID
+        username:
+          type: string
+          example: john_idol
+          description: Idol username
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          description: Idol avatar URL
+        bio:
+          type: object
+          example: Amazing idol from K-pop
+          description: Idol bio
+      required:
+        - id
+        - username
+    ChatChannelDto:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        image:
+          type: string
+        memberCount:
+          type: number
+      required:
+        - id
+        - memberCount
+    CommunityDetailResponseDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: comm_abc123
+        name:
+          type: string
+          example: K-Pop Lovers
+        type:
+          type: string
+          example: GROUP
+          enum: *ref_17
+        description:
+          type: object
+          example: A community for K-Pop enthusiasts
+          nullable: true
+        avatarUrl:
+          type: object
+          example: https://example.com/avatar.jpg
+          nullable: true
+        backgroundUrl:
+          type: object
+          example: https://example.com/background.jpg
+          nullable: true
+        followerCount:
+          type: number
+          example: 1250
+        postCount:
+          type: number
+          example: 430
+        isActive:
+          type: boolean
+          example: true
+        createdAt:
+          format: date-time
+          type: string
+          example: '2024-01-15T08:30:00Z'
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2024-01-20T14:45:00Z'
+        isFollowed:
+          type: boolean
+          example: false
+          description: Whether the current user is following this community
+          nullable: true
+        idols:
+          description: List of idols belonging to the community
+          type: array
+          items:
+            $ref: '#/components/schemas/IdolDto'
+        chatChannel:
+          description: Community chat channel if exists
+          allOf:
+            - $ref: '#/components/schemas/ChatChannelDto'
+      required:
+        - id
+        - name
+        - type
+        - description
+        - avatarUrl
+        - backgroundUrl
+        - followerCount
+        - postCount
+        - isActive
+        - createdAt
+        - updatedAt
+        - idols
     CreateCommunityDto:
       type: object
       properties: {}
