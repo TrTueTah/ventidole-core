@@ -1,9 +1,13 @@
-import { BaseResponse } from '@core/response/base-response';
-import {
-  PaginationDto,
-  PaginationResponse,
-} from '@application/shared/dto/pagination.dto';
+import { PaginationResponse } from '@application/shared/dto/pagination.dto';
 import { CurrentUser } from '@core/decorator/current-user.decorator';
+import {
+  ApiExtraModelsCustom,
+  ApiPaginationResponse,
+  ApiResponseCustom,
+} from '@core/decorator/doc.decorator';
+import { Public } from '@core/decorator/public.decorator';
+import { JwtAuthGuard } from '@core/guard/jwt-auth.guard';
+import { BaseResponse } from '@core/response/base-response';
 import {
   Body,
   Controller,
@@ -13,17 +17,16 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import {
-  ApiExtraModelsCustom,
-  ApiResponseCustom,
-  ApiPaginationResponse,
-} from '@core/decorator/doc.decorator';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CommunityApplicationService } from './community.service';
 import {
+  BulkFollowCommunitiesDto,
+  BulkFollowResultDto,
   CommunityResponseDto,
   CreateCommunityDto,
+  GetCommunitiesDto,
   UpdateCommunityDto,
 } from './dto';
 
@@ -39,31 +42,41 @@ import {
  * - Return standardized responses
  *
  * Note: This controller is THIN - all business logic is in the domain/application layers.
+ *
+ * Authentication:
+ * - Most endpoints require authentication (JwtAuthGuard at controller level)
+ * - Public endpoints (get community by ID, list all communities) are marked with @Public()
  */
 @ApiTags('Community')
-@ApiExtraModelsCustom(CommunityResponseDto)
+@ApiExtraModelsCustom(CommunityResponseDto, BulkFollowResultDto)
 @Controller('user/community')
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 export class CommunityController {
   constructor(private readonly communityService: CommunityApplicationService) {}
 
   /**
    * Create new community
+   *
+   * Note: Only admins can create communities (enforced by policy)
    */
   @Post()
   @ApiOperation({ summary: 'Create new community' })
   @ApiResponseCustom(CommunityResponseDto)
   async createCommunity(
-    @CurrentUser('id') userId: string,
     @Body() dto: CreateCommunityDto,
   ): Promise<BaseResponse<CommunityResponseDto>> {
-    const community = await this.communityService.createCommunity(userId, dto);
+    const community = await this.communityService.createCommunity(dto);
     return BaseResponse.of(community);
   }
 
   /**
    * Get community by ID
+   *
+   * Public endpoint - no authentication required
    */
   @Get(':communityId')
+  @Public()
   @ApiOperation({ summary: 'Get community by ID' })
   @ApiResponseCustom(CommunityResponseDto)
   async getCommunity(
@@ -121,17 +134,27 @@ export class CommunityController {
   }
 
   /**
-   * Get my communities (as owner)
+   * Bulk follow multiple communities
+   *
+   * Used for "Choose Community" onboarding flow.
+   * Follows multiple communities in a single request.
    */
-  @Get('my/owned')
-  @ApiOperation({ summary: 'Get my communities (as owner)' })
-  @ApiResponseCustom(CommunityResponseDto, true)
-  async getMyCommunities(
+  @Post('follow/bulk')
+  @ApiOperation({
+    summary: 'Bulk follow multiple communities',
+    description:
+      'Follow multiple communities at once. Used for "Choose Community" onboarding screen. Returns success/failure counts and any errors.',
+  })
+  @ApiResponseCustom(BulkFollowResultDto)
+  async bulkFollowCommunities(
     @CurrentUser('id') userId: string,
-  ): Promise<BaseResponse<CommunityResponseDto[]>> {
-    const communities =
-      await this.communityService.getCommunitiesByOwner(userId);
-    return BaseResponse.of(communities);
+    @Body() dto: BulkFollowCommunitiesDto,
+  ): Promise<BaseResponse<BulkFollowResultDto>> {
+    const result = await this.communityService.bulkFollowCommunities(
+      userId,
+      dto.communityIds,
+    );
+    return BaseResponse.of(result);
   }
 
   /**
@@ -150,22 +173,34 @@ export class CommunityController {
 
   /**
    * Get all communities with pagination
+   *
+   * Public endpoint - no authentication required
+   * Used for community discovery and "Choose Community" screen
+   *
+   * If authenticated: includes isFollowed field for each community
+   * If not authenticated: isFollowed field will be undefined
    */
   @Get()
+  @Public()
   @ApiOperation({ summary: 'Get all communities with pagination' })
   @ApiPaginationResponse(CommunityResponseDto)
   async getAllCommunities(
-    @Query() pagination: PaginationDto,
-    @Query('type') type?: string,
-    @Query('search') searchTerm?: string,
-  ): Promise<BaseResponse<PaginationResponse<CommunityResponseDto>>> {
-    const result = await this.communityService.getAllCommunities({
-      page: pagination.page,
-      limit: pagination.limit,
-      type,
-      searchTerm,
+    @Query() query: GetCommunitiesDto,
+    @CurrentUser('id') userId?: string,
+  ): Promise<PaginationResponse<CommunityResponseDto>> {
+    // Only pass userId if it's a non-empty string
+    const validUserId =
+      userId && typeof userId === 'string' && userId.trim()
+        ? userId
+        : undefined;
+
+    return await this.communityService.getAllCommunities({
+      page: query.page,
+      limit: query.limit,
+      type: query.type,
+      searchTerm: query.search,
+      userId: validUserId,
     });
-    return BaseResponse.of(result);
   }
 
   /**

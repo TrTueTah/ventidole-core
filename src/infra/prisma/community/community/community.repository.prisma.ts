@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma.service';
 import { EventBus } from '@core/event/event-bus.service';
-import { CommunityRepository } from '@domain/community/community/community.repository';
 import { CommunityAggregate } from '@domain/community/community/community.aggregate';
+import { CommunityRepository } from '@domain/community/community/community.repository';
+import { CommunityName } from '@domain/community/community/value-objects/community-name.vo';
 import { CommunityId } from '@domain/shared/value-objects/community-id.vo';
 import { UserId } from '@domain/shared/value-objects/user-id.vo';
-import { CommunityName } from '@domain/community/community/value-objects/community-name.vo';
+import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../prisma.service';
 
 /**
  * Community Repository Prisma Implementation
@@ -33,8 +33,7 @@ export class CommunityRepositoryPrisma implements CommunityRepository {
       create: {
         id: data.id,
         name: data.name,
-        type: data.type,
-        ownerId: data.ownerId,
+        communityType: data.communityType,
         description: data.description,
         avatarUrl: data.avatarUrl,
         backgroundUrl: data.backgroundUrl,
@@ -90,6 +89,26 @@ export class CommunityRepositoryPrisma implements CommunityRepository {
     return this.fromPersistence(community);
   }
 
+  async findByIds(ids: string[]): Promise<CommunityAggregate[]> {
+    if (ids.length === 0) {
+      return [];
+    }
+
+    const communities = await this.prisma.community.findMany({
+      where: {
+        id: { in: ids },
+        isDeleted: false,
+      },
+      // Don't load followers for bulk operations - will be loaded separately if needed
+      include: {
+        followers: false,
+      },
+    });
+
+    // Map without followers - more efficient for bulk operations
+    return communities.map((c) => this.fromPersistence({ ...c, followers: [] }));
+  }
+
   async findByName(name: CommunityName): Promise<CommunityAggregate | null> {
     const community = await this.prisma.community.findUnique({
       where: { name: name.value },
@@ -130,14 +149,22 @@ export class CommunityRepositoryPrisma implements CommunityRepository {
     return true;
   }
 
-  async findByOwner(ownerId: UserId): Promise<CommunityAggregate[]> {
+  async findFollowedByUser(userId: UserId): Promise<CommunityAggregate[]> {
     const communities = await this.prisma.community.findMany({
       where: {
-        ownerId: ownerId.value,
+        followers: {
+          some: {
+            userId: userId.value,
+          },
+        },
         isDeleted: false,
       },
+      // Only include the current user's follower record, not all followers
       include: {
         followers: {
+          where: {
+            userId: userId.value,
+          },
           select: {
             userId: true,
             followedAt: true,
@@ -152,30 +179,25 @@ export class CommunityRepositoryPrisma implements CommunityRepository {
     return communities.map((c) => this.fromPersistence(c));
   }
 
-  async findFollowedByUser(userId: UserId): Promise<CommunityAggregate[]> {
-    const communities = await this.prisma.community.findMany({
+  async checkAlreadyFollowing(
+    userId: string,
+    communityIds: string[],
+  ): Promise<Set<string>> {
+    if (communityIds.length === 0) {
+      return new Set();
+    }
+
+    const follows = await this.prisma.communityFollower.findMany({
       where: {
-        followers: {
-          some: {
-            userId: userId.value,
-          },
-        },
-        isDeleted: false,
+        userId,
+        communityId: { in: communityIds },
       },
-      include: {
-        followers: {
-          select: {
-            userId: true,
-            followedAt: true,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: 'desc',
+      select: {
+        communityId: true,
       },
     });
 
-    return communities.map((c) => this.fromPersistence(c));
+    return new Set(follows.map((f) => f.communityId));
   }
 
   async findAll(params: {
@@ -190,7 +212,7 @@ export class CommunityRepositoryPrisma implements CommunityRepository {
     };
 
     if (params.type) {
-      where.type = params.type;
+      where.communityType = params.type;
     }
 
     if (params.isActive !== undefined) {
@@ -257,9 +279,7 @@ export class CommunityRepositoryPrisma implements CommunityRepository {
     });
 
     const existingUserIds = new Set(existingFollowers.map((f) => f.userId));
-    const currentUserIds = new Set(
-      currentFollowers.map((f) => f.userId.value),
-    );
+    const currentUserIds = new Set(currentFollowers.map((f) => f.userId.value));
 
     // Determine followers to add
     const toAdd = currentFollowers.filter(
@@ -303,8 +323,7 @@ export class CommunityRepositoryPrisma implements CommunityRepository {
     return CommunityAggregate.fromPersistence({
       id: data.id,
       name: data.name,
-      type: data.type,
-      ownerId: data.ownerId,
+      type: data.communityType,
       description: data.description,
       avatarUrl: data.avatarUrl,
       backgroundUrl: data.backgroundUrl,
@@ -325,8 +344,7 @@ export class CommunityRepositoryPrisma implements CommunityRepository {
     return {
       id: community.id.value,
       name: community.name.value,
-      type: community.type.value,
-      ownerId: community.ownerId.value,
+      communityType: community.type.value,
       description: community.description,
       avatarUrl: community.avatarUrl,
       backgroundUrl: community.backgroundUrl,

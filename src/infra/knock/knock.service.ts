@@ -68,4 +68,38 @@ export class KnockService {
     // Knock SDK handles both string[] and object[] for recipients
     return this.triggerWorkflow(workflowKey, recipients as any, data, actor);
   }
+
+  /**
+   * Identify/create a user in Knock
+   *
+   * This syncs user data to Knock for notifications.
+   * Should be called when user is created or profile is updated.
+   *
+   * @param userId - Unique user identifier
+   * @param userData - User profile data
+   */
+  async identifyUser(
+    userId: string,
+    userData: {
+      name: string;
+      email: string;
+      avatar?: string;
+    },
+  ): Promise<void> {
+    try {
+      await this.client.users.identify(userId, {
+        name: userData.name,
+        email: userData.email,
+        avatar: userData.avatar,
+      });
+
+      this.logger.log(`Identified user in Knock: ${userId} (${userData.email})`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to identify user in Knock ${userId}:`,
+        error.message,
+      );
+      throw error;
+    }
+  }
 }

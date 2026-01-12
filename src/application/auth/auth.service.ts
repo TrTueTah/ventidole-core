@@ -83,12 +83,7 @@ export class AuthApplicationService {
     return {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
-      user: {
-        id: user.id.value,
-        email: user.email.value,
-        username: user.username.value,
-        role: user.role.value,
-      },
+      user: this.mapToUserInfoDto(user),
     };
   }
 
@@ -123,12 +118,7 @@ export class AuthApplicationService {
     return {
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
-      user: {
-        id: user.id.value,
-        email: user.email.value,
-        username: user.username.value,
-        role: user.role.value,
-      },
+      user: this.mapToUserInfoDto(user),
     };
   }
 
@@ -308,6 +298,19 @@ export class AuthApplicationService {
   }
 
   /**
+   * Get current user
+   */
+  async getCurrentUser(userId: string) {
+    const user = await this.userRepository.findById(UserId.fromString(userId));
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return this.mapToUserInfoDto(user);
+  }
+
+  /**
    * Generate access and refresh tokens
    */
   private async generateTokens(user: UserAggregate): Promise<{
@@ -338,5 +341,20 @@ export class AuthApplicationService {
     ]);
 
     return { accessToken, refreshToken };
+  }
+
+  /**
+   * Map UserAggregate to UserInfoDto
+   */
+  private mapToUserInfoDto(user: UserAggregate) {
+    return {
+      id: user.id.value,
+      email: user.email.value,
+      username: user.username.value,
+      role: user.role.value,
+      avatarUrl: user.profile.avatarUrl,
+      backgroundUrl: user.profile.backgroundUrl,
+      bio: user.profile.bio,
+    };
   }
 }

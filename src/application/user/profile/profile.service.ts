@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { UserRepository } from '@domain/identity/user/user.repository';
 import { UserId } from '@domain/shared/value-objects/user-id.vo';
 import { CanUpdateProfilePolicy } from '@domain/identity/user/policies/can-update-profile.policy';
@@ -25,6 +25,7 @@ import { UserAggregate } from '@domain/identity/user/user.aggregate';
 @Injectable()
 export class ProfileApplicationService {
   constructor(
+    @Inject('UserRepository')
     private readonly userRepository: UserRepository,
     private readonly canUpdateProfile: CanUpdateProfilePolicy,
   ) {}

@@ -15,16 +15,16 @@ export class CommunityResponseDto {
   @ApiProperty({ example: 'GROUP', enum: ['SOLO', 'GROUP'] })
   type: string;
 
-  @ApiProperty({ example: 'user_xyz789' })
-  ownerId: string;
-
   @ApiProperty({ example: 'A community for K-Pop enthusiasts', nullable: true })
   description: string | null;
 
   @ApiProperty({ example: 'https://example.com/avatar.jpg', nullable: true })
   avatarUrl: string | null;
 
-  @ApiProperty({ example: 'https://example.com/background.jpg', nullable: true })
+  @ApiProperty({
+    example: 'https://example.com/background.jpg',
+    nullable: true,
+  })
   backgroundUrl: string | null;
 
   @ApiProperty({ example: 1250 })
@@ -41,4 +41,12 @@ export class CommunityResponseDto {
 
   @ApiProperty({ example: '2024-01-20T14:45:00Z' })
   updatedAt: Date;
+
+  @ApiProperty({
+    example: false,
+    description: 'Whether the current user is following this community',
+    required: false,
+    nullable: true,
+  })
+  isFollowed?: boolean;
 }

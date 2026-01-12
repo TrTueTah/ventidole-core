@@ -20,7 +20,7 @@ model User {
   deletedAt           DateTime?            @map("deleted_at")
   metadata            Json?
   email               String               @unique(map: "user_email_unique_partial") @db.VarChar(255)
-  username            String               @map("username") @db.VarChar(100)
+  username            String               @unique(map: "user_username_unique_partial") @db.VarChar(100)
   passwordHash        String               @map("password") @db.VarChar(255)
   role                Role
   deviceToken         String?              @db.VarChar(255)

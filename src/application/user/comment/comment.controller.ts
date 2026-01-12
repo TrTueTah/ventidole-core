@@ -116,13 +116,12 @@ export class CommentController {
   async getCommentsByPost(
     @Param('postId') postId: string,
     @Query() pagination: PaginationDto,
-  ): Promise<BaseResponse<PaginationResponse<CommentResponseDto>>> {
-    const comments = await this.commentService.getCommentsByPost(
+  ): Promise<PaginationResponse<CommentResponseDto>> {
+    return await this.commentService.getCommentsByPost(
       postId,
       pagination.page,
       pagination.limit,
     );
-    return BaseResponse.of(comments);
   }
 
   /**
@@ -134,13 +133,12 @@ export class CommentController {
   async getReplies(
     @Param('commentId') commentId: string,
     @Query() pagination: PaginationDto,
-  ): Promise<BaseResponse<PaginationResponse<CommentResponseDto>>> {
-    const replies = await this.commentService.getReplies(
+  ): Promise<PaginationResponse<CommentResponseDto>> {
+    return await this.commentService.getReplies(
       commentId,
       pagination.page,
       pagination.limit,
     );
-    return BaseResponse.of(replies);
   }
 
   /**
@@ -152,12 +150,11 @@ export class CommentController {
   async getCommentsByAuthor(
     @Param('authorId') authorId: string,
     @Query() pagination: PaginationDto,
-  ): Promise<BaseResponse<PaginationResponse<CommentResponseDto>>> {
-    const comments = await this.commentService.getCommentsByAuthor(
+  ): Promise<PaginationResponse<CommentResponseDto>> {
+    return await this.commentService.getCommentsByAuthor(
       authorId,
       pagination.page,
       pagination.limit,
     );
-    return BaseResponse.of(comments);
   }
 }

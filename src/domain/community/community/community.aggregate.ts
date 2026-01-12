@@ -1,6 +1,5 @@
 import { DomainEvent } from '@core/event/domain-event.base';
 import { CommunityId } from '@domain/shared/value-objects/community-id.vo';
-import { UserId } from '@domain/shared/value-objects/user-id.vo';
 import { CommunityFollower } from './entities/community-follower.entity';
 import {
   CommunityCreatedEvent,
@@ -17,9 +16,8 @@ import { CommunityType } from './value-objects/community-type.vo';
  *
  * Business Rules (Invariants):
  * - Community must have a unique name
- * - Community must have an owner
- * - SOLO communities: Only owner exists as follower
- * - GROUP communities: Multiple followers allowed
+ * - All community management is handled by admins
+ * - SOLO and GROUP communities: Multiple followers allowed
  * - User cannot follow the same community twice
  * - Community must be active to accept followers
  * - Soft delete only (isDeleted flag)
@@ -32,7 +30,6 @@ export class CommunityAggregate {
   private readonly _id: CommunityId;
   private _name: CommunityName;
   private readonly _type: CommunityType;
-  private readonly _ownerId: UserId;
   private _description: string | null;
   private _avatarUrl: string | null;
   private _backgroundUrl: string | null;
@@ -49,7 +46,6 @@ export class CommunityAggregate {
     id: CommunityId;
     name: CommunityName;
     type: CommunityType;
-    ownerId: UserId;
     description: string | null;
     avatarUrl: string | null;
     backgroundUrl: string | null;
@@ -64,7 +60,6 @@ export class CommunityAggregate {
     this._id = props.id;
     this._name = props.name;
     this._type = props.type;
-    this._ownerId = props.ownerId;
     this._description = props.description;
     this._avatarUrl = props.avatarUrl;
     this._backgroundUrl = props.backgroundUrl;
@@ -84,29 +79,20 @@ export class CommunityAggregate {
   static create(props: {
     name: string;
     type: string;
-    ownerId: string;
     description?: string;
   }): CommunityAggregate {
     const type = CommunityType.create(props.type);
-    const ownerId = UserId.fromString(props.ownerId);
-
-    // For SOLO communities, owner is automatically a follower
     const followers = new Map<string, CommunityFollower>();
-    if (type.isSolo()) {
-      const ownerFollower = CommunityFollower.create(props.ownerId);
-      followers.set(props.ownerId, ownerFollower);
-    }
 
     const community = new CommunityAggregate({
       id: CommunityId.generate(),
       name: CommunityName.create(props.name),
       type,
-      ownerId,
       description: props.description || null,
       avatarUrl: null,
       backgroundUrl: null,
       followers,
-      followerCount: type.isSolo() ? 1 : 0,
+      followerCount: 0,
       postCount: 0,
       isActive: true,
       isDeleted: false,
@@ -119,7 +105,6 @@ export class CommunityAggregate {
         community._id.value,
         community._name.value,
         community._type.value,
-        community._ownerId.value,
       ),
     );
 
@@ -133,7 +118,6 @@ export class CommunityAggregate {
     id: string;
     name: string;
     type: string;
-    ownerId: string;
     description: string | null;
     avatarUrl: string | null;
     backgroundUrl: string | null;
@@ -158,7 +142,6 @@ export class CommunityAggregate {
       id: CommunityId.fromString(props.id),
       name: CommunityName.create(props.name),
       type: CommunityType.create(props.type),
-      ownerId: UserId.fromString(props.ownerId),
       description: props.description,
       avatarUrl: props.avatarUrl,
       backgroundUrl: props.backgroundUrl,
@@ -219,11 +202,6 @@ export class CommunityAggregate {
       throw new Error('User already follows this community');
     }
 
-    // Invariant: SOLO communities only have owner as follower
-    if (this._type.isSolo() && userId !== this._ownerId.value) {
-      throw new Error('Cannot follow SOLO community (owner only)');
-    }
-
     const follower = CommunityFollower.create(userId);
     this._followers.set(userId, follower);
     this._followerCount++;
@@ -241,11 +219,6 @@ export class CommunityAggregate {
     // Invariant: Cannot unfollow if not following
     if (!this._followers.has(userId)) {
       throw new Error('User does not follow this community');
-    }
-
-    // Invariant: Owner cannot unfollow SOLO community
-    if (this._type.isSolo() && userId === this._ownerId.value) {
-      throw new Error('Owner cannot unfollow their own SOLO community');
     }
 
     this._followers.delete(userId);
@@ -301,13 +274,6 @@ export class CommunityAggregate {
   }
 
   /**
-   * Query method: Check if user is owner
-   */
-  isOwnedBy(userId: UserId): boolean {
-    return this._ownerId.equals(userId);
-  }
-
-  /**
    * Query method: Check if user is follower
    */
   hasFollower(userId: UserId): boolean {
@@ -332,10 +298,6 @@ export class CommunityAggregate {
 
   get type(): CommunityType {
     return this._type;
-  }
-
-  get ownerId(): UserId {
-    return this._ownerId;
   }
 
   get description(): string | null {

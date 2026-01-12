@@ -24,8 +24,10 @@ export class JwtAuthGuard extends AuthGuard(TokenStrategyKey.Jwt) {
    * Authentication & Authorization flow
    *
    * @description
-   * 1. Check if route is marked as @Public() - if yes, skip authentication
-   * 2. Otherwise, always authenticate by JWT first
+   * 1. Check if route is marked as @Public()
+   *    - If public: try to authenticate (optional), but don't fail if no token
+   *    - If not public: authenticate (required)
+   * 2. Always authenticate by JWT first
    * 3. If `Roles` decorator is set, additionally check if user has required role
    * 4. If no `Roles` decorator, allow any authenticated user
    */
@@ -36,7 +38,16 @@ export class JwtAuthGuard extends AuthGuard(TokenStrategyKey.Jwt) {
       [context.getHandler(), context.getClass()],
     );
 
-    if (isPublic) return true;
+    if (isPublic) {
+      // For public routes, try to authenticate but don't fail if no token
+      try {
+        await super.canActivate(context);
+      } catch (error) {
+        // If authentication fails on a public route, allow access anyway
+        // This allows optional authentication - user will be undefined
+      }
+      return true;
+    }
 
     // Always authenticate for non-public routes
     const isAuthenticated = await super.canActivate(context);
@@ -65,6 +76,18 @@ export class JwtAuthGuard extends AuthGuard(TokenStrategyKey.Jwt) {
   }
 
   handleRequest(err, user, info, context: ExecutionContext) {
+    // Check if route is public
+    const isPublic = this.reflector.getAllAndOverride<boolean>(
+      DecoratorKey.Public,
+      [context.getHandler(), context.getClass()],
+    );
+
+    // For public routes, return user if available, otherwise return null
+    if (isPublic) {
+      return user || null;
+    }
+
+    // For protected routes, enforce authentication
     if (info instanceof TokenExpiredError)
       throw new UnauthorizedException(CoreErrorCode.TokenExpired);
 

@@ -35,6 +35,9 @@ export class UserAggregate {
   private _role: Role;
   private _profile: Profile;
   private _socialAccounts: Map<string, SocialAccount>;
+  private _deviceToken: string | null;
+  private _communityId: string | null;
+  private _isChooseCommunity: boolean;
   private _isActive: boolean;
   private _isDeleted: boolean;
   private readonly _createdAt: Date;
@@ -49,6 +52,9 @@ export class UserAggregate {
     role: Role;
     profile: Profile;
     socialAccounts: Map<string, SocialAccount>;
+    deviceToken: string | null;
+    communityId: string | null;
+    isChooseCommunity: boolean;
     isActive: boolean;
     isDeleted: boolean;
     createdAt: Date;
@@ -61,6 +67,9 @@ export class UserAggregate {
     this._role = props.role;
     this._profile = props.profile;
     this._socialAccounts = props.socialAccounts;
+    this._deviceToken = props.deviceToken;
+    this._communityId = props.communityId;
+    this._isChooseCommunity = props.isChooseCommunity;
     this._isActive = props.isActive;
     this._isDeleted = props.isDeleted;
     this._createdAt = props.createdAt;
@@ -85,6 +94,9 @@ export class UserAggregate {
       role: props.role ? Role.create(props.role) : Role.fan(),
       profile: Profile.create(),
       socialAccounts: new Map(),
+      deviceToken: null,
+      communityId: null,
+      isChooseCommunity: false,
       isActive: true,
       isDeleted: false,
       createdAt: new Date(),
@@ -117,6 +129,9 @@ export class UserAggregate {
     bio: string | null;
     isOnline: boolean;
     lastOnlineAt: Date | null;
+    deviceToken: string | null;
+    communityId: string | null;
+    isChooseCommunity: boolean;
     socialAccounts: Array<{
       id: string;
       provider: string;
@@ -148,6 +163,9 @@ export class UserAggregate {
         lastOnlineAt: props.lastOnlineAt,
       }),
       socialAccounts: socialAccountsMap,
+      deviceToken: props.deviceToken,
+      communityId: props.communityId,
+      isChooseCommunity: props.isChooseCommunity,
       isActive: props.isActive,
       isDeleted: props.isDeleted,
       createdAt: props.createdAt,
@@ -409,6 +427,18 @@ export class UserAggregate {
 
   get socialAccounts(): SocialAccount[] {
     return Array.from(this._socialAccounts.values());
+  }
+
+  get deviceToken(): string | null {
+    return this._deviceToken;
+  }
+
+  get communityId(): string | null {
+    return this._communityId;
+  }
+
+  get isChooseCommunity(): boolean {
+    return this._isChooseCommunity;
   }
 
   get isActive(): boolean {

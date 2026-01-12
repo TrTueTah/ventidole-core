@@ -23,6 +23,11 @@ export interface CommunityRepository {
   findById(id: CommunityId): Promise<CommunityAggregate | null>;
 
   /**
+   * Find multiple communities by IDs (bulk operation)
+   */
+  findByIds(ids: string[]): Promise<CommunityAggregate[]>;
+
+  /**
    * Find community by name
    */
   findByName(name: CommunityName): Promise<CommunityAggregate | null>;
@@ -33,14 +38,15 @@ export interface CommunityRepository {
   existsByName(name: CommunityName, excludeId?: CommunityId): Promise<boolean>;
 
   /**
-   * Find communities by owner
-   */
-  findByOwner(ownerId: UserId): Promise<CommunityAggregate[]>;
-
-  /**
    * Find communities that a user follows
    */
   findFollowedByUser(userId: UserId): Promise<CommunityAggregate[]>;
+
+  /**
+   * Check which communities from the list the user is already following
+   * Returns a Set of community IDs that are already followed
+   */
+  checkAlreadyFollowing(userId: string, communityIds: string[]): Promise<Set<string>>;
 
   /**
    * Find all communities with pagination and filters

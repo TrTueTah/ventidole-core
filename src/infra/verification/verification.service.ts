@@ -3,10 +3,10 @@ import {
   VerificationType as DomainVerificationType,
   Verification,
 } from '@domain/identity/auth/verification.entity';
+import { MailService } from '@infra/mail/mail.service';
 import { PrismaService } from '@infra/prisma/prisma.service';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { MailService } from '@infra/mail/mail.service';
 
 /**
  * Verification Infrastructure Service

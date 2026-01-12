@@ -1,16 +1,18 @@
-import { Module, OnModuleInit } from '@nestjs/common';
-import { ProfileController } from './profile.controller';
-import { ProfileApplicationService } from './profile.service';
-import { UserRepositoryPrisma } from '@infra/prisma/identity/user/user.repository.prisma';
-import { PrismaService } from '@infra/prisma/prisma.service';
 import { EventBus } from '@core/event/event-bus.service';
 import {
-  CanUpdateProfilePolicy,
   CanChangeRolePolicy,
   CanDeactivateUserPolicy,
+  CanUpdateProfilePolicy,
 } from '@domain/identity/user/policies';
-import { UserRegisteredNotificationHandler } from './event-handlers/user-registered-notification.handler';
 import { KnockService } from '@infra/knock/knock.service';
+import { UserRepositoryPrisma } from '@infra/prisma/identity/user/user.repository.prisma';
+import { PrismaService } from '@infra/prisma/prisma.service';
+import { StreamChatService } from '@infra/stream-chat/stream-chat.service';
+import { Module, OnModuleInit } from '@nestjs/common';
+import { UserProfileUpdatedSyncHandler } from './event-handlers/user-profile-updated-sync.handler';
+import { UserRegisteredNotificationHandler } from './event-handlers/user-registered-notification.handler';
+import { ProfileController } from './profile.controller';
+import { ProfileApplicationService } from './profile.service';
 
 /**
  * Profile Module
@@ -39,6 +41,7 @@ import { KnockService } from '@infra/knock/knock.service';
     PrismaService,
     EventBus,
     KnockService,
+    StreamChatService,
 
     // Policies
     CanUpdateProfilePolicy,
@@ -47,20 +50,23 @@ import { KnockService } from '@infra/knock/knock.service';
 
     // Event Handlers
     UserRegisteredNotificationHandler,
+    UserProfileUpdatedSyncHandler,
   ],
-  exports: [
-    ProfileApplicationService,
-    'UserRepository',
-  ],
+  exports: [ProfileApplicationService, 'UserRepository'],
 })
 export class ProfileModule implements OnModuleInit {
   constructor(
     private readonly eventBus: EventBus,
     private readonly userRegisteredHandler: UserRegisteredNotificationHandler,
+    private readonly userProfileUpdatedHandler: UserProfileUpdatedSyncHandler,
   ) {}
 
   onModuleInit() {
     // Register event handlers
     this.eventBus.subscribe('UserRegisteredEvent', this.userRegisteredHandler);
+    this.eventBus.subscribe(
+      'UserProfileUpdatedEvent',
+      this.userProfileUpdatedHandler,
+    );
   }
 }

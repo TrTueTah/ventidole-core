@@ -9,8 +9,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
  * Business rules:
  * - User must be active
  * - Community must be active
- * - GROUP communities: Anyone can follow
- * - SOLO communities: Only owner can "follow" (auto-followed on creation)
+ * - Anyone can follow any community (SOLO or GROUP)
  * - Cannot follow if already following
  *
  * Note: Policies are AUTHORIZATION concerns, not pure domain.
@@ -44,8 +43,6 @@ export class CanFollowCommunityPolicy {
     const community = await this.prisma.community.findUnique({
       where: { id: communityId },
       select: {
-        type: true,
-        ownerId: true,
         isActive: true,
         isDeleted: true,
       },
@@ -61,17 +58,12 @@ export class CanFollowCommunityPolicy {
       );
     }
 
-    // SOLO communities: Only owner can follow (but this is auto-handled on creation)
-    if (community.type === 'SOLO' && userId !== community.ownerId) {
-      throw new ForbiddenException('Cannot follow SOLO community (owner only)');
-    }
-
     // Check if already following
     const existingFollow = await this.prisma.communityFollower.findUnique({
       where: {
-        communityId_userId: {
-          communityId,
+        userId_communityId: {
           userId,
+          communityId,
         },
       },
     });

@@ -1,9 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { IEventHandler } from '@core/event/event-handler.interface';
 import { DomainEvent } from '@core/event/domain-event.base';
+import { IEventHandler } from '@core/event/event-handler.interface';
 import { UserRegisteredEvent } from '@domain/identity/user/events/user-registered.event';
 import { KnockService } from '@infra/knock/knock.service';
-import { PrismaService } from '@db/prisma/prisma.service';
+import { PrismaService } from '@infra/prisma/prisma.service';
+import { StreamChatService } from '@infra/stream-chat/stream-chat.service';
+import { Injectable, Logger } from '@nestjs/common';
 
 /**
  * User Registered Notification Handler
@@ -11,6 +12,7 @@ import { PrismaService } from '@db/prisma/prisma.service';
  * Handles side effects when a new user registers.
  *
  * Responsibilities:
+ * - Create user accounts in external services (Stream Chat, Knock)
  * - Send welcome email
  * - Create default profile settings
  * - Trigger analytics event
@@ -25,6 +27,7 @@ export class UserRegisteredNotificationHandler implements IEventHandler {
 
   constructor(
     private readonly knockService: KnockService,
+    private readonly streamChatService: StreamChatService,
     private readonly prisma: PrismaService,
   ) {}
 
@@ -38,6 +41,13 @@ export class UserRegisteredNotificationHandler implements IEventHandler {
     );
 
     try {
+      // Setup external service accounts (Stream Chat, Knock)
+      await this.setupExternalAccounts(
+        event.userId,
+        event.email,
+        event.username,
+      );
+
       // Send welcome email/notification
       await this.sendWelcomeEmail(event.userId, event.email, event.username);
 
@@ -47,7 +57,9 @@ export class UserRegisteredNotificationHandler implements IEventHandler {
       // TODO: Trigger analytics
       await this.trackRegistration(event.userId, event.role);
 
-      this.logger.log(`Successfully processed registration for user: ${event.userId}`);
+      this.logger.log(
+        `Successfully processed registration for user: ${event.userId}`,
+      );
     } catch (error) {
       this.logger.error(
         `Failed to process registration for user: ${event.userId}`,
@@ -55,6 +67,46 @@ export class UserRegisteredNotificationHandler implements IEventHandler {
       );
       // Note: We don't throw here - event handlers should be resilient
       // Failed handlers should not break the main flow
+    }
+  }
+
+  /**
+   * Setup user accounts in external services (Stream Chat, Knock)
+   *
+   * This ensures the user exists in all integrated services before
+   * any operations (messages, notifications) are attempted.
+   */
+  private async setupExternalAccounts(
+    userId: string,
+    email: string,
+    username: string,
+  ): Promise<void> {
+    // Create user in Stream Chat
+    try {
+      await this.streamChatService.upsertUser(userId, {
+        name: username,
+        role: 'user',
+      });
+      this.logger.log(`Created Stream Chat user: ${userId}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to create Stream Chat user ${userId}: ${error.message}`,
+      );
+      // Don't throw - external service failure shouldn't block registration
+    }
+
+    // Identify user in Knock
+    try {
+      await this.knockService.identifyUser(userId, {
+        name: username,
+        email: email,
+      });
+      this.logger.log(`Identified Knock user: ${userId}`);
+    } catch (error) {
+      this.logger.error(
+        `Failed to identify Knock user ${userId}: ${error.message}`,
+      );
+      // Don't throw - external service failure shouldn't block registration
     }
   }
 

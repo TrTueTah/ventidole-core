@@ -7,7 +7,6 @@ import { DomainEvent } from '@core/event/domain-event.base';
  *
  * Side effects (handled in application layer):
  * - Create default community settings
- * - Send notification to owner
  * - Track analytics event
  */
 export class CommunityCreatedEvent extends DomainEvent {
@@ -15,7 +14,6 @@ export class CommunityCreatedEvent extends DomainEvent {
     public readonly communityId: string,
     public readonly name: string,
     public readonly type: string,
-    public readonly ownerId: string,
   ) {
     super(communityId);
   }

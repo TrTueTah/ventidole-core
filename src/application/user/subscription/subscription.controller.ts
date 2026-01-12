@@ -76,13 +76,12 @@ export class SubscriptionController {
   async getMySubscriptions(
     @CurrentUser('id') userId: string,
     @Query() pagination: PaginationDto,
-  ): Promise<BaseResponse<PaginationResponse<SubscriptionResponseDto>>> {
-    const result = await this.subscriptionService.getMySubscriptions(
+  ): Promise<PaginationResponse<SubscriptionResponseDto>> {
+    return await this.subscriptionService.getMySubscriptions(
       userId,
       pagination.page,
       pagination.limit,
     );
-    return BaseResponse.of(result);
   }
 
   /**
@@ -95,14 +94,13 @@ export class SubscriptionController {
     @CurrentUser('id') userId: string,
     @Param('communityId') communityId: string,
     @Query() pagination: PaginationDto,
-  ): Promise<BaseResponse<PaginationResponse<SubscriptionResponseDto>>> {
-    const result = await this.subscriptionService.getCommunitySubscribers(
+  ): Promise<PaginationResponse<SubscriptionResponseDto>> {
+    return await this.subscriptionService.getCommunitySubscribers(
       userId,
       communityId,
       pagination.page,
       pagination.limit,
     );
-    return BaseResponse.of(result);
   }
 
   /**

@@ -141,13 +141,12 @@ export class PostController {
   async getPostsByAuthor(
     @Param('authorId') authorId: string,
     @Query() pagination: PaginationDto,
-  ): Promise<BaseResponse<PaginationResponse<PostResponseDto>>> {
-    const posts = await this.postService.getPostsByAuthor(
+  ): Promise<PaginationResponse<PostResponseDto>> {
+    return await this.postService.getPostsByAuthor(
       authorId,
       pagination.page,
       pagination.limit,
     );
-    return BaseResponse.of(posts);
   }
 
   /**
@@ -159,13 +158,12 @@ export class PostController {
   async getPostsByCommunity(
     @Param('communityId') communityId: string,
     @Query() pagination: PaginationDto,
-  ): Promise<BaseResponse<PaginationResponse<PostResponseDto>>> {
-    const posts = await this.postService.getPostsByCommunity(
+  ): Promise<PaginationResponse<PostResponseDto>> {
+    return await this.postService.getPostsByCommunity(
       communityId,
       pagination.page,
       pagination.limit,
     );
-    return BaseResponse.of(posts);
   }
 
   /**
@@ -177,12 +175,11 @@ export class PostController {
   async getFeedPosts(
     @CurrentUser('id') userId: string | null,
     @Query() pagination: PaginationDto,
-  ): Promise<BaseResponse<PaginationResponse<PostResponseDto>>> {
-    const posts = await this.postService.getFeedPosts(
+  ): Promise<PaginationResponse<PostResponseDto>> {
+    return await this.postService.getFeedPosts(
       userId,
       pagination.page,
       pagination.limit,
     );
-    return BaseResponse.of(posts);
   }
 }

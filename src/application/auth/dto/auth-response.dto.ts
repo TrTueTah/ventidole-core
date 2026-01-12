@@ -15,6 +15,27 @@ export class UserInfoDto {
 
   @ApiProperty({ example: 'FAN' })
   role: string;
+
+  @ApiProperty({
+    example: 'https://example.com/avatar.jpg',
+    required: false,
+    nullable: true,
+  })
+  avatarUrl: string | null;
+
+  @ApiProperty({
+    example: 'https://example.com/background.jpg',
+    required: false,
+    nullable: true,
+  })
+  backgroundUrl: string | null;
+
+  @ApiProperty({
+    example: 'I love music and dancing!',
+    required: false,
+    nullable: true,
+  })
+  bio: string | null;
 }
 
 /**

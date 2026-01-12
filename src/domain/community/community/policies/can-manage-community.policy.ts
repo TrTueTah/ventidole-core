@@ -7,8 +7,7 @@ import { PrismaService } from '@infra/prisma/prisma.service';
  * Authorization policy for community management operations.
  *
  * Business rules:
- * - Community owner can always manage their community
- * - Admin users can manage any community
+ * - Only admin users can manage communities
  * - User must be active
  *
  * Note: Policies are AUTHORIZATION concerns, not pure domain.
@@ -38,15 +37,15 @@ export class CanManageCommunityPolicy {
       throw new ForbiddenException('User account is inactive');
     }
 
-    // Admin can manage any community
-    if (requester.role === 'ADMIN') {
-      return;
+    // Only admin can manage communities
+    if (requester.role !== 'ADMIN') {
+      throw new ForbiddenException('Only admins can manage communities');
     }
 
-    // Check if requester is the community owner
+    // Verify community exists and is not deleted
     const community = await this.prisma.community.findUnique({
       where: { id: communityId },
-      select: { ownerId: true, isActive: true, isDeleted: true },
+      select: { isActive: true, isDeleted: true },
     });
 
     if (!community) {
@@ -55,12 +54,6 @@ export class CanManageCommunityPolicy {
 
     if (community.isDeleted) {
       throw new ForbiddenException('Cannot manage deleted community');
-    }
-
-    if (community.ownerId !== requesterId) {
-      throw new ForbiddenException(
-        'Only community owner can manage this community',
-      );
     }
   }
 }

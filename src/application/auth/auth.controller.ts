@@ -164,14 +164,17 @@ export class AuthController {
   }
 
   /**
-   * Get current user (test endpoint)
+   * Get current user
    */
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @Post('me')
+  @Get('me')
   @ApiOperation({ summary: 'Get current authenticated user' })
   @ApiResponseCustom(UserInfoDto)
-  async getCurrentUser(@CurrentUser() user: any): Promise<BaseResponse<any>> {
+  async getCurrentUser(
+    @CurrentUser('id') userId: string,
+  ): Promise<BaseResponse<UserInfoDto>> {
+    const user = await this.authService.getCurrentUser(userId);
     return BaseResponse.of(user);
   }
 
@@ -182,7 +185,7 @@ export class AuthController {
    * This is part of the identity/authentication domain - providing credentials
    * for accessing external systems.
    */
-  @Get('stream-chat-token')
+  @Post('stream-chat-token')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Get Stream Chat authentication token' })

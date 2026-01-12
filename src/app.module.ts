@@ -10,6 +10,7 @@ import { MailModule } from '@infra/mail/mail.module';
 import { AuthModule } from '@application/auth/auth.module';
 
 // User Modules (Phase 2-4)
+import { ProfileModule } from '@application/user/profile/profile.module';
 import { CommunityModule } from '@application/user/community/community.module';
 import { PostModule } from '@application/user/post/post.module';
 import { CommentModule } from '@application/user/comment/comment.module';
@@ -36,6 +37,7 @@ import { PayOSWebhookModule } from '@application/webhooks/payos-webhook.module';
     AuthModule,
 
     // User Application Modules
+    ProfileModule, // User profile and event handlers
     CommunityModule,
     PostModule,
     CommentModule,
