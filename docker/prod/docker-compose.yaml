@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   server:
     build:
@@ -6,5 +8,6 @@ services:
     container_name: ventidole-server
     env_file:
       - ../../.env
+    ports:
+      - '8080:8080'
     restart: always
-# trigger workflow
