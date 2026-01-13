@@ -33,6 +33,14 @@ services:
       postgres:
         condition: service_healthy
     restart: always
+    environment:
+      RECOMMENDATION_API_URL: http://recommendation-service:8000
+    networks:
+      - ventidole-network
 
 volumes:
   postgres_data:
+
+networks:
+  ventidole-network:
+    external: true
