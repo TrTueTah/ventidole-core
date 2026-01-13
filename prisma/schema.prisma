@@ -30,12 +30,8 @@ model User {
   communityId         String?              @map("communityId")
   isOnline            Boolean              @default(false) @map("is_online")
   isChooseCommunity   Boolean              @default(false) @map("is_choose_community")
-  chatParticipants    ChatParticipant[]
-  chatMessages        ChatMessage[]
   followedCommunities CommunityFollower[]
   community           Community?           @relation(fields: [communityId], references: [id], onDelete: SetNull)
-  chatChannels        ChatChannel[]
-  socialAccounts      SocialAccount[]
   verifications       Verification[]
   posts               Post[]               @relation("PostAuthor")
   comments            Comment[]
@@ -75,25 +71,6 @@ model Verification {
   @@map("verification")
 }
 
-model SocialAccount {
-  id         String                @id @default(cuid())
-  isActive   Boolean               @default(true)
-  createdAt  DateTime              @default(now())
-  updatedAt  DateTime              @updatedAt
-  version    Int                   @default(0)
-  isDeleted  Boolean               @default(false) @map("is_deleted")
-  deletedAt  DateTime?             @map("deleted_at")
-  metadata   Json?
-  provider   SocialAccountProvider
-  providerId String                @map("provider_id")
-  userId     String                @map("userId")
-  user       User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerId])
-  @@index([userId])
-  @@map("social_account")
-}
-
 model Community {
   id            String              @id @default(cuid())
   isActive      Boolean             @default(true)
@@ -108,7 +85,6 @@ model Community {
   backgroundUrl String?             @map("background_url") @db.VarChar(255)
   description   String?             @db.VarChar(500)
   communityType CommunityType       @map("community_type")
-  chatChannels  ChatChannel[]
   followers     CommunityFollower[]
   idols         User[]
   posts         Post[]
@@ -135,84 +111,6 @@ model CommunityFollower {
   @@index([userId])
   @@index([communityId])
   @@map("community_follower")
-}
-
-model ChatChannel {
-  id                  String    @id @default(cuid())
-  isActive            Boolean   @default(true)
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-  version             Int       @default(0)
-  isDeleted           Boolean   @default(false) @map("is_deleted")
-  deletedAt           DateTime? @map("deleted_at")
-  metadata            Json?
-  type                String    @default("messaging") @db.VarChar(50)
-  name                String?   @db.VarChar(255)
-  image               String?   @db.VarChar(500)
-  description         String?   @db.VarChar(500)
-  communityId         String?   @map("communityId")
-  idolId              String?   @map("idolId")
-  isCommunityChannel  Boolean   @default(false) @map("is_community_channel")
-  memberCount         Int       @default(0) @map("member_count")
-  lastMessageAt       DateTime? @map("last_message_at")
-
-  community    Community?        @relation(fields: [communityId], references: [id], onDelete: Cascade)
-  idol         User?             @relation(fields: [idolId], references: [id], onDelete: Cascade)
-  participants ChatParticipant[]
-  messages     ChatMessage[]
-
-  @@index([communityId])
-  @@index([idolId])
-  @@index([lastMessageAt])
-  @@index([type])
-  @@map("chat_channel")
-}
-
-model ChatParticipant {
-  id             String      @id @default(cuid())
-  isActive       Boolean     @default(true)
-  createdAt      DateTime    @default(now())
-  updatedAt      DateTime    @updatedAt
-  version        Int         @default(0)
-  isDeleted      Boolean     @default(false) @map("is_deleted")
-  deletedAt      DateTime?   @map("deleted_at")
-  metadata       Json?
-  channelId      String      @map("channelId")
-  userId         String      @map("userId")
-  role           String      @default("member") @db.VarChar(50)
-  canSendMessage Boolean     @default(true) @map("can_send_message")
-  joinedAt       DateTime    @default(now()) @map("joined_at")
-  invitedBy      String?     @map("invited_by")
-  lastReadAt     DateTime?   @map("last_read_at")
-  channel        ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([channelId, userId])
-  @@index([userId])
-  @@index([channelId])
-  @@index([channelId, userId, lastReadAt])
-  @@map("chat_participant")
-}
-
-model ChatMessage {
-  id        String      @id @default(cuid())
-  isActive  Boolean     @default(true)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
-  version   Int         @default(0)
-  isDeleted Boolean     @default(false) @map("is_deleted")
-  deletedAt DateTime?   @map("deleted_at")
-  metadata  Json?
-  content   String      @db.Text
-  channelId String      @map("channelId")
-  userId    String      @map("userId")
-  channel   ChatChannel @relation(fields: [channelId], references: [id], onDelete: Cascade)
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([channelId])
-  @@index([userId])
-  @@index([createdAt])
-  @@map("chat_message")
 }
 
 model Post {
@@ -356,16 +254,6 @@ enum VerificationType {
   REGISTER_ACCOUNT
   UPDATE_PROFILE
   CHANGE_PASSWORD
-}
-
-enum SocialAccountProvider {
-  GOOGLE
-  FACEBOOK
-}
-
-enum ChatRole {
-  ADMIN
-  MEMBER
 }
 
 enum OrderStatus {

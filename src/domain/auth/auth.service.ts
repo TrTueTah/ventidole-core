@@ -119,7 +119,7 @@ export class AuthService {
 
   /**
    * Initialize messaging and notification infrastructure for a new user
-   * Creates GetStream notification channel, registers in Knock, and creates GetStream chat user
+   * Creates GetStream chat user, notification channel, and registers in Knock
    */
   private async initializeUserMessaging(user: UserModel): Promise<void> {
     try {
@@ -127,25 +127,25 @@ export class AuthService {
         `Initializing messaging infrastructure for user ${user.id}`,
       );
 
-      // 1. Create GetStream notification channel for real-time events
+      // 1. Create user in GetStream Chat FIRST (required for notification channel)
+      await this.streamChatService.createOrUpdateUser({
+        userId: user.id,
+        name: user.username,
+        image: user.avatarUrl,
+      });
+
+      // 2. Create GetStream notification channel for real-time events
       await this.getStreamNotificationService.createNotificationChannel(
         user.id,
       );
 
-      // 2. Register user in Knock for multi-channel notifications
+      // 3. Register user in Knock for multi-channel notifications
       await this.knockUserService.registerUser({
         userId: user.id,
         email: user.email,
         name: user.username,
         avatarUrl: user.avatarUrl,
         role: user.role,
-      });
-
-      // 3. Create user in GetStream Chat for messaging
-      await this.streamChatService.createOrUpdateUser({
-        userId: user.id,
-        name: user.username,
-        image: user.avatarUrl,
       });
 
       this.logger.log(

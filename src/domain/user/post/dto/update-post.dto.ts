@@ -22,4 +22,14 @@ export class UpdatePostDto {
   @IsArray()
   @IsString({ each: true })
   mediaUrls?: string[];
+
+  @ApiPropertyOptional({
+    example: ['choreography', 'dance', 'discussion'],
+    description: 'Array of post tags',
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  tags?: string[];
 }

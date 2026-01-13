@@ -213,6 +213,32 @@ export class AdminCommunityService {
       },
     });
 
+    // Update GetStream channel if community info changed
+    if (
+      updateCommunityDto.name ||
+      updateCommunityDto.description ||
+      updateCommunityDto.avatarUrl
+    ) {
+      try {
+        await this.streamChatService.updateCommunityChannel(id, {
+          name: updateCommunityDto.name
+            ? `${updateCommunityDto.name} Community`
+            : undefined,
+          description: updateCommunityDto.description,
+          image: updateCommunityDto.avatarUrl,
+        });
+        this.logger.log(
+          `Updated GetStream channel for community: ${community.id}`,
+        );
+      } catch (error) {
+        this.logger.error(
+          `Failed to update GetStream channel for community ${community.id}:`,
+          error,
+        );
+        // Non-blocking: Don't fail community update if GetStream fails
+      }
+    }
+
     return community;
   }
 

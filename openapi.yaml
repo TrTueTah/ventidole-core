@@ -6462,7 +6462,7 @@ components:
           type: string
           example: USER
           description: User role
-          enum: &ref_37
+          enum: &ref_38
             - FAN
             - ADMIN
             - IDOL
@@ -6918,6 +6918,16 @@ components:
           type: string
           example: '2024-01-01T00:00:00.000Z'
           description: Last update timestamp
+        tags:
+          example: &ref_37
+            - choreography
+            - dance
+            - discussion
+          description: Array of post tags
+          nullable: true
+          type: array
+          items:
+            type: string
       required:
         - id
         - content
@@ -6951,6 +6961,15 @@ components:
           type: string
           example: 123e4567-e89b-12d3-a456-426614174000
           description: Community ID
+        tags:
+          example:
+            - choreography
+            - dance
+            - discussion
+          description: Array of post tags
+          type: array
+          items:
+            type: string
       required:
         - content
         - communityId
@@ -6968,6 +6987,15 @@ components:
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1763017396/BTS-scaled_wdnws5.jpg
           description: Array of media URLs
+          type: array
+          items:
+            type: string
+        tags:
+          example:
+            - choreography
+            - dance
+            - discussion
+          description: Array of post tags
           type: array
           items:
             type: string
@@ -7027,6 +7055,13 @@ components:
           type: string
           example: '2024-01-01T00:00:00.000Z'
           description: Last update timestamp
+        tags:
+          example: *ref_37
+          description: Array of post tags
+          nullable: true
+          type: array
+          items:
+            type: string
       required:
         - id
         - content
@@ -8064,7 +8099,7 @@ components:
           type: string
           example: USER
           description: User role
-          enum: *ref_37
+          enum: *ref_38
         avatarUrl:
           type: object
           example: https://example.com/avatar.jpg

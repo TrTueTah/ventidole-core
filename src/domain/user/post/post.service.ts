@@ -28,6 +28,43 @@ export class PostService {
     private readonly recommendationService: RecommendationService,
   ) {}
 
+  /**
+   * Extract tags from metadata JSON
+   */
+  private extractTags(metadata: any): string[] | null {
+    if (!metadata) return null;
+
+    try {
+      // metadata could be a string, object, or already parsed
+      let parsedMetadata = metadata;
+
+      if (typeof metadata === 'string') {
+        parsedMetadata = JSON.parse(metadata);
+      }
+
+      if (
+        parsedMetadata &&
+        typeof parsedMetadata === 'object' &&
+        'tags' in parsedMetadata &&
+        Array.isArray(parsedMetadata.tags)
+      ) {
+        return parsedMetadata.tags.filter((tag) => typeof tag === 'string');
+      }
+    } catch (error) {
+      this.logger.warn('Failed to parse tags from metadata:', error);
+    }
+
+    return null;
+  }
+
+  /**
+   * Build metadata object with tags
+   */
+  private buildMetadata(tags?: string[]): any {
+    if (!tags || tags.length === 0) return null;
+    return { tags };
+  }
+
   async getPosts(
     filters: GetPostsDto,
     userId?: string,
@@ -59,6 +96,7 @@ export class PostService {
           id: true,
           content: true,
           mediaUrls: true,
+          metadata: true,
           authorId: true,
           communityId: true,
           author: {
@@ -144,6 +182,7 @@ export class PostService {
         author: post.author,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
+        tags: this.extractTags(post.metadata),
       };
     });
 
@@ -163,6 +202,7 @@ export class PostService {
         id: true,
         content: true,
         mediaUrls: true,
+        metadata: true,
         authorId: true,
         author: {
           select: {
@@ -246,6 +286,7 @@ export class PostService {
       communityId: post.communityId,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
+      tags: this.extractTags(post.metadata),
     };
   }
 
@@ -253,12 +294,13 @@ export class PostService {
     userId: string,
     createPostDto: CreatePostDto,
   ): Promise<PostDto> {
-    const { content, mediaUrls, communityId } = createPostDto;
+    const { content, mediaUrls, communityId, tags } = createPostDto;
 
     const post = await this.prisma.post.create({
       data: {
         content,
         mediaUrls: mediaUrls ? mediaUrls : undefined,
+        metadata: this.buildMetadata(tags),
         authorId: userId,
         communityId: communityId,
       },
@@ -266,6 +308,7 @@ export class PostService {
         id: true,
         content: true,
         mediaUrls: true,
+        metadata: true,
         authorId: true,
         communityId: true,
         author: {
@@ -410,6 +453,7 @@ export class PostService {
       communityId: post.communityId,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
+      tags: this.extractTags(post.metadata),
     };
   }
 
@@ -435,18 +479,22 @@ export class PostService {
       throw new CustomError(ErrorCode.PostNotOwned);
     }
 
-    const { content, mediaUrls } = updatePostDto;
+    const { content, mediaUrls, tags } = updatePostDto;
 
     // Build update data object
     const updateData: {
       content?: string;
       mediaUrls?: string[];
+      metadata?: any;
     } = {};
     if (content !== undefined) {
       updateData.content = content;
     }
     if (mediaUrls !== undefined) {
       updateData.mediaUrls = mediaUrls.length > 0 ? mediaUrls : undefined;
+    }
+    if (tags !== undefined) {
+      updateData.metadata = this.buildMetadata(tags);
     }
 
     const post = await this.prisma.post.update({
@@ -456,6 +504,7 @@ export class PostService {
         id: true,
         content: true,
         mediaUrls: true,
+        metadata: true,
         authorId: true,
         communityId: true,
         author: {
@@ -531,6 +580,7 @@ export class PostService {
       },
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
+      tags: this.extractTags(post.metadata),
     };
   }
 
@@ -731,6 +781,7 @@ export class PostService {
         id: true,
         content: true,
         mediaUrls: true,
+        metadata: true,
         authorId: true,
         communityId: true,
         author: {
@@ -813,6 +864,7 @@ export class PostService {
           author: post.author,
           createdAt: post.createdAt,
           updatedAt: post.updatedAt,
+          tags: this.extractTags(post.metadata),
         };
       });
 
@@ -846,6 +898,7 @@ export class PostService {
           id: true,
           content: true,
           mediaUrls: true,
+          metadata: true,
           authorId: true,
           communityId: true,
           author: {
@@ -931,6 +984,7 @@ export class PostService {
         author: post.author,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
+        tags: this.extractTags(post.metadata),
       };
     });
 
@@ -962,6 +1016,7 @@ export class PostService {
               id: true,
               content: true,
               mediaUrls: true,
+              metadata: true,
               authorId: true,
               communityId: true,
               author: {
@@ -1058,6 +1113,7 @@ export class PostService {
         author: post.author,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
+        tags: this.extractTags(post.metadata),
       };
     });
 

@@ -116,7 +116,7 @@ export class StreamChatService {
       );
 
       // Generate channel ID
-      const channelId = `community_${data.communityId}_${Date.now()}`;
+      const channelId = `community_${data.communityId}`;
 
       // Create channel in GetStream
       const streamChatClient = getStreamChatClient();
@@ -393,6 +393,111 @@ export class StreamChatService {
         error,
       );
       throw error;
+    }
+  }
+
+  /**
+   * Find and add user to their community channel with specified role
+   * Used when FAN users are created to automatically add them to their community channel
+   */
+  async addUserToCommunityChannel(
+    userId: string,
+    communityId: string,
+    channelRole: string = 'channel_moderator',
+  ) {
+    try {
+      const streamChatClient = getStreamChatClient();
+
+      // Query for community channel
+      const channels = await streamChatClient.queryChannels({
+        community_id: communityId,
+        is_community_channel: true,
+      });
+
+      if (channels.length === 0) {
+        this.logger.warn(
+          `No community channel found for community ${communityId}`,
+        );
+        return null;
+      }
+
+      // Get the first (and should be only) community channel
+      const channel = channels[0];
+
+      // Add user to the channel with specified role
+      await channel.addMembers([
+        {
+          user_id: userId,
+          channel_role: channelRole,
+        },
+      ]);
+
+      this.logger.log(
+        `Added user ${userId} to community channel ${channel.id} with role ${channelRole}`,
+      );
+
+      return {
+        success: true,
+        channelId: channel.id,
+        channelRole,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Error adding user ${userId} to community ${communityId} channel:`,
+        error.message,
+      );
+      // Return null instead of throwing to make this non-blocking
+      return null;
+    }
+  }
+
+  /**
+   * Update community channel information in GetStream
+   * Updates channel name, description, and image
+   */
+  async updateCommunityChannel(
+    communityId: string,
+    data: {
+      name?: string;
+      description?: string;
+      image?: string;
+    },
+  ) {
+    try {
+      const streamChatClient = getStreamChatClient();
+
+      // Find the community channel
+      const channelId = `community_${communityId}`;
+      const channel = streamChatClient.channel('messaging', channelId);
+
+      // Check if channel exists
+      await channel.watch();
+
+      // Prepare update data
+      const updateData: Record<string, unknown> = {};
+      if (data.name !== undefined) updateData.name = data.name;
+      if (data.description !== undefined)
+        updateData.description = data.description;
+      if (data.image !== undefined) updateData.image = data.image;
+
+      // Update channel
+      await channel.updatePartial({
+        set: updateData,
+      });
+
+      this.logger.log(`Updated community channel ${channelId}`);
+
+      return {
+        success: true,
+        channelId,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Error updating community channel for ${communityId}:`,
+        error.message,
+      );
+      // Return null instead of throwing to make this non-blocking
+      return null;
     }
   }
 }

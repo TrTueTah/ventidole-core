@@ -81,4 +81,13 @@ export class PostDto {
     description: 'Last update timestamp',
   })
   updatedAt: Date;
+
+  @ApiPropertyOptional({
+    example: ['choreography', 'dance', 'discussion'],
+    description: 'Array of post tags',
+    type: [String],
+    required: false,
+    nullable: true,
+  })
+  tags?: string[] | null;
 }
