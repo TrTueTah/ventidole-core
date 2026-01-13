@@ -28,22 +28,6 @@ export const VerificationType = {
 export type VerificationType = (typeof VerificationType)[keyof typeof VerificationType]
 
 
-export const SocialAccountProvider = {
-  GOOGLE: 'GOOGLE',
-  FACEBOOK: 'FACEBOOK'
-} as const
-
-export type SocialAccountProvider = (typeof SocialAccountProvider)[keyof typeof SocialAccountProvider]
-
-
-export const ChatRole = {
-  ADMIN: 'ADMIN',
-  MEMBER: 'MEMBER'
-} as const
-
-export type ChatRole = (typeof ChatRole)[keyof typeof ChatRole]
-
-
 export const OrderStatus = {
   PENDING_PAYMENT: 'PENDING_PAYMENT',
   CONFIRMED: 'CONFIRMED',

@@ -34,10 +34,17 @@ export class CommunityDetailDto extends CommunityDto {
 
   @ApiProperty({
     type: Number,
-    description: 'Total number of members in the community',
+    description: 'Total number of members (followers) in the community',
     example: 1250,
   })
   totalMember: number;
+
+  @ApiProperty({
+    type: Number,
+    description: 'Total number of idols in the community',
+    example: 5,
+  })
+  totalIdol: number;
 
   @ApiPropertyOptional({
     type: ChatChannelDto,

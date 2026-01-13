@@ -9,12 +9,8 @@
  */
 export type * from './models/User'
 export type * from './models/Verification'
-export type * from './models/SocialAccount'
 export type * from './models/Community'
 export type * from './models/CommunityFollower'
-export type * from './models/ChatChannel'
-export type * from './models/ChatParticipant'
-export type * from './models/ChatMessage'
 export type * from './models/Post'
 export type * from './models/Comment'
 export type * from './models/PostLike'

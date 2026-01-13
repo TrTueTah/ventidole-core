@@ -116,16 +116,48 @@ async function seedGetStream() {
       `  ✅ Created ${streamUsersCreated}/${allUsers.length} users in GetStream\n`,
     );
 
-    // 4. Get admin user for channel creation
+    // 4. Get or create admin user for channel creation
     console.log('📖 Finding admin user...');
-    const adminUser = await prisma.user.findFirst({
+    let adminUser = await prisma.user.findFirst({
       where: { role: 'ADMIN' },
     });
+
     if (!adminUser) {
-      console.log('❌ No admin user found - cannot create channels');
-      process.exit(1);
+      console.log('  ℹ️  No admin user found - creating one...');
+
+      // Import bcryptjs for password hashing
+      const bcrypt = require('bcryptjs');
+      const hashedPassword = await bcrypt.hash('Admin@123', 10);
+
+      adminUser = await prisma.user.create({
+        data: {
+          email: 'admin@ventidole.com',
+          username: 'Admin',
+          password: hashedPassword,
+          role: 'ADMIN',
+          isActive: true,
+          isChooseCommunity: true,
+        },
+      });
+
+      // Create admin user in GetStream
+      try {
+        await streamChatClient!.upsertUser({
+          id: adminUser.id,
+          name: adminUser.username,
+          role: 'admin',
+        });
+        console.log(`  ✅ Created admin user in database and GetStream: ${adminUser.email}`);
+      } catch (error) {
+        console.log(`  ⚠️  Warning: Could not create admin in GetStream`);
+        console.log(`     Error: ${error instanceof Error ? error.message : String(error)}`);
+      }
+
+      await delay(250);
+    } else {
+      console.log(`  ✅ Found admin user: ${adminUser.email}`);
     }
-    console.log(`  ✅ Found admin user: ${adminUser.email}\n`);
+    console.log('');
 
     // 5. Read communities from database
     console.log('📖 Reading communities from database...');

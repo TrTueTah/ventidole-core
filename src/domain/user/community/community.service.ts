@@ -79,6 +79,15 @@ export class CommunityService {
               userId: true,
             },
           },
+          idols: {
+            where: {
+              isDeleted: false,
+              isActive: true,
+            },
+            select: {
+              id: true,
+            },
+          },
         },
         orderBy: {
           createdAt: 'desc',
@@ -101,6 +110,7 @@ export class CommunityService {
       updatedAt: community.updatedAt,
       isJoined: community.followers.some((f) => f.userId === userId),
       totalMember: community.followers.length,
+      totalIdol: community.idols.length,
       isNew:
         new Date().getTime() - community.createdAt.getTime() <
         7 * 24 * 60 * 60 * 1000,
@@ -598,6 +608,7 @@ export class CommunityService {
       updatedAt: community.updatedAt,
       isJoined: community.followers.some((f) => f.userId === userId),
       totalMember: community.followers.length,
+      totalIdol: community.idols.length,
       idols: community.idols,
       chatChannel: chatChannel ?? undefined,
     };

@@ -27,11 +27,6 @@ export type User = Prisma.UserModel
  */
 export type Verification = Prisma.VerificationModel
 /**
- * Model SocialAccount
- * 
- */
-export type SocialAccount = Prisma.SocialAccountModel
-/**
  * Model Community
  * 
  */
@@ -41,21 +36,6 @@ export type Community = Prisma.CommunityModel
  * 
  */
 export type CommunityFollower = Prisma.CommunityFollowerModel
-/**
- * Model ChatChannel
- * 
- */
-export type ChatChannel = Prisma.ChatChannelModel
-/**
- * Model ChatParticipant
- * 
- */
-export type ChatParticipant = Prisma.ChatParticipantModel
-/**
- * Model ChatMessage
- * 
- */
-export type ChatMessage = Prisma.ChatMessageModel
 /**
  * Model Post
  * 

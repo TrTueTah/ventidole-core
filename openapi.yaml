@@ -7300,8 +7300,12 @@ components:
             $ref: '#/components/schemas/IdolDto'
         totalMember:
           type: number
-          description: Total number of members in the community
+          description: Total number of members (followers) in the community
           example: 1250
+        totalIdol:
+          type: number
+          description: Total number of idols in the community
+          example: 5
         chatChannel:
           description: Community chat channel if exists
           allOf:
@@ -7313,6 +7317,7 @@ components:
         - updatedAt
         - idols
         - totalMember
+        - totalIdol
     CommunityListDto:
       type: object
       properties:
@@ -7353,7 +7358,11 @@ components:
         totalMember:
           type: number
           example: 150
-          description: Total number of members in the community
+          description: Total number of members (followers) in the community
+        totalIdol:
+          type: number
+          example: 5
+          description: Total number of idols in the community
         isNew:
           type: boolean
           example: false
@@ -7364,6 +7373,7 @@ components:
         - createdAt
         - updatedAt
         - totalMember
+        - totalIdol
         - isNew
     BulkFollowCommunitiesDto:
       type: object
@@ -8267,7 +8277,11 @@ components:
         totalMembers:
           type: number
           example: 100
-          description: Total members in the community
+          description: Total members (followers) in the community
+        totalIdols:
+          type: number
+          example: 5
+          description: Total idols in the community
         totalPosts:
           type: number
           example: 50
@@ -8279,6 +8293,7 @@ components:
         - createdAt
         - updatedAt
         - totalMembers
+        - totalIdols
         - totalPosts
     CreateCommunityDto:
       type: object

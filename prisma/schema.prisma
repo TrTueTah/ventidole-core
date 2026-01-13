@@ -1,7 +1,7 @@
 generator client {
   provider      = "prisma-client"
   output        = "../src/db/prisma"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x", "linux-musl-arm64-openssl-3.0.x"]
 }
 
 datasource db {
@@ -85,6 +85,11 @@ model Community {
   backgroundUrl String?             @map("background_url") @db.VarChar(255)
   description   String?             @db.VarChar(500)
   communityType CommunityType       @map("community_type")
+
+  // counters
+  totalMember   Int                 @default(0) @map("total_member")
+  totalIdol     Int                 @default(0) @map("total_idol")
+
   followers     CommunityFollower[]
   idols         User[]
   posts         Post[]

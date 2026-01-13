@@ -19,6 +19,7 @@
     "seed:getstream": "tsx scripts/seed-getstream.ts",
     "seed:posts": "tsx scripts/seed-posts.ts",
     "cleanup:stream": "tsx scripts/cleanup-stream-data.ts",
+    "wipe:getstream": "tsx scripts/wipe-getstream.ts",
     "sync:provinces": "tsx scripts/sync-provinces-districts.ts",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",

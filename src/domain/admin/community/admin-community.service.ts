@@ -107,6 +107,15 @@ export class AdminCommunityService {
             id: true,
           },
         },
+        idols: {
+          where: {
+            isDeleted: false,
+            isActive: true,
+          },
+          select: {
+            id: true,
+          },
+        },
         posts: {
           where: {
             isDeleted: false,
@@ -125,6 +134,7 @@ export class AdminCommunityService {
     return {
       ...community,
       totalMembers: community.followers.length,
+      totalIdols: community.idols.length,
       totalPosts: community.posts.length,
     };
   }

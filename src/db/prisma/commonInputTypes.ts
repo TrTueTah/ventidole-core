@@ -259,23 +259,6 @@ export type EnumVerificationTypeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumVerificationTypeFilter<$PrismaModel>
 }
 
-export type EnumSocialAccountProviderFilter<$PrismaModel = never> = {
-  equals?: $Enums.SocialAccountProvider | Prisma.EnumSocialAccountProviderFieldRefInput<$PrismaModel>
-  in?: $Enums.SocialAccountProvider[] | Prisma.ListEnumSocialAccountProviderFieldRefInput<$PrismaModel>
-  notIn?: $Enums.SocialAccountProvider[] | Prisma.ListEnumSocialAccountProviderFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumSocialAccountProviderFilter<$PrismaModel> | $Enums.SocialAccountProvider
-}
-
-export type EnumSocialAccountProviderWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.SocialAccountProvider | Prisma.EnumSocialAccountProviderFieldRefInput<$PrismaModel>
-  in?: $Enums.SocialAccountProvider[] | Prisma.ListEnumSocialAccountProviderFieldRefInput<$PrismaModel>
-  notIn?: $Enums.SocialAccountProvider[] | Prisma.ListEnumSocialAccountProviderFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumSocialAccountProviderWithAggregatesFilter<$PrismaModel> | $Enums.SocialAccountProvider
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumSocialAccountProviderFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumSocialAccountProviderFilter<$PrismaModel>
-}
-
 export type EnumCommunityTypeFilter<$PrismaModel = never> = {
   equals?: $Enums.CommunityType | Prisma.EnumCommunityTypeFieldRefInput<$PrismaModel>
   in?: $Enums.CommunityType[] | Prisma.ListEnumCommunityTypeFieldRefInput<$PrismaModel>
@@ -652,23 +635,6 @@ export type NestedEnumVerificationTypeWithAggregatesFilter<$PrismaModel = never>
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumVerificationTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumVerificationTypeFilter<$PrismaModel>
-}
-
-export type NestedEnumSocialAccountProviderFilter<$PrismaModel = never> = {
-  equals?: $Enums.SocialAccountProvider | Prisma.EnumSocialAccountProviderFieldRefInput<$PrismaModel>
-  in?: $Enums.SocialAccountProvider[] | Prisma.ListEnumSocialAccountProviderFieldRefInput<$PrismaModel>
-  notIn?: $Enums.SocialAccountProvider[] | Prisma.ListEnumSocialAccountProviderFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumSocialAccountProviderFilter<$PrismaModel> | $Enums.SocialAccountProvider
-}
-
-export type NestedEnumSocialAccountProviderWithAggregatesFilter<$PrismaModel = never> = {
-  equals?: $Enums.SocialAccountProvider | Prisma.EnumSocialAccountProviderFieldRefInput<$PrismaModel>
-  in?: $Enums.SocialAccountProvider[] | Prisma.ListEnumSocialAccountProviderFieldRefInput<$PrismaModel>
-  notIn?: $Enums.SocialAccountProvider[] | Prisma.ListEnumSocialAccountProviderFieldRefInput<$PrismaModel>
-  not?: Prisma.NestedEnumSocialAccountProviderWithAggregatesFilter<$PrismaModel> | $Enums.SocialAccountProvider
-  _count?: Prisma.NestedIntFilter<$PrismaModel>
-  _min?: Prisma.NestedEnumSocialAccountProviderFilter<$PrismaModel>
-  _max?: Prisma.NestedEnumSocialAccountProviderFilter<$PrismaModel>
 }
 
 export type NestedEnumCommunityTypeFilter<$PrismaModel = never> = {

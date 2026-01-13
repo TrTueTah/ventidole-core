@@ -50,12 +50,8 @@ export const AnyNull = runtime.objectEnumValues.instances.AnyNull
 export const ModelName = {
   User: 'User',
   Verification: 'Verification',
-  SocialAccount: 'SocialAccount',
   Community: 'Community',
   CommunityFollower: 'CommunityFollower',
-  ChatChannel: 'ChatChannel',
-  ChatParticipant: 'ChatParticipant',
-  ChatMessage: 'ChatMessage',
   Post: 'Post',
   Comment: 'Comment',
   PostLike: 'PostLike',
@@ -138,23 +134,6 @@ export const VerificationScalarFieldEnum = {
 export type VerificationScalarFieldEnum = (typeof VerificationScalarFieldEnum)[keyof typeof VerificationScalarFieldEnum]
 
 
-export const SocialAccountScalarFieldEnum = {
-  id: 'id',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  version: 'version',
-  isDeleted: 'isDeleted',
-  deletedAt: 'deletedAt',
-  metadata: 'metadata',
-  provider: 'provider',
-  providerId: 'providerId',
-  userId: 'userId'
-} as const
-
-export type SocialAccountScalarFieldEnum = (typeof SocialAccountScalarFieldEnum)[keyof typeof SocialAccountScalarFieldEnum]
-
-
 export const CommunityScalarFieldEnum = {
   id: 'id',
   isActive: 'isActive',
@@ -168,7 +147,9 @@ export const CommunityScalarFieldEnum = {
   avatarUrl: 'avatarUrl',
   backgroundUrl: 'backgroundUrl',
   description: 'description',
-  communityType: 'communityType'
+  communityType: 'communityType',
+  totalMember: 'totalMember',
+  totalIdol: 'totalIdol'
 } as const
 
 export type CommunityScalarFieldEnum = (typeof CommunityScalarFieldEnum)[keyof typeof CommunityScalarFieldEnum]
@@ -188,67 +169,6 @@ export const CommunityFollowerScalarFieldEnum = {
 } as const
 
 export type CommunityFollowerScalarFieldEnum = (typeof CommunityFollowerScalarFieldEnum)[keyof typeof CommunityFollowerScalarFieldEnum]
-
-
-export const ChatChannelScalarFieldEnum = {
-  id: 'id',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  version: 'version',
-  isDeleted: 'isDeleted',
-  deletedAt: 'deletedAt',
-  metadata: 'metadata',
-  type: 'type',
-  name: 'name',
-  image: 'image',
-  description: 'description',
-  communityId: 'communityId',
-  idolId: 'idolId',
-  isCommunityChannel: 'isCommunityChannel',
-  memberCount: 'memberCount',
-  lastMessageAt: 'lastMessageAt'
-} as const
-
-export type ChatChannelScalarFieldEnum = (typeof ChatChannelScalarFieldEnum)[keyof typeof ChatChannelScalarFieldEnum]
-
-
-export const ChatParticipantScalarFieldEnum = {
-  id: 'id',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  version: 'version',
-  isDeleted: 'isDeleted',
-  deletedAt: 'deletedAt',
-  metadata: 'metadata',
-  channelId: 'channelId',
-  userId: 'userId',
-  role: 'role',
-  canSendMessage: 'canSendMessage',
-  joinedAt: 'joinedAt',
-  invitedBy: 'invitedBy',
-  lastReadAt: 'lastReadAt'
-} as const
-
-export type ChatParticipantScalarFieldEnum = (typeof ChatParticipantScalarFieldEnum)[keyof typeof ChatParticipantScalarFieldEnum]
-
-
-export const ChatMessageScalarFieldEnum = {
-  id: 'id',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt',
-  version: 'version',
-  isDeleted: 'isDeleted',
-  deletedAt: 'deletedAt',
-  metadata: 'metadata',
-  content: 'content',
-  channelId: 'channelId',
-  userId: 'userId'
-} as const
-
-export type ChatMessageScalarFieldEnum = (typeof ChatMessageScalarFieldEnum)[keyof typeof ChatMessageScalarFieldEnum]
 
 
 export const PostScalarFieldEnum = {

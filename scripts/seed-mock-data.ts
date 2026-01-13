@@ -18,11 +18,13 @@ async function seedMockData() {
     await prisma.product.deleteMany();
     await prisma.productType.deleteMany();
     await prisma.shop.deleteMany();
-    await prisma.socialAccount.deleteMany();
+    await prisma.banner.deleteMany();
     console.log('  ✅ Cleared existing data\n');
 
     console.log(
-      'ℹ️  Note: This script only seeds the database. Run "npx tsx scripts/seed-getstream.ts" afterward to create chat channels in GetStream.\n',
+      'ℹ️  Note: This script seeds marketplace data (shops, products, carts, etc.).\n' +
+      '   Users, communities, follows, posts are from Python seed.\n' +
+      '   Chat channels are managed by GetStream (run seed-getstream.ts).\n',
     );
 
     // 1. Read existing data from database (created by seed_all.py)
@@ -57,10 +59,10 @@ async function seedMockData() {
     });
     console.log(`  ✅ Found ${followers.length} community follows\n`);
 
-    // 4. Note: Chat is handled entirely by GetStream
-    console.log('💬 Chat will be created in GetStream...');
+    // 4. Note: Chat is handled entirely by GetStream (not in database)
+    console.log('💬 Chat is managed by GetStream (not in database)');
     console.log(
-      '   ℹ️  Run "npx tsx scripts/seed-getstream.ts" to create channels in GetStream.\n',
+      '   ℹ️  Run "npx tsx scripts/seed-getstream.ts" to create channels.\n',
     );
 
     // 7. Read Posts from database
@@ -77,30 +79,7 @@ async function seedMockData() {
       'https://res.cloudinary.com/dsc9afexw/image/upload/v1762853124/273532258_1528902877562442_6813889931345818717_n_bqaajl.webp',
     ];
 
-    // 8. Create Social Accounts (some users have Google/Facebook login)
-    console.log('🔗 Creating social account links...');
-    const socialAccountsData = [
-      // Link 5 random fans to Google accounts
-      ...Array.from({ length: 5 }, (_, i) => ({
-        provider: 'GOOGLE' as const,
-        providerId: `google_${Date.now()}_${i}`,
-        userId: fans[i].id,
-      })),
-      // Link 3 random fans to Facebook accounts
-      ...Array.from({ length: 3 }, (_, i) => ({
-        provider: 'FACEBOOK' as const,
-        providerId: `facebook_${Date.now()}_${i}`,
-        userId: fans[i + 5].id,
-      })),
-    ];
-
-    await prisma.socialAccount.createMany({
-      data: socialAccountsData,
-    });
-    const socialAccounts = await prisma.socialAccount.findMany();
-    console.log(`  ✅ Created ${socialAccounts.length} social account links\n`);
-
-    // 9. Create Product Types
+    // 8. Create Product Types
     console.log('🏷️  Creating product types...');
     await prisma.productType.createMany({
       data: [
@@ -117,7 +96,7 @@ async function seedMockData() {
     });
     console.log(`  ✅ Created ${productTypes.length} product types\n`);
 
-    // 10. Create Shops for Communities
+    // 9. Create Shops for Communities
     console.log('🏪 Creating shops for communities...');
     await prisma.shop.createMany({
       data: communities.map((community) => ({
@@ -132,7 +111,7 @@ async function seedMockData() {
     });
     console.log(`  ✅ Created ${shops.length} shops\n`);
 
-    // 11. Create Products
+    // 10. Create Products
     console.log('🛍️  Creating products...');
     const productTemplates = [
       {
@@ -246,7 +225,7 @@ async function seedMockData() {
     });
     console.log(`  ✅ Created ${products.length} products\n`);
 
-    // 12. Create Product Variants
+    // 11. Create Product Variants
     console.log('🎨 Creating product variants...');
 
     // Add variants for apparel products (t-shirts, hoodies)
@@ -273,7 +252,7 @@ async function seedMockData() {
     });
     console.log(`  ✅ Created ${productVariants.length} product variants\n`);
 
-    // 13. Create Carts for Fans
+    // 12. Create Carts for Fans
     console.log('🛒 Creating carts...');
     await prisma.cart.createMany({
       data: fans.map((fan) => ({
@@ -285,7 +264,7 @@ async function seedMockData() {
     });
     console.log(`  ✅ Created ${carts.length} carts\n`);
 
-    // 14. Create Cart Items (some fans have items in cart)
+    // 13. Create Cart Items (some fans have items in cart)
     console.log('🛍️  Adding items to carts...');
     const cartItemsData: Array<{
       cartId: string;
@@ -337,6 +316,65 @@ async function seedMockData() {
     });
     console.log(`  ✅ Created ${cartItems.length} cart items\n`);
 
+    // 14. Create Banners
+    console.log('🎨 Creating banners...');
+    const now = new Date();
+    const bannersData = [
+      {
+        title: 'Welcome to Ventidole!',
+        description: 'Connect with your favorite idols and communities',
+        imageUrl: availableMediaUrls[0],
+        link: '/communities',
+        startDate: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000), // 30 days ago
+        endDate: new Date(now.getTime() + 60 * 24 * 60 * 60 * 1000), // 60 days from now
+        order: 1,
+      },
+      {
+        title: 'New Album Release',
+        description: 'Check out the latest albums from your favorite artists',
+        imageUrl: availableMediaUrls[1],
+        link: '/shop',
+        startDate: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000), // 7 days ago
+        endDate: new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+        order: 2,
+      },
+      {
+        title: 'Exclusive Merchandise',
+        description: 'Limited edition items available now in the shop',
+        imageUrl: availableMediaUrls[2],
+        link: '/shop',
+        startDate: new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000), // 14 days ago
+        endDate: new Date(now.getTime() + 45 * 24 * 60 * 60 * 1000), // 45 days from now
+        order: 3,
+      },
+      {
+        title: 'Join the Community',
+        description: 'Follow your favorite communities and never miss an update',
+        imageUrl: availableMediaUrls[0],
+        link: '/communities',
+        startDate: now,
+        endDate: new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000), // 90 days from now
+        order: 4,
+      },
+      {
+        title: 'Special Event Coming Soon',
+        description: 'Get ready for exclusive content and surprises',
+        imageUrl: availableMediaUrls[1],
+        link: null,
+        startDate: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+        endDate: new Date(now.getTime() + 37 * 24 * 60 * 60 * 1000), // 37 days from now
+        order: 5,
+      },
+    ];
+
+    await prisma.banner.createMany({
+      data: bannersData,
+    });
+    const banners = await prisma.banner.findMany({
+      orderBy: { order: 'asc' },
+    });
+    console.log(`  ✅ Created ${banners.length} banners\n`);
+
     // 15. Create Orders - SKIPPED
     // console.log('📦 Creating orders...');
     // const orderStatuses: Array<
@@ -384,7 +422,7 @@ async function seedMockData() {
     // });
     // console.log(`  ✅ Created ${orders.length} orders\n`);
 
-    // // 22. Create Order Items
+    // // 16. Create Order Items
     // console.log('📋 Creating order items...');
     // const orderItemsData: Array<{
     //   orderId: string;
@@ -451,7 +489,7 @@ async function seedMockData() {
     // });
     // console.log(`  ✅ Created ${orderItems.length} order items\n`);
 
-    // // 23. Create Payment Transactions
+    // // 17. Create Payment Transactions
     // console.log('💳 Creating payment transactions...');
     // const paymentTransactionsData = updatedOrders.map((order) => {
     //   // Determine payment transaction status based on order status
@@ -501,10 +539,9 @@ async function seedMockData() {
     console.log(`   - ${fans.length} Fans`);
     console.log(`🏘️  Communities: ${communities.length}`);
     console.log(`💙 Community Follows: ${followers.length}`);
-    console.log(`💬 Chat: Managed by GetStream (run seed-getstream.ts)`);
-    console.log(`📝 Posts: ${posts.length} (with accurate counts)`);
-    // Comments, likes, and views are managed by seed_all.py
-    console.log(`🔗 Social Accounts: ${socialAccounts.length}`);
+    console.log(`📝 Posts: ${posts.length}`);
+    console.log(`💬 Chat: Managed by GetStream (not in database)`);
+    console.log('   ℹ️  Run "npx tsx scripts/seed-getstream.ts" to create channels');
     console.log('\n🛍️  Marketplace:');
     console.log(`🏷️  Product Types: ${productTypes.length}`);
     console.log(`🏪 Shops: ${shops.length}`);
@@ -512,6 +549,9 @@ async function seedMockData() {
     console.log(`🎨 Product Variants: ${productVariants.length}`);
     console.log(`🛒 Carts: ${carts.length}`);
     console.log(`🛍️  Cart Items: ${cartItems.length}`);
+    console.log(`🎨 Banners: ${banners.length}`);
+    console.log(`   - Active: ${banners.filter((b) => b.startDate <= now && b.endDate >= now).length}`);
+    console.log(`   - Upcoming: ${banners.filter((b) => b.startDate > now).length}`);
     console.log(`📦 Orders: ${orders.length}`);
     console.log(
       `   - Pending: ${orders.filter((o) => o.status === 'pending').length}`,
