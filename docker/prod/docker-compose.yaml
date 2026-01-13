@@ -1,6 +1,25 @@
 version: '3.9'
 
 services:
+  postgres:
+    image: postgres:17
+    container_name: ventidole-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ventidole
+      POSTGRES_USER: trantanh227
+      POSTGRES_PASSWORD: Tanhdeptrai113!
+      TZ: Asia/Ho_Chi_Minh
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    expose:
+      - '5432' # chỉ expose nội bộ docker
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U trantanh227 -d ventidole']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   server:
     build:
       context: ../..
@@ -10,4 +29,10 @@ services:
       - ../../.env
     ports:
       - '8080:8080'
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: always
+
+volumes:
+  postgres_data:
