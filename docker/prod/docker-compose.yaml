@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: ventidole
       POSTGRES_USER: trantanh227
-      POSTGRES_PASSWORD: Tanhdeptrai113!
+      POSTGRES_PASSWORD: Tanhdeptrai113
     volumes:
       - postgres_data:/var/lib/postgresql/data
     expose:
