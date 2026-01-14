@@ -70,6 +70,12 @@ export class PostDto {
   })
   communityId: string;
 
+  @ApiPropertyOptional({
+    example: 'BTS Army',
+    description: 'Community name',
+  })
+  communityName?: string;
+
   @ApiProperty({
     example: '2024-01-01T00:00:00.000Z',
     description: 'Creation timestamp',

@@ -5646,6 +5646,150 @@ paths:
                   - message
       security: *ref_30
       tags: *ref_31
+  /v1/admin/analytics/ecommerce:
+    get:
+      description: >-
+        Retrieve ecommerce analytics data including revenue, orders, customers,
+        and sales trends
+      operationId: AdminAnalyticsController_getEcommerceAnalytics_v1
+      parameters:
+        - name: startDate
+          required: false
+          in: query
+          description: Start date for analytics (ISO 8601 format)
+          schema:
+            example: '2026-01-01'
+            type: string
+        - name: endDate
+          required: false
+          in: query
+          description: End date for analytics (ISO 8601 format)
+          schema:
+            example: '2026-01-31'
+            type: string
+        - name: timeRange
+          required: false
+          in: query
+          description: >-
+            Time range granularity for grouping data (daily, weekly, monthly,
+            yearly)
+          schema:
+            default: DAILY
+            example: MONTHLY
+            type: string
+            enum:
+              - DAILY
+              - WEEKLY
+              - MONTHLY
+              - YEARLY
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/EcommerceAnalyticsDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: &ref_32
+        - bearer: []
+      summary: Get ecommerce analytics
+      tags: &ref_33
+        - Admin Analytics
+  /v1/admin/analytics/social:
+    get:
+      description: >-
+        Retrieve social analytics data including posts, engagement, communities,
+        and member trends
+      operationId: AdminAnalyticsController_getSocialAnalytics_v1
+      parameters:
+        - name: startDate
+          required: false
+          in: query
+          description: Start date for analytics (ISO 8601 format)
+          schema:
+            example: '2026-01-01'
+            type: string
+        - name: endDate
+          required: false
+          in: query
+          description: End date for analytics (ISO 8601 format)
+          schema:
+            example: '2026-01-31'
+            type: string
+        - name: timeRange
+          required: false
+          in: query
+          description: >-
+            Time range granularity for grouping data (daily, weekly, monthly,
+            yearly)
+          schema:
+            default: DAILY
+            example: MONTHLY
+            type: string
+            enum:
+              - DAILY
+              - WEEKLY
+              - MONTHLY
+              - YEARLY
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/SocialAnalyticsDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_32
+      summary: Get social analytics
+      tags: *ref_33
   /v1/orders/confirm:
     post:
       description: >-
@@ -5692,10 +5836,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_32
+      security: &ref_34
         - bearer: []
       summary: Confirm order and create payment
-      tags: &ref_33
+      tags: &ref_35
         - Orders
   /v1/orders/{orderId}/retry-payment:
     post:
@@ -5741,9 +5885,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_32
+      security: *ref_34
       summary: Retry payment for PENDING_PAYMENT order
-      tags: *ref_33
+      tags: *ref_35
   /v1/orders:
     get:
       description: >-
@@ -5838,9 +5982,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_32
+      security: *ref_34
       summary: Get user orders
-      tags: *ref_33
+      tags: *ref_35
   /v1/orders/{orderId}/details:
     get:
       description: >-
@@ -5885,9 +6029,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_32
+      security: *ref_34
       summary: Get order details
-      tags: *ref_33
+      tags: *ref_35
   /v1/orders/{orderId}:
     get:
       description: >-
@@ -5932,9 +6076,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_32
+      security: *ref_34
       summary: Get order status
-      tags: *ref_33
+      tags: *ref_35
   /webhooks/payos:
     post:
       description: >-
@@ -5993,10 +6137,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_34
+      security: &ref_36
         - bearer: []
       summary: Generate Knock authentication token for client SDK
-      tags: &ref_35
+      tags: &ref_37
         - Knock Notifications
   /v1/knock/fcm-token:
     post:
@@ -6043,9 +6187,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_34
+      security: *ref_36
       summary: Register FCM token for push notifications
-      tags: *ref_35
+      tags: *ref_37
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -6462,7 +6606,7 @@ components:
           type: string
           example: USER
           description: User role
-          enum: &ref_38
+          enum: &ref_40
             - FAN
             - ADMIN
             - IDOL
@@ -6870,7 +7014,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: &ref_36
+          example: &ref_38
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
             - >-
@@ -6908,6 +7052,10 @@ components:
           type: string
           example: clxxxxxxx
           description: Community ID
+        communityName:
+          type: string
+          example: BTS Army
+          description: Community name
         createdAt:
           format: date-time
           type: string
@@ -6919,7 +7067,7 @@ components:
           example: '2024-01-01T00:00:00.000Z'
           description: Last update timestamp
         tags:
-          example: &ref_37
+          example: &ref_39
             - choreography
             - dance
             - discussion
@@ -7011,7 +7159,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: *ref_36
+          example: *ref_38
           description: Array of media URLs
           nullable: true
           type: array
@@ -7045,6 +7193,10 @@ components:
           type: string
           example: clxxxxxxx
           description: Community ID
+        communityName:
+          type: string
+          example: BTS Army
+          description: Community name
         createdAt:
           format: date-time
           type: string
@@ -7056,7 +7208,7 @@ components:
           example: '2024-01-01T00:00:00.000Z'
           description: Last update timestamp
         tags:
-          example: *ref_37
+          example: *ref_39
           description: Array of post tags
           nullable: true
           type: array
@@ -8109,7 +8261,7 @@ components:
           type: string
           example: USER
           description: User role
-          enum: *ref_38
+          enum: *ref_40
         avatarUrl:
           type: object
           example: https://example.com/avatar.jpg
@@ -9625,6 +9777,177 @@ components:
           type: number
         isActive:
           type: boolean
+    MetricDto:
+      type: object
+      properties:
+        label:
+          type: string
+          example: Customers
+          description: Metric label
+        value:
+          type: number
+          example: 3782
+          description: Current metric value
+        percentageChange:
+          type: number
+          example: 11.01
+          description: Percentage change compared to previous period
+        trend:
+          type: string
+          example: increase
+          description: Trend direction
+          enum:
+            - increase
+            - decrease
+            - stable
+        previousValue:
+          type: number
+          example: 3422
+          description: Previous period value for comparison
+      required:
+        - label
+        - value
+    TimeSeriesDataPointDto:
+      type: object
+      properties:
+        period:
+          type: string
+          example: 2026-01
+          description: Time period label (e.g., month, day)
+        value:
+          type: number
+          example: 350
+          description: Value for this period
+      required:
+        - period
+        - value
+    TimeSeriesDataDto:
+      type: object
+      properties:
+        title:
+          type: string
+          example: Monthly Sales
+          description: Chart title
+        data:
+          description: Data points for the chart
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeSeriesDataPointDto'
+      required:
+        - title
+        - data
+    EcommerceAnalyticsDto:
+      type: object
+      properties:
+        metrics:
+          description: Summary metrics for ecommerce
+          example:
+            - label: Total Revenue
+              value: 125000
+              percentageChange: 15.5
+              trend: increase
+              previousValue: 108000
+            - label: Total Orders
+              value: 5359
+              percentageChange: -9.05
+              trend: decrease
+              previousValue: 5890
+            - label: Total Customers
+              value: 3782
+              percentageChange: 11.01
+              trend: increase
+              previousValue: 3406
+            - label: Average Order Value
+              value: 23.32
+              percentageChange: 5.2
+              trend: increase
+              previousValue: 22.16
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricDto'
+        charts:
+          description: Time series data for charts
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeSeriesDataDto'
+        tables:
+          type: object
+          example:
+            topProducts:
+              - name: Product A
+                revenue: 25000
+                orders: 150
+              - name: Product B
+                revenue: 18000
+                orders: 120
+            topCategories:
+              - name: Electronics
+                revenue: 50000
+                orders: 300
+              - name: Clothing
+                revenue: 35000
+                orders: 250
+          description: Additional table data for ecommerce analytics
+      required:
+        - metrics
+        - charts
+        - tables
+    SocialAnalyticsDto:
+      type: object
+      properties:
+        metrics:
+          description: Summary metrics for social analytics
+          example:
+            - label: Total Posts
+              value: 1250
+              percentageChange: 8.5
+              trend: increase
+              previousValue: 1152
+            - label: Total Engagement
+              value: 45678
+              percentageChange: 12.3
+              trend: increase
+              previousValue: 40680
+            - label: Active Communities
+              value: 125
+              percentageChange: 3.5
+              trend: increase
+              previousValue: 121
+            - label: New Members
+              value: 890
+              percentageChange: -2.1
+              trend: decrease
+              previousValue: 909
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricDto'
+        charts:
+          description: Time series data for charts
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeSeriesDataDto'
+        tables:
+          type: object
+          example:
+            topPosts:
+              - title: Post A
+                likes: 500
+                comments: 150
+              - title: Post B
+                likes: 450
+                comments: 120
+            topCommunities:
+              - name: Community A
+                members: 5000
+                posts: 300
+              - name: Community B
+                members: 3500
+                posts: 250
+          description: Additional table data for social analytics
+      required:
+        - metrics
+        - charts
+        - tables
     OrderItemDto:
       type: object
       properties:

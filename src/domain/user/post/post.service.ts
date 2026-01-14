@@ -107,6 +107,11 @@ export class PostService {
               role: true,
             },
           },
+          community: {
+            select: {
+              name: true,
+            },
+          },
           _count: {
             select: {
               likes: true,
@@ -179,6 +184,7 @@ export class PostService {
         isLiked: likedPostIds.has(post.id),
         authorId: post.authorId,
         communityId: post.communityId,
+        communityName: post.community?.name,
         author: post.author,
         createdAt: post.createdAt,
         updatedAt: post.updatedAt,
@@ -210,6 +216,11 @@ export class PostService {
             username: true,
             avatarUrl: true,
             role: true,
+          },
+        },
+        community: {
+          select: {
+            name: true,
           },
         },
         _count: {
@@ -284,6 +295,7 @@ export class PostService {
         role: post.author.role,
       },
       communityId: post.communityId,
+      communityName: post.community?.name,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
       tags: this.extractTags(post.metadata),
@@ -317,6 +329,11 @@ export class PostService {
             username: true,
             avatarUrl: true,
             role: true,
+          },
+        },
+        community: {
+          select: {
+            name: true,
           },
         },
         _count: {
@@ -451,6 +468,7 @@ export class PostService {
         role: post.author.role,
       },
       communityId: post.communityId,
+      communityName: post.community?.name,
       createdAt: post.createdAt,
       updatedAt: post.updatedAt,
       tags: this.extractTags(post.metadata),
@@ -515,6 +533,11 @@ export class PostService {
             role: true,
           },
         },
+        community: {
+          select: {
+            name: true,
+          },
+        },
         _count: {
           select: {
             likes: true,
@@ -572,6 +595,7 @@ export class PostService {
       isLiked: !!like,
       authorId: post.authorId,
       communityId: post.communityId,
+      communityName: post.community?.name,
       author: {
         id: post.author.id,
         username: post.author.username,
