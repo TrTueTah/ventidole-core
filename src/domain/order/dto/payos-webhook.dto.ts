@@ -120,20 +120,32 @@ export class PayOSWebhookDataDto {
 }
 
 export class PayOSWebhookDto {
-  @ApiProperty({ description: 'Response code', example: '00' })
-  @IsNotEmpty()
+  @ApiProperty({
+    description: 'Response code (optional)',
+    example: '00',
+    required: false,
+  })
+  @IsOptional()
   @IsString()
-  code: string;
+  code?: string;
 
-  @ApiProperty({ description: 'Description', example: 'success' })
-  @IsNotEmpty()
+  @ApiProperty({
+    description: 'Description (optional)',
+    example: 'success',
+    required: false,
+  })
+  @IsOptional()
   @IsString()
-  desc: string;
+  desc?: string;
 
-  @ApiProperty({ description: 'Success status', example: true })
-  @IsNotEmpty()
+  @ApiProperty({
+    description: 'Success status (optional)',
+    example: true,
+    required: false,
+  })
+  @IsOptional()
   @IsBoolean()
-  success: boolean;
+  success?: boolean;
 
   @ApiProperty({ description: 'Webhook data', type: PayOSWebhookDataDto })
   @IsNotEmpty()
