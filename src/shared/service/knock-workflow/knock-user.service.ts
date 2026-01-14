@@ -20,11 +20,10 @@ export class KnockUserService {
     try {
       const knockClient = getKnockClient();
 
-      await knockClient.users.identify(data.userId, {
+      await knockClient.users.update(data.userId, {
         email: data.email,
         name: data.name,
         avatar: data.avatarUrl,
-        role: data.role,
       });
 
       this.logger.log(`Registered user ${data.userId} in Knock`);

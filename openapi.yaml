@@ -10284,15 +10284,15 @@ components:
       properties:
         code:
           type: string
-          description: Response code
+          description: Response code (optional)
           example: '00'
         desc:
           type: string
-          description: Description
+          description: Description (optional)
           example: success
         success:
           type: boolean
-          description: Success status
+          description: Success status (optional)
           example: true
         data:
           description: Webhook data
@@ -10303,9 +10303,6 @@ components:
           description: HMAC SHA256 signature
           example: 8d8640d802576397a1ce45ebda7f835055768ac7ad2e0bfb77f9b8f12cca4c7f
       required:
-        - code
-        - desc
-        - success
         - data
         - signature
     GenerateKnockTokenDto:

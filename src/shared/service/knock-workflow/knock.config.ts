@@ -4,13 +4,13 @@ let knockClient: Knock | null = null;
 
 export const getKnockClient = (): Knock => {
   if (!knockClient) {
-    const apiKey = process.env.KNOCK_SECRET_KEY;
+    const apiKey = process.env.KNOCK_SECRET_KEY || process.env.KNOCK_API_KEY;
 
     if (!apiKey) {
-      throw new Error('KNOCK_SECRET_KEY must be defined in environment variables');
+      throw new Error('KNOCK_SECRET_KEY or KNOCK_API_KEY must be defined in environment variables');
     }
 
-    knockClient = new Knock(apiKey);
+    knockClient = new Knock({ apiKey });
   }
 
   return knockClient;

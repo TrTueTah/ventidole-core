@@ -23,8 +23,8 @@ async function seedMockData() {
 
     console.log(
       'ℹ️  Note: This script seeds marketplace data (shops, products, carts, etc.).\n' +
-      '   Users, communities, follows, posts are from Python seed.\n' +
-      '   Chat channels are managed by GetStream (run seed-getstream.ts).\n',
+        '   Users, communities, follows, posts are from Python seed.\n' +
+        '   Chat channels are managed by GetStream (run seed-getstream.ts).\n',
     );
 
     // 1. Read existing data from database (created by seed_all.py)
@@ -349,7 +349,8 @@ async function seedMockData() {
       },
       {
         title: 'Join the Community',
-        description: 'Follow your favorite communities and never miss an update',
+        description:
+          'Follow your favorite communities and never miss an update',
         imageUrl: availableMediaUrls[0],
         link: '/communities',
         startDate: now,
@@ -375,160 +376,162 @@ async function seedMockData() {
     });
     console.log(`  ✅ Created ${banners.length} banners\n`);
 
-    // 15. Create Orders - SKIPPED
-    // console.log('📦 Creating orders...');
-    // const orderStatuses: Array<
-    //   'pending' | 'paid' | 'shipping' | 'delivered' | 'cancelled' | 'refunded'
-    // > = ['pending', 'paid', 'shipping', 'delivered', 'cancelled', 'refunded'];
+    // 15. Create Orders
+    console.log('📦 Creating orders...');
+    const orderStatuses = [
+      'PENDING_PAYMENT',
+      'CONFIRMED',
+      'PAID',
+      'SHIPPING',
+      'DELIVERED',
+      'CANCELED',
+      'EXPIRED',
+    ] as const;
 
-    // // Create 15-20 orders
-    // const numOrders = Math.floor(Math.random() * 6) + 15; // 15-20 orders
-    // const ordersData = Array.from({ length: numOrders }, () => {
-    //   const fan = fans[Math.floor(Math.random() * fans.length)];
-    //   const status =
-    //     orderStatuses[Math.floor(Math.random() * orderStatuses.length)];
-    //   const createdDate = new Date(
-    //     Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000,
-    //   ); // Random date within last 90 days
+    // Create 15-20 orders
+    const numOrders = Math.floor(Math.random() * 6) + 15; // 15-20 orders
+    const ordersData = Array.from({ length: numOrders }, (_, index) => {
+      const fan = fans[Math.floor(Math.random() * fans.length)];
+      const status =
+        orderStatuses[Math.floor(Math.random() * orderStatuses.length)];
+      const createdDate = new Date(
+        Date.now() - Math.random() * 180 * 24 * 60 * 60 * 1000,
+      ); // Random date within last 6 months (180 days)
 
-    //   return {
-    //     userId: fan.id,
-    //     totalAmount: 0, // Will be calculated based on order items
-    //     status: status,
-    //     shippingAddress: {
-    //       street: '123 K-Pop Street',
-    //       city: 'Seoul',
-    //       state: 'Seoul',
-    //       zipCode: '12345',
-    //       country: 'South Korea',
-    //     },
-    //     paymentMethod: Math.random() > 0.5 ? 'credit_card' : 'paypal',
-    //     paidAt:
-    //       status === 'paid' ||
-    //       status === 'shipping' ||
-    //       status === 'delivered' ||
-    //       status === 'refunded'
-    //         ? new Date(createdDate.getTime() + 60 * 60 * 1000) // 1 hour after creation
-    //         : null,
-    //     createdAt: createdDate,
-    //   };
-    // });
+      return {
+        userId: fan.id,
+        orderCode: `ORD${Date.now()}${index.toString().padStart(3, '0')}`,
+        totalAmount: 0, // Will be calculated based on order items
+        status: status,
+        shippingAddress: {
+          street: '123 K-Pop Street',
+          city: 'Seoul',
+          state: 'Seoul',
+          zipCode: '12345',
+          country: 'South Korea',
+        },
+        paymentMethod: Math.random() > 0.5 ? 'CREDIT' : 'COD',
+        paidAt:
+          status === 'PAID' || status === 'SHIPPING' || status === 'DELIVERED'
+            ? new Date(createdDate.getTime() + 60 * 60 * 1000) // 1 hour after creation
+            : null,
+        createdAt: createdDate,
+      };
+    });
 
-    // await prisma.order.createMany({
-    //   data: ordersData,
-    // });
-    // const orders = await prisma.order.findMany({
-    //   orderBy: { createdAt: 'asc' },
-    // });
-    // console.log(`  ✅ Created ${orders.length} orders\n`);
+    await prisma.order.createMany({
+      data: ordersData,
+    });
+    const orders = await prisma.order.findMany({
+      orderBy: { createdAt: 'asc' },
+    });
+    console.log(`  ✅ Created ${orders.length} orders\n`);
 
-    // // 16. Create Order Items
-    // console.log('📋 Creating order items...');
-    // const orderItemsData: Array<{
-    //   orderId: string;
-    //   productId: string;
-    //   variantId?: string;
-    //   price: number;
-    //   quantity: number;
-    // }> = [];
-    // const orderTotals: Map<string, number> = new Map();
+    // 16. Create Order Items
+    console.log('📋 Creating order items...');
+    const orderItemsData: Array<{
+      orderId: string;
+      productId: string;
+      variantId?: string;
+      price: number;
+      quantity: number;
+    }> = [];
+    const orderTotals: Map<string, number> = new Map();
 
-    // for (const order of orders) {
-    //   const numItems = Math.floor(Math.random() * 3) + 1; // 1-3 items per order
-    //   const shuffledProducts = [...products].sort(() => Math.random() - 0.5);
-    //   let orderTotal = 0;
+    for (const order of orders) {
+      const numItems = Math.floor(Math.random() * 3) + 1; // 1-3 items per order
+      const shuffledProducts = [...products].sort(() => Math.random() - 0.5);
+      let orderTotal = 0;
 
-    //   for (let i = 0; i < numItems; i++) {
-    //     const product = shuffledProducts[i];
-    //     const quantity = Math.floor(Math.random() * 2) + 1; // 1-2 quantity
-    //     const productVariantsForProduct = productVariants.filter(
-    //       (v) => v.productId === product.id,
-    //     );
-    //     const variant =
-    //       productVariantsForProduct.length > 0
-    //         ? productVariantsForProduct[
-    //             Math.floor(Math.random() * productVariantsForProduct.length)
-    //           ]
-    //         : undefined;
+      for (let i = 0; i < numItems; i++) {
+        const product = shuffledProducts[i];
+        const quantity = Math.floor(Math.random() * 2) + 1; // 1-2 quantity
+        const productVariantsForProduct = productVariants.filter(
+          (v) => v.productId === product.id,
+        );
+        const variant =
+          productVariantsForProduct.length > 0
+            ? productVariantsForProduct[
+                Math.floor(Math.random() * productVariantsForProduct.length)
+              ]
+            : undefined;
 
-    //     const price = variant ? variant.price : product.price;
-    //     orderTotal += price * quantity;
+        const price = variant ? variant.price : product.price;
+        orderTotal += price * quantity;
 
-    //     orderItemsData.push({
-    //       orderId: order.id,
-    //       productId: product.id,
-    //       variantId: variant?.id,
-    //       price: price,
-    //       quantity: quantity,
-    //     });
-    //   }
+        orderItemsData.push({
+          orderId: order.id,
+          productId: product.id,
+          variantId: variant?.id,
+          price: price,
+          quantity: quantity,
+        });
+      }
 
-    //   orderTotals.set(order.id, orderTotal);
-    // }
+      orderTotals.set(order.id, orderTotal);
+    }
 
-    // await prisma.orderItem.createMany({
-    //   data: orderItemsData,
-    // });
-    // const orderItems = await prisma.orderItem.findMany({
-    //   orderBy: { createdAt: 'asc' },
-    // });
+    await prisma.orderItem.createMany({
+      data: orderItemsData,
+    });
+    const orderItems = await prisma.orderItem.findMany({
+      orderBy: { createdAt: 'asc' },
+    });
 
-    // // Update order totals in batch
-    // await prisma.$transaction(
-    //   orders.map((order) =>
-    //     prisma.order.update({
-    //       where: { id: order.id },
-    //       data: { totalAmount: orderTotals.get(order.id) || 0 },
-    //     }),
-    //   ),
-    // );
+    // Update order totals in batch
+    await prisma.$transaction(
+      orders.map((order) =>
+        prisma.order.update({
+          where: { id: order.id },
+          data: { totalAmount: orderTotals.get(order.id) || 0 },
+        }),
+      ),
+    );
 
-    // // Refetch orders with updated totals
-    // const updatedOrders = await prisma.order.findMany({
-    //   orderBy: { createdAt: 'asc' },
-    // });
-    // console.log(`  ✅ Created ${orderItems.length} order items\n`);
+    // Refetch orders with updated totals
+    const updatedOrders = await prisma.order.findMany({
+      orderBy: { createdAt: 'asc' },
+    });
+    console.log(`  ✅ Created ${orderItems.length} order items\n`);
 
-    // // 17. Create Payment Transactions
-    // console.log('💳 Creating payment transactions...');
-    // const paymentTransactionsData = updatedOrders.map((order) => {
-    //   // Determine payment transaction status based on order status
-    //   let txnStatus: 'pending' | 'success' | 'failed' | 'refunded';
-    //   if (order.status === 'pending' || order.status === 'cancelled') {
-    //     txnStatus = Math.random() > 0.5 ? 'pending' : 'failed';
-    //   } else if (order.status === 'refunded') {
-    //     txnStatus = 'refunded';
-    //   } else {
-    //     txnStatus = 'success';
-    //   }
+    // 17. Create Payment Transactions
+    console.log('💳 Creating payment transactions...');
+    const paymentTransactionsData = updatedOrders.map((order) => {
+      // Determine payment transaction status based on order status
+      let txnStatus: 'PENDING' | 'PAID' | 'FAILED' | 'CANCELED' | 'EXPIRED';
+      if (order.status === 'PENDING_PAYMENT' || order.status === 'CONFIRMED') {
+        txnStatus = 'PENDING';
+      } else if (order.status === 'CANCELED') {
+        txnStatus = Math.random() > 0.5 ? 'CANCELED' : 'FAILED';
+      } else if (order.status === 'EXPIRED') {
+        txnStatus = 'EXPIRED';
+      } else {
+        txnStatus = 'PAID';
+      }
 
-    //   return {
-    //     orderId: order.id,
-    //     userId: order.userId,
-    //     amount: order.totalAmount,
-    //     provider: order.paymentMethod === 'credit_card' ? 'Stripe' : 'PayPal',
-    //     providerTxnId:
-    //       txnStatus !== 'pending'
-    //         ? `txn_${Date.now()}_${Math.random().toString(36).substring(7)}`
-    //         : null,
-    //     status: txnStatus,
-    //     paidAt: order.paidAt,
-    //     createdAt: order.createdAt,
-    //   };
-    // });
+      return {
+        orderId: order.id,
+        userId: order.userId,
+        orderCode: Math.floor(Math.random() * 10000) + 1,
+        amount: order.totalAmount,
+        provider: order.paymentMethod === 'CREDIT' ? 'PayOS' : 'COD',
+        providerTxnId:
+          txnStatus !== 'PENDING'
+            ? `txn_${Date.now()}_${Math.random().toString(36).substring(7)}`
+            : null,
+        status: txnStatus,
+        paidAt: order.paidAt,
+        createdAt: order.createdAt,
+      };
+    });
 
-    // await prisma.paymentTransaction.createMany({
-    //   data: paymentTransactionsData,
-    // });
-    // const paymentTransactions = await prisma.paymentTransaction.findMany();
-    // console.log(
-    //   `  ✅ Created ${paymentTransactions.length} payment transactions\n`,
-    // );
-
-    // Initialize empty arrays for skipped sections
-    const orders: Array<{ id: string; status: string; userId: string }> = [];
-    const orderItems: Array<{ id: string }> = [];
-    const paymentTransactions: Array<{ status: string }> = [];
+    await prisma.paymentTransaction.createMany({
+      data: paymentTransactionsData,
+    });
+    const paymentTransactions = await prisma.paymentTransaction.findMany();
+    console.log(
+      `  ✅ Created ${paymentTransactions.length} payment transactions\n`,
+    );
 
     // Print Summary
     console.log('\n📊 Mock Data Summary:');
@@ -541,7 +544,9 @@ async function seedMockData() {
     console.log(`💙 Community Follows: ${followers.length}`);
     console.log(`📝 Posts: ${posts.length}`);
     console.log(`💬 Chat: Managed by GetStream (not in database)`);
-    console.log('   ℹ️  Run "npx tsx scripts/seed-getstream.ts" to create channels');
+    console.log(
+      '   ℹ️  Run "npx tsx scripts/seed-getstream.ts" to create channels',
+    );
     console.log('\n🛍️  Marketplace:');
     console.log(`🏷️  Product Types: ${productTypes.length}`);
     console.log(`🏪 Shops: ${shops.length}`);
@@ -550,8 +555,12 @@ async function seedMockData() {
     console.log(`🛒 Carts: ${carts.length}`);
     console.log(`🛍️  Cart Items: ${cartItems.length}`);
     console.log(`🎨 Banners: ${banners.length}`);
-    console.log(`   - Active: ${banners.filter((b) => b.startDate <= now && b.endDate >= now).length}`);
-    console.log(`   - Upcoming: ${banners.filter((b) => b.startDate > now).length}`);
+    console.log(
+      `   - Active: ${banners.filter((b) => b.startDate <= now && b.endDate >= now).length}`,
+    );
+    console.log(
+      `   - Upcoming: ${banners.filter((b) => b.startDate > now).length}`,
+    );
     console.log(`📦 Orders: ${orders.length}`);
     console.log(
       `   - Pending: ${orders.filter((o) => o.status === 'pending').length}`,

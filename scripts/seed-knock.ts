@@ -44,12 +44,14 @@ async function retryWithBackoff<T>(
 
 // Initialize Knock client
 let knockClient: Knock | null = null;
-if (process.env.KNOCK_SECRET_KEY) {
-  knockClient = new Knock({ apiKey: process.env.KNOCK_SECRET_KEY });
+const apiKey = process.env.KNOCK_SECRET_KEY || process.env.KNOCK_API_KEY;
+
+if (apiKey) {
+  knockClient = new Knock({ apiKey });
   console.log('✅ Knock client initialized');
 } else {
   console.error(
-    '❌ Knock credentials not found. Please set KNOCK_SECRET_KEY',
+    '❌ Knock credentials not found. Please set KNOCK_SECRET_KEY or KNOCK_API_KEY',
   );
   process.exit(1);
 }
@@ -93,11 +95,10 @@ async function seedKnock() {
         await retryWithBackoff(async () => {
           if (!knockClient) throw new Error('Knock client not initialized');
 
-          await knockClient.users.identify(user.id, {
+          await knockClient.users.update(user.id, {
             email: user.email,
             name: user.username,
             avatar: user.avatarUrl || undefined,
-            role: user.role,
           });
         });
 
