@@ -211,22 +211,6 @@ export class UserService {
         isOnline: true,
         createdAt: true,
         updatedAt: true,
-        chatChannels: {
-          where: {
-            isDeleted: false,
-            isActive: true,
-            idolId: userId,
-          },
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            description: true,
-            memberCount: true,
-            lastMessageAt: true,
-          },
-          take: 1,
-        },
       },
     });
 
@@ -234,18 +218,33 @@ export class UserService {
       throw new CustomError(ErrorCode.UserNotFound);
     }
 
-    // Get the chat channel only if user is an idol and has a channel
-    const chatChannel =
-      user.role === Role.IDOL && user.chatChannels.length > 0
-        ? {
-            id: user.chatChannels[0].id,
-            name: user.chatChannels[0].name,
-            image: user.chatChannels[0].image ?? undefined,
-            description: user.chatChannels[0].description ?? undefined,
-            memberCount: user.chatChannels[0].memberCount,
-            lastMessageAt: user.chatChannels[0].lastMessageAt ?? undefined,
-          }
-        : undefined;
+    // Get the chat channel from GetStream if user is an IDOL
+    let chatChannel = undefined;
+    if (user.role === Role.IDOL && user.communityId) {
+      try {
+        // For IDOLs, their channel ID is community_<communityId>
+        const channelId = `community_${user.communityId}`;
+        const channelInfo =
+          await this.streamChatService.getChannelInfo(channelId);
+
+        if (channelInfo) {
+          chatChannel = {
+            id: channelInfo.id,
+            name: channelInfo.name ?? undefined,
+            image: channelInfo.image ?? undefined,
+            description: channelInfo.description ?? undefined,
+            memberCount: channelInfo.memberCount,
+            lastMessageAt: channelInfo.lastMessageAt,
+          };
+        }
+      } catch (error) {
+        this.logger.warn(
+          `Failed to fetch channel info for idol ${userId}:`,
+          error.message,
+        );
+        // Don't throw - channel info failure shouldn't block profile retrieval
+      }
+    }
 
     return {
       id: user.id,
