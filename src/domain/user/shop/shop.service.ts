@@ -154,7 +154,7 @@ export class ShopService {
     shopId: string,
     filters: GetShopProductsDto,
   ): Promise<PaginationResponse<UserProductDto>> {
-    const { offset, limit, page, search } = filters;
+    const { offset, limit, page, search, productTypeId } = filters;
 
     // Check if shop exists
     const shop = await this.prisma.shop.findUnique({
@@ -181,6 +181,11 @@ export class ShopService {
     // Add search filter
     if (search) {
       whereClause.name = { contains: search, mode: 'insensitive' };
+    }
+
+    // Add product type filter
+    if (productTypeId) {
+      whereClause.typeId = productTypeId;
     }
 
     const [products, total] = await Promise.all([
@@ -211,6 +216,53 @@ export class ShopService {
     const pageInfo = new PageInfo(page, limit, total);
 
     return new PaginationResponse(products, pageInfo);
+  }
+
+  async getShopProductTypes(
+    shopId: string,
+  ): Promise<{ id: string; name: string }[]> {
+    // Check if shop exists
+    const shop = await this.prisma.shop.findUnique({
+      where: {
+        id: shopId,
+        isDeleted: false,
+        isActive: true,
+      },
+    });
+
+    if (!shop) {
+      throw new CustomError(ErrorCode.ValidationFailed, {
+        message: 'Shop not found',
+      });
+    }
+
+    // Get distinct product types for this shop's products
+    const products = await this.prisma.product.findMany({
+      where: {
+        shopId,
+        isDeleted: false,
+        isActive: true,
+        typeId: {
+          not: null,
+        },
+      },
+      select: {
+        type: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      distinct: ['typeId'],
+    });
+
+    // Filter out null types and return unique product types
+    const productTypes = products
+      .map((p) => p.type)
+      .filter((type): type is { id: string; name: string } => type !== null);
+
+    return productTypes;
   }
 
   async getProductById(id: string): Promise<UserProductDetailDto> {

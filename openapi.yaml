@@ -2680,6 +2680,13 @@ paths:
           schema:
             example: T-Shirt
             type: string
+        - name: productTypeId
+          required: false
+          in: query
+          description: Filter products by product type ID
+          schema:
+            example: clxxxxxxxxxxxxxxxxxx
+            type: string
       responses:
         '200':
           description: Successful paginated response
@@ -2741,6 +2748,51 @@ paths:
                   - message
                   - data
                   - paging
+      security: *ref_14
+      tags: *ref_15
+  /v1/user/shop/{shopId}/product-types:
+    get:
+      operationId: ShopController_getShopProductTypes_v1
+      parameters:
+        - name: shopId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShopProductTypeDto'
+                    description: Response data array
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
       security: *ref_14
       tags: *ref_15
   /v1/user/shop/products/{id}:
@@ -7864,6 +7916,20 @@ components:
         - isActive
         - createdAt
         - updatedAt
+    ShopProductTypeDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxxxxxxxxxxxxx
+          description: Product type ID
+        name:
+          type: string
+          example: Apparel
+          description: Product type name
+      required:
+        - id
+        - name
     CartItemProductDto:
       type: object
       properties:

@@ -11,4 +11,13 @@ export class GetShopProductsDto extends PaginationDto {
   @IsOptional()
   @IsString()
   search?: string;
+
+  @ApiPropertyOptional({
+    required: false,
+    example: 'clxxxxxxxxxxxxxxxxxx',
+    description: 'Filter products by product type ID',
+  })
+  @IsOptional()
+  @IsString()
+  productTypeId?: string;
 }

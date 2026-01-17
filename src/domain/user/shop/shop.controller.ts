@@ -34,6 +34,7 @@ import {
   UserProductVariantDto,
 } from './dto/product-detail.dto';
 import { UserProductDto } from './dto/product.dto';
+import { ShopProductTypeDto } from './dto/product-type.dto';
 import { ShopListDto } from './dto/shop-list.dto';
 import { ShopProductDto } from './dto/shop-product.dto';
 import { UserShopDto } from './dto/shop.dto';
@@ -51,6 +52,7 @@ import { ShopService } from './shop.service';
   UserProductVariantDto,
   UserProductDetailShopDto,
   UserProductDetailTypeDto,
+  ShopProductTypeDto,
   CartDto,
   CartItemDto,
   CartItemProductDto,
@@ -88,6 +90,15 @@ export class ShopController {
   ): Promise<PaginationResponse<UserProductDto>> {
     const result = await this.shopService.getShopProducts(shopId, filters);
     return result;
+  }
+
+  @Get(':shopId/product-types')
+  @ApiResponseCustom(ShopProductTypeDto, true)
+  async getShopProductTypes(
+    @Param('shopId') shopId: string,
+  ): Promise<BaseResponse<ShopProductTypeDto[]>> {
+    const result = await this.shopService.getShopProductTypes(shopId);
+    return BaseResponse.of(result);
   }
 
   @Get('products/:id')
