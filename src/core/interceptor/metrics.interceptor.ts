@@ -20,13 +20,20 @@ export class MetricsInterceptor implements NestInterceptor {
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const request = context.switchToHttp().getRequest();
-    const { method, route, baseUrl } = request;
-    const path = route?.path || baseUrl || 'unknown';
+    const { method, route, baseUrl, path: reqPath } = request;
+    const path = route?.path || baseUrl || reqPath || 'unknown';
 
+    // Skip metrics endpoint to avoid recursion
+    if (reqPath === '/metrics') {
+      return next.handle();
+    }
+
+    console.log(`[MetricsInterceptor] ${method} ${path}`);
     const start = Date.now();
 
     return next.handle().pipe(
       tap(() => {
+        console.log(`[MetricsInterceptor] SUCCESS ${method} ${path}`);
         const duration = (Date.now() - start) / 1000;
         const statusCode = context.switchToHttp().getResponse().statusCode;
 
@@ -43,6 +50,7 @@ export class MetricsInterceptor implements NestInterceptor {
         );
       }),
       catchError((error) => {
+        console.log(`[MetricsInterceptor] ERROR ${method} ${path}`, error?.status);
         const duration = (Date.now() - start) / 1000;
         const statusCode = error.status || error.statusCode || 500;
 
