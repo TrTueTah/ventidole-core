@@ -68,6 +68,8 @@ services:
       - grafana-data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning:ro
       - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    env_file:
+      - ../../.env
     environment:
       - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
@@ -100,6 +102,8 @@ services:
     container_name: ventidole-redis-exporter
     ports:
       - '127.0.0.1:9121:9121'
+    env_file:
+      - ../../.env
     environment:
       - REDIS_ADDR=redis://${REDIS_HOST}:${REDIS_PORT}
       - REDIS_USER=${REDIS_USER}
