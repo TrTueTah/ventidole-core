@@ -215,7 +215,7 @@ export class KnockWorkflowService {
         likerName: params.liker.name,
         likerAvatar: params.liker.avatar,
         postId: params.postId,
-        postContent: params.postContent.substring(0, 100),
+        postContent: (params.postContent || '').substring(0, 100),
         url: params.metadata?.url || `/posts/${params.postId}`,
         ...params.metadata,
       },
@@ -239,7 +239,7 @@ export class KnockWorkflowService {
       userId: params.authorId,
       commenterName: params.commenter.name || 'Someone',
       postId: params.postId,
-      commentPreview: params.commentContent.substring(0, 100),
+      commentPreview: (params.commentContent || '').substring(0, 100),
     });
 
     return this.triggerWorkflow(
@@ -251,8 +251,8 @@ export class KnockWorkflowService {
         commenterName: params.commenter.name,
         commenterAvatar: params.commenter.avatar,
         postId: params.postId,
-        postContent: params.postContent.substring(0, 100),
-        commentContent: params.commentContent.substring(0, 100),
+        postContent: (params.postContent || '').substring(0, 100),
+        commentContent: (params.commentContent || '').substring(0, 100),
         url: params.metadata?.url || `/posts/${params.postId}`,
         ...params.metadata,
       },

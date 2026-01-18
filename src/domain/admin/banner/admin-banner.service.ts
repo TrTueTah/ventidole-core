@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   PageInfo,
   PaginationResponse,
 } from '@shared/dto/pagination-response.dto';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { CustomError } from '@shared/helper/error';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
 import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { BannerDetailDto } from './dto/banner-detail.dto';
 import { BannerDto } from './dto/banner.dto';
@@ -14,7 +15,12 @@ import { UpdateBannerDto } from './dto/update-banner.dto';
 
 @Injectable()
 export class AdminBannerService {
-  constructor(private readonly prisma: PrismaService) {}
+  private readonly logger = new Logger(AdminBannerService.name);
+
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly knockWorkflowService: KnockWorkflowService,
+  ) {}
 
   async getAllBanners(
     filters: GetBannersDto,
@@ -70,7 +76,7 @@ export class AdminBannerService {
     });
 
     if (!banner) {
-      throw new CustomError(ErrorCode.NOT_FOUND, 'Banner not found');
+      throw new CustomError(ErrorCode.BannerNotFound, 'Banner not found');
     }
 
     return banner as BannerDetailDto;
@@ -83,7 +89,7 @@ export class AdminBannerService {
 
     if (startDate >= endDate) {
       throw new CustomError(
-        ErrorCode.BAD_REQUEST,
+        ErrorCode.BannerInvalidDateRange,
         'Start date must be before end date',
       );
     }
@@ -100,7 +106,64 @@ export class AdminBannerService {
       },
     });
 
+    // Send notifications to all users about the new banner
+    this.sendBannerNotifications(
+      banner.id,
+      banner.title,
+      data.description,
+      data.imageUrl,
+      data.link,
+    );
+
     return banner as BannerDetailDto;
+  }
+
+  /**
+   * Send banner notifications to all users (runs in background)
+   */
+  private async sendBannerNotifications(
+    bannerId: string,
+    title: string,
+    description?: string,
+    imageUrl?: string,
+    actionUrl?: string,
+  ): Promise<void> {
+    try {
+      // Get all active user IDs
+      const users = await this.prisma.user.findMany({
+        where: {
+          isDeleted: false,
+        },
+        select: {
+          id: true,
+        },
+      });
+
+      const userIds = users.map((user) => user.id);
+
+      if (userIds.length === 0) {
+        this.logger.log('No users to notify about banner');
+        return;
+      }
+
+      await this.knockWorkflowService.notifyBannerCreated({
+        userIds,
+        bannerId,
+        title,
+        description,
+        imageUrl,
+        actionUrl,
+      });
+
+      this.logger.log(
+        `Banner notification sent to ${userIds.length} users for banner ${bannerId}`,
+      );
+    } catch (error) {
+      this.logger.error(
+        `Failed to send banner notifications: ${error.message}`,
+      );
+      // Don't throw - notification failure shouldn't block banner creation
+    }
   }
 
   async updateBanner(
@@ -113,7 +176,7 @@ export class AdminBannerService {
     });
 
     if (!existingBanner) {
-      throw new CustomError(ErrorCode.NOT_FOUND, 'Banner not found');
+      throw new CustomError(ErrorCode.BannerNotFound, 'Banner not found');
     }
 
     // Validate dates if provided
@@ -127,7 +190,7 @@ export class AdminBannerService {
 
       if (startDate >= endDate) {
         throw new CustomError(
-          ErrorCode.BAD_REQUEST,
+          ErrorCode.BannerInvalidDateRange,
           'Start date must be before end date',
         );
       }
@@ -161,7 +224,7 @@ export class AdminBannerService {
     });
 
     if (!existingBanner) {
-      throw new CustomError(ErrorCode.NOT_FOUND, 'Banner not found');
+      throw new CustomError(ErrorCode.BannerNotFound, 'Banner not found');
     }
 
     // Soft delete

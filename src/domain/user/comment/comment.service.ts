@@ -1,14 +1,14 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { CustomError } from '@shared/helper/error';
-import { ErrorCode } from '@shared/enum/error-code.enum';
-import { PrismaService } from '@shared/service/prisma/prisma.service';
-import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
-import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
 import { PaginationDto } from '@shared/dto/pagination-request.dto';
 import {
   PageInfo,
   PaginationResponse,
 } from '@shared/dto/pagination-response.dto';
+import { ErrorCode } from '@shared/enum/error-code.enum';
+import { CustomError } from '@shared/helper/error';
+import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
+import { KnockWorkflowService } from '@shared/service/knock-workflow/knock-workflow.service';
+import { PrismaService } from '@shared/service/prisma/prisma.service';
 import { CommentDto } from './dto/comment.dto';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
@@ -114,6 +114,11 @@ export class CommentService {
         isDeleted: false,
         isActive: true,
       },
+      select: {
+        id: true,
+        authorId: true,
+        content: true,
+      },
     });
 
     if (!post) {
@@ -195,6 +200,7 @@ export class CommentService {
               avatar: comment.user.avatarUrl,
             },
             postId: post.id,
+            postContent: post.content || '',
             commentContent: commentPreview,
           });
 

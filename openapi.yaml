@@ -6773,6 +6773,8 @@ components:
             - PaymentTransactionCreateFailed
             - PaymentWebhookSignatureInvalid
             - ResourceNotFound
+            - BannerNotFound
+            - BannerInvalidDateRange
             - UserNotFoundInRecommendationSystem
             - RecommendationServiceError
           description: Error code (optional)

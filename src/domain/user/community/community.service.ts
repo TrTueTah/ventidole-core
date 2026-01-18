@@ -256,6 +256,18 @@ export class CommunityService {
 
     // Join community chat channel
     await this.joinCommunityChatChannel(userId, communityId);
+
+    // Notify idol(s) about new follower
+    if (community.idols && community.idols.length > 0) {
+      this.notifyIdolsAboutNewFollower(community.idols, fan, community).catch(
+        (error) => {
+          this.logger.error(
+            `Error notifying idols for community ${communityId}:`,
+            error.message,
+          );
+        },
+      );
+    }
   }
 
   async bulkFollowCommunities(
@@ -694,6 +706,36 @@ export class CommunityService {
         error.message,
       );
       // Don't throw - channel removal failure shouldn't block community leave
+    }
+  }
+
+  /**
+   * Notify idol(s) about a new follower joining their community
+   */
+  private async notifyIdolsAboutNewFollower(
+    idols: Array<{ id: string; username: string; avatarUrl: string | null }>,
+    fan: { id: string; username: string; avatarUrl: string | null },
+    community: { id: string; name: string },
+  ): Promise<void> {
+    try {
+      for (const idol of idols) {
+        await this.knockWorkflowService.notifyCommunityJoined({
+          idolId: idol.id,
+          fanId: fan.id,
+          fanName: fan.username || 'Someone',
+          communityId: community.id,
+          communityName: community.name,
+        });
+
+        this.logger.log(
+          `Notified idol ${idol.id} about new follower ${fan.id} in community ${community.id}`,
+        );
+      }
+    } catch (error) {
+      this.logger.error(
+        `Error notifying idols about new follower: ${error.message}`,
+      );
+      // Don't throw - notification failure shouldn't block community join
     }
   }
 }

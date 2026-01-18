@@ -66,10 +66,12 @@ export class GetStreamNotificationService {
       const channel = streamChatClient.channel('team', channelId);
 
       // Send as a message to the notifications channel
+      // Note: message.type must be one of '', 'regular', or 'system'
+      // Our custom event type is stored in the data object
       await channel.sendMessage({
         text: data.message || eventType,
         user_id: 'system',
-        type: eventType,
+        custom_type: eventType,
         ...data,
       });
 
@@ -86,16 +88,82 @@ export class GetStreamNotificationService {
   }
 
   /**
-   * Emit event to multiple users
+   * Emit event to multiple users with batching to avoid rate limits
    */
   async emitEventToUsers(
     userIds: string[],
     eventType: string,
     data: NotificationEventData,
+    options: { batchSize?: number; delayMs?: number } = {},
   ): Promise<void> {
-    await Promise.all(
-      userIds.map((userId) => this.emitEventToUser(userId, eventType, data)),
+    const { batchSize = 30, delayMs = 1000 } = options;
+
+    // For small number of users, send directly without batching
+    if (userIds.length <= batchSize) {
+      await Promise.all(
+        userIds.map((userId) => this.emitEventToUser(userId, eventType, data)),
+      );
+      return;
+    }
+
+    // For large number of users, send in batches with delay
+    this.logger.log(
+      `Sending ${eventType} to ${userIds.length} users in batches of ${batchSize}`,
     );
+
+    // Process in background to not block the main flow
+    this.emitEventToUsersInBatches(userIds, eventType, data, batchSize, delayMs);
+  }
+
+  /**
+   * Send events to users in batches with delays (runs in background)
+   */
+  private async emitEventToUsersInBatches(
+    userIds: string[],
+    eventType: string,
+    data: NotificationEventData,
+    batchSize: number,
+    delayMs: number,
+  ): Promise<void> {
+    const batches: string[][] = [];
+    for (let i = 0; i < userIds.length; i += batchSize) {
+      batches.push(userIds.slice(i, i + batchSize));
+    }
+
+    let successCount = 0;
+    let failCount = 0;
+
+    for (let i = 0; i < batches.length; i++) {
+      const batch = batches[i];
+
+      try {
+        await Promise.all(
+          batch.map((userId) => this.emitEventToUser(userId, eventType, data)),
+        );
+        successCount += batch.length;
+      } catch (error) {
+        failCount += batch.length;
+        this.logger.error(
+          `Batch ${i + 1}/${batches.length} failed: ${error.message}`,
+        );
+      }
+
+      // Add delay between batches (except for the last batch)
+      if (i < batches.length - 1) {
+        await this.delay(delayMs);
+      }
+    }
+
+    this.logger.log(
+      `Completed sending ${eventType}: ${successCount} success, ${failCount} failed`,
+    );
+  }
+
+  /**
+   * Helper function to create a delay
+   */
+  private delay(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   // ==================== Specific Event Emitters ====================

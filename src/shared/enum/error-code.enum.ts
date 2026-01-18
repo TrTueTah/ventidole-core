@@ -85,6 +85,9 @@ export enum ErrorCode {
   PaymentTransactionCreateFailed = 'PaymentTransactionCreateFailed',
   PaymentWebhookSignatureInvalid = 'PaymentWebhookSignatureInvalid',
   ResourceNotFound = 'ResourceNotFound',
+  // Banner
+  BannerNotFound = 'BannerNotFound',
+  BannerInvalidDateRange = 'BannerInvalidDateRange',
   // Recommendation Service
   UserNotFoundInRecommendationSystem = 'UserNotFoundInRecommendationSystem',
   RecommendationServiceError = 'RecommendationServiceError',
