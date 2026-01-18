@@ -220,12 +220,17 @@ export class UserService {
 
     // Get the chat channel from GetStream if user is an IDOL
     let chatChannel = undefined;
-    if (user.role === Role.IDOL && user.communityId) {
+    if (user.role === Role.IDOL) {
       try {
-        // For IDOLs, their channel ID is community_<communityId>
-        const channelId = `community_${user.communityId}`;
-        const channelInfo =
-          await this.streamChatService.getChannelInfo(channelId);
+        // First try to get the personal channel (using userId)
+        let channelInfo = await this.streamChatService.getChannelInfo(userId);
+
+        // If personal channel doesn't exist and user has a community, try community channel
+        if (!channelInfo && user.communityId) {
+          const communityChannelId = `community_${user.communityId}`;
+          channelInfo =
+            await this.streamChatService.getChannelInfo(communityChannelId);
+        }
 
         if (channelInfo) {
           chatChannel = {
