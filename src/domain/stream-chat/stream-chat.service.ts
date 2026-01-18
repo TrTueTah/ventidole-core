@@ -431,6 +431,50 @@ export class StreamChatService {
   }
 
   /**
+   * Get idol's personal channel by querying for is_idol_channel and created_by_id
+   * This handles both old channels (with timestamp) and new channels (without timestamp)
+   */
+  async getIdolChannel(idolId: string) {
+    try {
+      const streamChatClient = getStreamChatClient();
+
+      // Query for idol channels created by this user
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const channels = await streamChatClient.queryChannels({
+        is_idol_channel: true,
+        created_by_id: idolId,
+      } as any);
+
+      if (channels.length === 0) {
+        this.logger.log(`No idol channel found for idol ${idolId}`);
+        return null;
+      }
+
+      // Get the first idol channel
+      const channel = channels[0];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const channelData = channel.data as Record<string, any>;
+
+      return {
+        id: channelData?.id,
+        name: channelData?.name,
+        image: channelData?.image,
+        description: channelData?.description,
+        memberCount: channelData?.member_count || 0,
+        lastMessageAt: channelData?.last_message_at
+          ? new Date(channelData.last_message_at)
+          : undefined,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Error fetching idol channel for ${idolId}:`,
+        error.message,
+      );
+      return null;
+    }
+  }
+
+  /**
    * Join a chat channel
    * Users will be added with readonly permissions by default (channel_readonly)
    * This is a server-side operation that bypasses client-side permission restrictions

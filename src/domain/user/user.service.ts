@@ -223,7 +223,9 @@ export class UserService {
     if (user.role === Role.IDOL) {
       try {
         // First try to get the personal idol channel (queries by is_idol_channel and created_by_id)
-        let channelInfo = await this.streamChatService.getIdolChannel(userId);
+        let channelInfo = await this.streamChatService.getChannelInfo(
+          `idol_${userId}`,
+        );
 
         // If personal channel doesn't exist and user has a community, try community channel
         if (!channelInfo && user.communityId) {
