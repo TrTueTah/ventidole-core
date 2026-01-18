@@ -197,6 +197,76 @@ export class StreamChatService {
   }
 
   /**
+   * Update idol channel information
+   * Only the channel creator can update the channel
+   */
+  async updateIdolChannel(
+    idolId: string,
+    channelId: string,
+    data: {
+      name?: string;
+      description?: string;
+      image?: string;
+    },
+  ) {
+    try {
+      // Verify idol role
+      const idol = await this.prisma.user.findUnique({
+        where: { id: idolId },
+      });
+
+      if (!idol || idol.role !== Role.IDOL) {
+        throw new ForbiddenException('Only idols can update idol channels');
+      }
+
+      const streamChatClient = getStreamChatClient();
+      const channel = streamChatClient.channel('messaging', channelId);
+
+      // Check if channel exists and get channel data
+      await channel.watch();
+      const channelData = channel.data;
+
+      // Verify the idol is the channel creator
+      if (channelData.created_by_id !== idolId) {
+        throw new ForbiddenException(
+          'Only the channel creator can update this channel',
+        );
+      }
+
+      // Verify it's an idol channel
+      if (!channelData.is_idol_channel) {
+        throw new ForbiddenException('This is not an idol channel');
+      }
+
+      // Prepare update data
+      const updateData: Record<string, unknown> = {};
+      if (data.name !== undefined) updateData.name = data.name;
+      if (data.description !== undefined)
+        updateData.description = data.description;
+      if (data.image !== undefined) updateData.image = data.image;
+
+      // Update channel
+      await channel.updatePartial({
+        set: updateData,
+      });
+
+      this.logger.log(`Updated idol channel ${channelId} by idol ${idolId}`);
+
+      return {
+        success: true,
+        channelId,
+        ...updateData,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Error updating idol channel ${channelId}:`,
+        error.message,
+      );
+      throw error;
+    }
+  }
+
+  /**
    * Grant send message permission to a member
    * For idol channels: Only channel creator can grant
    * For community channels: Any idol in the community can grant

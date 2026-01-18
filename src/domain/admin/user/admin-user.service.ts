@@ -180,8 +180,8 @@ export class AdminUserService {
 
     const userRole = createUserDto.role || 'FAN';
 
-    // For FAN role, communityId is required
-    if (userRole === 'FAN') {
+    // For IDOL role, communityId is required
+    if (userRole === 'IDOL') {
       if (!createUserDto.communityId) {
         throw new CustomError(ErrorCode.ValidationFailed);
       }

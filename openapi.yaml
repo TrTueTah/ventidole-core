@@ -533,6 +533,59 @@ paths:
       security: *ref_1
       summary: Create an idol channel (IDOL only)
       tags: *ref_2
+  /v1/stream-chat/channels/idol/{channelId}:
+    patch:
+      description: Updates an idol channel. Only the channel creator can update the channel
+      operationId: StreamChatController_updateIdolChannel_v1
+      parameters:
+        - name: channelId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateIdolChannelDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_1
+      summary: Update idol channel information (IDOL only)
+      tags: *ref_2
   /v1/stream-chat/channels/{channelId}/members/{memberId}/grant-send-permission:
     post:
       description: >-
@@ -4557,6 +4610,279 @@ paths:
                   - message
       security: *ref_24
       tags: *ref_25
+  /v1/admin/product-type:
+    get:
+      operationId: AdminProductTypeController_getAllProductTypes_v1
+      parameters:
+        - name: page
+          required: false
+          in: query
+          schema:
+            example: 1
+            type: number
+        - name: limit
+          required: false
+          in: query
+          schema:
+            example: 20
+            type: number
+        - name: search
+          required: false
+          in: query
+          description: Search by name
+          schema:
+            example: Clothing
+            type: string
+        - name: isActive
+          required: false
+          in: query
+          description: Filter by active status
+          schema:
+            example: 'true'
+            type: string
+      responses:
+        '200':
+          description: Successful paginated response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AdminProductTypeDto'
+                    description: Array of data items
+                  paging:
+                    type: object
+                    description: Pagination metadata
+                    properties:
+                      total:
+                        type: number
+                        example: 100
+                        description: Total number of items
+                      page:
+                        type: number
+                        example: 1
+                        description: Current page number
+                      limit:
+                        type: number
+                        example: 10
+                        description: Items per page
+                      totalPages:
+                        type: number
+                        example: 10
+                        description: Total number of pages
+                    required:
+                      - total
+                      - page
+                      - limit
+                      - totalPages
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+                  - data
+                  - paging
+      security: &ref_26
+        - bearer: []
+      tags: &ref_27
+        - Admin Product Type Management
+    post:
+      operationId: AdminProductTypeController_createProductType_v1
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProductTypeDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AdminProductTypeDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_26
+      tags: *ref_27
+  /v1/admin/product-type/{id}:
+    get:
+      operationId: AdminProductTypeController_getProductTypeById_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AdminProductTypeDetailDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_26
+      tags: *ref_27
+    patch:
+      operationId: AdminProductTypeController_updateProductType_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProductTypeDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    $ref: '#/components/schemas/AdminProductTypeDto'
+                    description: Response data
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_26
+      tags: *ref_27
+    delete:
+      operationId: AdminProductTypeController_deleteProductType_v1
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_26
+      tags: *ref_27
   /v1/admin/order:
     get:
       operationId: AdminOrderController_getAllOrders_v1
@@ -4715,9 +5041,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_26
+      security: &ref_28
         - bearer: []
-      tags: &ref_27
+      tags: &ref_29
         - Admin Order Management
     post:
       operationId: AdminOrderController_createOrder_v1
@@ -4760,8 +5086,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
-      tags: *ref_27
+      security: *ref_28
+      tags: *ref_29
   /v1/admin/order/{id}:
     get:
       operationId: AdminOrderController_getOrderById_v1
@@ -4803,8 +5129,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
-      tags: *ref_27
+      security: *ref_28
+      tags: *ref_29
     patch:
       operationId: AdminOrderController_updateOrder_v1
       parameters:
@@ -4851,8 +5177,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
-      tags: *ref_27
+      security: *ref_28
+      tags: *ref_29
     delete:
       operationId: AdminOrderController_deleteOrder_v1
       parameters:
@@ -4895,8 +5221,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
-      tags: *ref_27
+      security: *ref_28
+      tags: *ref_29
   /v1/admin/order/{id}/status:
     patch:
       operationId: AdminOrderController_changeOrderStatus_v1
@@ -4944,8 +5270,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_26
-      tags: *ref_27
+      security: *ref_28
+      tags: *ref_29
   /v1/admin/post:
     get:
       operationId: AdminPostController_getAllPosts_v1
@@ -5074,9 +5400,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_28
+      security: &ref_30
         - bearer: []
-      tags: &ref_29
+      tags: &ref_31
         - Admin Post Management
     post:
       operationId: AdminPostController_createPost_v1
@@ -5119,8 +5445,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
-      tags: *ref_29
+      security: *ref_30
+      tags: *ref_31
   /v1/admin/post/reported:
     get:
       operationId: AdminPostController_getReportedPosts_v1
@@ -5249,8 +5575,8 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_28
-      tags: *ref_29
+      security: *ref_30
+      tags: *ref_31
   /v1/admin/post/{id}:
     get:
       operationId: AdminPostController_getPostById_v1
@@ -5292,8 +5618,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
-      tags: *ref_29
+      security: *ref_30
+      tags: *ref_31
     patch:
       operationId: AdminPostController_updatePost_v1
       parameters:
@@ -5340,8 +5666,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
-      tags: *ref_29
+      security: *ref_30
+      tags: *ref_31
     delete:
       operationId: AdminPostController_deletePost_v1
       parameters:
@@ -5384,8 +5710,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
-      tags: *ref_29
+      security: *ref_30
+      tags: *ref_31
   /v1/admin/post/{id}/ban:
     patch:
       operationId: AdminPostController_banPost_v1
@@ -5427,8 +5753,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_28
-      tags: *ref_29
+      security: *ref_30
+      tags: *ref_31
   /v1/admin/banner:
     get:
       operationId: AdminBannerController_getAllBanners_v1
@@ -5516,9 +5842,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: &ref_30
+      security: &ref_32
         - bearer: []
-      tags: &ref_31
+      tags: &ref_33
         - Admin Banner Management
     post:
       operationId: AdminBannerController_createBanner_v1
@@ -5561,8 +5887,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_30
-      tags: *ref_31
+      security: *ref_32
+      tags: *ref_33
   /v1/admin/banner/{id}:
     get:
       operationId: AdminBannerController_getBannerById_v1
@@ -5604,8 +5930,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_30
-      tags: *ref_31
+      security: *ref_32
+      tags: *ref_33
     patch:
       operationId: AdminBannerController_updateBanner_v1
       parameters:
@@ -5652,8 +5978,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_30
-      tags: *ref_31
+      security: *ref_32
+      tags: *ref_33
     delete:
       operationId: AdminBannerController_deleteBanner_v1
       parameters:
@@ -5696,8 +6022,8 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_30
-      tags: *ref_31
+      security: *ref_32
+      tags: *ref_33
   /v1/admin/analytics/ecommerce:
     get:
       description: >-
@@ -5766,10 +6092,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_32
+      security: &ref_34
         - bearer: []
       summary: Get ecommerce analytics
-      tags: &ref_33
+      tags: &ref_35
         - Admin Analytics
   /v1/admin/analytics/social:
     get:
@@ -5839,9 +6165,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_32
+      security: *ref_34
       summary: Get social analytics
-      tags: *ref_33
+      tags: *ref_35
   /v1/orders/confirm:
     post:
       description: >-
@@ -5888,10 +6214,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_34
+      security: &ref_36
         - bearer: []
       summary: Confirm order and create payment
-      tags: &ref_35
+      tags: &ref_37
         - Orders
   /v1/orders/{orderId}/retry-payment:
     post:
@@ -5937,9 +6263,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_34
+      security: *ref_36
       summary: Retry payment for PENDING_PAYMENT order
-      tags: *ref_35
+      tags: *ref_37
   /v1/orders:
     get:
       description: >-
@@ -6034,9 +6360,9 @@ paths:
                   - message
                   - data
                   - paging
-      security: *ref_34
+      security: *ref_36
       summary: Get user orders
-      tags: *ref_35
+      tags: *ref_37
   /v1/orders/{orderId}/details:
     get:
       description: >-
@@ -6081,9 +6407,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_34
+      security: *ref_36
       summary: Get order details
-      tags: *ref_35
+      tags: *ref_37
   /v1/orders/{orderId}:
     get:
       description: >-
@@ -6128,9 +6454,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_34
+      security: *ref_36
       summary: Get order status
-      tags: *ref_35
+      tags: *ref_37
   /webhooks/payos:
     post:
       description: >-
@@ -6189,10 +6515,10 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: &ref_36
+      security: &ref_38
         - bearer: []
       summary: Generate Knock authentication token for client SDK
-      tags: &ref_37
+      tags: &ref_39
         - Knock Notifications
   /v1/knock/fcm-token:
     post:
@@ -6239,9 +6565,9 @@ paths:
                 required:
                   - statusCode
                   - message
-      security: *ref_36
+      security: *ref_38
       summary: Register FCM token for push notifications
-      tags: *ref_37
+      tags: *ref_39
 info:
   title: API Docs
   description: Custom Swagger UI in NestJS
@@ -6658,7 +6984,7 @@ components:
           type: string
           example: USER
           description: User role
-          enum: &ref_40
+          enum: &ref_42
             - FAN
             - ADMIN
             - IDOL
@@ -6808,6 +7134,21 @@ components:
           example: https://example.com/image.jpg
       required:
         - name
+    UpdateIdolChannelDto:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Channel name
+          example: JK Personal Chat
+        description:
+          type: string
+          description: Channel description
+          example: JK's personal fan chat
+        image:
+          type: string
+          description: Channel image URL
+          example: https://example.com/image.jpg
     JoinChannelDto:
       type: object
       properties:
@@ -7066,7 +7407,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: &ref_38
+          example: &ref_40
             - >-
               https://res.cloudinary.com/dsc9afexw/image/upload/v1762054385/kt1-6905e9f7e7ad5_z2wfqq.jpg
             - >-
@@ -7119,7 +7460,7 @@ components:
           example: '2024-01-01T00:00:00.000Z'
           description: Last update timestamp
         tags:
-          example: &ref_39
+          example: &ref_41
             - choreography
             - dance
             - discussion
@@ -7211,7 +7552,7 @@ components:
           example: This is my post content
           description: Post content
         mediaUrls:
-          example: *ref_38
+          example: *ref_40
           description: Array of media URLs
           nullable: true
           type: array
@@ -7260,7 +7601,7 @@ components:
           example: '2024-01-01T00:00:00.000Z'
           description: Last update timestamp
         tags:
-          example: *ref_39
+          example: *ref_41
           description: Array of post tags
           nullable: true
           type: array
@@ -8327,7 +8668,7 @@ components:
           type: string
           example: USER
           description: User role
-          enum: *ref_40
+          enum: *ref_42
         avatarUrl:
           type: object
           example: https://example.com/avatar.jpg
@@ -8782,9 +9123,26 @@ components:
           type: string
           example: Clothing
           description: Product type name
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the product type is active
+        createdAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Created at
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Updated at
       required:
         - id
         - name
+        - isActive
+        - createdAt
+        - updatedAt
     AdminProductDto:
       type: object
       properties:
@@ -8996,6 +9354,34 @@ components:
         - createdAt
         - updatedAt
         - version
+    CreateProductTypeInlineDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Clothing
+          description: Product type name
+      required:
+        - name
+    CreateVariantDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Size M - Red
+          description: Variant name
+        price:
+          type: number
+          example: 29.99
+          description: Variant price
+        stock:
+          type: number
+          example: 50
+          description: Variant stock quantity
+      required:
+        - name
+        - price
+        - stock
     CreateProductDto:
       type: object
       properties:
@@ -9030,12 +9416,50 @@ components:
         typeId:
           type: string
           example: clxxxxxxx
-          description: Product Type ID
+          description: Product Type ID (use this OR newType, not both)
+        newType:
+          description: Create a new product type inline (use this OR typeId, not both)
+          allOf:
+            - $ref: '#/components/schemas/CreateProductTypeInlineDto'
+        variants:
+          description: Product variants
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateVariantDto'
       required:
         - name
         - price
         - stock
         - shopId
+    UpdateVariantDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: >-
+            Variant ID (required for updating existing variant, omit for new
+            variant)
+        name:
+          type: string
+          example: Size M - Red
+          description: Variant name
+        price:
+          type: number
+          example: 29.99
+          description: Variant price
+        stock:
+          type: number
+          example: 50
+          description: Variant stock quantity
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the variant is active
+      required:
+        - name
+        - price
+        - stock
     UpdateProductDto:
       type: object
       properties:
@@ -9066,11 +9490,83 @@ components:
         typeId:
           type: string
           example: clxxxxxxx
-          description: Product Type ID
+          description: Product Type ID (use this OR newType, not both)
+        newType:
+          description: Create a new product type inline (use this OR typeId, not both)
+          allOf:
+            - $ref: '#/components/schemas/CreateProductTypeInlineDto'
         isActive:
           type: boolean
           example: true
           description: Whether the product is active
+        variants:
+          description: >-
+            Product variants. Variants with id will be updated, without id will
+            be created. Existing variants not in this list will be soft-deleted.
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateVariantDto'
+    AdminProductTypeDetailDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: clxxxxxxx
+          description: Product Type ID
+        name:
+          type: string
+          example: Clothing
+          description: Product type name
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the product type is active
+        createdAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Created at
+        updatedAt:
+          format: date-time
+          type: string
+          example: '2023-01-01T00:00:00.000Z'
+          description: Updated at
+        version:
+          type: number
+          example: 0
+          description: Version
+        productCount:
+          type: number
+          example: 10
+          description: Number of products using this type
+      required:
+        - id
+        - name
+        - isActive
+        - createdAt
+        - updatedAt
+        - version
+        - productCount
+    CreateProductTypeDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Clothing
+          description: Product type name
+      required:
+        - name
+    UpdateProductTypeDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Clothing
+          description: Product type name
+        isActive:
+          type: boolean
+          example: true
+          description: Whether the product type is active
     OrderUserDto:
       type: object
       properties:

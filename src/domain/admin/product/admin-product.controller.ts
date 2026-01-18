@@ -18,7 +18,10 @@ import { PaginationResponse } from '@shared/dto/pagination-response.dto';
 import { ApiVersion } from '@shared/enum/api-version.enum';
 import { BaseResponse } from '@shared/helper/response';
 import { AdminProductService } from './admin-product.service';
-import { CreateProductDto } from './dto/create-product.dto';
+import {
+  CreateProductDto,
+  CreateProductTypeInlineDto,
+} from './dto/create-product.dto';
 import { GetProductsDto } from './dto/get-products.dto';
 import {
   AdminProductDetailDto,
@@ -32,6 +35,7 @@ import {
   AdminProductTypeDto,
 } from './dto/product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { CreateVariantDto, UpdateVariantDto } from './dto/variant.dto';
 
 @ApiBearerAuth()
 @ApiTags('Admin Product Management')
@@ -45,7 +49,10 @@ import { UpdateProductDto } from './dto/update-product.dto';
   AdminProductDetailShopDto,
   AdminProductDetailTypeDto,
   CreateProductDto,
+  CreateProductTypeInlineDto,
+  CreateVariantDto,
   UpdateProductDto,
+  UpdateVariantDto,
 )
 export class AdminProductController {
   constructor(private readonly adminProductService: AdminProductService) {}

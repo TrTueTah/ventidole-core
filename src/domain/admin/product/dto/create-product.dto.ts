@@ -1,4 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsNotEmpty,
@@ -8,7 +9,20 @@ import {
   IsString,
   MaxLength,
   Min,
+  ValidateNested,
 } from 'class-validator';
+import { CreateVariantDto } from './variant.dto';
+
+export class CreateProductTypeInlineDto {
+  @ApiProperty({
+    example: 'Clothing',
+    description: 'Product type name',
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(255)
+  name: string;
+}
 
 export class CreateProductDto {
   @ApiProperty({
@@ -65,9 +79,29 @@ export class CreateProductDto {
 
   @ApiPropertyOptional({
     example: 'clxxxxxxx',
-    description: 'Product Type ID',
+    description: 'Product Type ID (use this OR newType, not both)',
   })
   @IsString()
   @IsOptional()
   typeId?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Create a new product type inline (use this OR typeId, not both)',
+    type: () => CreateProductTypeInlineDto,
+  })
+  @ValidateNested()
+  @Type(() => CreateProductTypeInlineDto)
+  @IsOptional()
+  newType?: CreateProductTypeInlineDto;
+
+  @ApiPropertyOptional({
+    description: 'Product variants',
+    type: () => [CreateVariantDto],
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateVariantDto)
+  @IsOptional()
+  variants?: CreateVariantDto[];
 }

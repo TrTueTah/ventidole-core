@@ -139,6 +139,23 @@ export class AdminProductService {
             name: true,
           },
         },
+        variants: {
+          where: {
+            isDeleted: false,
+          },
+          select: {
+            id: true,
+            name: true,
+            price: true,
+            stock: true,
+            isActive: true,
+            createdAt: true,
+            updatedAt: true,
+          },
+          orderBy: {
+            createdAt: 'asc',
+          },
+        },
         isActive: true,
         createdAt: true,
         updatedAt: true,
@@ -179,11 +196,29 @@ export class AdminProductService {
       });
     }
 
+    let typeId = createProductDto.typeId;
+
+    // Handle new type creation
+    if (createProductDto.newType) {
+      if (typeId) {
+        throw new CustomError(ErrorCode.ValidationFailed, {
+          message: 'Cannot specify both typeId and newType',
+        });
+      }
+
+      const newProductType = await this.prisma.productType.create({
+        data: {
+          name: createProductDto.newType.name,
+        },
+      });
+      typeId = newProductType.id;
+    }
+
     // Verify product type exists if provided
-    if (createProductDto.typeId) {
+    if (typeId) {
       const productType = await this.prisma.productType.findUnique({
         where: {
-          id: createProductDto.typeId,
+          id: typeId,
         },
         select: {
           id: true,
@@ -199,6 +234,7 @@ export class AdminProductService {
       }
     }
 
+    // Create product with variants
     const product = await this.prisma.product.create({
       data: {
         name: createProductDto.name,
@@ -207,7 +243,16 @@ export class AdminProductService {
         stock: createProductDto.stock,
         mediaUrls: createProductDto.mediaUrls,
         shopId: createProductDto.shopId,
-        typeId: createProductDto.typeId,
+        typeId: typeId,
+        variants: createProductDto.variants?.length
+          ? {
+              create: createProductDto.variants.map((variant) => ({
+                name: variant.name,
+                price: variant.price,
+                stock: variant.stock,
+              })),
+            }
+          : undefined,
       },
       select: {
         id: true,
@@ -248,6 +293,13 @@ export class AdminProductService {
         id,
         isDeleted: false,
       },
+      include: {
+        variants: {
+          where: {
+            isDeleted: false,
+          },
+        },
+      },
     });
 
     if (!existingProduct) {
@@ -256,11 +308,29 @@ export class AdminProductService {
       });
     }
 
+    let typeId = updateProductDto.typeId;
+
+    // Handle new type creation
+    if (updateProductDto.newType) {
+      if (typeId) {
+        throw new CustomError(ErrorCode.ValidationFailed, {
+          message: 'Cannot specify both typeId and newType',
+        });
+      }
+
+      const newProductType = await this.prisma.productType.create({
+        data: {
+          name: updateProductDto.newType.name,
+        },
+      });
+      typeId = newProductType.id;
+    }
+
     // Verify product type exists if provided
-    if (updateProductDto.typeId) {
+    if (typeId) {
       const productType = await this.prisma.productType.findUnique({
         where: {
-          id: updateProductDto.typeId,
+          id: typeId,
         },
         select: {
           id: true,
@@ -273,6 +343,63 @@ export class AdminProductService {
         throw new CustomError(ErrorCode.ValidationFailed, {
           message: 'Product type not found',
         });
+      }
+    }
+
+    // Handle variants update
+    if (updateProductDto.variants !== undefined) {
+      const existingVariantIds = existingProduct.variants.map((v) => v.id);
+      const updatedVariantIds = updateProductDto.variants
+        .filter((v) => v.id)
+        .map((v) => v.id as string);
+
+      // Soft delete variants not in the update list
+      const variantsToDelete = existingVariantIds.filter(
+        (id) => !updatedVariantIds.includes(id),
+      );
+
+      if (variantsToDelete.length > 0) {
+        await this.prisma.productVariant.updateMany({
+          where: {
+            id: { in: variantsToDelete },
+            productId: id,
+          },
+          data: {
+            isDeleted: true,
+            deletedAt: new Date(),
+          },
+        });
+      }
+
+      // Update or create variants
+      for (const variant of updateProductDto.variants) {
+        if (variant.id) {
+          // Update existing variant
+          await this.prisma.productVariant.update({
+            where: {
+              id: variant.id,
+              productId: id,
+            },
+            data: {
+              name: variant.name,
+              price: variant.price,
+              stock: variant.stock,
+              ...(variant.isActive !== undefined && {
+                isActive: variant.isActive,
+              }),
+            },
+          });
+        } else {
+          // Create new variant
+          await this.prisma.productVariant.create({
+            data: {
+              name: variant.name,
+              price: variant.price,
+              stock: variant.stock,
+              productId: id,
+            },
+          });
+        }
       }
     }
 
@@ -294,8 +421,8 @@ export class AdminProductService {
         ...(updateProductDto.mediaUrls !== undefined && {
           mediaUrls: updateProductDto.mediaUrls,
         }),
-        ...(updateProductDto.typeId !== undefined && {
-          typeId: updateProductDto.typeId,
+        ...(typeId !== undefined && {
+          typeId: typeId,
         }),
         ...(updateProductDto.isActive !== undefined && {
           isActive: updateProductDto.isActive,
@@ -345,15 +472,27 @@ export class AdminProductService {
       });
     }
 
-    // Soft delete
-    await this.prisma.product.update({
-      where: {
-        id,
-      },
-      data: {
-        isDeleted: true,
-        deletedAt: new Date(),
-      },
-    });
+    // Soft delete product and its variants
+    await this.prisma.$transaction([
+      this.prisma.productVariant.updateMany({
+        where: {
+          productId: id,
+          isDeleted: false,
+        },
+        data: {
+          isDeleted: true,
+          deletedAt: new Date(),
+        },
+      }),
+      this.prisma.product.update({
+        where: {
+          id,
+        },
+        data: {
+          isDeleted: true,
+          deletedAt: new Date(),
+        },
+      }),
+    ]);
   }
 }

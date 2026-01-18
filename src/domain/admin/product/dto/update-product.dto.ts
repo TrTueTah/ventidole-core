@@ -1,4 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -8,7 +9,10 @@ import {
   IsString,
   MaxLength,
   Min,
+  ValidateNested,
 } from 'class-validator';
+import { CreateProductTypeInlineDto } from './create-product.dto';
+import { UpdateVariantDto } from './variant.dto';
 
 export class UpdateProductDto {
   @ApiPropertyOptional({
@@ -59,11 +63,21 @@ export class UpdateProductDto {
 
   @ApiPropertyOptional({
     example: 'clxxxxxxx',
-    description: 'Product Type ID',
+    description: 'Product Type ID (use this OR newType, not both)',
   })
   @IsString()
   @IsOptional()
   typeId?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Create a new product type inline (use this OR typeId, not both)',
+    type: () => CreateProductTypeInlineDto,
+  })
+  @ValidateNested()
+  @Type(() => CreateProductTypeInlineDto)
+  @IsOptional()
+  newType?: CreateProductTypeInlineDto;
 
   @ApiPropertyOptional({
     example: true,
@@ -72,4 +86,15 @@ export class UpdateProductDto {
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
+
+  @ApiPropertyOptional({
+    description:
+      'Product variants. Variants with id will be updated, without id will be created. Existing variants not in this list will be soft-deleted.',
+    type: () => [UpdateVariantDto],
+  })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UpdateVariantDto)
+  @IsOptional()
+  variants?: UpdateVariantDto[];
 }

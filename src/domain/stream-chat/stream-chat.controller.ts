@@ -3,7 +3,7 @@ import {
   ApiResponseCustom,
 } from '@core/decorator/doc.decorator';
 import { Roles } from '@core/decorator/role.decorator';
-import { Body, Controller, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Param, Patch, Post, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { ApiVersion } from '@shared/enum/api-version.enum';
 import { BaseResponse } from '@shared/helper/response';
@@ -15,6 +15,7 @@ import { CreateIdolChannelDto } from './dto/create-idol-channel.dto';
 import { CreateStreamUserDto } from './dto/create-user.dto';
 import { JoinChannelDto } from './dto/join-channel.dto';
 import { TokenDto } from './dto/token.dto';
+import { UpdateIdolChannelDto } from './dto/update-idol-channel.dto';
 import { UserDto } from './dto/user.dto';
 import { StreamChatService } from './stream-chat.service';
 
@@ -28,6 +29,7 @@ import { StreamChatService } from './stream-chat.service';
   CreateStreamUserDto,
   CreateCommunityChannelDto,
   CreateIdolChannelDto,
+  UpdateIdolChannelDto,
 )
 export class StreamChatController {
   constructor(private readonly streamChatService: StreamChatService) {}
@@ -88,6 +90,27 @@ export class StreamChatController {
       request,
     );
     return BaseResponse.of(result as StreamChannelDto);
+  }
+
+  @Patch('channels/idol/:channelId')
+  @Roles(Role.IDOL)
+  @ApiResponseCustom()
+  @ApiOperation({
+    summary: 'Update idol channel information (IDOL only)',
+    description:
+      'Updates an idol channel. Only the channel creator can update the channel',
+  })
+  async updateIdolChannel(
+    @Req() req: IRequest,
+    @Param('channelId') channelId: string,
+    @Body() request: UpdateIdolChannelDto,
+  ): Promise<BaseResponse<{ success: boolean; channelId: string }>> {
+    const result = await this.streamChatService.updateIdolChannel(
+      req.user.id,
+      channelId,
+      request,
+    );
+    return BaseResponse.of(result);
   }
 
   @Post('channels/:channelId/members/:memberId/grant-send-permission')
