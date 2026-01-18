@@ -7,7 +7,9 @@ export const getKnockClient = (): Knock => {
     const apiKey = process.env.KNOCK_SECRET_KEY || process.env.KNOCK_API_KEY;
 
     if (!apiKey) {
-      throw new Error('KNOCK_SECRET_KEY or KNOCK_API_KEY must be defined in environment variables');
+      throw new Error(
+        'KNOCK_SECRET_KEY or KNOCK_API_KEY must be defined in environment variables',
+      );
     }
 
     knockClient = new Knock({ apiKey });
@@ -20,7 +22,9 @@ export const getKnockPublicApiKey = (): string => {
   const publicApiKey = process.env.KNOCK_PUBLIC_API_KEY;
 
   if (!publicApiKey) {
-    throw new Error('KNOCK_PUBLIC_API_KEY must be defined in environment variables');
+    throw new Error(
+      'KNOCK_PUBLIC_API_KEY must be defined in environment variables',
+    );
   }
 
   return publicApiKey;
@@ -36,21 +40,22 @@ export const KNOCK_CHANNELS = {
 // Knock workflow keys for Ventidole
 export const KNOCK_WORKFLOWS = {
   // Community workflows
+  COMMUNITY_NEW_POST: 'community-new-post',
   COMMUNITY_JOINED: 'community-joined',
-  NEW_POST_FROM_IDOL: 'new-post-from-idol',
   POST_LIKED: 'post-liked',
   POST_COMMENTED: 'post-commented',
 
   // Chat workflows
-  NEW_MESSAGE: 'new-message',
-  CHANNEL_INVITATION: 'channel-invitation',
+  CHANNEL_CREATED: 'channel-created',
 
   // Order workflows
-  ORDER_CONFIRMED: 'order-confirmed',
+  CONFIRM_ORDER: 'confirm-order',
   ORDER_SHIPPED: 'order-shipped',
   ORDER_DELIVERED: 'order-delivered',
-  PAYMENT_SUCCESS: 'payment-success',
-  PAYMENT_FAILED: 'payment-failed',
+
+  // System workflows
+  BANNER_CREATED: 'banner-created',
 } as const;
 
-export type KnockWorkflowKey = typeof KNOCK_WORKFLOWS[keyof typeof KNOCK_WORKFLOWS];
+export type KnockWorkflowKey =
+  (typeof KNOCK_WORKFLOWS)[keyof typeof KNOCK_WORKFLOWS];

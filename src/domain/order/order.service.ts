@@ -161,22 +161,15 @@ export class OrderService {
       try {
         await this.knockWorkflowService.notifyConfirmOrder({
           userId: order.userId,
+          orderId: order.id,
+          orderCode: order.orderCode,
           title: 'Order Confirmed',
           text: `Your order has been confirmed. Total: ${order.totalAmount.toLocaleString()} VND`,
           metadata: {
             url: `/orders/${order.id}`,
-            orderId: order.id,
-            orderCode: order.orderCode,
             amount: order.totalAmount,
             type: 'order_confirmed',
           },
-        });
-
-        await this.getStreamNotificationService.emitOrderStatusEvent({
-          userId: order.userId,
-          orderId: order.id,
-          orderCode: order.orderCode,
-          status: 'confirmed',
         });
 
         this.logger.log(
@@ -399,18 +392,6 @@ export class OrderService {
 
     // Send payment success notifications
     try {
-      // Knock multi-channel notification
-      await this.knockWorkflowService.notifyPaymentSuccess({
-        userId: order.userId,
-        orderId: order.id,
-        orderCode: String(orderCode),
-        amount: order.totalAmount,
-        paymentMethod: order.paymentMethod,
-        metadata: {
-          type: 'order_paid',
-        },
-      });
-
       // Real-time in-app update via GetStream notification channel
       await this.getStreamNotificationService.emitOrderStatusEvent({
         userId: order.userId,

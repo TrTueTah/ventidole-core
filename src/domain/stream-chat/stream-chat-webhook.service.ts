@@ -323,19 +323,6 @@ export class StreamChatWebhookService {
     // Send notifications to all recipients in parallel
     const notifications = recipients.map(async (recipient) => {
       try {
-        // Send Knock notification (for push/email/in-app)
-        await this.knockWorkflowService.notifyNewMessage({
-          recipientId: recipient.userId,
-          sender: {
-            id: sender.id,
-            name: senderInfo?.username || sender.name || 'Someone',
-            avatar: senderInfo?.avatarUrl || sender.image,
-          },
-          channelId: channel.id,
-          channelName,
-          messagePreview,
-        });
-
         // Send real-time event via GetStream notification channel
         await this.getStreamNotificationService.emitNewMessageEvent({
           userId: recipient.userId,

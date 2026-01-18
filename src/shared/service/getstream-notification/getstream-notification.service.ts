@@ -211,23 +211,25 @@ export class GetStreamNotificationService {
   }
 
   /**
-   * Notify user about being added to a channel
+   * Notify users about a new channel being created
    */
-  async emitChannelInvitationEvent(params: {
-    userId: string;
-    inviterName: string;
+  async emitChannelCreatedEvent(params: {
+    userIds: string[];
     channelId: string;
     channelName: string;
+    creatorName: string;
+    communityName?: string;
   }): Promise<void> {
-    await this.emitEventToUser(params.userId, 'channel_invitation', {
-      type: 'channel_invitation',
-      title: 'Added to channel',
-      message: `${params.inviterName} added you to ${params.channelName}`,
+    await this.emitEventToUsers(params.userIds, 'channel_created', {
+      type: 'channel_created',
+      title: 'New channel created',
+      message: `${params.creatorName} created ${params.channelName}${params.communityName ? ` in ${params.communityName}` : ''}`,
       url: `/chat/${params.channelId}`,
       data: {
         channelId: params.channelId,
         channelName: params.channelName,
-        inviterName: params.inviterName,
+        creatorName: params.creatorName,
+        communityName: params.communityName,
       },
     });
   }
@@ -291,6 +293,30 @@ export class GetStreamNotificationService {
       data: {
         screen: params.screen,
         params: params.params,
+      },
+    });
+  }
+
+  /**
+   * Notify all users about a new banner
+   */
+  async emitBannerCreatedEvent(params: {
+    userIds: string[];
+    bannerId: string;
+    title: string;
+    imageUrl?: string;
+    actionUrl?: string;
+  }): Promise<void> {
+    await this.emitEventToUsers(params.userIds, 'banner_created', {
+      type: 'banner_created',
+      title: 'New Announcement',
+      message: params.title,
+      url: params.actionUrl || '/banners',
+      data: {
+        bannerId: params.bannerId,
+        title: params.title,
+        imageUrl: params.imageUrl,
+        actionUrl: params.actionUrl,
       },
     });
   }

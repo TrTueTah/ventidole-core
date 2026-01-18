@@ -6,8 +6,6 @@ export enum KnockWorkflow {
   POST_COMMENTED = 'post-commented',
 
   // Chat workflows
-  NEW_MESSAGE = 'new-message',
-  CHANNEL_INVITATION = 'channel-invitation',
   CHANNEL_CREATED = 'channel-created',
 
   // Order workflows
@@ -15,7 +13,6 @@ export enum KnockWorkflow {
   ORDER_SHIPPED = 'order-shipped',
   ORDER_DELIVERED = 'order-delivered',
 
-  // Payment workflows
-  PAYMENT_SUCCESS = 'payment-success',
-  PAYMENT_FAILED = 'payment-failed',
+  // System workflows
+  BANNER_CREATED = 'banner-created',
 }

@@ -392,15 +392,65 @@ async function seedMockData() {
     const numOrders = Math.floor(Math.random() * 6) + 15; // 15-20 orders
     const ordersData = Array.from({ length: numOrders }, (_, index) => {
       const fan = fans[Math.floor(Math.random() * fans.length)];
-      const status =
-        orderStatuses[Math.floor(Math.random() * orderStatuses.length)];
+      const paymentMethod = Math.random() > 0.5 ? 'CREDIT' : 'COD';
       const createdDate = new Date(
         Date.now() - Math.random() * 180 * 24 * 60 * 60 * 1000,
       ); // Random date within last 6 months (180 days)
 
+      // Determine status based on payment method and random progression
+      // CREDIT flow: PENDING_PAYMENT -> PAID -> SHIPPING -> DELIVERED (or EXPIRED/CANCELED)
+      // COD flow: CONFIRMED -> SHIPPING -> DELIVERED (or CANCELED)
+      let status: (typeof orderStatuses)[number];
+      const progressRandom = Math.random();
+
+      if (paymentMethod === 'CREDIT') {
+        if (progressRandom < 0.15) {
+          status = 'PENDING_PAYMENT'; // Still waiting for payment
+        } else if (progressRandom < 0.25) {
+          status = 'EXPIRED'; // Payment expired
+        } else if (progressRandom < 0.35) {
+          status = 'CANCELED'; // Canceled
+        } else if (progressRandom < 0.50) {
+          status = 'PAID'; // Paid, not yet shipped
+        } else if (progressRandom < 0.70) {
+          status = 'SHIPPING'; // In transit
+        } else {
+          status = 'DELIVERED'; // Completed
+        }
+      } else {
+        // COD - starts as CONFIRMED (no PENDING_PAYMENT)
+        if (progressRandom < 0.10) {
+          status = 'CANCELED'; // Canceled
+        } else if (progressRandom < 0.30) {
+          status = 'CONFIRMED'; // Confirmed, not yet shipped
+        } else if (progressRandom < 0.50) {
+          status = 'SHIPPING'; // In transit
+        } else {
+          status = 'DELIVERED'; // Completed
+        }
+      }
+
+      // Determine paidAt based on status and payment method
+      // For CREDIT: paidAt set when status is PAID, SHIPPING, or DELIVERED
+      // For COD: paidAt set when DELIVERED (payment collected on delivery)
+      let paidAt: Date | null = null;
+      if (paymentMethod === 'CREDIT') {
+        if (status === 'PAID' || status === 'SHIPPING' || status === 'DELIVERED') {
+          paidAt = new Date(createdDate.getTime() + 60 * 60 * 1000); // 1 hour after creation
+        }
+      } else {
+        // COD - paid when delivered
+        if (status === 'DELIVERED') {
+          paidAt = new Date(createdDate.getTime() + 3 * 24 * 60 * 60 * 1000); // 3 days after creation
+        }
+      }
+
+      const dateStr = createdDate.toISOString().slice(0, 10).replace(/-/g, '');
+      const randomSuffix = Math.random().toString(36).substring(2, 7).toUpperCase();
+
       return {
         userId: fan.id,
-        orderCode: `ORD${Date.now()}${index.toString().padStart(3, '0')}`,
+        orderCode: `ORD-${dateStr}-${randomSuffix}`,
         totalAmount: 0, // Will be calculated based on order items
         status: status,
         shippingAddress: {
@@ -410,11 +460,8 @@ async function seedMockData() {
           zipCode: '12345',
           country: 'South Korea',
         },
-        paymentMethod: Math.random() > 0.5 ? 'CREDIT' : 'COD',
-        paidAt:
-          status === 'PAID' || status === 'SHIPPING' || status === 'DELIVERED'
-            ? new Date(createdDate.getTime() + 60 * 60 * 1000) // 1 hour after creation
-            : null,
+        paymentMethod: paymentMethod,
+        paidAt: paidAt,
         createdAt: createdDate,
       };
     });
@@ -494,30 +541,46 @@ async function seedMockData() {
     });
     console.log(`  ✅ Created ${orderItems.length} order items\n`);
 
-    // 17. Create Payment Transactions
+    // 17. Create Payment Transactions (only for CREDIT orders)
     console.log('💳 Creating payment transactions...');
-    const paymentTransactionsData = updatedOrders.map((order) => {
+    // Filter only CREDIT orders - COD orders don't need payment transactions
+    const creditOrders = updatedOrders.filter(
+      (order) => order.paymentMethod === 'CREDIT',
+    );
+
+    const paymentTransactionsData = creditOrders.map((order, index) => {
       // Determine payment transaction status based on order status
+      // CREDIT flow: PENDING_PAYMENT -> PAID -> SHIPPING -> DELIVERED (or EXPIRED/CANCELED)
       let txnStatus: 'PENDING' | 'PAID' | 'FAILED' | 'CANCELED' | 'EXPIRED';
-      if (order.status === 'PENDING_PAYMENT' || order.status === 'CONFIRMED') {
+      if (order.status === 'PENDING_PAYMENT') {
         txnStatus = 'PENDING';
       } else if (order.status === 'CANCELED') {
         txnStatus = Math.random() > 0.5 ? 'CANCELED' : 'FAILED';
       } else if (order.status === 'EXPIRED') {
         txnStatus = 'EXPIRED';
       } else {
+        // PAID, SHIPPING, DELIVERED - payment was successful
         txnStatus = 'PAID';
       }
+
+      // Generate unique PayOS orderCode (numeric, must fit in INT4: max 2,147,483,647)
+      // Use seconds since Jan 1, 2024 + index to ensure uniqueness within INT4 range
+      const baseTimestamp = order.createdAt
+        ? new Date(order.createdAt).getTime()
+        : Date.now();
+      const epoch2024 = new Date('2024-01-01').getTime();
+      const secondsSinceEpoch = Math.floor((baseTimestamp - epoch2024) / 1000);
+      const safeOrderCode = (secondsSinceEpoch % 10000000) * 100 + index; // Max: 999,999,999 (under INT4 max)
 
       return {
         orderId: order.id,
         userId: order.userId,
-        orderCode: Math.floor(Math.random() * 10000) + 1,
+        orderCode: safeOrderCode,
         amount: order.totalAmount,
-        provider: order.paymentMethod === 'CREDIT' ? 'PayOS' : 'COD',
+        provider: 'PayOS',
         providerTxnId:
-          txnStatus !== 'PENDING'
-            ? `txn_${Date.now()}_${Math.random().toString(36).substring(7)}`
+          txnStatus === 'PAID'
+            ? `txn_${baseTimestamp}_${Math.random().toString(36).substring(2, 9)}`
             : null,
         status: txnStatus,
         paidAt: order.paidAt,
@@ -530,7 +593,10 @@ async function seedMockData() {
     });
     const paymentTransactions = await prisma.paymentTransaction.findMany();
     console.log(
-      `  ✅ Created ${paymentTransactions.length} payment transactions\n`,
+      `  ✅ Created ${paymentTransactions.length} payment transactions (CREDIT orders only)\n`,
+    );
+    console.log(
+      `   ℹ️  COD orders (${updatedOrders.length - creditOrders.length}) don't require payment transactions\n`,
     );
 
     // Print Summary
@@ -563,36 +629,42 @@ async function seedMockData() {
     );
     console.log(`📦 Orders: ${orders.length}`);
     console.log(
-      `   - Pending: ${orders.filter((o) => o.status === 'pending').length}`,
+      `   - Pending Payment: ${orders.filter((o) => o.status === 'PENDING_PAYMENT').length}`,
     );
     console.log(
-      `   - Paid: ${orders.filter((o) => o.status === 'paid').length}`,
+      `   - Confirmed (COD): ${orders.filter((o) => o.status === 'CONFIRMED').length}`,
     );
     console.log(
-      `   - Shipping: ${orders.filter((o) => o.status === 'shipping').length}`,
+      `   - Paid: ${orders.filter((o) => o.status === 'PAID').length}`,
     );
     console.log(
-      `   - Delivered: ${orders.filter((o) => o.status === 'delivered').length}`,
+      `   - Shipping: ${orders.filter((o) => o.status === 'SHIPPING').length}`,
     );
     console.log(
-      `   - Cancelled: ${orders.filter((o) => o.status === 'cancelled').length}`,
+      `   - Delivered: ${orders.filter((o) => o.status === 'DELIVERED').length}`,
     );
     console.log(
-      `   - Refunded: ${orders.filter((o) => o.status === 'refunded').length}`,
+      `   - Canceled: ${orders.filter((o) => o.status === 'CANCELED').length}`,
+    );
+    console.log(
+      `   - Expired: ${orders.filter((o) => o.status === 'EXPIRED').length}`,
     );
     console.log(`📋 Order Items: ${orderItems.length}`);
     console.log(`💳 Payment Transactions: ${paymentTransactions.length}`);
     console.log(
-      `   - Pending: ${paymentTransactions.filter((t) => t.status === 'pending').length}`,
+      `   - Pending: ${paymentTransactions.filter((t) => t.status === 'PENDING').length}`,
     );
     console.log(
-      `   - Success: ${paymentTransactions.filter((t) => t.status === 'success').length}`,
+      `   - Paid: ${paymentTransactions.filter((t) => t.status === 'PAID').length}`,
     );
     console.log(
-      `   - Failed: ${paymentTransactions.filter((t) => t.status === 'failed').length}`,
+      `   - Failed: ${paymentTransactions.filter((t) => t.status === 'FAILED').length}`,
     );
     console.log(
-      `   - Refunded: ${paymentTransactions.filter((t) => t.status === 'refunded').length}`,
+      `   - Canceled: ${paymentTransactions.filter((t) => t.status === 'CANCELED').length}`,
+    );
+    console.log(
+      `   - Expired: ${paymentTransactions.filter((t) => t.status === 'EXPIRED').length}`,
     );
     console.log('═══════════════════════════════════════\n');
 

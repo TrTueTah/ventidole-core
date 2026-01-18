@@ -409,37 +409,23 @@ export class AdminOrderService {
         const orderCode = String(order.id.slice(-12)); // Use last 12 chars of ID as order code
 
         // Notify on status changes
-        if (updateOrderDto.status === OrderStatus.shipping) {
-          // Order shipped notification
+        if (updateOrderDto.status === OrderStatus.SHIPPING) {
+          // Order shipped notification (includes real-time GetStream notification)
           await this.knockWorkflowService.notifyOrderShipped({
             userId: order.user.id,
             orderId: order.id,
             orderCode,
           });
 
-          await this.getStreamNotificationService.emitOrderStatusEvent({
-            userId: order.user.id,
-            orderId: order.id,
-            orderCode,
-            status: 'shipped',
-          });
-
           this.logger.log(
             `Order shipped notification sent for order ${order.id}`,
           );
-        } else if (updateOrderDto.status === OrderStatus.delivered) {
-          // Order delivered notification
+        } else if (updateOrderDto.status === OrderStatus.DELIVERED) {
+          // Order delivered notification (includes real-time GetStream notification)
           await this.knockWorkflowService.notifyOrderDelivered({
             userId: order.user.id,
             orderId: order.id,
             orderCode,
-          });
-
-          await this.getStreamNotificationService.emitOrderStatusEvent({
-            userId: order.user.id,
-            orderId: order.id,
-            orderCode,
-            status: 'delivered',
           });
 
           this.logger.log(
@@ -556,34 +542,22 @@ export class AdminOrderService {
             `Order confirmed notification could be sent for order ${order.id}`,
           );
         } else if (newStatus === OrderStatus.SHIPPING) {
+          // Order shipped notification (includes real-time GetStream notification)
           await this.knockWorkflowService.notifyOrderShipped({
             userId: order.user.id,
             orderId: order.id,
             orderCode,
           });
 
-          await this.getStreamNotificationService.emitOrderStatusEvent({
-            userId: order.user.id,
-            orderId: order.id,
-            orderCode,
-            status: 'shipped',
-          });
-
           this.logger.log(
             `Order shipped notification sent for order ${order.id}`,
           );
         } else if (newStatus === OrderStatus.DELIVERED) {
+          // Order delivered notification (includes real-time GetStream notification)
           await this.knockWorkflowService.notifyOrderDelivered({
             userId: order.user.id,
             orderId: order.id,
             orderCode,
-          });
-
-          await this.getStreamNotificationService.emitOrderStatusEvent({
-            userId: order.user.id,
-            orderId: order.id,
-            orderCode,
-            status: 'delivered',
           });
 
           this.logger.log(

@@ -256,11 +256,6 @@ export class CommunityService {
 
     // Join community chat channel
     await this.joinCommunityChatChannel(userId, communityId);
-
-    // Notify idol(s) about new follower
-    if (community.idols && community.idols.length > 0) {
-      await this.notifyIdolsAboutNewFollower(community.idols, fan, community);
-    }
   }
 
   async bulkFollowCommunities(
@@ -464,46 +459,6 @@ export class CommunityService {
         error.message,
       );
       // Don't throw - channel addition failure shouldn't block community join
-    }
-  }
-
-  /**
-   * Notify idol(s) about new follower via Knock and GetStream
-   */
-  private async notifyIdolsAboutNewFollower(
-    idols: Array<{ id: string; username: string; avatarUrl: string | null }>,
-    fan: { id: string; username: string; avatarUrl: string | null },
-    community: { id: string; name: string },
-  ): Promise<void> {
-    for (const idol of idols) {
-      try {
-        // Send Knock notification (push/email)
-        await this.knockWorkflowService.notifyCommunityJoined({
-          idolId: idol.id,
-          fan: {
-            id: fan.id,
-            name: fan.username,
-            avatar: fan.avatarUrl ?? undefined,
-          },
-          communityId: community.id,
-          communityName: community.name,
-        });
-
-        // Send real-time event via GetStream notification channel
-        await this.getStreamNotificationService.emitCommunityJoinedEvent({
-          idolId: idol.id,
-          fanName: fan.username,
-          communityId: community.id,
-          communityName: community.name,
-        });
-
-        this.logger.log(
-          `Notified idol ${idol.id} about new follower ${fan.id}`,
-        );
-      } catch (error) {
-        this.logger.error(`Error notifying idol ${idol.id}:`, error.message);
-        // Continue with other idols even if one fails
-      }
     }
   }
 

@@ -3,6 +3,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ErrorCode } from '@shared/enum/error-code.enum';
 import { KnockWorkflow } from '@shared/enum/knock-workflow.enum';
 import { CustomError } from '@shared/helper/error';
+import { GetStreamNotificationService } from '@shared/service/getstream-notification/getstream-notification.service';
 
 export interface WorkflowActor {
   id: string;
@@ -19,6 +20,10 @@ export interface NotificationMetadata {
 @Injectable()
 export class KnockWorkflowService {
   private readonly logger = new Logger(KnockWorkflowService.name);
+
+  constructor(
+    private readonly getStreamNotificationService: GetStreamNotificationService,
+  ) {}
 
   /**
    * Trigger a custom workflow
@@ -82,10 +87,20 @@ export class KnockWorkflowService {
       return '';
     }
 
+    // Send real-time notification via GetStream
+    await this.getStreamNotificationService.emitNewPostEvent({
+      userIds: params.members.map((m) => m.id),
+      postId: params.postId,
+      authorName: params.author.name || 'Someone',
+      communityName: params.communityName,
+      postPreview: params.postTitle,
+    });
+
     return this.triggerWorkflow(
       KnockWorkflow.COMMUNITY_NEW_POST,
       params.members,
       {
+        type: 'community-new-post',
         communityId: params.communityId,
         communityName: params.communityName,
         postId: params.postId,
@@ -101,20 +116,73 @@ export class KnockWorkflowService {
     );
   }
 
+  /**
+   * Notify idol when someone joins their community
+   */
+  async notifyCommunityJoined(params: {
+    idolId: string;
+    fanId: string;
+    fanName: string;
+    communityId: string;
+    communityName: string;
+    metadata?: NotificationMetadata;
+  }): Promise<string> {
+    // Send real-time notification via GetStream
+    await this.getStreamNotificationService.emitCommunityJoinedEvent({
+      idolId: params.idolId,
+      fanName: params.fanName,
+      communityId: params.communityId,
+      communityName: params.communityName,
+    });
+
+    return this.triggerWorkflow(
+      KnockWorkflow.COMMUNITY_JOINED,
+      [params.idolId],
+      {
+        type: 'community-joined',
+        fanId: params.fanId,
+        fanName: params.fanName,
+        communityId: params.communityId,
+        communityName: params.communityName,
+        url:
+          params.metadata?.url ||
+          `/communities/${params.communityId}/followers`,
+        ...params.metadata,
+      },
+      { id: params.fanId, name: params.fanName },
+    );
+  }
+
+  /**
+   * Notify user when order is confirmed
+   */
   async notifyConfirmOrder(params: {
     userId: string;
+    orderId: string;
+    orderCode: string;
     title: string;
     text: string;
     metadata?: NotificationMetadata;
     actor?: WorkflowActor;
   }): Promise<string> {
+    // Send real-time notification via GetStream
+    await this.getStreamNotificationService.emitOrderStatusEvent({
+      userId: params.userId,
+      orderId: params.orderId,
+      orderCode: params.orderCode,
+      status: 'confirmed',
+    });
+
     return this.triggerWorkflow(
       KnockWorkflow.CONFIRM_ORDER,
       [params.userId],
       {
+        type: 'confirm-order',
+        orderId: params.orderId,
+        orderCode: params.orderCode,
         title: params.title,
         text: params.text,
-        url: params.metadata?.url || '/notifications',
+        url: params.metadata?.url || `/orders/${params.orderId}`,
         ...params.metadata,
       },
       params.actor || { id: 'system', name: 'System' },
@@ -131,10 +199,19 @@ export class KnockWorkflowService {
     postContent: string;
     metadata?: NotificationMetadata;
   }): Promise<string> {
+    // Send real-time notification via GetStream
+    await this.getStreamNotificationService.emitPostLikedEvent({
+      userId: params.authorId,
+      likerName: params.liker.name || 'Someone',
+      postId: params.postId,
+    });
+
     return this.triggerWorkflow(
       KnockWorkflow.POST_LIKED,
       [params.authorId],
       {
+        type: 'post-liked',
+        likerId: params.liker.id,
         likerName: params.liker.name,
         likerAvatar: params.liker.avatar,
         postId: params.postId,
@@ -157,10 +234,20 @@ export class KnockWorkflowService {
     commentContent: string;
     metadata?: NotificationMetadata;
   }): Promise<string> {
+    // Send real-time notification via GetStream
+    await this.getStreamNotificationService.emitPostCommentedEvent({
+      userId: params.authorId,
+      commenterName: params.commenter.name || 'Someone',
+      postId: params.postId,
+      commentPreview: params.commentContent.substring(0, 100),
+    });
+
     return this.triggerWorkflow(
       KnockWorkflow.POST_COMMENTED,
       [params.authorId],
       {
+        type: 'post-commented',
+        commenterId: params.commenter.id,
         commenterName: params.commenter.name,
         commenterAvatar: params.commenter.avatar,
         postId: params.postId,
@@ -170,87 +257,6 @@ export class KnockWorkflowService {
         ...params.metadata,
       },
       params.commenter,
-    );
-  }
-
-  /**
-   * Notify idol when someone joins their community
-   */
-  async notifyCommunityJoined(params: {
-    idolId: string;
-    fan: WorkflowActor;
-    communityId: string;
-    communityName: string;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
-    return this.triggerWorkflow(
-      KnockWorkflow.COMMUNITY_JOINED,
-      [params.idolId],
-      {
-        fanName: params.fan.name,
-        fanAvatar: params.fan.avatar,
-        communityId: params.communityId,
-        communityName: params.communityName,
-        url:
-          params.metadata?.url ||
-          `/communities/${params.communityId}/followers`,
-        ...params.metadata,
-      },
-      params.fan,
-    );
-  }
-
-  /**
-   * Notify user of new chat message
-   */
-  async notifyNewMessage(params: {
-    recipientId: string;
-    sender: WorkflowActor;
-    channelId: string;
-    channelName: string;
-    messagePreview: string;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
-    return this.triggerWorkflow(
-      KnockWorkflow.NEW_MESSAGE,
-      [params.recipientId],
-      {
-        senderName: params.sender.name,
-        senderAvatar: params.sender.avatar,
-        channelId: params.channelId,
-        channelName: params.channelName,
-        messagePreview: params.messagePreview.substring(0, 100),
-        url: params.metadata?.url || `/chat/${params.channelId}`,
-        ...params.metadata,
-      },
-      params.sender,
-    );
-  }
-
-  /**
-   * Notify user when added to a channel
-   */
-  async notifyChannelInvitation(params: {
-    recipientId: string;
-    inviter: WorkflowActor;
-    channelId: string;
-    channelName: string;
-    channelDescription?: string;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
-    return this.triggerWorkflow(
-      KnockWorkflow.CHANNEL_INVITATION,
-      [params.recipientId],
-      {
-        inviterName: params.inviter.name,
-        inviterAvatar: params.inviter.avatar,
-        channelId: params.channelId,
-        channelName: params.channelName,
-        channelDescription: params.channelDescription,
-        url: params.metadata?.url || `/chat/${params.channelId}`,
-        ...params.metadata,
-      },
-      params.inviter,
     );
   }
 
@@ -270,10 +276,20 @@ export class KnockWorkflowService {
       return '';
     }
 
+    // Send real-time notification via GetStream
+    await this.getStreamNotificationService.emitChannelCreatedEvent({
+      userIds: params.recipientIds,
+      channelId: params.channelId,
+      channelName: params.channelName,
+      creatorName: params.creatorName,
+      communityName: params.communityName,
+    });
+
     return this.triggerWorkflow(
       KnockWorkflow.CHANNEL_CREATED,
       params.recipientIds,
       {
+        type: 'channel-created',
         creatorName: params.creatorName,
         channelId: params.channelId,
         channelName: params.channelName,
@@ -295,10 +311,20 @@ export class KnockWorkflowService {
     trackingNumber?: string;
     metadata?: NotificationMetadata;
   }): Promise<string> {
+    // Send real-time notification via GetStream
+    await this.getStreamNotificationService.emitOrderStatusEvent({
+      userId: params.userId,
+      orderId: params.orderId,
+      orderCode: params.orderCode,
+      status: 'shipped',
+      trackingNumber: params.trackingNumber,
+    });
+
     return this.triggerWorkflow(
       KnockWorkflow.ORDER_SHIPPED,
       [params.userId],
       {
+        type: 'order-shipped',
         orderId: params.orderId,
         orderCode: params.orderCode,
         trackingNumber: params.trackingNumber,
@@ -318,10 +344,19 @@ export class KnockWorkflowService {
     orderCode: string;
     metadata?: NotificationMetadata;
   }): Promise<string> {
+    // Send real-time notification via GetStream
+    await this.getStreamNotificationService.emitOrderStatusEvent({
+      userId: params.userId,
+      orderId: params.orderId,
+      orderCode: params.orderCode,
+      status: 'delivered',
+    });
+
     return this.triggerWorkflow(
       KnockWorkflow.ORDER_DELIVERED,
       [params.userId],
       {
+        type: 'order-delivered',
         orderId: params.orderId,
         orderCode: params.orderCode,
         url: params.metadata?.url || `/orders/${params.orderId}`,
@@ -332,51 +367,42 @@ export class KnockWorkflowService {
   }
 
   /**
-   * Notify user of successful payment
+   * Notify all users about a new banner/announcement
    */
-  async notifyPaymentSuccess(params: {
-    userId: string;
-    orderId: string;
-    orderCode: string;
-    amount: number;
-    paymentMethod: string;
+  async notifyBannerCreated(params: {
+    userIds: string[];
+    bannerId: string;
+    title: string;
+    description?: string;
+    imageUrl?: string;
+    actionUrl?: string;
     metadata?: NotificationMetadata;
   }): Promise<string> {
-    return this.triggerWorkflow(
-      KnockWorkflow.PAYMENT_SUCCESS,
-      [params.userId],
-      {
-        orderId: params.orderId,
-        orderCode: params.orderCode,
-        amount: params.amount,
-        paymentMethod: params.paymentMethod,
-        url: params.metadata?.url || `/orders/${params.orderId}`,
-        ...params.metadata,
-      },
-      { id: 'system', name: 'Ventidole' },
-    );
-  }
+    if (params.userIds.length === 0) {
+      this.logger.log('No users to notify about banner');
+      return '';
+    }
 
-  /**
-   * Notify user of failed payment
-   */
-  async notifyPaymentFailed(params: {
-    userId: string;
-    orderId: string;
-    orderCode: string;
-    amount: number;
-    reason?: string;
-    metadata?: NotificationMetadata;
-  }): Promise<string> {
+    // Send real-time notification via GetStream
+    await this.getStreamNotificationService.emitBannerCreatedEvent({
+      userIds: params.userIds,
+      bannerId: params.bannerId,
+      title: params.title,
+      imageUrl: params.imageUrl,
+      actionUrl: params.actionUrl,
+    });
+
     return this.triggerWorkflow(
-      KnockWorkflow.PAYMENT_FAILED,
-      [params.userId],
+      KnockWorkflow.BANNER_CREATED,
+      params.userIds,
       {
-        orderId: params.orderId,
-        orderCode: params.orderCode,
-        amount: params.amount,
-        failureReason: params.reason || 'Payment processing failed',
-        url: params.metadata?.url || `/orders/${params.orderId}`,
+        type: 'banner-created',
+        bannerId: params.bannerId,
+        title: params.title,
+        description: params.description,
+        imageUrl: params.imageUrl,
+        actionUrl: params.actionUrl,
+        url: params.metadata?.url || params.actionUrl || '/banners',
         ...params.metadata,
       },
       { id: 'system', name: 'Ventidole' },

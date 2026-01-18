@@ -39,33 +39,22 @@ export class KnockUserService {
   /**
    * Subscribe user to Knock notification channels
    */
-  async subscribeToChannels(
-    userId: string,
-    fcmToken?: string,
-  ): Promise<void> {
+  async subscribeToChannels(userId: string, fcmToken?: string): Promise<void> {
     try {
       const knockClient = getKnockClient();
 
       // Subscribe to in-app notifications
       if (KNOCK_CHANNELS.IN_APP) {
-        await knockClient.users.setChannelData(
-          userId,
-          KNOCK_CHANNELS.IN_APP,
-          {
-            tokens: fcmToken ? [fcmToken] : [],
-          },
-        );
+        await knockClient.users.setChannelData(userId, KNOCK_CHANNELS.IN_APP, {
+          tokens: fcmToken ? [fcmToken] : [],
+        });
       }
 
       // Subscribe to push notifications
       if (KNOCK_CHANNELS.PUSH && fcmToken) {
-        await knockClient.users.setChannelData(
-          userId,
-          KNOCK_CHANNELS.PUSH,
-          {
-            tokens: [fcmToken],
-          },
-        );
+        await knockClient.users.setChannelData(userId, KNOCK_CHANNELS.PUSH, {
+          tokens: [fcmToken],
+        });
       }
 
       this.logger.log(
@@ -87,13 +76,9 @@ export class KnockUserService {
       const knockClient = getKnockClient();
 
       if (KNOCK_CHANNELS.PUSH) {
-        await knockClient.users.setChannelData(
-          userId,
-          KNOCK_CHANNELS.PUSH,
-          {
-            tokens: [fcmToken],
-          },
-        );
+        await knockClient.users.setChannelData(userId, KNOCK_CHANNELS.PUSH, {
+          tokens: [fcmToken],
+        });
 
         this.logger.log(`Updated FCM token for user ${userId}`);
       }
@@ -138,9 +123,7 @@ export class KnockUserService {
         tokens: [],
       });
 
-      this.logger.log(
-        `Unsubscribed user ${userId} from channel ${channelId}`,
-      );
+      this.logger.log(`Unsubscribed user ${userId} from channel ${channelId}`);
     } catch (error) {
       this.logger.error(
         `Failed to unsubscribe user ${userId} from channel ${channelId}:`,
