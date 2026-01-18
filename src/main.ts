@@ -51,13 +51,13 @@ async function bootstrap() {
 
     app.useGlobalPipes(new CustomValidationPipe());
     app.useGlobalFilters(new UnhandledExceptionFilter());
-    app.useGlobalInterceptors(new HttpLoggerInterceptor());
 
-    // Add metrics interceptor if enabled
+    // Setup interceptors - metrics interceptor must be registered with DI
+    const interceptors = [new HttpLoggerInterceptor()];
     if (ENVIRONMENT.METRICS_ENABLED !== false) {
-      const metricsInterceptor = app.get(MetricsInterceptor);
-      app.useGlobalInterceptors(metricsInterceptor);
+      interceptors.push(app.get(MetricsInterceptor));
     }
+    app.useGlobalInterceptors(...interceptors);
 
     app.useGlobalGuards(new JwtAuthGuard(new Reflector()));
     app.enableVersioning({
