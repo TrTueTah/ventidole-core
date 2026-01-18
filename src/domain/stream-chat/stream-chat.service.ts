@@ -511,6 +511,36 @@ export class StreamChatService {
   }
 
   /**
+   * Leave a chat channel
+   * Removes the user from the channel members
+   */
+  async leaveChannel(userId: string, channelId: string) {
+    try {
+      const streamChatClient = getStreamChatClient();
+      const channel = streamChatClient.channel('messaging', channelId);
+
+      // Verify channel exists
+      await channel.watch();
+
+      // Remove user from channel
+      await channel.removeMembers([userId]);
+
+      this.logger.log(`User ${userId} left channel ${channelId}`);
+
+      return {
+        success: true,
+        channelId,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Error removing user ${userId} from channel ${channelId}:`,
+        error,
+      );
+      throw error;
+    }
+  }
+
+  /**
    * Find and add user to their community channel with specified role
    * Used when FAN users are created to automatically add them to their community channel
    */
@@ -612,6 +642,79 @@ export class StreamChatService {
       );
       // Return null instead of throwing to make this non-blocking
       return null;
+    }
+  }
+
+  /**
+   * Update member role in a channel
+   * Uses assignRoles to change the channel role of a member
+   * This is a server-side operation required because client-side role changes are not allowed
+   */
+  async updateMemberRole(
+    requesterId: string,
+    channelId: string,
+    memberId: string,
+    role: string,
+  ) {
+    try {
+      const streamChatClient = getStreamChatClient();
+      const channel = streamChatClient.channel('messaging', channelId);
+
+      // Fetch channel data to verify it exists and check permissions
+      await channel.watch();
+      const channelData = channel.data;
+
+      // Validate requester is authorized (must be channel creator or idol for idol channels)
+      if (channelData.is_idol_channel) {
+        // For idol channels: only creator can change roles
+        if (requesterId !== channelData.created_by_id) {
+          throw new ForbiddenException(
+            'Only channel creator can change member roles',
+          );
+        }
+      } else if (channelData.is_community_channel) {
+        // For community channels: any idol in the community can change roles
+        const requester = await this.prisma.user.findUnique({
+          where: { id: requesterId },
+        });
+
+        if (!requester || requester.role !== Role.IDOL) {
+          throw new ForbiddenException('Only idols can change member roles');
+        }
+
+        if (requester.communityId !== channelData.community_id) {
+          throw new ForbiddenException(
+            'Only idols from this community can change member roles',
+          );
+        }
+      } else {
+        throw new ForbiddenException('Invalid channel type');
+      }
+
+      // Use assignRoles to update the member's channel role
+      await channel.assignRoles([
+        {
+          user_id: memberId,
+          channel_role: role,
+        },
+      ]);
+
+      this.logger.log(
+        `Updated member ${memberId} role to ${role} in channel ${channelId}`,
+      );
+
+      return {
+        success: true,
+        channelId,
+        memberId,
+        role,
+      };
+    } catch (error) {
+      this.logger.error(
+        `Error updating member ${memberId} role in channel ${channelId}:`,
+        error.message,
+      );
+      throw error;
     }
   }
 }

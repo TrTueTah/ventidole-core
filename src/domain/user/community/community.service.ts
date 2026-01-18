@@ -395,6 +395,74 @@ export class CommunityService {
   }
 
   /**
+   * Join idol's chat channel
+   * This allows fans to join an idol's personal chat channel
+   */
+  async joinIdolChatChannel(userId: string, idolId: string): Promise<void> {
+    // Verify the idol exists and is an actual idol
+    const idol = await this.prisma.user.findFirst({
+      where: {
+        id: idolId,
+        role: 'IDOL',
+        isDeleted: false,
+        isActive: true,
+      },
+    });
+
+    if (!idol) {
+      throw new CustomError(ErrorCode.IdolNotFound);
+    }
+
+    // Get the idol's channel from GetStream
+    const idolChannel = await this.streamChatService.getIdolChannel(idolId);
+
+    if (!idolChannel || !idolChannel.id) {
+      throw new CustomError(ErrorCode.ChatChannelNotFound);
+    }
+
+    // Join the idol's channel
+    await this.streamChatService.joinChannel(userId, idolChannel.id);
+
+    this.logger.log(
+      `User ${userId} joined idol ${idolId} chat channel ${idolChannel.id}`,
+    );
+  }
+
+  /**
+   * Leave idol's chat channel
+   * This allows fans to leave an idol's personal chat channel
+   */
+  async leaveIdolChatChannel(userId: string, idolId: string): Promise<void> {
+    // Verify the idol exists and is an actual idol
+    const idol = await this.prisma.user.findFirst({
+      where: {
+        id: idolId,
+        role: 'IDOL',
+        isDeleted: false,
+        isActive: true,
+      },
+    });
+
+    if (!idol) {
+      throw new CustomError(ErrorCode.IdolNotFound);
+    }
+
+    // Get the idol's channel from GetStream
+    const idolChannel = await this.streamChatService.getIdolChannel(idolId);
+
+    if (!idolChannel || !idolChannel.id) {
+      throw new CustomError(ErrorCode.ChatChannelNotFound);
+    }
+
+    // Leave the idol's channel
+    await this.streamChatService.leaveChannel(userId, idolChannel.id);
+
+    this.logger.log(
+      `User ${userId} left idol ${idolId} chat channel ${idolChannel.id}`,
+    );
+  }
+
+  /**
    * Add fan to all community channels in GetStream
    */
   private async addFanToCommunityChannels(

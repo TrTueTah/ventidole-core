@@ -753,6 +753,67 @@ paths:
       security: *ref_1
       summary: Join a chat channel
       tags: *ref_2
+  /v1/stream-chat/channels/{channelId}/members/{memberId}/role:
+    patch:
+      description: >-
+        Update the role of a member in a channel. For idol channels: only
+        creator can change roles. For community channels: any idol in the
+        community can change roles.
+      operationId: StreamChatController_updateMemberRole_v1
+      parameters:
+        - name: channelId
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: memberId
+          required: true
+          in: path
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMemberRoleDto'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_1
+      summary: Update member role in a channel
+      tags: *ref_2
   /v1/webhooks/getstream:
     post:
       operationId: StreamChatWebhookController_handleWebhook_v1
@@ -2503,6 +2564,96 @@ paths:
       operationId: CommunityController_leaveCommunity_v1
       parameters:
         - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_12
+      tags: *ref_13
+  /v1/user/community/idol/{idolId}/join-channel:
+    post:
+      operationId: CommunityController_joinIdolChatChannel_v1
+      parameters:
+        - name: idolId
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                    example: 200
+                    description: HTTP status code
+                  message:
+                    type: string
+                    example: OK
+                    description: Response message
+                  data:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: No data returned
+                  error:
+                    type: object
+                    nullable: true
+                    example: null
+                    description: Error information (null on success)
+                  errorCode:
+                    type: string
+                    nullable: true
+                    example: null
+                    description: Error code (null on success)
+                required:
+                  - statusCode
+                  - message
+      security: *ref_12
+      tags: *ref_13
+  /v1/user/community/idol/{idolId}/leave-channel:
+    delete:
+      operationId: CommunityController_leaveIdolChatChannel_v1
+      parameters:
+        - name: idolId
           required: true
           in: path
           schema:
@@ -7181,6 +7332,18 @@ components:
           type: string
           description: Channel image URL
           example: https://example.com/image.jpg
+    UpdateMemberRoleDto:
+      type: object
+      properties:
+        role:
+          type: string
+          description: The role to assign to the member
+          enum:
+            - trusted_member
+            - default_member
+          example: trusted_member
+      required:
+        - role
     JoinChannelDto:
       type: object
       properties:

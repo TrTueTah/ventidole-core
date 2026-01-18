@@ -16,6 +16,7 @@ import { CreateStreamUserDto } from './dto/create-user.dto';
 import { JoinChannelDto } from './dto/join-channel.dto';
 import { TokenDto } from './dto/token.dto';
 import { UpdateIdolChannelDto } from './dto/update-idol-channel.dto';
+import { UpdateMemberRoleDto } from './dto/update-member-role.dto';
 import { UserDto } from './dto/user.dto';
 import { StreamChatService } from './stream-chat.service';
 
@@ -30,6 +31,7 @@ import { StreamChatService } from './stream-chat.service';
   CreateCommunityChannelDto,
   CreateIdolChannelDto,
   UpdateIdolChannelDto,
+  UpdateMemberRoleDto,
 )
 export class StreamChatController {
   constructor(private readonly streamChatService: StreamChatService) {}
@@ -167,6 +169,35 @@ export class StreamChatController {
     const result = await this.streamChatService.joinChannel(
       req.user.id,
       request.channelId,
+    );
+    return BaseResponse.of(result);
+  }
+
+  @Patch('channels/:channelId/members/:memberId/role')
+  @ApiResponseCustom()
+  @ApiOperation({
+    summary: 'Update member role in a channel',
+    description:
+      'Update the role of a member in a channel. For idol channels: only creator can change roles. For community channels: any idol in the community can change roles.',
+  })
+  async updateMemberRole(
+    @Req() req: IRequest,
+    @Param('channelId') channelId: string,
+    @Param('memberId') memberId: string,
+    @Body() request: UpdateMemberRoleDto,
+  ): Promise<
+    BaseResponse<{
+      success: boolean;
+      channelId: string;
+      memberId: string;
+      role: string;
+    }>
+  > {
+    const result = await this.streamChatService.updateMemberRole(
+      req.user.id,
+      channelId,
+      memberId,
+      request.role,
     );
     return BaseResponse.of(result);
   }

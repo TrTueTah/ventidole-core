@@ -92,6 +92,26 @@ export class CommunityController {
     return BaseResponse.ok();
   }
 
+  @Post('idol/:idolId/join-channel')
+  @ApiResponseCustom()
+  async joinIdolChatChannel(
+    @Req() req: IRequest,
+    @Param('idolId') idolId: string,
+  ): Promise<BaseResponse<null>> {
+    await this.communityService.joinIdolChatChannel(req.user.id, idolId);
+    return BaseResponse.ok();
+  }
+
+  @Delete('idol/:idolId/leave-channel')
+  @ApiResponseCustom()
+  async leaveIdolChatChannel(
+    @Req() req: IRequest,
+    @Param('idolId') idolId: string,
+  ): Promise<BaseResponse<null>> {
+    await this.communityService.leaveIdolChatChannel(req.user.id, idolId);
+    return BaseResponse.ok();
+  }
+
   @Get(':id')
   @ApiResponseCustom(CommunityDetailDto)
   async getDetailCommunity(
