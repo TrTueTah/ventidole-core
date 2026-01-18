@@ -31,6 +31,11 @@ export class JwtAuthGuard extends AuthGuard(TokenStrategyKey.Jwt) {
    * 4. If no `Roles` decorator, allow any authenticated user
    */
   async canActivate(context: ExecutionContext) {
+    const request = context.switchToHttp().getRequest<IRequest>();
+
+    // Allow metrics endpoint for Prometheus scraping
+    if (request.path === '/metrics') return true;
+
     // Check if route is public
     const isPublic = this.reflector.getAllAndOverride<boolean>(
       DecoratorKey.Public,
@@ -43,7 +48,6 @@ export class JwtAuthGuard extends AuthGuard(TokenStrategyKey.Jwt) {
     const isAuthenticated = await super.canActivate(context);
     if (!isAuthenticated) return false;
 
-    const request = context.switchToHttp().getRequest<IRequest>();
     const user = request.user;
 
     if (!user)
