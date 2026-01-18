@@ -168,7 +168,7 @@ export class StreamChatService {
       }
 
       // Generate channel ID
-      const channelId = `idol_${idolId}_${Date.now()}`;
+      const channelId = `idol_${idolId}}`;
 
       // Create channel in GetStream
       const streamChatClient = getStreamChatClient();
