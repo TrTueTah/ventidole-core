@@ -5,7 +5,7 @@ import {
   IsInt,
   IsOptional,
   IsString,
-  IsUrl,
+  Matches,
   MaxLength,
 } from 'class-validator';
 
@@ -22,13 +22,15 @@ export class UpdateBannerDto {
   description?: string;
 
   @ApiProperty({ required: false, maxLength: 500 })
-  @IsUrl()
+  @IsString()
+  @Matches(/^https?:\/\/.+/, { message: 'imageUrl must be a valid URL' })
   @IsOptional()
   @MaxLength(500)
   imageUrl?: string;
 
   @ApiProperty({ required: false, maxLength: 500 })
-  @IsUrl()
+  @IsString()
+  @Matches(/^https?:\/\/.+/, { message: 'link must be a valid URL' })
   @IsOptional()
   @MaxLength(500)
   link?: string;
