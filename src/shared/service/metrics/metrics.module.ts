@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { ENVIRONMENT } from '@core/config/env.config';
 import { MetricsInterceptor } from '@core/interceptor/metrics.interceptor';
@@ -20,7 +21,14 @@ import { metricsProviders } from './metrics.provider';
       },
     }),
   ],
-  providers: [...metricsProviders, MetricsInterceptor],
+  providers: [
+    ...metricsProviders,
+    MetricsInterceptor,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: MetricsInterceptor,
+    },
+  ],
   exports: [PrometheusModule, ...metricsProviders, MetricsInterceptor],
 })
 export class MetricsModule {}

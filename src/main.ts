@@ -10,7 +10,6 @@ import bodyParser from 'body-parser';
 import { CustomValidationPipe } from '@core/pipe/validation.pipe';
 import { UnhandledExceptionFilter } from '@core/exception/exception.filter';
 import { HttpLoggerInterceptor } from '@core/interceptor/http-logger.interceptor';
-import { MetricsInterceptor } from '@core/interceptor/metrics.interceptor';
 import { JwtAuthGuard } from '@core/guard/jwt-auth.guard';
 import { VersioningType } from '@nestjs/common';
 import { setupSwagger } from '@core/config/doc.config';
@@ -52,12 +51,8 @@ async function bootstrap() {
     app.useGlobalPipes(new CustomValidationPipe());
     app.useGlobalFilters(new UnhandledExceptionFilter());
 
-    // Setup interceptors - metrics interceptor must be registered with DI
-    const interceptors = [new HttpLoggerInterceptor()];
-    if (ENVIRONMENT.METRICS_ENABLED !== false) {
-      interceptors.push(app.get(MetricsInterceptor));
-    }
-    app.useGlobalInterceptors(...interceptors);
+    // MetricsInterceptor is registered via APP_INTERCEPTOR in MetricsModule
+    app.useGlobalInterceptors(new HttpLoggerInterceptor());
 
     app.useGlobalGuards(new JwtAuthGuard(new Reflector()));
     app.enableVersioning({
