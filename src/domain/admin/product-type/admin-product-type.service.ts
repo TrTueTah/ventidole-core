@@ -21,7 +21,8 @@ export class AdminProductTypeService {
   async getAllProductTypes(
     filters: GetProductTypesDto,
   ): Promise<PaginationResponse<AdminProductTypeDto>> {
-    const { offset, limit, page, search, isActive } = filters;
+    const { offset, limit, page, search, isActive, sortBy, sortOrder } =
+      filters;
 
     // Build where clause
     const whereClause: Record<string, unknown> = {
@@ -38,6 +39,14 @@ export class AdminProductTypeService {
       whereClause.isActive = isActive === 'true';
     }
 
+    // Build orderBy clause
+    const orderBy: Record<string, string> = {};
+    if (sortBy) {
+      orderBy[sortBy] = sortOrder || 'desc';
+    } else {
+      orderBy.createdAt = 'desc';
+    }
+
     const [productTypes, total] = await Promise.all([
       this.prisma.productType.findMany({
         where: whereClause,
@@ -48,9 +57,7 @@ export class AdminProductTypeService {
           createdAt: true,
           updatedAt: true,
         },
-        orderBy: {
-          createdAt: 'desc',
-        },
+        orderBy,
         skip: offset,
         take: limit,
       }),
@@ -149,7 +156,9 @@ export class AdminProductTypeService {
       },
       data: {
         ...(updateDto.name && { name: updateDto.name }),
-        ...(updateDto.isActive !== undefined && { isActive: updateDto.isActive }),
+        ...(updateDto.isActive !== undefined && {
+          isActive: updateDto.isActive,
+        }),
       },
       select: {
         id: true,

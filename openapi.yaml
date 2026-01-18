@@ -4640,6 +4640,27 @@ paths:
           schema:
             example: 'true'
             type: string
+        - name: sortBy
+          required: false
+          in: query
+          description: Sort by field
+          schema:
+            example: createdAt
+            type: string
+            enum:
+              - createdAt
+              - updatedAt
+              - name
+        - name: sortOrder
+          required: false
+          in: query
+          description: Sort order
+          schema:
+            example: desc
+            type: string
+            enum:
+              - asc
+              - desc
       responses:
         '200':
           description: Successful paginated response
