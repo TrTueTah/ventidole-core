@@ -352,12 +352,12 @@
       },
       "targets": [
         {
-          "expr": "nodejs_heap_size_used_bytes",
+          "expr": "nestjs_nodejs_heap_size_used_bytes",
           "legendFormat": "Heap Used",
           "refId": "A"
         },
         {
-          "expr": "nodejs_heap_size_total_bytes",
+          "expr": "nestjs_nodejs_heap_size_total_bytes",
           "legendFormat": "Heap Total",
           "refId": "B"
         }
