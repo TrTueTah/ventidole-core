@@ -10,6 +10,7 @@ import bodyParser from 'body-parser';
 import { CustomValidationPipe } from '@core/pipe/validation.pipe';
 import { UnhandledExceptionFilter } from '@core/exception/exception.filter';
 import { HttpLoggerInterceptor } from '@core/interceptor/http-logger.interceptor';
+import { MetricsInterceptor } from '@core/interceptor/metrics.interceptor';
 import { JwtAuthGuard } from '@core/guard/jwt-auth.guard';
 import { VersioningType } from '@nestjs/common';
 import { setupSwagger } from '@core/config/doc.config';
@@ -51,6 +52,13 @@ async function bootstrap() {
     app.useGlobalPipes(new CustomValidationPipe());
     app.useGlobalFilters(new UnhandledExceptionFilter());
     app.useGlobalInterceptors(new HttpLoggerInterceptor());
+
+    // Add metrics interceptor if enabled
+    if (ENVIRONMENT.METRICS_ENABLED !== false) {
+      const metricsInterceptor = app.get(MetricsInterceptor);
+      app.useGlobalInterceptors(metricsInterceptor);
+    }
+
     app.useGlobalGuards(new JwtAuthGuard(new Reflector()));
     app.enableVersioning({
       type: VersioningType.URI,

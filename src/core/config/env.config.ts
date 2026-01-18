@@ -7,6 +7,7 @@ import {
   IsEnum,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   validateSync,
 } from 'class-validator';
@@ -163,6 +164,14 @@ class EnvironmentVariable {
   @IsString()
   @IsNotEmpty()
   RECOMMENDATION_API_URL: string;
+
+  // Monitoring
+  @Transform(({ value }) =>
+    value === undefined ? true : convertStringToBool(value),
+  )
+  @IsBoolean()
+  @IsOptional()
+  METRICS_ENABLED: boolean = true;
 }
 
 export const ENVIRONMENT = {} as EnvironmentVariable;

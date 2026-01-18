@@ -28,6 +28,8 @@ services:
     container_name: ventidole-server
     env_file:
       - ../../.env
+    environment:
+      - METRICS_ENABLED=true
     ports:
       - '8080:8080'
     depends_on:
@@ -37,8 +39,107 @@ services:
     networks:
       - ventidole-network
 
+  # Monitoring Services
+  prometheus:
+    image: prom/prometheus:v2.48.0
+    container_name: ventidole-prometheus
+    ports:
+      - '127.0.0.1:9090:9090'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    networks:
+      - ventidole-network
+    restart: always
+
+  grafana:
+    image: grafana/grafana:10.2.2
+    container_name: ventidole-grafana
+    ports:
+      - '127.0.0.1:3000:3000'
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER:-admin}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+      - GF_INSTALL_PLUGINS=redis-datasource
+    networks:
+      - ventidole-network
+    depends_on:
+      - prometheus
+    restart: always
+
+  alertmanager:
+    image: prom/alertmanager:v0.26.0
+    container_name: ventidole-alertmanager
+    ports:
+      - '127.0.0.1:9093:9093'
+    volumes:
+      - ./prometheus/alertmanager.yml:/etc/alertmanager/alertmanager.yml:ro
+      - alertmanager-data:/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+    networks:
+      - ventidole-network
+    restart: always
+
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.55.0
+    container_name: ventidole-redis-exporter
+    ports:
+      - '127.0.0.1:9121:9121'
+    environment:
+      - REDIS_ADDR=redis://${REDIS_HOST}:${REDIS_PORT}
+      - REDIS_USER=${REDIS_USER}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    networks:
+      - ventidole-network
+    restart: always
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    container_name: ventidole-postgres-exporter
+    ports:
+      - '127.0.0.1:9187:9187'
+    environment:
+      - DATA_SOURCE_NAME=postgresql://trantanh227:Tanhdeptrai113@postgres:5432/ventidole?sslmode=disable
+    networks:
+      - ventidole-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: always
+
+  node-exporter:
+    image: prom/node-exporter:v1.7.0
+    container_name: ventidole-node-exporter
+    ports:
+      - '127.0.0.1:9100:9100'
+    command:
+      - '--path.rootfs=/host'
+    volumes:
+      - '/:/host:ro,rslave'
+    networks:
+      - ventidole-network
+    restart: always
+
 volumes:
   postgres_data:
+  prometheus-data:
+  grafana-data:
+  alertmanager-data:
 
 networks:
   ventidole-network:

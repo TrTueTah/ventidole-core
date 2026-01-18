@@ -1,5 +1,14 @@
 openapi: 3.0.0
 paths:
+  /metrics:
+    get:
+      operationId: PrometheusController_index
+      parameters: []
+      responses:
+        '200':
+          description: ''
+      tags:
+        - Prometheus
   /v1/auth/sign-in:
     post:
       operationId: AuthController_signIn_v1
