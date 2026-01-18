@@ -4,8 +4,8 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 import { Counter, Histogram } from 'prom-client';
 import { InjectMetric } from '@willsoto/nestjs-prometheus';
 
@@ -26,39 +26,39 @@ export class MetricsInterceptor implements NestInterceptor {
     const start = Date.now();
 
     return next.handle().pipe(
-      tap({
-        next: () => {
-          const duration = (Date.now() - start) / 1000;
-          const statusCode = context.switchToHttp().getResponse().statusCode;
+      tap(() => {
+        const duration = (Date.now() - start) / 1000;
+        const statusCode = context.switchToHttp().getResponse().statusCode;
 
-          this.httpRequestCounter.inc({
-            method,
-            path,
-            status_code: statusCode,
-            version: 'v1',
-          });
+        this.httpRequestCounter.inc({
+          method,
+          path,
+          status_code: String(statusCode),
+          version: 'v1',
+        });
 
-          this.httpRequestDuration.observe(
-            { method, path, status_code: statusCode },
-            duration,
-          );
-        },
-        error: (error) => {
-          const duration = (Date.now() - start) / 1000;
-          const statusCode = error.status || 500;
+        this.httpRequestDuration.observe(
+          { method, path, status_code: String(statusCode) },
+          duration,
+        );
+      }),
+      catchError((error) => {
+        const duration = (Date.now() - start) / 1000;
+        const statusCode = error.status || error.statusCode || 500;
 
-          this.httpRequestCounter.inc({
-            method,
-            path,
-            status_code: statusCode,
-            version: 'v1',
-          });
+        this.httpRequestCounter.inc({
+          method,
+          path,
+          status_code: String(statusCode),
+          version: 'v1',
+        });
 
-          this.httpRequestDuration.observe(
-            { method, path, status_code: statusCode },
-            duration,
-          );
-        },
+        this.httpRequestDuration.observe(
+          { method, path, status_code: String(statusCode) },
+          duration,
+        );
+
+        return throwError(() => error);
       }),
     );
   }
