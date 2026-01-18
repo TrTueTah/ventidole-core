@@ -224,17 +224,22 @@ export class StreamChatService {
 
       // Check if channel exists and get channel data
       await channel.watch();
-      const channelData = channel.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const channelData = channel.data as Record<string, any>;
+      console.log(channelData);
 
       // Verify the idol is the channel creator
-      if (channelData.created_by_id !== idolId) {
+      // Check both custom created_by_id and Stream Chat's created_by.id
+      const creatorId =
+        channelData?.created_by_id || channelData?.created_by?.id;
+      if (creatorId !== idolId) {
         throw new ForbiddenException(
           'Only the channel creator can update this channel',
         );
       }
 
       // Verify it's an idol channel
-      if (!channelData.is_idol_channel) {
+      if (!channelData?.is_idol_channel) {
         throw new ForbiddenException('This is not an idol channel');
       }
 
@@ -282,17 +287,20 @@ export class StreamChatService {
 
       // Fetch channel data
       await channel.watch();
-      const channelData = channel.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const channelData = channel.data as Record<string, any>;
 
       // Validate requester is authorized
-      if (channelData.is_idol_channel) {
+      if (channelData?.is_idol_channel) {
         // For idol channels: only creator can grant permission
-        if (requesterId !== channelData.created_by_id) {
+        const creatorId =
+          channelData.created_by_id || channelData.created_by?.id;
+        if (requesterId !== creatorId) {
           throw new ForbiddenException(
             'Only channel creator can grant send permissions',
           );
         }
-      } else if (channelData.is_community_channel) {
+      } else if (channelData?.is_community_channel) {
         // For community channels: any idol in the community can grant permission
         const requester = await this.prisma.user.findUnique({
           where: { id: requesterId },
@@ -348,17 +356,20 @@ export class StreamChatService {
 
       // Fetch channel data
       await channel.watch();
-      const channelData = channel.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const channelData = channel.data as Record<string, any>;
 
       // Validate requester is authorized
-      if (channelData.is_idol_channel) {
+      if (channelData?.is_idol_channel) {
         // For idol channels: only creator can revoke permission
-        if (requesterId !== channelData.created_by_id) {
+        const creatorId =
+          channelData.created_by_id || channelData.created_by?.id;
+        if (requesterId !== creatorId) {
           throw new ForbiddenException(
             'Only channel creator can revoke send permissions',
           );
         }
-      } else if (channelData.is_community_channel) {
+      } else if (channelData?.is_community_channel) {
         // For community channels: any idol in the community can revoke permission
         const requester = await this.prisma.user.findUnique({
           where: { id: requesterId },
@@ -553,10 +564,11 @@ export class StreamChatService {
       const streamChatClient = getStreamChatClient();
 
       // Query for community channel
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const channels = await streamChatClient.queryChannels({
         community_id: communityId,
         is_community_channel: true,
-      });
+      } as any);
 
       if (channels.length === 0) {
         this.logger.warn(
@@ -662,17 +674,21 @@ export class StreamChatService {
 
       // Fetch channel data to verify it exists and check permissions
       await channel.watch();
-      const channelData = channel.data;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const channelData = channel.data as Record<string, any>;
 
       // Validate requester is authorized (must be channel creator or idol for idol channels)
-      if (channelData.is_idol_channel) {
+      if (channelData?.is_idol_channel) {
         // For idol channels: only creator can change roles
-        if (requesterId !== channelData.created_by_id) {
+        // Check both custom created_by_id and Stream Chat's created_by.id
+        const creatorId =
+          channelData.created_by_id || channelData.created_by?.id;
+        if (requesterId !== creatorId) {
           throw new ForbiddenException(
             'Only channel creator can change member roles',
           );
         }
-      } else if (channelData.is_community_channel) {
+      } else if (channelData?.is_community_channel) {
         // For community channels: any idol in the community can change roles
         const requester = await this.prisma.user.findUnique({
           where: { id: requesterId },
